@@ -8,7 +8,8 @@ namespace Dronstein
 	/// Attach to the entity that holds dronstein.xml (its MujocoScene).
 	///
 	///   W/S forward/back   A/D left/right   LeftShift/LeftControl up/down   Q/E turn
-	///   Left/Right arrows turn the arm   1-6 pick arm joint   Up/Down arrows move it
+	///   J/L turn the arm   1 switches J/L to rolling the wrist and back
+	///   2-5 pick shoulder/elbow/wrist/gripper   I/K move it
 	///
 	/// The keys move a target point; a PD controller tilts the drone towards it.
 	/// All math is in MuJoCo's frame (z up), straight from qpos/qvel.
@@ -42,7 +43,8 @@ namespace Dronstein
 
 		Vector3 m_Target;
 		float m_Yaw;
-		int m_Joint;
+		bool m_RollWrist;  // J/L: false = turn the arm, true = roll the wrist
+		int m_Joint = 1;   // the arm joint on I/K
 
 		protected override void OnCreate()
 		{
@@ -89,22 +91,30 @@ namespace Dronstein
 			if (Input.IsKeyDown(KeyCode.Q)) m_Yaw += TurnSpeed * dt;
 			if (Input.IsKeyDown(KeyCode.E)) m_Yaw -= TurnSpeed * dt;
 
-			KeyCode[] digits = { KeyCode.D1, KeyCode.D2, KeyCode.D3, KeyCode.D4, KeyCode.D5, KeyCode.D6 };
-			for (int i = 0; i < 6; i++)
-				if (Input.IsKeyPressed(digits[i]))
+			// Rotating joints go on J/L, the rest on I/K (arrow keys would also drive the editor).
+			if (Input.IsKeyPressed(KeyCode.D1))
+			{
+				m_RollWrist = !m_RollWrist;
+				Log.Info($"J/L: {(m_RollWrist ? "wrist_roll" : "shoulder_pan")}");
+			}
+			KeyCode[] keys = { KeyCode.D2, KeyCode.D3, KeyCode.D4, KeyCode.D5 };
+			int[] joints = { 1, 2, 3, 5 };  // shoulder_lift, elbow_flex, wrist_flex, gripper
+			for (int i = 0; i < 4; i++)
+				if (Input.IsKeyPressed(keys[i]))
 				{
-					m_Joint = i;
-					Log.Info($"Arm joint: {ArmJoints[i]}");
+					m_Joint = joints[i];
+					Log.Info($"I/K: {ArmJoints[m_Joint]}");
 				}
-			float armStep = 0f;
-			if (Input.IsKeyDown(KeyCode.Up)) armStep += ArmSpeed * dt;
-			if (Input.IsKeyDown(KeyCode.Down)) armStep -= ArmSpeed * dt;
-			MoveArmJoint(m_Joint, armStep);
 
-			float turn = 0f;  // Left/Right always turn the arm (shoulder_pan)
-			if (Input.IsKeyDown(KeyCode.Left)) turn += ArmSpeed * dt;
-			if (Input.IsKeyDown(KeyCode.Right)) turn -= ArmSpeed * dt;
-			MoveArmJoint(0, turn);
+			float turn = 0f;
+			if (Input.IsKeyDown(KeyCode.J)) turn += ArmSpeed * dt;
+			if (Input.IsKeyDown(KeyCode.L)) turn -= ArmSpeed * dt;
+			MoveArmJoint(m_RollWrist ? 4 : 0, turn);
+
+			float armStep = 0f;
+			if (Input.IsKeyDown(KeyCode.I)) armStep += ArmSpeed * dt;
+			if (Input.IsKeyDown(KeyCode.K)) armStep -= ArmSpeed * dt;
+			MoveArmJoint(m_Joint, armStep);
 
 			Control(dt);
 			m_Camera.Translation = m_Body.Translation + m_CameraOffset;
