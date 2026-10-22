@@ -38,7 +38,8 @@ namespace Dronstein
 		uint m_Drone;
 		float[] m_Qpos, m_Qvel;
 
-		Entity m_Camera, m_Body;
+		Entity m_Camera, m_Body, m_GripDot;
+		uint m_GraspSite;
 		Vector3 m_CameraOffset;
 
 		Vector3 m_Target;
@@ -71,6 +72,9 @@ namespace Dronstein
 			m_Camera = FindEntityByTag("Camera");
 			m_Body = FindEntityByTag("x2");
 			m_CameraOffset = m_Camera.Translation - m_Body.Translation;
+			// Red dot on the ground straight below the gripper.
+			m_GripDot = FindEntityByTag("GripDot");
+			m_GraspSite = m_Mj.GetSiteID("grasp_site");
 
 			Log.Info($"DroneTeleop: start at {m_Target}, nq={m_Mj.ModelNq} nu={m_Mj.ModelNu}");
 		}
@@ -118,6 +122,8 @@ namespace Dronstein
 
 			Control(dt);
 			m_Camera.Translation = m_Body.Translation + m_CameraOffset;
+			Vector3 grasp = m_Mj.GetSitePositionMj(m_GraspSite);  // MuJoCo (x, y) on the ground is Lucky (x, -z)
+			m_GripDot.Translation = new Vector3(grasp.X, m_GripDot.Translation.Y, -grasp.Y);
 		}
 
 		void MoveArmJoint(int joint, float delta)

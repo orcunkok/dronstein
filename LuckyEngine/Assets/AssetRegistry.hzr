@@ -65,6 +65,9 @@ Assets:
   - Handle: 6516942821035690005
     FilePath: Robots/Dronstein/assets/Fixed_Jaw_Motor.stl
     Type: MeshSource
+  - Handle: 6658235089502020210
+    FilePath: Materials/GripDot_Material.hmaterial
+    Type: Material
   - Handle: 6677227188291702685
     FilePath: Robots/Dronstein/assets/Fixed_Jaw_Collision_2.stl
     Type: MeshSource
@@ -158,6 +161,9 @@ Assets:
   - Handle: 15725964065274453976
     FilePath: Meshes/Default/Source/Torus.gltf
     Type: MeshSource
+  - Handle: 16102727838158965090
+    FilePath: Meshes/Default/Cylinder.hsmesh
+    Type: StaticMesh
   - Handle: 16763015685236763184
     FilePath: Meshes/Default/Source/Cube.gltf
     Type: MeshSource

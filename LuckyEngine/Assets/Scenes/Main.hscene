@@ -1257,6 +1257,22 @@ Entities:
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 3
+  - Entity: 10914943577966071391
+    Domain: Client
+    TagComponent:
+      Tag: GripDot
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0.002, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.03, 0.002, 0.03]
+    StaticMeshComponent:
+      AssetID: 16102727838158965090
+      MaterialTable:
+        0: 6658235089502020210
+      Visible: true
   - Entity: 11942385757976946130
     Domain: Client
     TagComponent:
