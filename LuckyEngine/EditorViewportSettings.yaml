@@ -1,0 +1,77 @@
+EditorViewportSettings:
+  Raster:
+    EnableUpscaling: false
+    UpscalingMode: 2
+    UpscalingZeroMotion: false
+    Brdf: 0
+    EnableMeshletRaster: false
+    EnableMeshletCulling: true
+    EnableMeshletLOD: true
+    MeshletLODErrorPixels: 1
+    EnableShadowCulling: true
+    EnableMainViewCulling: true
+    ReflectionOcclusionMethod: 0
+  AmbientOcclusion:
+    Enabled: true
+    ShadowTolerance: 1
+    BentNormals: false
+    TemporalNoise: false
+    SampleCount: 1
+    DenoisePasses: 4
+    BilateralUpscaleSigma: 0.0500000007
+    BilateralCompare: false
+    VisibilityBitmask: false
+    Thickness: 0.5
+    EffectRadius: 0.5
+    EffectFalloffRange: 0.620000005
+    RadiusMultiplier: 1.46000004
+    FinalValuePower: 2.20000005
+    DenoiseBlurBeta: 1.20000005
+    HalfRes: false
+    SampleDistributionPower: 2
+    ThinOccluderCompensation: 0
+    DepthMIPSamplingOffset: 3.29999995
+  Reflections:
+    Enabled: false
+    FadeIn: [0.100000001, 0.150000006]
+    Brightness: 0.699999988
+    DepthTolerance: 0.800000012
+    FacingReflectionsFading: 0.100000001
+    MaxSteps: 70
+    RoughnessDepthTolerance: 1
+    HalfRes: false
+    EnableConeTracing: true
+    LuminanceFactor: 1
+  DepthOfField:
+    Enabled: false
+    FocusDistance: 0.00100000005
+    BlurSize: 1
+  AntiAliasing:
+    Enabled: true
+    Threshold: 0.100000001
+    LocalContrastAdaptation: 2
+    CornerRounding: 25
+  Bloom:
+    Convolution: true
+    ConvolutionRadius: 20
+    ConvolutionGlow: 0.100000001
+    ConvolutionScale: 5
+  Shadows:
+    UseManualSplits: false
+    ManualSplits:
+      0: 0.100000001
+      1: 0.200000003
+      2: 0.300000012
+      3: 1
+  PathTracing:
+    Denoiser: 3
+    DLSSQuality: 2
+    Bounces: 4
+    Accumulate: true
+    MaxAccumulationFrames: 16384
+    AdaptiveSampling: false
+    AdaptiveThreshold: 0.0199999996
+    AdaptiveMinSamples: 8
+    SkyMultiplier: 1
+    FireflyClamp: 20
+    EnableTAA: true
