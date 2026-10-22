@@ -233,6 +233,120 @@ SceneSettings:
 PrefabManager:
   []
 Entities:
+  - Entity: 245167270397148752
+    Domain: Client
+    TagComponent:
+      Tag: GolfBall_05
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0.431, 0.0214, 0.276]
+      Rotation: [0, 0, 0]
+      Scale: [0.0427, 0.0427, 0.0427]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 10758258179628656150
+      Visible: true
+    MujocoSphereColliderComponent:
+      Density: 1130
+      Radius: 0.5
+      Friction: [1, 0.1, 0.01]
+      Contype: 1
+      Conaffinity: 1
+      Condim: -1
+    MujocoJointComponent:
+      Type: "\x00"
+      Position: [0, 0, 0]
+      Axis: [0, 1, 0]
+      Limited: false
+      LimitMin: -3.14159
+      LimitMax: 3.14159
+      LimitSolref: [0.02, 1]
+      LimitSolimp: [0.9, 0.95, 0.001]
+      Stiffness: 0
+      Damping: 0.001
+      Armature: 0
+      FrictionLoss: 0
+      SpringRef: 0
+      JointId: -1
+  - Entity: 344505556118670621
+    Domain: Client
+    TagComponent:
+      Tag: GolfBall_02
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [-0.836, 0.0214, 0.94]
+      Rotation: [0, 0, 0]
+      Scale: [0.0427, 0.0427, 0.0427]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 10758258179628656150
+      Visible: true
+    MujocoSphereColliderComponent:
+      Density: 1130
+      Radius: 0.5
+      Friction: [1, 0.1, 0.01]
+      Contype: 1
+      Conaffinity: 1
+      Condim: -1
+    MujocoJointComponent:
+      Type: "\x00"
+      Position: [0, 0, 0]
+      Axis: [0, 1, 0]
+      Limited: false
+      LimitMin: -3.14159
+      LimitMax: 3.14159
+      LimitSolref: [0.02, 1]
+      LimitSolimp: [0.9, 0.95, 0.001]
+      Stiffness: 0
+      Damping: 0.001
+      Armature: 0
+      FrictionLoss: 0
+      SpringRef: 0
+      JointId: -1
+  - Entity: 602807608784138521
+    Domain: Client
+    TagComponent:
+      Tag: GolfBall_04
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [-0.421, 0.0214, 0.186]
+      Rotation: [0, 0, 0]
+      Scale: [0.0427, 0.0427, 0.0427]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 10758258179628656150
+      Visible: true
+    MujocoSphereColliderComponent:
+      Density: 1130
+      Radius: 0.5
+      Friction: [1, 0.1, 0.01]
+      Contype: 1
+      Conaffinity: 1
+      Condim: -1
+    MujocoJointComponent:
+      Type: "\x00"
+      Position: [0, 0, 0]
+      Axis: [0, 1, 0]
+      Limited: false
+      LimitMin: -3.14159
+      LimitMax: 3.14159
+      LimitSolref: [0.02, 1]
+      LimitSolimp: [0.9, 0.95, 0.001]
+      Stiffness: 0
+      Damping: 0.001
+      Armature: 0
+      FrictionLoss: 0
+      SpringRef: 0
+      JointId: -1
   - Entity: 899892446410628203
     Domain: Client
     TagComponent:
@@ -253,6 +367,44 @@ Entities:
       Visible: true
     MujocoGeomComponent:
       ID: 33
+  - Entity: 1134009517207024497
+    Domain: Client
+    TagComponent:
+      Tag: GolfBall_11
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [-0.437, 0.0214, 1.719]
+      Rotation: [0, 0, 0]
+      Scale: [0.0427, 0.0427, 0.0427]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 10758258179628656150
+      Visible: true
+    MujocoSphereColliderComponent:
+      Density: 1130
+      Radius: 0.5
+      Friction: [1, 0.1, 0.01]
+      Contype: 1
+      Conaffinity: 1
+      Condim: -1
+    MujocoJointComponent:
+      Type: "\x00"
+      Position: [0, 0, 0]
+      Axis: [0, 1, 0]
+      Limited: false
+      LimitMin: -3.14159
+      LimitMax: 3.14159
+      LimitSolref: [0.02, 1]
+      LimitSolimp: [0.9, 0.95, 0.001]
+      Stiffness: 0
+      Damping: 0.001
+      Armature: 0
+      FrictionLoss: 0
+      SpringRef: 0
+      JointId: -1
   - Entity: 1280380803168527019
     Domain: Client
     TagComponent:
@@ -359,6 +511,44 @@ Entities:
       Visible: true
     MujocoGeomComponent:
       ID: 14
+  - Entity: 1979815025508288610
+    Domain: Client
+    TagComponent:
+      Tag: GolfBall_12
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0.466, 0.0214, 0.425]
+      Rotation: [0, 0, 0]
+      Scale: [0.0427, 0.0427, 0.0427]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 10758258179628656150
+      Visible: true
+    MujocoSphereColliderComponent:
+      Density: 1130
+      Radius: 0.5
+      Friction: [1, 0.1, 0.01]
+      Contype: 1
+      Conaffinity: 1
+      Condim: -1
+    MujocoJointComponent:
+      Type: "\x00"
+      Position: [0, 0, 0]
+      Axis: [0, 1, 0]
+      Limited: false
+      LimitMin: -3.14159
+      LimitMax: 3.14159
+      LimitSolref: [0.02, 1]
+      LimitSolimp: [0.9, 0.95, 0.001]
+      Stiffness: 0
+      Damping: 0.001
+      Armature: 0
+      FrictionLoss: 0
+      SpringRef: 0
+      JointId: -1
   - Entity: 2628477173460188871
     Domain: Client
     TagComponent:
@@ -392,6 +582,44 @@ Entities:
       Visible: true
     MujocoGeomComponent:
       ID: 25
+  - Entity: 4022421985475234552
+    Domain: Client
+    TagComponent:
+      Tag: GolfBall_16
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [1.178, 0.0214, 0.491]
+      Rotation: [0, 0, 0]
+      Scale: [0.0427, 0.0427, 0.0427]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 10758258179628656150
+      Visible: true
+    MujocoSphereColliderComponent:
+      Density: 1130
+      Radius: 0.5
+      Friction: [1, 0.1, 0.01]
+      Contype: 1
+      Conaffinity: 1
+      Condim: -1
+    MujocoJointComponent:
+      Type: "\x00"
+      Position: [0, 0, 0]
+      Axis: [0, 1, 0]
+      Limited: false
+      LimitMin: -3.14159
+      LimitMax: 3.14159
+      LimitSolref: [0.02, 1]
+      LimitSolimp: [0.9, 0.95, 0.001]
+      Stiffness: 0
+      Damping: 0.001
+      Armature: 0
+      FrictionLoss: 0
+      SpringRef: 0
+      JointId: -1
   - Entity: 4143880066616063889
     Domain: Client
     TagComponent:
@@ -412,6 +640,44 @@ Entities:
       Visible: true
     MujocoGeomComponent:
       ID: 11
+  - Entity: 4349336411905971544
+    Domain: Client
+    TagComponent:
+      Tag: GolfBall_23
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [1.451, 0.0214, 1.33]
+      Rotation: [0, 0, 0]
+      Scale: [0.0427, 0.0427, 0.0427]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 10758258179628656150
+      Visible: true
+    MujocoSphereColliderComponent:
+      Density: 1130
+      Radius: 0.5
+      Friction: [1, 0.1, 0.01]
+      Contype: 1
+      Conaffinity: 1
+      Condim: -1
+    MujocoJointComponent:
+      Type: "\x00"
+      Position: [0, 0, 0]
+      Axis: [0, 1, 0]
+      Limited: false
+      LimitMin: -3.14159
+      LimitMax: 3.14159
+      LimitSolref: [0.02, 1]
+      LimitSolimp: [0.9, 0.95, 0.001]
+      Stiffness: 0
+      Damping: 0.001
+      Armature: 0
+      FrictionLoss: 0
+      SpringRef: 0
+      JointId: -1
   - Entity: 4744146637183244673
     Domain: Client
     TagComponent:
@@ -432,6 +698,44 @@ Entities:
       Visible: true
     MujocoGeomComponent:
       ID: 22
+  - Entity: 5216942334575228420
+    Domain: Client
+    TagComponent:
+      Tag: GolfBall_15
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [-0.989, 0.0214, 1.022]
+      Rotation: [0, 0, 0]
+      Scale: [0.0427, 0.0427, 0.0427]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 10758258179628656150
+      Visible: true
+    MujocoSphereColliderComponent:
+      Density: 1130
+      Radius: 0.5
+      Friction: [1, 0.1, 0.01]
+      Contype: 1
+      Conaffinity: 1
+      Condim: -1
+    MujocoJointComponent:
+      Type: "\x00"
+      Position: [0, 0, 0]
+      Axis: [0, 1, 0]
+      Limited: false
+      LimitMin: -3.14159
+      LimitMax: 3.14159
+      LimitSolref: [0.02, 1]
+      LimitSolimp: [0.9, 0.95, 0.001]
+      Stiffness: 0
+      Damping: 0.001
+      Armature: 0
+      FrictionLoss: 0
+      SpringRef: 0
+      JointId: -1
   - Entity: 5622593848370521613
     Domain: Client
     TagComponent:
@@ -463,6 +767,82 @@ Entities:
       Rotation: 0
       DynamicSky: true
       TurbidityAzimuthInclination: [2.8, 3.8, 1]
+  - Entity: 6808467485959760917
+    Domain: Client
+    TagComponent:
+      Tag: GolfBall_06
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0.501, 0.0214, -0.956]
+      Rotation: [0, 0, 0]
+      Scale: [0.0427, 0.0427, 0.0427]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 10758258179628656150
+      Visible: true
+    MujocoSphereColliderComponent:
+      Density: 1130
+      Radius: 0.5
+      Friction: [1, 0.1, 0.01]
+      Contype: 1
+      Conaffinity: 1
+      Condim: -1
+    MujocoJointComponent:
+      Type: "\x00"
+      Position: [0, 0, 0]
+      Axis: [0, 1, 0]
+      Limited: false
+      LimitMin: -3.14159
+      LimitMax: 3.14159
+      LimitSolref: [0.02, 1]
+      LimitSolimp: [0.9, 0.95, 0.001]
+      Stiffness: 0
+      Damping: 0.001
+      Armature: 0
+      FrictionLoss: 0
+      SpringRef: 0
+      JointId: -1
+  - Entity: 6859745199138401194
+    Domain: Client
+    TagComponent:
+      Tag: GolfBall_10
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [1.879, 0.0214, 0.566]
+      Rotation: [0, 0, 0]
+      Scale: [0.0427, 0.0427, 0.0427]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 10758258179628656150
+      Visible: true
+    MujocoSphereColliderComponent:
+      Density: 1130
+      Radius: 0.5
+      Friction: [1, 0.1, 0.01]
+      Contype: 1
+      Conaffinity: 1
+      Condim: -1
+    MujocoJointComponent:
+      Type: "\x00"
+      Position: [0, 0, 0]
+      Axis: [0, 1, 0]
+      Limited: false
+      LimitMin: -3.14159
+      LimitMax: 3.14159
+      LimitSolref: [0.02, 1]
+      LimitSolimp: [0.9, 0.95, 0.001]
+      Stiffness: 0
+      Damping: 0.001
+      Armature: 0
+      FrictionLoss: 0
+      SpringRef: 0
+      JointId: -1
   - Entity: 6960767089050731386
     Domain: Client
     TagComponent:
@@ -526,6 +906,44 @@ Entities:
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 8
+  - Entity: 7688800538663923338
+    Domain: Client
+    TagComponent:
+      Tag: GolfBall_03
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [-0.492, 0.0214, -0.023]
+      Rotation: [0, 0, 0]
+      Scale: [0.0427, 0.0427, 0.0427]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 10758258179628656150
+      Visible: true
+    MujocoSphereColliderComponent:
+      Density: 1130
+      Radius: 0.5
+      Friction: [1, 0.1, 0.01]
+      Contype: 1
+      Conaffinity: 1
+      Condim: -1
+    MujocoJointComponent:
+      Type: "\x00"
+      Position: [0, 0, 0]
+      Axis: [0, 1, 0]
+      Limited: false
+      LimitMin: -3.14159
+      LimitMax: 3.14159
+      LimitSolref: [0.02, 1]
+      LimitSolimp: [0.9, 0.95, 0.001]
+      Stiffness: 0
+      Damping: 0.001
+      Armature: 0
+      FrictionLoss: 0
+      SpringRef: 0
+      JointId: -1
   - Entity: 7700112233445566778
     Domain: Client
     TagComponent:
@@ -602,6 +1020,44 @@ Entities:
           Value: 0.6
     MujocoSceneComponent:
       MujocoScene: 2871429880033931469
+  - Entity: 7877977864254300973
+    Domain: Client
+    TagComponent:
+      Tag: GolfBall_08
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [1.329, 0.0214, -0.453]
+      Rotation: [0, 0, 0]
+      Scale: [0.0427, 0.0427, 0.0427]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 10758258179628656150
+      Visible: true
+    MujocoSphereColliderComponent:
+      Density: 1130
+      Radius: 0.5
+      Friction: [1, 0.1, 0.01]
+      Contype: 1
+      Conaffinity: 1
+      Condim: -1
+    MujocoJointComponent:
+      Type: "\x00"
+      Position: [0, 0, 0]
+      Axis: [0, 1, 0]
+      Limited: false
+      LimitMin: -3.14159
+      LimitMax: 3.14159
+      LimitSolref: [0.02, 1]
+      LimitSolimp: [0.9, 0.95, 0.001]
+      Stiffness: 0
+      Damping: 0.001
+      Armature: 0
+      FrictionLoss: 0
+      SpringRef: 0
+      JointId: -1
   - Entity: 8180631812647079554
     Domain: Client
     TagComponent:
@@ -635,6 +1091,120 @@ Entities:
       Visible: true
     MujocoGeomComponent:
       ID: 20
+  - Entity: 9226193199443051660
+    Domain: Client
+    TagComponent:
+      Tag: GolfBall_18
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [-0.775, 0.0214, -0.462]
+      Rotation: [0, 0, 0]
+      Scale: [0.0427, 0.0427, 0.0427]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 10758258179628656150
+      Visible: true
+    MujocoSphereColliderComponent:
+      Density: 1130
+      Radius: 0.5
+      Friction: [1, 0.1, 0.01]
+      Contype: 1
+      Conaffinity: 1
+      Condim: -1
+    MujocoJointComponent:
+      Type: "\x00"
+      Position: [0, 0, 0]
+      Axis: [0, 1, 0]
+      Limited: false
+      LimitMin: -3.14159
+      LimitMax: 3.14159
+      LimitSolref: [0.02, 1]
+      LimitSolimp: [0.9, 0.95, 0.001]
+      Stiffness: 0
+      Damping: 0.001
+      Armature: 0
+      FrictionLoss: 0
+      SpringRef: 0
+      JointId: -1
+  - Entity: 9365238450782605957
+    Domain: Client
+    TagComponent:
+      Tag: GolfBall_17
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [-1.337, 0.0214, 0.654]
+      Rotation: [0, 0, 0]
+      Scale: [0.0427, 0.0427, 0.0427]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 10758258179628656150
+      Visible: true
+    MujocoSphereColliderComponent:
+      Density: 1130
+      Radius: 0.5
+      Friction: [1, 0.1, 0.01]
+      Contype: 1
+      Conaffinity: 1
+      Condim: -1
+    MujocoJointComponent:
+      Type: "\x00"
+      Position: [0, 0, 0]
+      Axis: [0, 1, 0]
+      Limited: false
+      LimitMin: -3.14159
+      LimitMax: 3.14159
+      LimitSolref: [0.02, 1]
+      LimitSolimp: [0.9, 0.95, 0.001]
+      Stiffness: 0
+      Damping: 0.001
+      Armature: 0
+      FrictionLoss: 0
+      SpringRef: 0
+      JointId: -1
+  - Entity: 9746366683398954405
+    Domain: Client
+    TagComponent:
+      Tag: GolfBall_22
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [-0.37, 0.0214, 1.523]
+      Rotation: [0, 0, 0]
+      Scale: [0.0427, 0.0427, 0.0427]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 10758258179628656150
+      Visible: true
+    MujocoSphereColliderComponent:
+      Density: 1130
+      Radius: 0.5
+      Friction: [1, 0.1, 0.01]
+      Contype: 1
+      Conaffinity: 1
+      Condim: -1
+    MujocoJointComponent:
+      Type: "\x00"
+      Position: [0, 0, 0]
+      Axis: [0, 1, 0]
+      Limited: false
+      LimitMin: -3.14159
+      LimitMax: 3.14159
+      LimitSolref: [0.02, 1]
+      LimitSolimp: [0.9, 0.95, 0.001]
+      Stiffness: 0
+      Damping: 0.001
+      Armature: 0
+      FrictionLoss: 0
+      SpringRef: 0
+      JointId: -1
   - Entity: 9780543589086383231
     Domain: Client
     TagComponent:
@@ -759,6 +1329,158 @@ Entities:
       LightSize: 0.5
       ShadowAmount: 1
       Photometric: false
+  - Entity: 13129489785444233558
+    Domain: Client
+    TagComponent:
+      Tag: GolfBall_01
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [1.295, 0.0214, 0.634]
+      Rotation: [0, 0, 0]
+      Scale: [0.0427, 0.0427, 0.0427]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 10758258179628656150
+      Visible: true
+    MujocoSphereColliderComponent:
+      Density: 1130
+      Radius: 0.5
+      Friction: [1, 0.1, 0.01]
+      Contype: 1
+      Conaffinity: 1
+      Condim: -1
+    MujocoJointComponent:
+      Type: "\x00"
+      Position: [0, 0, 0]
+      Axis: [0, 1, 0]
+      Limited: false
+      LimitMin: -3.14159
+      LimitMax: 3.14159
+      LimitSolref: [0.02, 1]
+      LimitSolimp: [0.9, 0.95, 0.001]
+      Stiffness: 0
+      Damping: 0.001
+      Armature: 0
+      FrictionLoss: 0
+      SpringRef: 0
+      JointId: -1
+  - Entity: 13196638502951336172
+    Domain: Client
+    TagComponent:
+      Tag: GolfBall_24
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0.048, 0.0214, -1.068]
+      Rotation: [0, 0, 0]
+      Scale: [0.0427, 0.0427, 0.0427]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 10758258179628656150
+      Visible: true
+    MujocoSphereColliderComponent:
+      Density: 1130
+      Radius: 0.5
+      Friction: [1, 0.1, 0.01]
+      Contype: 1
+      Conaffinity: 1
+      Condim: -1
+    MujocoJointComponent:
+      Type: "\x00"
+      Position: [0, 0, 0]
+      Axis: [0, 1, 0]
+      Limited: false
+      LimitMin: -3.14159
+      LimitMax: 3.14159
+      LimitSolref: [0.02, 1]
+      LimitSolimp: [0.9, 0.95, 0.001]
+      Stiffness: 0
+      Damping: 0.001
+      Armature: 0
+      FrictionLoss: 0
+      SpringRef: 0
+      JointId: -1
+  - Entity: 13219196278226597274
+    Domain: Client
+    TagComponent:
+      Tag: GolfBall_09
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [-1.054, 0.0214, 0.8]
+      Rotation: [0, 0, 0]
+      Scale: [0.0427, 0.0427, 0.0427]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 10758258179628656150
+      Visible: true
+    MujocoSphereColliderComponent:
+      Density: 1130
+      Radius: 0.5
+      Friction: [1, 0.1, 0.01]
+      Contype: 1
+      Conaffinity: 1
+      Condim: -1
+    MujocoJointComponent:
+      Type: "\x00"
+      Position: [0, 0, 0]
+      Axis: [0, 1, 0]
+      Limited: false
+      LimitMin: -3.14159
+      LimitMax: 3.14159
+      LimitSolref: [0.02, 1]
+      LimitSolimp: [0.9, 0.95, 0.001]
+      Stiffness: 0
+      Damping: 0.001
+      Armature: 0
+      FrictionLoss: 0
+      SpringRef: 0
+      JointId: -1
+  - Entity: 13632217528594285167
+    Domain: Client
+    TagComponent:
+      Tag: GolfBall_13
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0.361, 0.0214, -0.818]
+      Rotation: [0, 0, 0]
+      Scale: [0.0427, 0.0427, 0.0427]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 10758258179628656150
+      Visible: true
+    MujocoSphereColliderComponent:
+      Density: 1130
+      Radius: 0.5
+      Friction: [1, 0.1, 0.01]
+      Contype: 1
+      Conaffinity: 1
+      Condim: -1
+    MujocoJointComponent:
+      Type: "\x00"
+      Position: [0, 0, 0]
+      Axis: [0, 1, 0]
+      Limited: false
+      LimitMin: -3.14159
+      LimitMax: 3.14159
+      LimitSolref: [0.02, 1]
+      LimitSolimp: [0.9, 0.95, 0.001]
+      Stiffness: 0
+      Damping: 0.001
+      Armature: 0
+      FrictionLoss: 0
+      SpringRef: 0
+      JointId: -1
   - Entity: 13762944032500234798
     Domain: Client
     TagComponent:
@@ -819,6 +1541,82 @@ Entities:
       Visible: true
     MujocoGeomComponent:
       ID: 19
+  - Entity: 15517991742549953451
+    Domain: Client
+    TagComponent:
+      Tag: GolfBall
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0.536, 0.0214, 0.746]
+      Rotation: [0, 0, 0]
+      Scale: [0.0427, 0.0427, 0.0427]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 10758258179628656150
+      Visible: true
+    MujocoSphereColliderComponent:
+      Density: 1130
+      Radius: 0.5
+      Friction: [1, 0.1, 0.01]
+      Contype: 1
+      Conaffinity: 1
+      Condim: -1
+    MujocoJointComponent:
+      Type: "\x00"
+      Position: [0, 0, 0]
+      Axis: [0, 1, 0]
+      Limited: false
+      LimitMin: -3.14159
+      LimitMax: 3.14159
+      LimitSolref: [0.02, 1]
+      LimitSolimp: [0.9, 0.95, 0.001]
+      Stiffness: 0
+      Damping: 0.001
+      Armature: 0
+      FrictionLoss: 0
+      SpringRef: 0
+      JointId: -1
+  - Entity: 15816677538361509217
+    Domain: Client
+    TagComponent:
+      Tag: GolfBall_21
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0.878, 0.0214, -0.876]
+      Rotation: [0, 0, 0]
+      Scale: [0.0427, 0.0427, 0.0427]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 10758258179628656150
+      Visible: true
+    MujocoSphereColliderComponent:
+      Density: 1130
+      Radius: 0.5
+      Friction: [1, 0.1, 0.01]
+      Contype: 1
+      Conaffinity: 1
+      Condim: -1
+    MujocoJointComponent:
+      Type: "\x00"
+      Position: [0, 0, 0]
+      Axis: [0, 1, 0]
+      Limited: false
+      LimitMin: -3.14159
+      LimitMax: 3.14159
+      LimitSolref: [0.02, 1]
+      LimitSolimp: [0.9, 0.95, 0.001]
+      Stiffness: 0
+      Damping: 0.001
+      Armature: 0
+      FrictionLoss: 0
+      SpringRef: 0
+      JointId: -1
   - Entity: 16054154094890222105
     Domain: Client
     TagComponent:
@@ -873,6 +1671,44 @@ Entities:
         VignettingExponent: 4
         VignettingCorrection: 0
         SensorHeightMM: 24
+  - Entity: 17168540220499114429
+    Domain: Client
+    TagComponent:
+      Tag: GolfBall_07
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0.1, 0.0214, 0.59]
+      Rotation: [0, 0, 0]
+      Scale: [0.0427, 0.0427, 0.0427]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 10758258179628656150
+      Visible: true
+    MujocoSphereColliderComponent:
+      Density: 1130
+      Radius: 0.5
+      Friction: [1, 0.1, 0.01]
+      Contype: 1
+      Conaffinity: 1
+      Condim: -1
+    MujocoJointComponent:
+      Type: "\x00"
+      Position: [0, 0, 0]
+      Axis: [0, 1, 0]
+      Limited: false
+      LimitMin: -3.14159
+      LimitMax: 3.14159
+      LimitSolref: [0.02, 1]
+      LimitSolimp: [0.9, 0.95, 0.001]
+      Stiffness: 0
+      Damping: 0.001
+      Armature: 0
+      FrictionLoss: 0
+      SpringRef: 0
+      JointId: -1
   - Entity: 17231258961538200835
     Domain: Client
     TagComponent:
@@ -886,6 +1722,120 @@ Entities:
       Scale: [1, 1, 1]
     MujocoSiteComponent:
       ID: 1
+  - Entity: 17276475515001353056
+    Domain: Client
+    TagComponent:
+      Tag: GolfBall_19
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [-0.346, 0.0214, 1.071]
+      Rotation: [0, 0, 0]
+      Scale: [0.0427, 0.0427, 0.0427]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 10758258179628656150
+      Visible: true
+    MujocoSphereColliderComponent:
+      Density: 1130
+      Radius: 0.5
+      Friction: [1, 0.1, 0.01]
+      Contype: 1
+      Conaffinity: 1
+      Condim: -1
+    MujocoJointComponent:
+      Type: "\x00"
+      Position: [0, 0, 0]
+      Axis: [0, 1, 0]
+      Limited: false
+      LimitMin: -3.14159
+      LimitMax: 3.14159
+      LimitSolref: [0.02, 1]
+      LimitSolimp: [0.9, 0.95, 0.001]
+      Stiffness: 0
+      Damping: 0.001
+      Armature: 0
+      FrictionLoss: 0
+      SpringRef: 0
+      JointId: -1
+  - Entity: 17849749303881500182
+    Domain: Client
+    TagComponent:
+      Tag: GolfBall_20
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [-0.526, 0.0214, -1.586]
+      Rotation: [0, 0, 0]
+      Scale: [0.0427, 0.0427, 0.0427]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 10758258179628656150
+      Visible: true
+    MujocoSphereColliderComponent:
+      Density: 1130
+      Radius: 0.5
+      Friction: [1, 0.1, 0.01]
+      Contype: 1
+      Conaffinity: 1
+      Condim: -1
+    MujocoJointComponent:
+      Type: "\x00"
+      Position: [0, 0, 0]
+      Axis: [0, 1, 0]
+      Limited: false
+      LimitMin: -3.14159
+      LimitMax: 3.14159
+      LimitSolref: [0.02, 1]
+      LimitSolimp: [0.9, 0.95, 0.001]
+      Stiffness: 0
+      Damping: 0.001
+      Armature: 0
+      FrictionLoss: 0
+      SpringRef: 0
+      JointId: -1
+  - Entity: 18127450234244442317
+    Domain: Client
+    TagComponent:
+      Tag: GolfBall_14
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [-0.601, 0.0214, -0.338]
+      Rotation: [0, 0, 0]
+      Scale: [0.0427, 0.0427, 0.0427]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 10758258179628656150
+      Visible: true
+    MujocoSphereColliderComponent:
+      Density: 1130
+      Radius: 0.5
+      Friction: [1, 0.1, 0.01]
+      Contype: 1
+      Conaffinity: 1
+      Condim: -1
+    MujocoJointComponent:
+      Type: "\x00"
+      Position: [0, 0, 0]
+      Axis: [0, 1, 0]
+      Limited: false
+      LimitMin: -3.14159
+      LimitMax: 3.14159
+      LimitSolref: [0.02, 1]
+      LimitSolimp: [0.9, 0.95, 0.001]
+      Stiffness: 0
+      Damping: 0.001
+      Armature: 0
+      FrictionLoss: 0
+      SpringRef: 0
+      JointId: -1
 SceneAudio:
   MasterReverb:
     Pre-delay: 0

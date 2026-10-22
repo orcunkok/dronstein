@@ -92,6 +92,12 @@ Assets:
   - Handle: 9336840270714000039
     FilePath: Scripts/Binaries/Dronstein.runtimeconfig.json
     Type: Motion
+  - Handle: 9346834634786424791
+    FilePath: Meshes/Default/Sphere.hsmesh
+    Type: StaticMesh
+  - Handle: 10758258179628656150
+    FilePath: Materials/GolfBall_Material.hmaterial
+    Type: Material
   - Handle: 11098384622743558023
     FilePath: Robots/Dronstein/assets/Moving_Jaw_Collision_3.stl
     Type: MeshSource
