@@ -1,5 +1,5 @@
 # Xbox controller bindings for DroneTeleop. Read when Play starts: edit, save, press Play again.
-# The keyboard keeps working alongside the controller.
+# The only keyboard key is Y (fly to the next waypoint); everything else is on the controller.
 #
 # Numbers are axes (as Lucky reports this Xbox controller): 0 left stick X, 1 left stick Y, 2 left trigger,
 #   3 right stick X, 4 right stick Y, 5 right trigger. Triggers rest at -1.
@@ -18,7 +18,7 @@ up           = 5             # right trigger
 down         = 2             # left trigger
 turn_left    = LeftBumper
 turn_right   = RightBumper
-precise      = b7            # Menu button: quarter speed on/off (Space on the keyboard is hold)
+precise      = b7            # Menu button: quarter speed on/off
 deadzone     = 0.15          # stick values below this count as 0
 
 # Arm
@@ -30,6 +30,6 @@ select_wrist    = B          # wrist_flex
 roll_wrist      = A          # switch right stick left/right between shoulder_pan and wrist_roll
 gripper_open    = DPadUp
 gripper_close   = DPadDown
-deploy          = b6         # View button: deploy / stow the arm, like G
+deploy          = b6         # View button: deploy / stow the arm
 
 log_axes = true

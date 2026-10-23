@@ -20,6 +20,9 @@ Assets:
   - Handle: 3264147442041258245
     FilePath: ContentVault/Robots/SO100Pod/assets/Base.stl
     Type: MeshSource
+  - Handle: 3305475453455772458
+    FilePath: Materials/Basket_Material.hmaterial
+    Type: Material
   - Handle: 3315891427435622427
     FilePath: Robots/Dronstein/assets/Fixed_Jaw.stl
     Type: MeshSource
@@ -65,6 +68,9 @@ Assets:
   - Handle: 6516942821035690005
     FilePath: Robots/Dronstein/assets/Fixed_Jaw_Motor.stl
     Type: MeshSource
+  - Handle: 6603741007388352152
+    FilePath: Materials/Basket_Wall_NZ_Material.hmaterial
+    Type: Material
   - Handle: 6658235089502020210
     FilePath: Materials/GripDot_Material.hmaterial
     Type: Material
@@ -110,6 +116,9 @@ Assets:
   - Handle: 11504851588609515709
     FilePath: ContentVault/Robots/SO100Pod/assets/Rotation_Pitch_Motor.stl
     Type: MeshSource
+  - Handle: 11598156375833495890
+    FilePath: Materials/Basket_Floor_Material.hmaterial
+    Type: Material
   - Handle: 11601745531691717097
     FilePath: ContentVault/Robots/SO100Pod/assets/Moving_Jaw.stl
     Type: MeshSource
@@ -119,6 +128,12 @@ Assets:
   - Handle: 11759305556908677780
     FilePath: ContentVault/Robots/SO100Pod/assets/Wrist_Pitch_Roll.stl
     Type: MeshSource
+  - Handle: 11849831870074559209
+    FilePath: Materials/Basket_Wall_NX_Material.hmaterial
+    Type: Material
+  - Handle: 12187693992841018117
+    FilePath: Materials/Basket_Wall_PZ_Material.hmaterial
+    Type: Material
   - Handle: 12313441907476270996
     FilePath: ContentVault/Robots/SO100Pod/assets/Rotation_Pitch.stl
     Type: MeshSource
@@ -128,6 +143,9 @@ Assets:
   - Handle: 12735024957806826396
     FilePath: Robots/Dronstein/assets/Moving_Jaw_Collision_2.stl
     Type: MeshSource
+  - Handle: 12809904094814706185
+    FilePath: Materials/Basket_Wall_PX_Material.hmaterial
+    Type: Material
   - Handle: 12882093462498960904
     FilePath: Scenes/Main.hscene
     Type: Scene
