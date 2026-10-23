@@ -1038,10 +1038,26 @@ Entities:
           Name: KpPos
           Type: Float
           Value: 2
-        - ID: 3194258951
-          Name: KdPos
+        - ID: 1592154761
+          Name: MaxSpeed
           Type: Float
-          Value: 2.5
+          Value: 5
+        - ID: 4194242218
+          Name: BrakeAcc
+          Type: Float
+          Value: 2
+        - ID: 3378629800
+          Name: KpVel
+          Type: Float
+          Value: 6
+        - ID: 1427675376
+          Name: KiPos
+          Type: Float
+          Value: 8
+        - ID: 3375901921
+          Name: IntegralRange
+          Type: Float
+          Value: 0.3
         - ID: 3642655048
           Name: MaxTiltAcc
           Type: Float
@@ -1049,11 +1065,11 @@ Entities:
         - ID: 2127192604
           Name: KpAtt
           Type: Float
-          Value: 3
+          Value: 10
         - ID: 1922690992
           Name: KdAtt
           Type: Float
-          Value: 0.6
+          Value: 1.5
     MujocoSceneComponent:
       MujocoScene: 2871429880033931469
   - Entity: 7877977864254300973

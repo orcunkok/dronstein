@@ -12,7 +12,7 @@ namespace Dronstein
 	///   J/L turn the arm   1 switches J/L to rolling the wrist and back
 	///   2-5 pick shoulder/elbow/wrist/gripper   I/K move it
 	///
-	/// The keys move a target point; a PD controller tilts the drone towards it.
+	/// The keys move a target point; a cascaded PID (position -> velocity -> tilt) flies the drone to it.
 	/// All math is in MuJoCo's frame (z up), straight from qpos/qvel.
 	/// </summary>
 	public class DroneTeleop : Entity
@@ -22,9 +22,12 @@ namespace Dronstein
 		public float ArmSpeed = 1.0f;   // rad/s
 		public float PreciseScale = 0.25f;  // speed factor while Space is held
 
-		public float KpPos = 2.0f, KdPos = 2.5f;  // position loop
-		public float MaxTiltAcc = 4.0f;           // m/s^2, caps horizontal acceleration (~22 deg tilt)
-		public float KpAtt = 3.0f, KdAtt = 0.6f;  // attitude loop
+		// Position loop: error -> desired velocity, capped by MaxSpeed and by what BrakeAcc can stop in time.
+		public float KpPos = 2.0f, MaxSpeed = 5.0f, BrakeAcc = 2.0f;
+		// Velocity loop + integral of the position error (cancels steady offsets, e.g. from the rough COM below).
+		public float KpVel = 6.0f, KiPos = 8.0f, IntegralRange = 0.3f;  // integrate only within IntegralRange m
+		public float MaxTiltAcc = 4.0f;            // m/s^2, caps horizontal acceleration (~22 deg tilt)
+		public float KpAtt = 10.0f, KdAtt = 1.5f;  // attitude loop
 
 		static readonly string[] Motors = { "thrust1", "thrust2", "thrust3", "thrust4" };
 		static readonly string[] ArmJoints = { "shoulder_pan", "shoulder_lift", "elbow_flex", "wrist_flex", "wrist_roll", "gripper" };
@@ -46,6 +49,7 @@ namespace Dronstein
 		Vector3 m_CameraOffset;
 
 		Vector3 m_Target, m_TargetVel;  // the point the drone chases, and how fast the keys move it
+		Vector3 m_ErrorIntegral;
 		float m_Yaw;
 		int m_Waypoint = -1;
 		bool m_RollWrist;  // J/L: false = turn the arm, true = roll the wrist
@@ -148,7 +152,7 @@ namespace Dronstein
 		// OnPhysicsUpdate doesn't fire for MuJoCo robots, so this runs every frame from OnUpdate.
 		void Control(float dt)
 		{
-			float[] thrust = MotorThrusts();
+			float[] thrust = MotorThrusts(dt);
 			for (int i = 0; i < 4; i++) m_Motors[i].Value = thrust[i];
 			for (int i = 0; i < 6; i++) m_Arm[i].Value = m_ArmTarget[i];
 
@@ -156,12 +160,12 @@ namespace Dronstein
 			if (m_LogTimer > 1f)
 			{
 				m_LogTimer = 0f;
-				Log.Info($"DroneTeleop: pos=({m_Qpos[0]:F2}, {m_Qpos[1]:F2}, {m_Qpos[2]:F2}) target=({m_Target.X:F2}, {m_Target.Y:F2}, {m_Target.Z:F2}) thrust=[{thrust[0]:F1} {thrust[1]:F1} {thrust[2]:F1} {thrust[3]:F1}]");
+				Log.Info($"DroneTeleop: pos=({m_Qpos[0]:F3}, {m_Qpos[1]:F3}, {m_Qpos[2]:F3}) target=({m_Target.X:F2}, {m_Target.Y:F2}, {m_Target.Z:F2}) thrust=[{thrust[0]:F1} {thrust[1]:F1} {thrust[2]:F1} {thrust[3]:F1}]");
 			}
 		}
 
-		/// <summary>Port of the Python PD controller: target point + yaw -> 4 rotor thrusts in newtons.</summary>
-		float[] MotorThrusts()
+		/// <summary>Cascaded PID: target point + yaw -> 4 rotor thrusts in newtons.</summary>
+		float[] MotorThrusts(float dt)
 		{
 			m_Mj.GetFullQpos(m_Qpos);
 			m_Mj.GetFullQvel(m_Qvel);
@@ -183,12 +187,17 @@ namespace Dronstein
 			}
 			com = com * (1f / mass);
 
-			// Position loop: desired force in world frame.
-			// Damping against the target's velocity, not zero, so the drone keeps up with a moving target
-			// instead of trailing it and flying on after the keys are released.
-			Vector3 acc = (m_Target - pos) * KpPos + (m_TargetVel - vel) * KdPos;
-			acc.X = Math.Clamp(acc.X, -MaxTiltAcc, MaxTiltAcc);
-			acc.Y = Math.Clamp(acc.Y, -MaxTiltAcc, MaxTiltAcc);
+			// Position loop: fly at a speed we can still brake from (sqrt profile), plus the keys' velocity.
+			Vector3 err = m_Target - pos;
+			float dist = err.Length();
+			float speed = MathF.Min(MathF.Min(KpPos * dist, MathF.Sqrt(2f * BrakeAcc * dist)), MaxSpeed);
+			Vector3 velTarget = (dist > 1e-6f ? err * (speed / dist) : Vector3.Zero) + m_TargetVel;
+			if (dist < IntegralRange) m_ErrorIntegral += err * dt;
+
+			// Velocity loop: desired acceleration in world frame, horizontal part capped by the tilt limit.
+			Vector3 acc = (velTarget - vel) * KpVel + m_ErrorIntegral * KiPos;
+			float horiz = MathF.Sqrt(acc.X * acc.X + acc.Y * acc.Y);
+			if (horiz > MaxTiltAcc) { acc.X *= MaxTiltAcc / horiz; acc.Y *= MaxTiltAcc / horiz; }
 			Vector3 force = (acc + new Vector3(0f, 0f, 9.81f)) * mass;
 			float totalThrust = force.X * R[0, 2] + force.Y * R[1, 2] + force.Z * R[2, 2];
 
