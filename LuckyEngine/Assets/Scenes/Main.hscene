@@ -1035,6 +1035,22 @@ Entities:
       Scale: [1, 1, 1]
     MujocoSiteComponent:
       ID: 0
+  - Entity: 7409961345726181783
+    Domain: Client
+    TagComponent:
+      Tag: CenterDot
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0.002, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.03, 0.002, 0.03]
+    StaticMeshComponent:
+      AssetID: 16102727838158965090
+      MaterialTable:
+        0: 12908204590787040828
+      Visible: true
   - Entity: 7415845242456121480
     Domain: Client
     TagComponent:

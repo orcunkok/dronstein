@@ -44,7 +44,7 @@ namespace Dronstein
 		float[] m_ArmLow = new float[6], m_ArmHigh = new float[6];
 		uint m_Drone, m_GraspSite;
 		float[] m_Qpos, m_Qvel;
-		Entity m_Camera, m_Body, m_GripDot;
+		Entity m_Camera, m_Body, m_GripDot, m_CenterDot;
 		Vector3 m_CameraOffset;
 
 		// Flight
@@ -96,6 +96,8 @@ namespace Dronstein
 			m_CameraOffset = m_Camera.Translation - m_Body.Translation;
 			// Red dot on the ground straight below the gripper.
 			m_GripDot = FindEntityByTag("GripDot");
+			// Green dot on the ground straight below the drone's center.
+			m_CenterDot = FindEntityByTag("CenterDot");
 			m_GraspSite = m_Mj.GetSiteID("grasp_site");
 
 			Log.Info($"DroneTeleop: start at {m_Target}, nq={m_Mj.ModelNq} nu={m_Mj.ModelNu}");
@@ -124,6 +126,7 @@ namespace Dronstein
 			m_Camera.Translation = m_Body.Translation + m_CameraOffset;
 			Vector3 grasp = m_Mj.GetSitePositionMj(m_GraspSite);  // MuJoCo (x, y) on the ground is Lucky (x, -z)
 			m_GripDot.Translation = new Vector3(grasp.X, m_GripDot.Translation.Y, -grasp.Y);
+			m_CenterDot.Translation = new Vector3(m_Body.Translation.X, m_CenterDot.Translation.Y, m_Body.Translation.Z);
 			LogStatus(dt, thrust);
 		}
 
