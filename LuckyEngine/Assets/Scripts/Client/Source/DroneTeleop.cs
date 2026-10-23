@@ -8,7 +8,8 @@ namespace Dronstein
 	/// <summary>
 	/// Fly the Skydio X2 and move its SO-100 arm with an Xbox controller.
 	/// The bindings are in ControllerBindings.txt in the project folder.
-	/// The only key is Y: fly to the next corner of the test square (blue dots on the ground), for tuning.
+	/// Keys: Y flies to the next corner of the test square (blue dots on the ground), for tuning;
+	/// F switches the camera between the drone and the gripper. Drag with the mouse to orbit the camera, W/S zoom in/out.
 	/// Attach to the entity that holds dronstein.xml (its MujocoScene).
 	///
 	/// The sticks move a target point; a cascaded PID (position -> velocity -> tilt) flies the drone to it.
@@ -20,6 +21,9 @@ namespace Dronstein
 		public float TurnSpeed = 1.0f;  // rad/s
 		public float ArmSpeed = 1.0f;   // rad/s
 		public float PreciseScale = 0.25f;  // speed factor in precise mode
+		public float OrbitSpeed = 0.005f;   // rad per pixel of mouse drag
+		public float GripperViewDistance = 1.0f;  // m, camera distance when it looks at the gripper
+		public float ZoomSpeed = 1.5f;      // m/s while W or S is held
 
 		// Position loop: error -> desired velocity, capped by MaxSpeed and by what BrakeAcc can stop in time.
 		public float KpPos = 2.0f, MaxSpeed = 5.0f, BrakeAcc = 2.0f;
@@ -45,7 +49,10 @@ namespace Dronstein
 		uint m_Drone, m_GraspSite;
 		float[] m_Qpos, m_Qvel;
 		Entity m_Camera, m_Body, m_GripDot, m_CenterDot;
-		Vector3 m_CameraOffset;
+		// Orbit camera: the camera sits on a sphere around the drone (or the gripper) and looks at its center.
+		float m_OrbitYaw, m_OrbitPitch, m_OrbitDistance;
+		bool m_WatchGripper;
+		Vector2 m_LastMouse;
 
 		// Flight
 		Vector3 m_Target;                  // the point the drone chases
@@ -90,10 +97,13 @@ namespace Dronstein
 
 			m_Mj.GetFullQpos(m_Qpos);
 			m_Target = new Vector3(m_Qpos[0], m_Qpos[1], m_Qpos[2] + 0.5f);  // take off 0.5 m
-			// Chase camera: keep the scene camera at its authored offset from the drone.
+			// Orbit camera: start from the scene camera's authored offset from the drone.
 			m_Camera = FindEntityByTag("Camera");
 			m_Body = FindEntityByTag("x2");
-			m_CameraOffset = m_Camera.Translation - m_Body.Translation;
+			Vector3 offset = m_Camera.Translation - m_Body.Translation;
+			m_OrbitDistance = offset.Length();
+			m_OrbitYaw = MathF.Atan2(offset.X, offset.Z);
+			m_OrbitPitch = MathF.Asin(offset.Y / m_OrbitDistance);
 			// Red dot on the ground straight below the gripper.
 			m_GripDot = FindEntityByTag("GripDot");
 			// Green dot on the ground straight below the drone's center.
@@ -123,11 +133,39 @@ namespace Dronstein
 			for (int i = 0; i < 4; i++) m_Motors[i].Value = thrust[i];
 			for (int i = 0; i < 6; i++) m_Arm[i].Value = m_ArmTarget[i];
 
-			m_Camera.Translation = m_Body.Translation + m_CameraOffset;
 			Vector3 grasp = m_Mj.GetSitePositionMj(m_GraspSite);  // MuJoCo (x, y) on the ground is Lucky (x, -z)
+			OrbitCamera(dt, new Vector3(grasp.X, grasp.Z, -grasp.Y));
 			m_GripDot.Translation = new Vector3(grasp.X, m_GripDot.Translation.Y, -grasp.Y);
 			m_CenterDot.Translation = new Vector3(m_Body.Translation.X, m_CenterDot.Translation.Y, m_Body.Translation.Z);
 			LogStatus(dt, thrust);
+		}
+
+		// Drag with the left or right mouse button to orbit, W/S to zoom; F switches between the drone and the gripper.
+		void OrbitCamera(float dt, Vector3 gripper)
+		{
+			if (Input.IsKeyPressed(KeyCode.F))
+			{
+				m_WatchGripper = !m_WatchGripper;
+				Log.Info($"Camera: {(m_WatchGripper ? "gripper" : "drone")}");
+			}
+			Vector2 mouse = Input.GetMousePosition();
+			if (Input.IsMouseButtonDown(MouseButton.Left) || Input.IsMouseButtonDown(MouseButton.Right))
+			{
+				m_OrbitYaw -= (mouse.X - m_LastMouse.X) * OrbitSpeed;
+				m_OrbitPitch = Math.Clamp(m_OrbitPitch + (mouse.Y - m_LastMouse.Y) * OrbitSpeed, -1.4f, 1.4f);
+			}
+			m_LastMouse = mouse;
+
+			// Each view keeps its own zoom.
+			float zoom = ((Input.IsKeyDown(KeyCode.S) ? 1f : 0f) - (Input.IsKeyDown(KeyCode.W) ? 1f : 0f)) * ZoomSpeed * dt;
+			if (m_WatchGripper) GripperViewDistance = Math.Clamp(GripperViewDistance + zoom, 0.3f, 20f);
+			else m_OrbitDistance = Math.Clamp(m_OrbitDistance + zoom, 0.3f, 20f);
+
+			Vector3 center = m_WatchGripper ? gripper : m_Body.Translation;
+			float dist = m_WatchGripper ? GripperViewDistance : m_OrbitDistance;
+			var dir = new Vector3(MathF.Sin(m_OrbitYaw) * MathF.Cos(m_OrbitPitch), MathF.Sin(m_OrbitPitch), MathF.Cos(m_OrbitYaw) * MathF.Cos(m_OrbitPitch));
+			m_Camera.Translation = center + dir * dist;
+			m_Camera.Rotation = new Vector3(-m_OrbitPitch, m_OrbitYaw, 0f);  // the camera looks down its -z, so this faces the center
 		}
 
 		// Left stick, triggers and bumpers move the target point and heading; Y jumps it to the next waypoint.
