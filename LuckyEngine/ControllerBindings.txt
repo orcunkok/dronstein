@@ -1,5 +1,5 @@
 # Xbox controller bindings for DroneTeleop. Read when Play starts: edit, save, press Play again.
-# The only keyboard key is Y (fly to the next waypoint); everything else is on the controller.
+# Everything here is on the controller. Fixed keys: Y next test-square waypoint, F camera on drone/gripper, W/S zoom, right mouse drag orbits.
 #
 # Numbers are axes (as Lucky reports this Xbox controller): 0 left stick X, 1 left stick Y, 2 left trigger,
 #   3 right stick X, 4 right stick Y, 5 right trigger. Triggers rest at -1.
@@ -32,4 +32,4 @@ gripper_open    = DPadUp
 gripper_close   = DPadDown
 deploy          = b6         # View button: deploy / stow the arm
 
-log_axes = true
+log_axes = false
