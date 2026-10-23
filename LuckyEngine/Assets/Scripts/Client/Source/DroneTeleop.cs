@@ -32,6 +32,7 @@ namespace Dronstein
 		public float KpPos = 2.0f, MaxSpeed = 5.0f, BrakeAcc = 2.0f;
 		// Velocity loop + integral of the position error (cancels steady offsets, e.g. from the rough COM below).
 		public float KpVel = 6.0f, KiPos = 8.0f, IntegralRange = 0.3f;  // integrate only within IntegralRange m
+		public float StickSmooth = 3.5f;           // 1/s, how quickly stick/key speed builds up and dies down (higher = snappier, more tilt)
 		public float MaxTiltAcc = 4.0f;            // m/s^2, caps horizontal acceleration (~22 deg tilt)
 		public float KpAtt = 10.0f, KdAtt = 1.5f;  // attitude loop
 
@@ -58,6 +59,7 @@ namespace Dronstein
 		Vector3 m_CameraOffset;
 
 		Vector3 m_Target, m_TargetVel;  // the point the drone chases, and how fast the keys move it
+		Vector3 m_TargetAcc;            // m_TargetVel change per second, fed forward
 		Vector3 m_ErrorIntegral;
 		float m_Yaw = MathF.PI;  // heading of the nose; the X2 spawns with its nose (camera, body -x) along world -x
 		int m_Waypoint = -1;
@@ -102,7 +104,7 @@ namespace Dronstein
 			LoadBindings();
 		}
 
-		float m_LogTimer;
+		float m_LogTimer, m_MaxTilt;
 
 		protected override void OnUpdate(float dt)
 		{
@@ -117,7 +119,7 @@ namespace Dronstein
 			}
 			float scale = Input.IsKeyDown(KeyCode.Space) || m_PadPrecise ? PreciseScale : 1f;
 			float move = MoveSpeed * scale, turnSpeed = TurnSpeed * scale, armSpeed = ArmSpeed * scale;
-			m_TargetVel = Vector3.Zero;
+			Vector3 wantVel = Vector3.Zero;
 			if (Input.IsKeyPressed(KeyCode.F))
 			{
 				m_FlyOnIJKL = !m_FlyOnIJKL;
@@ -125,18 +127,21 @@ namespace Dronstein
 			}
 			if (m_FlyOnIJKL)
 			{
-				if (Input.IsKeyDown(KeyCode.I)) m_TargetVel += forward * move;
-				if (Input.IsKeyDown(KeyCode.K)) m_TargetVel -= forward * move;
-				if (Input.IsKeyDown(KeyCode.J)) m_TargetVel += left * move;
-				if (Input.IsKeyDown(KeyCode.L)) m_TargetVel -= left * move;
+				if (Input.IsKeyDown(KeyCode.I)) wantVel += forward * move;
+				if (Input.IsKeyDown(KeyCode.K)) wantVel -= forward * move;
+				if (Input.IsKeyDown(KeyCode.J)) wantVel += left * move;
+				if (Input.IsKeyDown(KeyCode.L)) wantVel -= left * move;
 			}
-			if (Input.IsKeyDown(KeyCode.N)) m_TargetVel.Z += move;
-			if (Input.IsKeyDown(KeyCode.M)) m_TargetVel.Z -= move;
+			if (Input.IsKeyDown(KeyCode.N)) wantVel.Z += move;
+			if (Input.IsKeyDown(KeyCode.M)) wantVel.Z -= move;
 			if (Input.IsKeyDown(KeyCode.U)) m_Yaw += turnSpeed * dt;
 			if (Input.IsKeyDown(KeyCode.O)) m_Yaw -= turnSpeed * dt;
-			m_TargetVel += (forward * Axis("forward_back") + left * Axis("left_right")) * move;
-			m_TargetVel.Z += ((Held("up") ? 1f : 0f) - (Held("down") ? 1f : 0f)) * move;
+			wantVel += (forward * Axis("forward_back") + left * Axis("left_right")) * move;
+			wantVel.Z += ((Held("up") ? 1f : 0f) - (Held("down") ? 1f : 0f)) * move;
 			m_Yaw += ((Held("turn_left") ? 1f : 0f) - (Held("turn_right") ? 1f : 0f)) * turnSpeed * dt;
+			// Ease the speed in and out (critically damped), so acceleration and tilt rise and fall smoothly.
+			m_TargetAcc += ((wantVel - m_TargetVel) * (StickSmooth * StickSmooth) - m_TargetAcc * (2f * StickSmooth)) * dt;
+			m_TargetVel += m_TargetAcc * dt;
 			m_Target += m_TargetVel * dt;
 			if (Input.IsKeyPressed(KeyCode.Y))
 			{
@@ -278,7 +283,6 @@ namespace Dronstein
 			m_LogTimer += dt;
 			if (m_LogTimer > 1f)
 			{
-				m_LogTimer = 0f;
 				if (m_Pad >= 0 && m_Bindings.GetValueOrDefault("log_axes") == "true")
 				{
 					var axes = new float[6];
@@ -290,7 +294,8 @@ namespace Dronstein
 						if (Input.IsControllerButtonDown(m_Pad, button) && !held.Contains(button.ToString())) held.Add(button.ToString());
 					Log.Info($"Controller '{Input.GetControllerName(m_Pad)}': axes [{string.Join(" ", Array.ConvertAll(axes, v => v.ToString("F2")))}] held [{string.Join(" ", held)}]");
 				}
-				Log.Info($"DroneTeleop: pos=({m_Qpos[0]:F3}, {m_Qpos[1]:F3}, {m_Qpos[2]:F3}) target=({m_Target.X:F2}, {m_Target.Y:F2}, {m_Target.Z:F2}) thrust=[{thrust[0]:F1} {thrust[1]:F1} {thrust[2]:F1} {thrust[3]:F1}]");
+				Log.Info($"DroneTeleop: pos=({m_Qpos[0]:F3}, {m_Qpos[1]:F3}, {m_Qpos[2]:F3}) target=({m_Target.X:F2}, {m_Target.Y:F2}, {m_Target.Z:F2}) thrust=[{thrust[0]:F1} {thrust[1]:F1} {thrust[2]:F1} {thrust[3]:F1}] maxTilt={m_MaxTilt:F0}deg");
+				m_LogTimer = 0f; m_MaxTilt = 0f;
 			}
 		}
 
@@ -325,10 +330,11 @@ namespace Dronstein
 			if (dist < IntegralRange) m_ErrorIntegral += err * dt;
 
 			// Velocity loop: desired acceleration in world frame, horizontal part capped by the tilt limit.
-			Vector3 acc = (velTarget - vel) * KpVel + m_ErrorIntegral * KiPos;
+			Vector3 acc = (velTarget - vel) * KpVel + m_ErrorIntegral * KiPos + m_TargetAcc;
 			float horiz = MathF.Sqrt(acc.X * acc.X + acc.Y * acc.Y);
 			if (horiz > MaxTiltAcc) { acc.X *= MaxTiltAcc / horiz; acc.Y *= MaxTiltAcc / horiz; }
 			Vector3 force = (acc + new Vector3(0f, 0f, 9.81f)) * mass;
+			m_MaxTilt = MathF.Max(m_MaxTilt, MathF.Acos(Math.Clamp(R[2, 2], -1f, 1f)) * 180f / MathF.PI);
 			float totalThrust = force.X * R[0, 2] + force.Y * R[1, 2] + force.Z * R[2, 2];
 
 			// Desired orientation: body z along the force, nose pointing at m_Yaw.
