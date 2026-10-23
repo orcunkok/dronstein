@@ -1,0 +1,35 @@
+# Xbox controller bindings for DroneTeleop. Read when Play starts: edit, save, press Play again.
+# The keyboard keeps working alongside the controller.
+#
+# Numbers are axes (as Lucky reports this Xbox controller): 0 left stick X, 1 left stick Y, 2 left trigger,
+#   3 right stick X, 4 right stick Y, 5 right trigger. Triggers rest at -1.
+#   A minus flips the direction (pushing a stick up or left reads negative), e.g. -1.
+#   Where an action is on/off (up, down, turn, gripper), an axis counts when pushed past halfway.
+# Names are buttons: A B X Y LeftBumper RightBumper Start Guide LeftJoystick RightJoystick DPadUp DPadDown DPadLeft DPadRight
+# bN is raw button number N, for buttons without a name (Lucky has none for View, the small button left of Xbox).
+#   Standard Xbox numbers: b6 View, b7 Menu, b8 Xbox button.
+# If something is on the wrong stick or button, set log_axes = true: the log then prints every axis and
+# the buttons held (raw numbers and names), once a second, in /tmp/LuckyEngine/Logs/APP.log.
+
+# Drone
+forward_back = -1            # left stick up/down (analog)
+left_right   = -0            # left stick left/right (analog)
+up           = 5             # right trigger
+down         = 2             # left trigger
+turn_left    = LeftBumper
+turn_right   = RightBumper
+precise      = b7            # Menu button: quarter speed on/off (Space on the keyboard is hold)
+deadzone     = 0.15          # stick values below this count as 0
+
+# Arm
+arm_turn        = -3         # right stick left/right: shoulder_pan, or wrist_roll after roll_wrist (analog)
+arm_joint       = -4         # right stick up/down: the selected joint (analog)
+select_shoulder = X          # shoulder_lift on the right stick up/down
+select_elbow    = Y          # elbow_flex
+select_wrist    = B          # wrist_flex
+roll_wrist      = A          # switch right stick left/right between shoulder_pan and wrist_roll
+gripper_open    = DPadUp
+gripper_close   = DPadDown
+deploy          = b6         # View button: deploy / stow the arm, like G
+
+log_axes = true

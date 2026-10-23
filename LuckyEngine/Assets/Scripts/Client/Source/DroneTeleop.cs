@@ -1,16 +1,22 @@
 using System;
+using System.Collections.Generic;
+using System.IO;
 using Hazel;
 
 namespace Dronstein
 {
 	/// <summary>
-	/// Fly the Skydio X2 and move its SO-100 arm from the keyboard.
+	/// Fly the Skydio X2 and move its SO-100 arm from the keyboard or an Xbox controller.
+	/// Controller bindings are in ControllerBindings.txt in the project folder.
 	/// Attach to the entity that holds dronstein.xml (its MujocoScene).
 	///
-	///   W/S forward/back   A/D left/right   LeftShift/LeftControl up/down   Q/E turn   hold Space: slow, precise
+	///   No WASD/QE/Shift/Ctrl: the editor's free camera uses those.
+	///   N/M up/down   U/O turn (always, in both modes)
+	///   F switches IJKL between the arm and the drone
+	///   Drone: I/K forward/back   J/L left/right
+	///   Arm:   J/L turn the arm (1 switches J/L to rolling the wrist and back)   2-5 pick shoulder/elbow/wrist/gripper   I/K move it
+	///   G deploys the arm (gripper straight down) or stows it again   hold Space: slow, precise
 	///   Y fly to the next corner of the test square (blue dots on the ground), for tuning
-	///   J/L turn the arm   1 switches J/L to rolling the wrist and back
-	///   2-5 pick shoulder/elbow/wrist/gripper   I/K move it
 	///
 	/// The keys move a target point; a cascaded PID (position -> velocity -> tilt) flies the drone to it.
 	/// All math is in MuJoCo's frame (z up), straight from qpos/qvel.
@@ -39,7 +45,10 @@ namespace Dronstein
 		MujocoSceneComponent m_Mj;
 		MujocoActuator[] m_Motors = new MujocoActuator[4];
 		MujocoActuator[] m_Arm = new MujocoActuator[6];
-		float[] m_ArmTarget = { 0f, -3.32f, 3.11f, 1.18f, 0f, -0.174f };  // the arm's "rest" pose: folded up
+		static readonly float[] Stowed = { 0f, -3.32f, 3.11f, 1.18f, 0f };   // arm folded up (gripper left as is)
+		static readonly float[] Deployed = { 0f, -2.05f, 0.38f, 0f, 0f };    // gripper pointing down, 0.53 m below
+		float[] m_ArmTarget = { 0f, -3.32f, 3.11f, 1.18f, 0f, -0.174f };
+		float[] m_ArmGoal;  // pose the arm is moving to after G, null when the keys drive it
 		float[] m_ArmLow = new float[6], m_ArmHigh = new float[6];
 		uint m_Drone;
 		float[] m_Qpos, m_Qvel;
@@ -50,10 +59,15 @@ namespace Dronstein
 
 		Vector3 m_Target, m_TargetVel;  // the point the drone chases, and how fast the keys move it
 		Vector3 m_ErrorIntegral;
-		float m_Yaw;
+		float m_Yaw = MathF.PI;  // heading of the nose; the X2 spawns with its nose (camera, body -x) along world -x
 		int m_Waypoint = -1;
 		bool m_RollWrist;  // J/L: false = turn the arm, true = roll the wrist
+		bool m_FlyOnIJKL;  // F: IJKL fly the drone instead of moving the arm
+		bool m_Deployed;
 		int m_Joint = 1;   // the arm joint on I/K
+		Dictionary<string, string> m_Bindings = new();  // ControllerBindings.txt: name -> axis or button
+		int m_Pad = -1;    // controller ID, -1 when none is connected
+		bool m_PadPrecise; // precise mode switched on from the controller
 
 		protected override void OnCreate()
 		{
@@ -85,6 +99,7 @@ namespace Dronstein
 			m_GraspSite = m_Mj.GetSiteID("grasp_site");
 
 			Log.Info($"DroneTeleop: start at {m_Target}, nq={m_Mj.ModelNq} nu={m_Mj.ModelNu}");
+			LoadBindings();
 		}
 
 		float m_LogTimer;
@@ -93,18 +108,36 @@ namespace Dronstein
 		{
 			var forward = new Vector3(MathF.Cos(m_Yaw), MathF.Sin(m_Yaw), 0f);
 			var left = new Vector3(-MathF.Sin(m_Yaw), MathF.Cos(m_Yaw), 0f);
-			float scale = Input.IsKeyDown(KeyCode.Space) ? PreciseScale : 1f;
+			int[] pads = Input.GetConnectedControllerIDs();
+			m_Pad = pads.Length > 0 ? pads[0] : -1;
+			if (Pressed("precise"))
+			{
+				m_PadPrecise = !m_PadPrecise;
+				Log.Info($"Precise mode: {(m_PadPrecise ? "on" : "off")}");
+			}
+			float scale = Input.IsKeyDown(KeyCode.Space) || m_PadPrecise ? PreciseScale : 1f;
 			float move = MoveSpeed * scale, turnSpeed = TurnSpeed * scale, armSpeed = ArmSpeed * scale;
 			m_TargetVel = Vector3.Zero;
-			if (Input.IsKeyDown(KeyCode.W)) m_TargetVel += forward * move;
-			if (Input.IsKeyDown(KeyCode.S)) m_TargetVel -= forward * move;
-			if (Input.IsKeyDown(KeyCode.A)) m_TargetVel += left * move;
-			if (Input.IsKeyDown(KeyCode.D)) m_TargetVel -= left * move;
-			if (Input.IsKeyDown(KeyCode.LeftShift)) m_TargetVel.Z += move;
-			if (Input.IsKeyDown(KeyCode.LeftControl)) m_TargetVel.Z -= move;
+			if (Input.IsKeyPressed(KeyCode.F))
+			{
+				m_FlyOnIJKL = !m_FlyOnIJKL;
+				Log.Info($"IJKL: {(m_FlyOnIJKL ? "drone" : "arm")}");
+			}
+			if (m_FlyOnIJKL)
+			{
+				if (Input.IsKeyDown(KeyCode.I)) m_TargetVel += forward * move;
+				if (Input.IsKeyDown(KeyCode.K)) m_TargetVel -= forward * move;
+				if (Input.IsKeyDown(KeyCode.J)) m_TargetVel += left * move;
+				if (Input.IsKeyDown(KeyCode.L)) m_TargetVel -= left * move;
+			}
+			if (Input.IsKeyDown(KeyCode.N)) m_TargetVel.Z += move;
+			if (Input.IsKeyDown(KeyCode.M)) m_TargetVel.Z -= move;
+			if (Input.IsKeyDown(KeyCode.U)) m_Yaw += turnSpeed * dt;
+			if (Input.IsKeyDown(KeyCode.O)) m_Yaw -= turnSpeed * dt;
+			m_TargetVel += (forward * Axis("forward_back") + left * Axis("left_right")) * move;
+			m_TargetVel.Z += ((Held("up") ? 1f : 0f) - (Held("down") ? 1f : 0f)) * move;
+			m_Yaw += ((Held("turn_left") ? 1f : 0f) - (Held("turn_right") ? 1f : 0f)) * turnSpeed * dt;
 			m_Target += m_TargetVel * dt;
-			if (Input.IsKeyDown(KeyCode.Q)) m_Yaw += turnSpeed * dt;
-			if (Input.IsKeyDown(KeyCode.E)) m_Yaw -= turnSpeed * dt;
 			if (Input.IsKeyPressed(KeyCode.Y))
 			{
 				m_Waypoint = (m_Waypoint + 1) % 4;
@@ -128,20 +161,106 @@ namespace Dronstein
 					Log.Info($"I/K: {ArmJoints[m_Joint]}");
 				}
 
-			float turn = 0f;
-			if (Input.IsKeyDown(KeyCode.J)) turn += armSpeed * dt;
-			if (Input.IsKeyDown(KeyCode.L)) turn -= armSpeed * dt;
-			MoveArmJoint(m_RollWrist ? 4 : 0, turn);
+			if (Pressed("roll_wrist"))
+			{
+				m_RollWrist = !m_RollWrist;
+				Log.Info($"Right stick left/right: {(m_RollWrist ? "wrist_roll" : "shoulder_pan")}");
+			}
+			string[] selects = { "select_shoulder", "select_elbow", "select_wrist" };
+			for (int i = 0; i < 3; i++)
+				if (Pressed(selects[i]))
+				{
+					m_Joint = i + 1;  // shoulder_lift, elbow_flex, wrist_flex
+					Log.Info($"Right stick up/down: {ArmJoints[m_Joint]}");
+				}
 
-			float armStep = 0f;
-			if (Input.IsKeyDown(KeyCode.I)) armStep += armSpeed * dt;
-			if (Input.IsKeyDown(KeyCode.K)) armStep -= armSpeed * dt;
-			MoveArmJoint(m_Joint, armStep);
+			if (Input.IsKeyPressed(KeyCode.G) || Pressed("deploy"))
+			{
+				m_Deployed = !m_Deployed;
+				m_ArmGoal = m_Deployed ? Deployed : Stowed;
+				Log.Info($"Arm: {(m_Deployed ? "deploying" : "stowing")}");
+			}
+
+			if (!m_FlyOnIJKL)
+			{
+				float turn = 0f;
+				if (Input.IsKeyDown(KeyCode.J)) turn += armSpeed * dt;
+				if (Input.IsKeyDown(KeyCode.L)) turn -= armSpeed * dt;
+				MoveArmJoint(m_RollWrist ? 4 : 0, turn);
+
+				float armStep = 0f;
+				if (Input.IsKeyDown(KeyCode.I)) armStep += armSpeed * dt;
+				if (Input.IsKeyDown(KeyCode.K)) armStep -= armSpeed * dt;
+				MoveArmJoint(m_Joint, armStep);
+				if (turn != 0f || armStep != 0f) m_ArmGoal = null;  // the keys take over from G
+			}
+			float padJoint = Axis("arm_joint"), padTurn = Axis("arm_turn");
+			float padGrip = (Held("gripper_open") ? 1f : 0f) - (Held("gripper_close") ? 1f : 0f);
+			MoveArmJoint(m_Joint, padJoint * armSpeed * dt);
+			MoveArmJoint(m_RollWrist ? 4 : 0, padTurn * armSpeed * dt);
+			MoveArmJoint(5, padGrip * armSpeed * dt);
+			if (padJoint != 0f || padTurn != 0f || padGrip != 0f) m_ArmGoal = null;
+
+			// After G, move the arm joints to the pose at ArmSpeed, so the swing doesn't knock the drone.
+			if (m_ArmGoal != null)
+			{
+				bool done = true;
+				for (int i = 0; i < m_ArmGoal.Length; i++)
+				{
+					float step = Math.Clamp(m_ArmGoal[i] - m_ArmTarget[i], -armSpeed * dt, armSpeed * dt);
+					MoveArmJoint(i, step);
+					done &= MathF.Abs(m_ArmGoal[i] - m_ArmTarget[i]) < 1e-3f;
+				}
+				if (done) m_ArmGoal = null;
+			}
 
 			Control(dt);
 			m_Camera.Translation = m_Body.Translation + m_CameraOffset;
 			Vector3 grasp = m_Mj.GetSitePositionMj(m_GraspSite);  // MuJoCo (x, y) on the ground is Lucky (x, -z)
 			m_GripDot.Translation = new Vector3(grasp.X, m_GripDot.Translation.Y, -grasp.Y);
+		}
+
+		void LoadBindings()
+		{
+			string path = Path.GetFullPath(Path.Combine(Application.DataDirectoryPath, "..", "ControllerBindings.txt"));
+			if (!File.Exists(path))
+			{
+				Log.Info($"DroneTeleop: no {path}, controller not used");
+				return;
+			}
+			foreach (string raw in File.ReadAllLines(path))
+			{
+				string line = raw.Split('#')[0].Trim();
+				int eq = line.IndexOf('=');
+				if (eq > 0) m_Bindings[line[..eq].Trim()] = line[(eq + 1)..].Trim();
+			}
+			Log.Info($"DroneTeleop: controller bindings from {path}");
+		}
+
+		// Axis bound to `name` ("-1" = axis 1 flipped), with the deadzone applied. 0 without a controller.
+		float Axis(string name)
+		{
+			if (m_Pad < 0 || !m_Bindings.TryGetValue(name, out string? b) || !int.TryParse(b.TrimStart('-'), out int axis)) return 0f;
+			float v = Input.GetControllerAxis(m_Pad, axis) * (b.StartsWith("-") ? -1f : 1f);
+			float deadzone = m_Bindings.TryGetValue("deadzone", out string? d) && float.TryParse(d, out float dz) ? dz : 0.1f;
+			return MathF.Abs(v) < deadzone ? 0f : v;
+		}
+
+		// Binding held: a button held down, or an axis (e.g. a trigger) pushed past halfway.
+		bool Held(string name)
+		{
+			if (m_Pad < 0 || !m_Bindings.TryGetValue(name, out string? b)) return false;
+			if (int.TryParse(b.TrimStart('-'), out int axis)) return Input.GetControllerAxis(m_Pad, axis) * (b.StartsWith("-") ? -1f : 1f) > 0.5f;
+			if (b.StartsWith("b") && int.TryParse(b[1..], out int raw)) return Input.IsControllerButtonDown(m_Pad, raw);
+			return Enum.TryParse(b, out GamepadButton button) && Input.IsControllerButtonDown(m_Pad, button);
+		}
+
+		// Button bound to `name` went down this frame. Numbers are axes, so they never count as buttons.
+		bool Pressed(string name)
+		{
+			if (m_Pad < 0 || !m_Bindings.TryGetValue(name, out string? b) || int.TryParse(b.TrimStart('-'), out _)) return false;
+			if (b.StartsWith("b") && int.TryParse(b[1..], out int raw)) return Input.IsControllerButtonPressed(m_Pad, raw);
+			return Enum.TryParse(b, out GamepadButton button) && Input.IsControllerButtonPressed(m_Pad, button);
 		}
 
 		void MoveArmJoint(int joint, float delta)
@@ -160,6 +279,17 @@ namespace Dronstein
 			if (m_LogTimer > 1f)
 			{
 				m_LogTimer = 0f;
+				if (m_Pad >= 0 && m_Bindings.GetValueOrDefault("log_axes") == "true")
+				{
+					var axes = new float[6];
+					for (int i = 0; i < 6; i++) axes[i] = Input.GetControllerAxis(m_Pad, i);
+					var held = new List<string>();
+					for (int i = 0; i < 16; i++)
+						if (Input.IsControllerButtonDown(m_Pad, i)) held.Add($"b{i}");
+					foreach (GamepadButton button in Enum.GetValues<GamepadButton>())
+						if (Input.IsControllerButtonDown(m_Pad, button) && !held.Contains(button.ToString())) held.Add(button.ToString());
+					Log.Info($"Controller '{Input.GetControllerName(m_Pad)}': axes [{string.Join(" ", Array.ConvertAll(axes, v => v.ToString("F2")))}] held [{string.Join(" ", held)}]");
+				}
 				Log.Info($"DroneTeleop: pos=({m_Qpos[0]:F3}, {m_Qpos[1]:F3}, {m_Qpos[2]:F3}) target=({m_Target.X:F2}, {m_Target.Y:F2}, {m_Target.Z:F2}) thrust=[{thrust[0]:F1} {thrust[1]:F1} {thrust[2]:F1} {thrust[3]:F1}]");
 			}
 		}
@@ -202,8 +332,9 @@ namespace Dronstein
 			float totalThrust = force.X * R[0, 2] + force.Y * R[1, 2] + force.Z * R[2, 2];
 
 			// Desired orientation: body z along the force, nose pointing at m_Yaw.
+			// The X2's nose (gimbal camera) is its -x side, so body +x points the opposite way.
 			Vector3 z = force.Normalized();
-			Vector3 y = Vector3.Cross(z, new Vector3(MathF.Cos(m_Yaw), MathF.Sin(m_Yaw), 0f)).Normalized();
+			Vector3 y = Vector3.Cross(z, new Vector3(-MathF.Cos(m_Yaw), -MathF.Sin(m_Yaw), 0f)).Normalized();
 			Vector3 x = Vector3.Cross(y, z);
 			float[,] Rt = { { x.X, y.X, z.X }, { x.Y, y.Y, z.Y }, { x.Z, y.Z, z.Z } };
 
