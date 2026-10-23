@@ -56,6 +56,9 @@ Assets:
   - Handle: 5503418181994813890
     FilePath: Robots/Dronstein/assets/Lower_Arm_Motor.stl
     Type: MeshSource
+  - Handle: 5985639892093096392
+    FilePath: Materials/TrashCan_Wall_Material.hmaterial
+    Type: Material
   - Handle: 6004925888757710830
     FilePath: Scripts/Intermediates/Debug/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs
     Type: ScriptFile
@@ -86,12 +89,21 @@ Assets:
   - Handle: 7924703489701603992
     FilePath: Meshes/Default/Source/Octahedron.glb
     Type: MeshSource
+  - Handle: 7935106140740169735
+    FilePath: Materials/TrashCan_Aluminum.hmaterial
+    Type: Material
   - Handle: 8137856650042923346
     FilePath: ContentVault/Robots/SO100Pod/assets/Moving_Jaw_Collision_3.stl
     Type: MeshSource
   - Handle: 8147788432871808966
     FilePath: Scripts/Binaries/Dronstein.deps.json
     Type: Motion
+  - Handle: 8675837025639280246
+    FilePath: Materials/TrashCan_Wood.hmaterial
+    Type: Material
+  - Handle: 8765580369796215293
+    FilePath: Materials/TrashCan_Floor_Material.hmaterial
+    Type: Material
   - Handle: 8935484533300629911
     FilePath: Scripts/Client/Source/DroneTeleop.cs
     Type: ScriptFile
