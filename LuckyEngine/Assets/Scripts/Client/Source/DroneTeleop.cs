@@ -7,7 +7,8 @@ namespace Dronstein
 	/// Fly the Skydio X2 and move its SO-100 arm from the keyboard.
 	/// Attach to the entity that holds dronstein.xml (its MujocoScene).
 	///
-	///   W/S forward/back   A/D left/right   LeftShift/LeftControl up/down   Q/E turn
+	///   W/S forward/back   A/D left/right   LeftShift/LeftControl up/down   Q/E turn   hold Space: slow, precise
+	///   Y fly to the next corner of the test square (blue dots on the ground), for tuning
 	///   J/L turn the arm   1 switches J/L to rolling the wrist and back
 	///   2-5 pick shoulder/elbow/wrist/gripper   I/K move it
 	///
@@ -19,6 +20,7 @@ namespace Dronstein
 		public float MoveSpeed = 1.0f;  // m/s
 		public float TurnSpeed = 1.0f;  // rad/s
 		public float ArmSpeed = 1.0f;   // rad/s
+		public float PreciseScale = 0.25f;  // speed factor while Space is held
 
 		public float KpPos = 2.0f, KdPos = 2.5f;  // position loop
 		public float MaxTiltAcc = 4.0f;           // m/s^2, caps horizontal acceleration (~22 deg tilt)
@@ -29,6 +31,7 @@ namespace Dronstein
 		// Rotor positions in the drone body frame and yaw torque per newton, from x2.xml.
 		static readonly float[,] Rotors = { { -0.14f, -0.18f, -0.0201f }, { -0.14f, 0.18f, 0.0201f }, { 0.14f, 0.18f, -0.0201f }, { 0.14f, -0.18f, 0.0201f } };
 		const float MaxThrust = 13f;
+		static readonly float[,] Waypoints = { { 10, 10 }, { 10, -10 }, { -10, -10 }, { -10, 10 } };  // (x, y), MuJoCo frame
 
 		MujocoSceneComponent m_Mj;
 		MujocoActuator[] m_Motors = new MujocoActuator[4];
@@ -42,8 +45,9 @@ namespace Dronstein
 		uint m_GraspSite;
 		Vector3 m_CameraOffset;
 
-		Vector3 m_Target;
+		Vector3 m_Target, m_TargetVel;  // the point the drone chases, and how fast the keys move it
 		float m_Yaw;
+		int m_Waypoint = -1;
 		bool m_RollWrist;  // J/L: false = turn the arm, true = roll the wrist
 		int m_Joint = 1;   // the arm joint on I/K
 
@@ -85,15 +89,25 @@ namespace Dronstein
 		{
 			var forward = new Vector3(MathF.Cos(m_Yaw), MathF.Sin(m_Yaw), 0f);
 			var left = new Vector3(-MathF.Sin(m_Yaw), MathF.Cos(m_Yaw), 0f);
-			float step = MoveSpeed * dt;
-			if (Input.IsKeyDown(KeyCode.W)) m_Target += forward * step;
-			if (Input.IsKeyDown(KeyCode.S)) m_Target -= forward * step;
-			if (Input.IsKeyDown(KeyCode.A)) m_Target += left * step;
-			if (Input.IsKeyDown(KeyCode.D)) m_Target -= left * step;
-			if (Input.IsKeyDown(KeyCode.LeftShift)) m_Target.Z += step;
-			if (Input.IsKeyDown(KeyCode.LeftControl)) m_Target.Z -= step;
-			if (Input.IsKeyDown(KeyCode.Q)) m_Yaw += TurnSpeed * dt;
-			if (Input.IsKeyDown(KeyCode.E)) m_Yaw -= TurnSpeed * dt;
+			float scale = Input.IsKeyDown(KeyCode.Space) ? PreciseScale : 1f;
+			float move = MoveSpeed * scale, turnSpeed = TurnSpeed * scale, armSpeed = ArmSpeed * scale;
+			m_TargetVel = Vector3.Zero;
+			if (Input.IsKeyDown(KeyCode.W)) m_TargetVel += forward * move;
+			if (Input.IsKeyDown(KeyCode.S)) m_TargetVel -= forward * move;
+			if (Input.IsKeyDown(KeyCode.A)) m_TargetVel += left * move;
+			if (Input.IsKeyDown(KeyCode.D)) m_TargetVel -= left * move;
+			if (Input.IsKeyDown(KeyCode.LeftShift)) m_TargetVel.Z += move;
+			if (Input.IsKeyDown(KeyCode.LeftControl)) m_TargetVel.Z -= move;
+			m_Target += m_TargetVel * dt;
+			if (Input.IsKeyDown(KeyCode.Q)) m_Yaw += turnSpeed * dt;
+			if (Input.IsKeyDown(KeyCode.E)) m_Yaw -= turnSpeed * dt;
+			if (Input.IsKeyPressed(KeyCode.Y))
+			{
+				m_Waypoint = (m_Waypoint + 1) % 4;
+				m_Target.X = Waypoints[m_Waypoint, 0];
+				m_Target.Y = Waypoints[m_Waypoint, 1];
+				Log.Info($"DroneTeleop: going to waypoint {m_Waypoint} ({m_Target.X}, {m_Target.Y})");
+			}
 
 			// Rotating joints go on J/L, the rest on I/K (arrow keys would also drive the editor).
 			if (Input.IsKeyPressed(KeyCode.D1))
@@ -111,13 +125,13 @@ namespace Dronstein
 				}
 
 			float turn = 0f;
-			if (Input.IsKeyDown(KeyCode.J)) turn += ArmSpeed * dt;
-			if (Input.IsKeyDown(KeyCode.L)) turn -= ArmSpeed * dt;
+			if (Input.IsKeyDown(KeyCode.J)) turn += armSpeed * dt;
+			if (Input.IsKeyDown(KeyCode.L)) turn -= armSpeed * dt;
 			MoveArmJoint(m_RollWrist ? 4 : 0, turn);
 
 			float armStep = 0f;
-			if (Input.IsKeyDown(KeyCode.I)) armStep += ArmSpeed * dt;
-			if (Input.IsKeyDown(KeyCode.K)) armStep -= ArmSpeed * dt;
+			if (Input.IsKeyDown(KeyCode.I)) armStep += armSpeed * dt;
+			if (Input.IsKeyDown(KeyCode.K)) armStep -= armSpeed * dt;
 			MoveArmJoint(m_Joint, armStep);
 
 			Control(dt);
@@ -142,7 +156,7 @@ namespace Dronstein
 			if (m_LogTimer > 1f)
 			{
 				m_LogTimer = 0f;
-				Log.Info($"DroneTeleop: pos=({m_Qpos[0]:F2}, {m_Qpos[1]:F2}, {m_Qpos[2]:F2}) thrust=[{thrust[0]:F1} {thrust[1]:F1} {thrust[2]:F1} {thrust[3]:F1}]");
+				Log.Info($"DroneTeleop: pos=({m_Qpos[0]:F2}, {m_Qpos[1]:F2}, {m_Qpos[2]:F2}) target=({m_Target.X:F2}, {m_Target.Y:F2}, {m_Target.Z:F2}) thrust=[{thrust[0]:F1} {thrust[1]:F1} {thrust[2]:F1} {thrust[3]:F1}]");
 			}
 		}
 
@@ -170,7 +184,9 @@ namespace Dronstein
 			com = com * (1f / mass);
 
 			// Position loop: desired force in world frame.
-			Vector3 acc = (m_Target - pos) * KpPos - vel * KdPos;
+			// Damping against the target's velocity, not zero, so the drone keeps up with a moving target
+			// instead of trailing it and flying on after the keys are released.
+			Vector3 acc = (m_Target - pos) * KpPos + (m_TargetVel - vel) * KdPos;
 			acc.X = Math.Clamp(acc.X, -MaxTiltAcc, MaxTiltAcc);
 			acc.Y = Math.Clamp(acc.Y, -MaxTiltAcc, MaxTiltAcc);
 			Vector3 force = (acc + new Vector3(0f, 0f, 9.81f)) * mass;

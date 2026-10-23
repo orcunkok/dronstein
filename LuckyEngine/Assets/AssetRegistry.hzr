@@ -146,6 +146,9 @@ Assets:
   - Handle: 14053565775527196325
     FilePath: Robots/Dronstein/assets/Moving_Jaw.stl
     Type: MeshSource
+  - Handle: 14504480557767293981
+    FilePath: Materials/Waypoint_Material.hmaterial
+    Type: Material
   - Handle: 14589933624847578576
     FilePath: ContentVault/Robots/SO100Pod/assets/Fixed_Jaw_Collision_1.stl
     Type: MeshSource

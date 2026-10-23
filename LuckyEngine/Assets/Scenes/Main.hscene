@@ -868,7 +868,7 @@ Entities:
     TransformComponent:
       Position: [0, -0.5, 0]
       Rotation: [0, 0, 0]
-      Scale: [10, 1, 10]
+      Scale: [30, 1, 30]
     StaticMeshComponent:
       AssetID: 4512471431298144687
       MaterialTable:
@@ -880,6 +880,22 @@ Entities:
       Contype: 1
       Conaffinity: 1
       Condim: -1
+  - Entity: 7242601537863207889
+    Domain: Client
+    TagComponent:
+      Tag: Waypoint
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [10, 0.002, -10]
+      Rotation: [0, 0, 0]
+      Scale: [0.3, 0.002, 0.3]
+    StaticMeshComponent:
+      AssetID: 16102727838158965090
+      MaterialTable:
+        0: 14504480557767293981
+      Visible: true
   - Entity: 7391899378196828493
     Domain: Client
     TagComponent:
@@ -893,6 +909,22 @@ Entities:
       Scale: [1, 1, 1]
     MujocoSiteComponent:
       ID: 0
+  - Entity: 7415845242456121480
+    Domain: Client
+    TagComponent:
+      Tag: Waypoint_03
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [-10, 0.002, -10]
+      Rotation: [0, 0, 0]
+      Scale: [0.3, 0.002, 0.3]
+    StaticMeshComponent:
+      AssetID: 16102727838158965090
+      MaterialTable:
+        0: 14504480557767293981
+      Visible: true
   - Entity: 7499538344652358896
     Domain: Client
     TagComponent:
@@ -998,6 +1030,10 @@ Entities:
           Name: ArmSpeed
           Type: Float
           Value: 1
+        - ID: 3567393753
+          Name: PreciseScale
+          Type: Float
+          Value: 0.25
         - ID: 2092749931
           Name: KpPos
           Type: Float
@@ -1167,6 +1203,22 @@ Entities:
       FrictionLoss: 0
       SpringRef: 0
       JointId: -1
+  - Entity: 9613257797134022830
+    Domain: Client
+    TagComponent:
+      Tag: Waypoint_02
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [-10, 0.002, 10]
+      Rotation: [0, 0, 0]
+      Scale: [0.3, 0.002, 0.3]
+    StaticMeshComponent:
+      AssetID: 16102727838158965090
+      MaterialTable:
+        0: 14504480557767293981
+      Visible: true
   - Entity: 9746366683398954405
     Domain: Client
     TagComponent:
@@ -1557,6 +1609,22 @@ Entities:
       Visible: true
     MujocoGeomComponent:
       ID: 19
+  - Entity: 14618445888672498971
+    Domain: Client
+    TagComponent:
+      Tag: Waypoint_01
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [10, 0.002, 10]
+      Rotation: [0, 0, 0]
+      Scale: [0.3, 0.002, 0.3]
+    StaticMeshComponent:
+      AssetID: 16102727838158965090
+      MaterialTable:
+        0: 14504480557767293981
+      Visible: true
   - Entity: 15517991742549953451
     Domain: Client
     TagComponent:
