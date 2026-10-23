@@ -86,7 +86,7 @@
   </default>
 
   <worldbody>
-    <body name="x2" pos="0 0 0.5" childclass="x2">
+    <body name="x2" pos="1 0 0.5" childclass="x2">
       <freejoint/>
       <geom material="x2_material" mesh="X2_lowpoly" class="x2_visual" quat="0 0 1 1"/>
       <geom class="x2_collision" size=".06 .027 .02" pos=".04 0 .02"/>
@@ -103,8 +103,8 @@
       <site name="thrust3" pos=".14 .18 .08"/>
       <site name="thrust4" pos=".14 -.18 .08"/>
 
-      <!-- SO-100, upside down under the drone's belly. -->
-      <body name="Base" quat="0 1 0 0" childclass="so_arm100">
+      <!-- SO-100, upside down in the pocket under the gimbal (the drone's -x end), reaching out past the gimbal. -->
+      <body name="Base" pos="-0.065 0 0.04" quat="0 0.707107 0.707107 0" childclass="so_arm100">
         <geom type="mesh" mesh="Base" class="visual"/>
         <geom type="mesh" mesh="Base_Motor" class="motor_visual"/>
         <geom type="mesh" mesh="Base" class="collision"/>
