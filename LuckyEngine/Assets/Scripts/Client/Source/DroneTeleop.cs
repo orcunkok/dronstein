@@ -10,7 +10,7 @@ namespace Dronstein
 	/// Fly the Skydio X2 and move its SO-100 arm with an Xbox controller.
 	/// The bindings are in ControllerBindings.txt in the project folder.
 	/// Keys: Y flies to the next corner of the test square (blue dots on the ground), for tuning;
-	/// F switches the camera between the drone and the gripper, W/S zoom in/out. Drag with the right mouse button to orbit the camera.
+	/// R shows/hides a wire sphere of how far the gripper can reach; F switches the camera between the drone and the gripper, W/S zoom in/out. Drag with the right mouse button to orbit the camera.
 	/// Attach to the entity that holds dronstein.xml (its MujocoScene).
 	///
 	/// The sticks move a target point; a cascaded PID (position -> velocity -> tilt) flies the drone to it.
@@ -26,6 +26,7 @@ namespace Dronstein
 		public float OrbitSpeed = 0.005f;   // rad per pixel of mouse drag
 		public float GripperViewDistance = 1.0f;  // m, starting camera distance when it looks at the gripper
 		public float ZoomSpeed = 1.5f;      // m/s while W or S is held
+		public bool ShowReach = true;       // wire half-sphere of the gripper's reach (R toggles)
 
 		// Position loop: error -> desired velocity, capped by MaxSpeed and by what BrakeAcc can stop in time.
 		public float KpPos = 2.0f, MaxSpeed = 5.0f, BrakeAcc = 2.0f;
@@ -52,6 +53,7 @@ namespace Dronstein
 		MujocoActuator[] m_Motors = new MujocoActuator[4], m_Arm = new MujocoActuator[6];
 		float[] m_ArmLow = new float[6], m_ArmHigh = new float[6];
 		uint m_Drone, m_GraspSite;
+		uint m_Shoulder, m_Elbow, m_Wrist;  // Upper_Arm, Lower_Arm, Wrist_Pitch_Roll: their origins are the lift, elbow and wrist pivots
 		uint[] m_DroneBodies = null!;       // the drone's and arm's bodies, with their masses: they never change, so found once
 		float[] m_DroneBodyMass = null!;
 		float m_Mass;
@@ -132,6 +134,9 @@ namespace Dronstein
 			m_OrbitPitch = MathF.Asin(Math.Clamp(offset.Y / m_OrbitDistance, -1f, 1f));
 			m_GripperDistance = GripperViewDistance;
 			m_GraspSite = m_Mj.GetSiteID("grasp_site");
+			m_Shoulder = m_Mj.GetBodyID("Upper_Arm");
+			m_Elbow = m_Mj.GetBodyID("Lower_Arm");
+			m_Wrist = m_Mj.GetBodyID("Wrist_Pitch_Roll");
 
 			Log.Info($"DroneTeleop: start at {m_Target}, nq={m_Mj.ModelNq} nu={m_Mj.ModelNu}, {m_DroneBodies.Length} bodies, {m_Mass:F2} kg");
 			LoadBindings();
@@ -178,7 +183,47 @@ namespace Dronstein
 			OrbitCamera(dt, body, new Vector3(grasp.X, grasp.Z, -grasp.Y));
 			m_GripDot.Translation = new Vector3(grasp.X, m_GripDotY, -grasp.Y);
 			m_CenterDot.Translation = new Vector3(body.X, m_CenterDotY, body.Z);
+			if (Input.IsKeyPressed(KeyCode.R)) ShowReach = !ShowReach;
+			if (ShowReach) DrawReach(grasp);
 			LogStatus(dt, thrust);
+		}
+
+		// The farthest the fingertip (grasp_site) can get below the drone: the lower half of a sphere around the
+		// shoulder-lift pivot, with the arm's three links laid end to end as radius. Ignores the joint limits.
+		void DrawReach(Vector3 tip)
+		{
+			Vector3 shoulder = BodyPos(m_Shoulder), elbow = BodyPos(m_Elbow), wrist = BodyPos(m_Wrist);
+			float radius = (elbow - shoulder).Length() + (wrist - elbow).Length() + (tip - wrist).Length();
+			Vector3 center = new(shoulder.X, shoulder.Z, -shoulder.Y);  // to Lucky's frame (y up)
+			Vector4 color = new(0.2f, 0.9f, 1f, 1f);
+			const int Rings = 6, Meridians = 8, Segments = 32;
+			for (int r = 1; r <= Rings / 2; r++)  // latitude rings, up to the equator (the cut)
+			{
+				float lat = MathF.PI * r / Rings - MathF.PI / 2f, y = MathF.Sin(lat) * radius, ring = MathF.Cos(lat) * radius;
+				for (int i = 0; i < Segments; i++)
+				{
+					float a = 2f * MathF.PI * i / Segments, b = 2f * MathF.PI * (i + 1) / Segments;
+					DebugRenderer.DrawLine(center + new Vector3(MathF.Cos(a) * ring, y, MathF.Sin(a) * ring),
+						center + new Vector3(MathF.Cos(b) * ring, y, MathF.Sin(b) * ring), color);
+				}
+			}
+			for (int m = 0; m < Meridians; m++)  // quarter circles from the bottom pole up to the equator
+			{
+				float lon = 2f * MathF.PI * m / Meridians;
+				Vector3 dir = new(MathF.Cos(lon), 0f, MathF.Sin(lon));
+				for (int i = 0; i < Segments / 4; i++)
+				{
+					float a = MathF.PI * i / (Segments / 2) - MathF.PI / 2f, b = MathF.PI * (i + 1) / (Segments / 2) - MathF.PI / 2f;
+					DebugRenderer.DrawLine(center + (dir * MathF.Cos(a) + new Vector3(0f, MathF.Sin(a), 0f)) * radius,
+						center + (dir * MathF.Cos(b) + new Vector3(0f, MathF.Sin(b), 0f)) * radius, color);
+				}
+			}
+		}
+
+		Vector3 BodyPos(uint body)
+		{
+			m_Mj.GetBodyPoseMj(body, out Vector3 p, out Quaternion _, out Vector3 _, out Vector3 _);
+			return p;
 		}
 
 		// Drag with the right mouse button to orbit, W/S to zoom; F switches between the drone and the gripper.
