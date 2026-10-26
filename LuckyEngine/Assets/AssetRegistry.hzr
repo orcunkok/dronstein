@@ -8,6 +8,9 @@ Assets:
   - Handle: 2116205926439990434
     FilePath: Materials/Waypoint_Soft_Material.hmaterial
     Type: Material
+  - Handle: 2185301101015856168
+    FilePath: Materials/SelectedBall_Material.hmaterial
+    Type: Material
   - Handle: 2201899189652528337
     FilePath: ContentVault/Robots/SO100Pod/assets/Fixed_Jaw.stl
     Type: MeshSource

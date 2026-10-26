@@ -1661,6 +1661,18 @@ Entities:
           Name: MaxSpeed
           Type: Float
           Value: 50
+        - ID: 3085311765
+          Name: Speed
+          Type: Float
+          Value: 0
+        - ID: 896224755
+          Name: Ball
+          Type: Int
+          Value: 1
+        - ID: 3777945543
+          Name: SelectedBallMaterial
+          Type: Material
+          Value: 2185301101015856168
   - Entity: 10883897787002097870
     Domain: Client
     TagComponent:
@@ -2065,7 +2077,7 @@ Entities:
   - Entity: 15517991742549953451
     Domain: Client
     TagComponent:
-      Tag: GolfBall
+      Tag: GolfBall_25
     Parent: 0
     Children:
       []

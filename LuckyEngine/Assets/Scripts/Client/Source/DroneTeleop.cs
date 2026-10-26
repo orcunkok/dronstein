@@ -63,6 +63,8 @@ namespace Dronstein
 		Entity m_Camera = null!, m_Body = null!, m_GripDot = null!, m_CenterDot = null!;
 		float m_GripDotY, m_CenterDotY;  // the dots' fixed height above the ground
 		Tuning m_Tuning = null!;  // the knobs on the entity tagged "Tuning"
+		int m_SelectedBall;          // the ball shown purple (0 = none)
+		Material? m_BallMaterial;    // its own material, given back when another ball is selected
 		bool m_Missing;  // a tagged entity wasn't found: the script does nothing
 		// Orbit camera: the camera sits on a sphere around the drone (or the gripper) and looks at its center.
 		float m_OrbitYaw, m_OrbitPitch, m_OrbitDistance, m_GripperDistance;
@@ -186,8 +188,24 @@ namespace Dronstein
 			m_CenterDot.Translation = new Vector3(body.X, m_CenterDotY, body.Z);
 			if (Input.IsKeyPressed(KeyCode.R)) m_Tuning.ShowReach = !m_Tuning.ShowReach;
 			if (m_Tuning.ShowReach) DrawReach(grasp);
+			if (m_Tuning.Ball != m_SelectedBall && m_Tuning.SelectedBallMaterial != null) SelectBall(m_Tuning.Ball);
 			LogStatus(dt, thrust);
 		}
+
+		// Paints ball n with Tuning's glowing purple material and gives the previously selected ball its own back.
+		void SelectBall(int n)
+		{
+			BallMesh(m_SelectedBall)?.SetMaterial(0, m_BallMaterial!);
+			m_SelectedBall = n;
+			StaticMeshComponent? mesh = BallMesh(n);
+			if (mesh == null) return;
+			m_BallMaterial = mesh.GetMaterial(0);
+			mesh.SetMaterial(0, m_Tuning.SelectedBallMaterial!);
+		}
+
+		// Ball n is tagged GolfBall_01, GolfBall_02...
+		StaticMeshComponent? BallMesh(int n) =>
+			n > 0 ? FindEntityByTag($"GolfBall_{n:00}")?.GetComponent<StaticMeshComponent>() : null;
 
 		// The farthest the fingertip (grasp_site) can get below the drone: the lower half of a sphere around the
 		// shoulder-lift pivot, with the arm's three links laid end to end as radius. Ignores the joint limits.
