@@ -108,6 +108,7 @@ namespace Dronstein
 		float m_Deadzone = 0.1f;
 		bool m_LogAxes;
 		int m_Pad = -1;  // controller ID, -1 when none is connected
+		float m_PadScan;  // s until the next look for a controller while none is in use
 
 		float m_LogTimer, m_MaxTilt;
 
@@ -185,9 +186,11 @@ namespace Dronstein
 		{
 			if (m_Missing) return;
 			dt = MathF.Min(dt, MaxDt);
-			if (m_Pad < 0 || !Input.IsControllerPresent(m_Pad))
+			if (m_Pad >= 0 && !Input.IsControllerPresent(m_Pad)) m_Pad = -1;
+			if (m_Pad < 0 && (m_PadScan -= dt) <= 0f)
 			{
-				int[] pads = Input.GetConnectedControllerIDs();  // allocates, so only while no controller is in use
+				m_PadScan = 1f;  // GetConnectedControllerIDs allocates, so once a second rather than every frame
+				int[] pads = Input.GetConnectedControllerIDs();
 				m_Pad = pads.Length > 0 ? pads[0] : -1;
 			}
 			if (Pressed("precise"))
