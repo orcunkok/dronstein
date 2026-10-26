@@ -309,6 +309,22 @@ Entities:
       FrictionLoss: 0
       SpringRef: 0
       JointId: -1
+  - Entity: 351442425693542831
+    Domain: Client
+    TagComponent:
+      Tag: GroundSlab
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, -0.126, 0]
+      Rotation: [0, 0, 0]
+      Scale: [30, 0.25, 30]
+    StaticMeshComponent:
+      AssetID: 4512471431298144687
+      MaterialTable:
+        0: 16991575206243672906
+      Visible: true
   - Entity: 395192763572778910
     Domain: Client
     TagComponent:
@@ -495,6 +511,22 @@ Entities:
       Visible: true
     MujocoGeomComponent:
       ID: 23
+  - Entity: 1291263967692813110
+    Domain: Client
+    TagComponent:
+      Tag: GroundSurface
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [30, 1, 30]
+    StaticMeshComponent:
+      AssetID: 13290137406038238993
+      MaterialTable:
+        0: 17848236281465921337
+      Visible: true
   - Entity: 1293906443204992953
     Domain: Client
     TagComponent:
@@ -924,11 +956,11 @@ Entities:
       Scale: [1, 1, 1]
     SkyLightComponent:
       EnvironmentMap: 0
-      Intensity: 0.75
+      Intensity: 0.5
       Lod: 0
       Rotation: 0
       DynamicSky: true
-      TurbidityAzimuthInclination: [2.8, 3.8, 1]
+      TurbidityAzimuthInclination: [2.8, 3.8, 0.593]
   - Entity: 6808467485959760917
     Domain: Client
     TagComponent:
@@ -1053,11 +1085,6 @@ Entities:
       Position: [0, -0.5, 0]
       Rotation: [0, 0, 0]
       Scale: [30, 1, 30]
-    StaticMeshComponent:
-      AssetID: 4512471431298144687
-      MaterialTable:
-        0: 16991575206243672906
-      Visible: true
     MujocoBoxColliderComponent:
       Density: 474
       Friction: [1, 0.1, 0.01]
@@ -1852,11 +1879,11 @@ Entities:
       []
     TransformComponent:
       Position: [0, 0, 0]
-      Rotation: [1.39626, 0.174533, 0]
+      Rotation: [0, 0.3534, -1.7425]
       Scale: [1, 1, 1]
     DirectionalLightComponent:
-      Intensity: 1
-      Radiance: [1, 1, 1]
+      Intensity: 4.5
+      Radiance: [1, 0.98, 0.95]
       CastShadows: true
       SoftShadows: true
       LightSize: 0.5

@@ -149,6 +149,9 @@ Assets:
   - Handle: 11759305556908677780
     FilePath: ContentVault/Robots/SO100Pod/assets/Wrist_Pitch_Roll.stl
     Type: MeshSource
+  - Handle: 11811293436037047550
+    FilePath: Textures/GroundChecker.png
+    Type: Texture
   - Handle: 11849831870074559209
     FilePath: Materials/Basket_Wall_NX_Material.hmaterial
     Type: Material
@@ -173,6 +176,9 @@ Assets:
   - Handle: 12908204590787040828
     FilePath: Materials/CenterDot_Material.hmaterial
     Type: Material
+  - Handle: 13290137406038238993
+    FilePath: Meshes/Default/Plane.hsmesh
+    Type: StaticMesh
   - Handle: 13341008224982955814
     FilePath: Scripts/Client/obj/project.assets.json
     Type: Motion
@@ -233,6 +239,9 @@ Assets:
   - Handle: 17724718632739972887
     FilePath: ContentVault/Robots/SO100Pod/assets/Wrist_Pitch_Roll_Motor.stl
     Type: MeshSource
+  - Handle: 17848236281465921337
+    FilePath: Materials/GroundTiles.hmaterial
+    Type: Material
   - Handle: 18177350362801879680
     FilePath: ContentVault/Robots/SO100Pod/assets/Upper_Arm_Motor.stl
     Type: MeshSource

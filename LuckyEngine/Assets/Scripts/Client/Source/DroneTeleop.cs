@@ -67,6 +67,7 @@ namespace Dronstein
 		float[,] m_R = new float[3, 3], m_Rt = new float[3, 3], m_Mix = new float[4, 5];
 		float[] m_Thrust = new float[4];
 		Entity m_Camera = null!, m_Body = null!, m_GripDot = null!, m_CenterDot = null!;
+		CameraComponent m_CameraView = null!;  // m_Camera's, to find the screen size in rendered pixels
 		float m_GripDotY, m_CenterDotY;  // the dots' fixed height above the ground
 		Tuning m_Tuning = null!;  // the knobs on the entity tagged "Tuning"
 		int m_SelectedBall;          // the ball shown purple (0 = none)
@@ -76,6 +77,7 @@ namespace Dronstein
 		bool m_Missing;  // a tagged entity wasn't found: the script does nothing
 		// Orbit camera: the camera sits on a sphere around what it watches (Views[m_View]) and looks at its center.
 		float m_OrbitYaw, m_OrbitPitch;
+		Vector3 m_OrbitCenter;  // the point it looks at, which is always the middle of the screen
 		float[] m_ViewDistance = new float[3];  // each view keeps its own zoom
 		int m_View;
 		// HUD texts, moved only when the screen is resized and rewritten only when what they show changes.
@@ -148,6 +150,7 @@ namespace Dronstein
 			if (m_Missing) return;
 			m_HudCameraColor = m_HudCamera.GetComponent<TextComponent>()!.Color;
 			m_HudModeColor = m_HudMode.GetComponent<TextComponent>()!.Color;
+			m_CameraView = m_Camera.GetComponent<CameraComponent>()!;
 			m_GripDotY = m_GripDot.Translation.Y;
 			m_CenterDotY = m_CenterDot.Translation.Y;
 			// Orbit camera: start from the scene camera's authored offset from the drone.
@@ -229,10 +232,13 @@ namespace Dronstein
 		}
 
 		// Top right of the screen: the camera view (purple on a ball) and the mode (yellow while calibrating).
-		// Screen-space text is placed in pixels from the bottom left.
+		// Screen-space text is placed in rendered pixels from the bottom left. Application.Width/Height are smaller than that
+		// on a scaled display (by the scale factor), so the size comes from the camera: the orbit center projects to the
+		// middle of the screen.
 		void UpdateHud()
 		{
-			var size = (Application.Width, Application.Height);
+			Vector2 middle = m_CameraView.ToScreenSpace(m_OrbitCenter);
+			(uint Width, uint Height) size = ((uint)MathF.Round(2f * middle.X), (uint)MathF.Round(2f * middle.Y));
 			if (size != m_HudSize)
 			{
 				m_HudSize = size;
@@ -310,7 +316,7 @@ namespace Dronstein
 			float zoom = ((Input.IsKeyDown(KeyCode.S) ? 1f : 0f) - (Input.IsKeyDown(KeyCode.W) ? 1f : 0f)) * ZoomSpeed * dt;
 			float dist = m_ViewDistance[m_View] = Math.Clamp(m_ViewDistance[m_View] + zoom, 0.3f, 20f);
 
-			Vector3 center = m_View == 0 ? drone : m_View == 1 ? gripper : ball;
+			Vector3 center = m_OrbitCenter = m_View == 0 ? drone : m_View == 1 ? gripper : ball;
 			var dir = new Vector3(MathF.Sin(m_OrbitYaw) * MathF.Cos(m_OrbitPitch), MathF.Sin(m_OrbitPitch), MathF.Cos(m_OrbitYaw) * MathF.Cos(m_OrbitPitch));
 			m_Camera.Translation = center + dir * dist;
 			m_Camera.Rotation = new Vector3(-m_OrbitPitch, m_OrbitYaw, 0f);  // the camera looks down its -z, so this faces the center
