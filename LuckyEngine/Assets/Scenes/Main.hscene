@@ -674,6 +674,28 @@ Entities:
       Visible: true
     MujocoGeomComponent:
       ID: 25
+  - Entity: 3431107646684660533
+    Domain: Client
+    TagComponent:
+      Tag: HudMode
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [28, 28, 1]
+    TextComponent:
+      TextString: Manual
+      FontHandle: 15916378497832049985
+      Color: [1, 1, 1, 1]
+      LineSpacing: 0
+      Kerning: 0
+      MaxWidth: 10
+      ScreenSpace: true
+      DropShadow: false
+      ShadowDistance: 2
+      ShadowColor: [0, 0, 0, 0.75]
   - Entity: 3628357348547977113
     Domain: Client
     TagComponent:
@@ -1037,7 +1059,7 @@ Entities:
         0: 16991575206243672906
       Visible: true
     MujocoBoxColliderComponent:
-      Density: 500
+      Density: 474
       Friction: [1, 0.1, 0.01]
       Contype: 1
       Conaffinity: 1
@@ -2304,6 +2326,28 @@ Entities:
       Contype: 1
       Conaffinity: 1
       Condim: -1
+  - Entity: 17121903389656461497
+    Domain: Client
+    TagComponent:
+      Tag: HudModeLabel
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [21, 21, 1]
+    TextComponent:
+      TextString: MODE
+      FontHandle: 15916378497832049985
+      Color: [0.9, 0.93, 0.97, 1]
+      LineSpacing: 0
+      Kerning: 0.12
+      MaxWidth: 10
+      ScreenSpace: true
+      DropShadow: false
+      ShadowDistance: 2
+      ShadowColor: [0, 0, 0, 0.75]
   - Entity: 17168540220499114429
     Domain: Client
     TagComponent:
@@ -2507,6 +2551,50 @@ Entities:
       Contype: 1
       Conaffinity: 1
       Condim: -1
+  - Entity: 18308431626856934214
+    Domain: Client
+    TagComponent:
+      Tag: HudCameraLabel
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [21, 21, 1]
+    TextComponent:
+      TextString: CAMERA
+      FontHandle: 15916378497832049985
+      Color: [0.9, 0.93, 0.97, 1]
+      LineSpacing: 0
+      Kerning: 0.12
+      MaxWidth: 10
+      ScreenSpace: true
+      DropShadow: false
+      ShadowDistance: 0
+      ShadowColor: [0, 0, 0, 0.75]
+  - Entity: 18363738603486687348
+    Domain: Client
+    TagComponent:
+      Tag: HudCamera
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [200, 200, 0]
+      Rotation: [0, 0, 0]
+      Scale: [28, 28, 1]
+    TextComponent:
+      TextString: Drone
+      FontHandle: 15916378497832049985
+      Color: [1, 1, 1, 1]
+      LineSpacing: 0
+      Kerning: 0
+      MaxWidth: 10
+      ScreenSpace: true
+      DropShadow: false
+      ShadowDistance: 0
+      ShadowColor: [0, 0, 0, 0.75]
 SceneAudio:
   MasterReverb:
     Pre-delay: 0

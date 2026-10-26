@@ -206,6 +206,9 @@ Assets:
   - Handle: 15725964065274453976
     FilePath: Meshes/Default/Source/Torus.gltf
     Type: MeshSource
+  - Handle: 15916378497832049985
+    FilePath: Fonts/Goldman-Regular.ttf
+    Type: Font
   - Handle: 16102727838158965090
     FilePath: Meshes/Default/Cylinder.hsmesh
     Type: StaticMesh

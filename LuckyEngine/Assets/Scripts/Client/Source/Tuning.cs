@@ -18,7 +18,7 @@ namespace Dronstein
 		public float Speed;
 
 		[Slider(0, 25)] [Tooltip("Golf ball to highlight, 1 to 25 for GolfBall_01 to GolfBall_25 (0 = none)")]
-		public int Ball = 8;
+		public int Ball = 4;
 
 		[Tooltip("Glowing material the selected ball switches to")]
 		public Material? SelectedBallMaterial;

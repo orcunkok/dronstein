@@ -10,7 +10,9 @@ namespace Dronstein
 	/// Fly the Skydio X2 and move its SO-100 arm with an Xbox controller.
 	/// The bindings are in ControllerBindings.txt in the project folder.
 	/// Keys: Y flies to the next corner of the test square (blue dots on the ground), for tuning;
-	/// R shows/hides a wire sphere of how far the gripper can reach; F switches the camera between the drone and the gripper, W/S zoom in/out. Drag with the right mouse button to orbit the camera.
+	/// R shows/hides a wire sphere of how far the gripper can reach; F switches the camera between the drone, the gripper and the
+	/// selected ball (Tuning.Ball), W/S zoom in/out. Drag with the right mouse button to orbit the camera.
+	/// The top right of the screen shows the camera view and the mode: Manual, or Calibration while Y's test square is flown.
 	/// Attach to the entity that holds dronstein.xml (its MujocoScene).
 	///
 	/// The sticks move a target point; a cascaded PID (position -> velocity -> tilt) flies the drone to it.
@@ -42,6 +44,10 @@ namespace Dronstein
 		static readonly float[,] Rotors = { { -0.14f, -0.18f, -0.0201f }, { -0.14f, 0.18f, 0.0201f }, { 0.14f, 0.18f, -0.0201f }, { 0.14f, -0.18f, 0.0201f } };
 		const float MaxThrust = 13f, Gravity = 9.81f;
 		static readonly float[,] Waypoints = { { 10, 10 }, { 10, -10 }, { -10, -10 }, { -10, 10 } };  // (x, y), MuJoCo frame
+		static readonly string[] Views = { "Drone", "Gripper", "Ball" };  // what the camera can watch; F steps through them
+		// HUD, in pixels: the labels' x from the right edge, the first baseline from the top, the row height, the values' x after the labels.
+		const float HudRight = 380f, HudTop = 60f, HudRow = 44f, HudValueX = 115f;
+		static readonly Vector4 Purple = new(0.8f, 0.6f, 1f, 1f), Yellow = new(1f, 0.847f, 0f, 1f);  // ball view, calibrating (#FFD800)
 		const float MaxDt = 0.05f;  // s, longer frames (hitches) are treated as this long, so one slow frame can't kick the drone
 		// Arm poses for the deploy button, without the gripper (left as is).
 		static readonly float[] Stowed = { 0f, -3.32f, 3.11f, 1.18f, 0f };   // folded up
@@ -64,11 +70,19 @@ namespace Dronstein
 		float m_GripDotY, m_CenterDotY;  // the dots' fixed height above the ground
 		Tuning m_Tuning = null!;  // the knobs on the entity tagged "Tuning"
 		int m_SelectedBall;          // the ball shown purple (0 = none)
+		Entity? m_Ball;              // its entity, null when there is none
+		uint m_BallBody;             // and its MuJoCo body, for the ball camera
 		Material? m_BallMaterial;    // its own material, given back when another ball is selected
 		bool m_Missing;  // a tagged entity wasn't found: the script does nothing
-		// Orbit camera: the camera sits on a sphere around the drone (or the gripper) and looks at its center.
-		float m_OrbitYaw, m_OrbitPitch, m_OrbitDistance, m_GripperDistance;
-		bool m_WatchGripper;
+		// Orbit camera: the camera sits on a sphere around what it watches (Views[m_View]) and looks at its center.
+		float m_OrbitYaw, m_OrbitPitch;
+		float[] m_ViewDistance = new float[3];  // each view keeps its own zoom
+		int m_View;
+		// HUD texts, moved only when the screen is resized and rewritten only when what they show changes.
+		Entity m_HudCameraLabel = null!, m_HudCamera = null!, m_HudModeLabel = null!, m_HudMode = null!;
+		Vector4 m_HudCameraColor, m_HudModeColor;  // the values' colours set in the scene, used when not purple/yellow
+		(uint, uint) m_HudSize;
+		(int, int, int) m_HudShown = (-1, -1, -2);  // (m_View, m_SelectedBall, m_Waypoint)
 		Vector2 m_LastMouse;
 
 		// Flight
@@ -127,15 +141,21 @@ namespace Dronstein
 			m_Body = Find("x2");
 			m_GripDot = Find("GripDot");      // red dot on the ground straight below the gripper
 			m_CenterDot = Find("CenterDot");  // green dot on the ground straight below the drone's center
+			m_HudCameraLabel = Find("HudCameraLabel");
+			m_HudCamera = Find("HudCamera");
+			m_HudModeLabel = Find("HudModeLabel");
+			m_HudMode = Find("HudMode");
 			if (m_Missing) return;
+			m_HudCameraColor = m_HudCamera.GetComponent<TextComponent>()!.Color;
+			m_HudModeColor = m_HudMode.GetComponent<TextComponent>()!.Color;
 			m_GripDotY = m_GripDot.Translation.Y;
 			m_CenterDotY = m_CenterDot.Translation.Y;
 			// Orbit camera: start from the scene camera's authored offset from the drone.
 			Vector3 offset = m_Camera.Translation - m_Body.Translation;
-			m_OrbitDistance = MathF.Max(offset.Length(), 0.3f);
+			m_ViewDistance[0] = MathF.Max(offset.Length(), 0.3f);
 			m_OrbitYaw = MathF.Atan2(offset.X, offset.Z);
-			m_OrbitPitch = MathF.Asin(Math.Clamp(offset.Y / m_OrbitDistance, -1f, 1f));
-			m_GripperDistance = GripperViewDistance;
+			m_OrbitPitch = MathF.Asin(Math.Clamp(offset.Y / m_ViewDistance[0], -1f, 1f));
+			m_ViewDistance[1] = m_ViewDistance[2] = GripperViewDistance;
 			m_GraspSite = m_Mj.GetSiteID("grasp_site");
 			m_Shoulder = m_Mj.GetBodyID("Upper_Arm");
 			m_Elbow = m_Mj.GetBodyID("Lower_Arm");
@@ -183,29 +203,58 @@ namespace Dronstein
 
 			Vector3 grasp = m_Mj.GetSitePositionMj(m_GraspSite);  // MuJoCo (x, y) on the ground is Lucky (x, -z)
 			Vector3 body = m_Body.Translation;
-			OrbitCamera(dt, body, new Vector3(grasp.X, grasp.Z, -grasp.Y));
+			if (m_Tuning.Ball != m_SelectedBall && m_Tuning.SelectedBallMaterial != null) SelectBall(m_Tuning.Ball);
+			Vector3 ball = m_Ball != null ? BodyPos(m_BallBody) : Vector3.Zero;
+			OrbitCamera(dt, body, new Vector3(grasp.X, grasp.Z, -grasp.Y), new Vector3(ball.X, ball.Z, -ball.Y));
+			UpdateHud();
 			m_GripDot.Translation = new Vector3(grasp.X, m_GripDotY, -grasp.Y);
 			m_CenterDot.Translation = new Vector3(body.X, m_CenterDotY, body.Z);
 			if (Input.IsKeyPressed(KeyCode.R)) m_Tuning.ShowReach = !m_Tuning.ShowReach;
 			if (m_Tuning.ShowReach) DrawReach(grasp);
-			if (m_Tuning.Ball != m_SelectedBall && m_Tuning.SelectedBallMaterial != null) SelectBall(m_Tuning.Ball);
 			LogStatus(dt, thrust);
 		}
 
 		// Paints ball n with Tuning's glowing purple material and gives the previously selected ball its own back.
+		// Ball n is tagged GolfBall_01, GolfBall_02...
 		void SelectBall(int n)
 		{
-			BallMesh(m_SelectedBall)?.SetMaterial(0, m_BallMaterial!);
+			m_Ball?.GetComponent<StaticMeshComponent>()!.SetMaterial(0, m_BallMaterial!);
 			m_SelectedBall = n;
-			StaticMeshComponent? mesh = BallMesh(n);
-			if (mesh == null) return;
+			m_Ball = n > 0 ? FindEntityByTag($"GolfBall_{n:00}") : null;
+			if (m_Ball == null) return;
+			var mesh = m_Ball.GetComponent<StaticMeshComponent>()!;
 			m_BallMaterial = mesh.GetMaterial(0);
 			mesh.SetMaterial(0, m_Tuning.SelectedBallMaterial!);
+			m_BallBody = m_Mj.GetBodyID($"lucky_body_{m_Ball.ID}");
 		}
 
-		// Ball n is tagged GolfBall_01, GolfBall_02...
-		StaticMeshComponent? BallMesh(int n) =>
-			n > 0 ? FindEntityByTag($"GolfBall_{n:00}")?.GetComponent<StaticMeshComponent>() : null;
+		// Top right of the screen: the camera view (purple on a ball) and the mode (yellow while calibrating).
+		// Screen-space text is placed in pixels from the bottom left.
+		void UpdateHud()
+		{
+			var size = (Application.Width, Application.Height);
+			if (size != m_HudSize)
+			{
+				m_HudSize = size;
+				float x = size.Width - HudRight, y = size.Height - HudTop;
+				m_HudCameraLabel.Translation = new Vector3(x, y, 0f);
+				m_HudCamera.Translation = new Vector3(x + HudValueX, y, 0f);
+				m_HudModeLabel.Translation = new Vector3(x, y - HudRow, 0f);
+				m_HudMode.Translation = new Vector3(x + HudValueX, y - HudRow, 0f);
+			}
+			var shown = (m_View, m_SelectedBall, m_Waypoint);
+			if (shown == m_HudShown) return;
+			m_HudShown = shown;
+			SetText(m_HudCamera, m_View == 2 ? $"Ball {m_SelectedBall:00}" : Views[m_View], m_View == 2 ? Purple : m_HudCameraColor);
+			SetText(m_HudMode, m_Waypoint >= 0 ? $"Calibration {m_Waypoint + 1}/4" : "Manual", m_Waypoint >= 0 ? Yellow : m_HudModeColor);
+		}
+
+		static void SetText(Entity entity, string text, Vector4 color)
+		{
+			var t = entity.GetComponent<TextComponent>()!;
+			t.Text = text;
+			t.Color = color;
+		}
 
 		// The farthest the fingertip (grasp_site) can get below the drone: the lower half of a sphere around the
 		// shoulder-lift pivot, with the arm's three links laid end to end as radius. Ignores the joint limits.
@@ -245,14 +294,11 @@ namespace Dronstein
 			return p;
 		}
 
-		// Drag with the right mouse button to orbit, W/S to zoom; F switches between the drone and the gripper.
-		void OrbitCamera(float dt, Vector3 drone, Vector3 gripper)
+		// Drag with the right mouse button to orbit, W/S to zoom; F steps through the drone, the gripper and the selected ball.
+		void OrbitCamera(float dt, Vector3 drone, Vector3 gripper, Vector3 ball)
 		{
-			if (Input.IsKeyPressed(KeyCode.F))
-			{
-				m_WatchGripper = !m_WatchGripper;
-				Log.Info($"Camera: {(m_WatchGripper ? "gripper" : "drone")}");
-			}
+			if (Input.IsKeyPressed(KeyCode.F)) m_View = (m_View + 1) % Views.Length;
+			if (m_View == 2 && m_Ball == null) m_View = 0;  // no ball selected: skip the ball view
 			Vector2 mouse = Input.GetMousePosition();
 			if (Input.IsMouseButtonDown(MouseButton.Right))
 			{
@@ -261,19 +307,17 @@ namespace Dronstein
 			}
 			m_LastMouse = mouse;
 
-			// Each view keeps its own zoom.
 			float zoom = ((Input.IsKeyDown(KeyCode.S) ? 1f : 0f) - (Input.IsKeyDown(KeyCode.W) ? 1f : 0f)) * ZoomSpeed * dt;
-			if (m_WatchGripper) m_GripperDistance = Math.Clamp(m_GripperDistance + zoom, 0.3f, 20f);
-			else m_OrbitDistance = Math.Clamp(m_OrbitDistance + zoom, 0.3f, 20f);
+			float dist = m_ViewDistance[m_View] = Math.Clamp(m_ViewDistance[m_View] + zoom, 0.3f, 20f);
 
-			Vector3 center = m_WatchGripper ? gripper : drone;
-			float dist = m_WatchGripper ? m_GripperDistance : m_OrbitDistance;
+			Vector3 center = m_View == 0 ? drone : m_View == 1 ? gripper : ball;
 			var dir = new Vector3(MathF.Sin(m_OrbitYaw) * MathF.Cos(m_OrbitPitch), MathF.Sin(m_OrbitPitch), MathF.Cos(m_OrbitYaw) * MathF.Cos(m_OrbitPitch));
 			m_Camera.Translation = center + dir * dist;
 			m_Camera.Rotation = new Vector3(-m_OrbitPitch, m_OrbitYaw, 0f);  // the camera looks down its -z, so this faces the center
 		}
 
-		// Left stick, triggers and bumpers move the target point and heading; Y jumps it to the next waypoint.
+		// Left stick, triggers and bumpers move the target point and heading; Y jumps it to the next waypoint (calibration
+		// mode, until the sticks are used again).
 		void FlightInput(float dt, float scale)
 		{
 			float move = MoveSpeed * scale;
@@ -281,7 +325,9 @@ namespace Dronstein
 			var left = new Vector3(-MathF.Sin(m_Yaw), MathF.Cos(m_Yaw), 0f);
 			Vector3 wantVel = (forward * Axis("forward_back") + left * Axis("left_right")) * move;
 			wantVel.Z = Pair("up", "down") * move;
-			m_Yaw += Pair("turn_left", "turn_right") * TurnSpeed * scale * dt;
+			float turn = Pair("turn_left", "turn_right");
+			m_Yaw += turn * TurnSpeed * scale * dt;
+			if (wantVel.Length() > 0f || turn != 0f) m_Waypoint = -1;  // the sticks take over: back to manual mode
 
 			// Ease the speed in and out (critically damped), so acceleration and tilt rise and fall smoothly.
 			m_TargetAcc += ((wantVel - m_TargetVel) * (StickSmooth * StickSmooth) - m_TargetAcc * (2f * StickSmooth)) * dt;
