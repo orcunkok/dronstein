@@ -1244,10 +1244,6 @@ Entities:
           Name: KpPos
           Type: Float
           Value: 2
-        - ID: 1592154761
-          Name: MaxSpeed
-          Type: Float
-          Value: 5
         - ID: 4194242218
           Name: BrakeAcc
           Type: Float
@@ -1642,6 +1638,29 @@ Entities:
       Contype: 1
       Conaffinity: 1
       Condim: -1
+  - Entity: 10830408277942220070
+    Domain: Client
+    TagComponent:
+      Tag: Tuning
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    ScriptComponent:
+      ScriptID: 922608686
+      ScriptName: Dronstein.Tuning
+      Fields:
+        - ID: 503767480
+          Name: ShowReach
+          Type: Bool
+          Value: true
+        - ID: 3844286311
+          Name: MaxSpeed
+          Type: Float
+          Value: 50
   - Entity: 10883897787002097870
     Domain: Client
     TagComponent:

@@ -18,23 +18,22 @@ namespace Dronstein
 	/// </summary>
 	public class DroneTeleop : Entity
 	{
-		public float MoveSpeed = 1.0f;  // m/s
+		public float MoveSpeed = 0.1f;  // m/s
 		public float TurnSpeed = 1.0f;  // rad/s
 		public float ArmSpeed = 1.0f;   // rad/s
 		public float PreciseScale = 0.25f;  // speed factor in precise mode
-		public float MinHeight = 0.2f;      // m, the target point never goes below this
+		public float MinHeight = 0.269f;    // m, the target point never goes below this
 		public float OrbitSpeed = 0.005f;   // rad per pixel of mouse drag
-		public float GripperViewDistance = 1.0f;  // m, starting camera distance when it looks at the gripper
-		public float ZoomSpeed = 1.5f;      // m/s while W or S is held
-		public bool ShowReach = true;       // wire half-sphere of the gripper's reach (R toggles)
+		public float GripperViewDistance = 1.232f;  // m, starting camera distance when it looks at the gripper
+		public float ZoomSpeed = 1.427f;    // m/s while W or S is held
 
-		// Position loop: error -> desired velocity, capped by MaxSpeed and by what BrakeAcc can stop in time.
-		public float KpPos = 2.0f, MaxSpeed = 5.0f, BrakeAcc = 2.0f;
+		// Position loop: error -> desired velocity, capped by Tuning.MaxSpeed and by what BrakeAcc can stop in time.
+		public float KpPos = 2.0f, BrakeAcc = 8f;
 		// Velocity loop + integral of the position error (cancels steady offsets the P terms leave).
 		public float KpVel = 6.0f, KiPos = 8.0f, IntegralRange = 0.3f;  // integrate only within IntegralRange m
 		public float StickSmooth = 3.5f;           // 1/s, how quickly stick speed builds up and dies down (higher = snappier, more tilt)
 		public float MaxTiltAcc = 4.0f;            // m/s^2, caps horizontal acceleration (~22 deg tilt)
-		public float KpAtt = 10.0f, KdAtt = 1.5f;  // attitude loop
+		public float KpAtt = 21.258f, KdAtt = 1.5f;  // attitude loop
 
 		static readonly string[] Motors = { "thrust1", "thrust2", "thrust3", "thrust4" };
 		static readonly string[] ArmJoints = { "shoulder_pan", "shoulder_lift", "elbow_flex", "wrist_flex", "wrist_roll", "gripper" };
@@ -63,6 +62,7 @@ namespace Dronstein
 		float[] m_Thrust = new float[4];
 		Entity m_Camera = null!, m_Body = null!, m_GripDot = null!, m_CenterDot = null!;
 		float m_GripDotY, m_CenterDotY;  // the dots' fixed height above the ground
+		Tuning m_Tuning = null!;  // the knobs on the entity tagged "Tuning"
 		bool m_Missing;  // a tagged entity wasn't found: the script does nothing
 		// Orbit camera: the camera sits on a sphere around the drone (or the gripper) and looks at its center.
 		float m_OrbitYaw, m_OrbitPitch, m_OrbitDistance, m_GripperDistance;
@@ -120,6 +120,7 @@ namespace Dronstein
 
 			m_Mj.GetFullQpos(m_Qpos);
 			m_Target = new Vector3(m_Qpos[0], m_Qpos[1], m_Qpos[2] + 0.5f);  // take off 0.5 m
+			m_Tuning = Find("Tuning")?.As<Tuning>()!;
 			m_Camera = Find("Camera");
 			m_Body = Find("x2");
 			m_GripDot = Find("GripDot");      // red dot on the ground straight below the gripper
@@ -183,8 +184,8 @@ namespace Dronstein
 			OrbitCamera(dt, body, new Vector3(grasp.X, grasp.Z, -grasp.Y));
 			m_GripDot.Translation = new Vector3(grasp.X, m_GripDotY, -grasp.Y);
 			m_CenterDot.Translation = new Vector3(body.X, m_CenterDotY, body.Z);
-			if (Input.IsKeyPressed(KeyCode.R)) ShowReach = !ShowReach;
-			if (ShowReach) DrawReach(grasp);
+			if (Input.IsKeyPressed(KeyCode.R)) m_Tuning.ShowReach = !m_Tuning.ShowReach;
+			if (m_Tuning.ShowReach) DrawReach(grasp);
 			LogStatus(dt, thrust);
 		}
 
@@ -419,6 +420,7 @@ namespace Dronstein
 			var pos = new Vector3(m_Qpos[0], m_Qpos[1], m_Qpos[2]);
 			var vel = new Vector3(m_Qvel[0], m_Qvel[1], m_Qvel[2]);     // world frame
 			var angVel = new Vector3(m_Qvel[3], m_Qvel[4], m_Qvel[5]);  // body frame
+			m_Tuning.Speed = vel.Length();
 			float[,] R = m_R;  // body -> world
 			QuatToMatrix(m_Qpos[3], m_Qpos[4], m_Qpos[5], m_Qpos[6], R);
 			m_MaxTilt = MathF.Max(m_MaxTilt, MathF.Acos(Math.Clamp(R[2, 2], -1f, 1f)) * 180f / MathF.PI);
@@ -435,7 +437,7 @@ namespace Dronstein
 			// Position loop: fly at a speed we can still brake from (sqrt profile), plus the sticks' velocity.
 			Vector3 err = m_Target - pos;
 			float dist = err.Length();
-			float speed = MathF.Min(MathF.Min(KpPos * dist, MathF.Sqrt(2f * BrakeAcc * dist)), MaxSpeed);
+			float speed = MathF.Min(MathF.Min(KpPos * dist, MathF.Sqrt(2f * BrakeAcc * dist)), m_Tuning.MaxSpeed);
 			Vector3 velTarget = (dist > 1e-6f ? err * (speed / dist) : Vector3.Zero) + m_TargetVel;
 			if (dist < IntegralRange) m_ErrorIntegral += err * dt;
 

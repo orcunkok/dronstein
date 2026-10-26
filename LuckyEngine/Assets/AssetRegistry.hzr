@@ -179,6 +179,9 @@ Assets:
   - Handle: 13509781974088747436
     FilePath: ContentVault/Robots/SO100Pod/assets/Moving_Jaw_Collision_1.stl
     Type: MeshSource
+  - Handle: 13526010890829648655
+    FilePath: Scripts/Client/Source/Tuning.cs
+    Type: ScriptFile
   - Handle: 14015958263625143840
     FilePath: Robots/Dronstein/assets/Base.stl
     Type: MeshSource
