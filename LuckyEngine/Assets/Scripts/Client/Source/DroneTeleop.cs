@@ -9,7 +9,7 @@ namespace Dronstein
 	/// <summary>
 	/// Fly the Skydio X2 and move its SO-100 arm with an Xbox controller.
 	/// The bindings are in ControllerBindings.txt in the project folder.
-	/// Keys: Y flies to the next corner of the test square (blue dots on the ground), for tuning;
+	/// Keys: Y flies to the next corner of the test square (blue dots on the ground), for tuning; G folds/unfolds the arm;
 	/// R shows/hides a wire sphere of how far the gripper can reach; F switches the camera between the drone, the gripper and the
 	/// selected ball (Tuning.Ball), W/S zoom in/out. Tuning's Set button flies over the selected ball, reach just touching the ground. Drag with the right mouse button to orbit the camera.
 	/// The top right of the screen shows the camera view and the mode: Manual, or Calibration while Y's test square is flown.
@@ -52,7 +52,7 @@ namespace Dronstein
 		const float MaxDt = 0.05f;  // s, longer frames (hitches) are treated as this long, so one slow frame can't kick the drone
 		// Arm poses for the deploy button, without the gripper (left as is).
 		static readonly float[] Stowed = { 0f, -3.32f, 3.11f, 1.18f, 0f };   // folded up
-		static readonly float[] Deployed = { 0f, -2.05f, 0.38f, 0f, 0f };    // gripper pointing down, 0.53 m below
+		static readonly float[] Deployed = { 0f, -2.01f, 1.85f, -0.35f, 1.5708f }; // upper arm ~12 deg back from straight down, forearm forward ~12 deg below level, wrist ~20 deg further down and rolled 90 deg
 
 		// Set in OnCreate, hence `null!`.
 		MujocoSceneComponent m_Mj = null!;
@@ -406,7 +406,7 @@ namespace Dronstein
 					m_Joint = i + 1;
 					Log.Info($"Right stick up/down: {ArmJoints[m_Joint]}");
 				}
-			if (Pressed("deploy"))
+			if (Pressed("deploy") || Input.IsKeyPressed(KeyCode.G))
 			{
 				m_Deployed = !m_Deployed;
 				m_ArmGoal = m_Deployed ? Deployed : Stowed;
