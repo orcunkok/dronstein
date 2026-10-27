@@ -47,5 +47,10 @@ namespace Dronstein
 
 		[Button("Pick")] [Tooltip("Pick the selected ball by itself and drop it in the trash can (slow mode); the sticks stop it")]
 		internal void PickBall() => DoPick = true;
+
+		internal bool DoPickAll;  // Pick All was clicked; DroneTeleop starts it and clears it
+
+		[Button("Pick All")] [Tooltip("Start from a random heading and pick every ball that is not in the trash can yet, in a random order (slow mode); the sticks stop it")]
+		internal void PickAll() => DoPickAll = true;
 	}
 }

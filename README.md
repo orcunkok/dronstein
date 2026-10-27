@@ -50,6 +50,7 @@ Select the **Tuning** entity in the scene. Its Properties panel has live knobs y
 | Ball | Pick a golf ball, 1 to 25. It glows purple. 0 = none |
 | **Set** | Fly to the chosen ball. The drone stops right above it, at the height where the bottom of the reach half-sphere touches the ground |
 | **Pick** | The drone picks the chosen ball by itself and drops it in the trash can (switches to Slow). Moving a stick stops it |
+| **Pick All** | Starts from a random heading and picks every ball that is not in the trash can yet, in a random order (Slow). Moving a stick stops it |
 
 ## On screen
 Top right: what the camera follows (purple when it's a ball) and the mode: **Manual**, **Calibration** (yellow) while flying the test square, **ToBall 11** (purple, with the ball number) while going to a ball, or **Pick 14 Carry** (purple, ball number and step) during an autonomous pick. Moving the sticks switches back to Manual.
@@ -61,6 +62,7 @@ Top right: what the camera follows (purple when it's a ball) and the mode: **Man
 - Golf balls and a trash can: the things to pick up and where they go.
 
 ## Latest changes
+- **Pick All:** the **Pick All** button in Tuning (Slow mode) sends the drone to a random point with a random heading, then picks every ball that is not in the trash can yet, in a random order, one after the other, straight from the can to the next ball. Each pick plans from the ball's live position (it re-plans if the ball rolled), folds the arm and turns to the new heading in transit (never with the arm down by the ground). A failed pick is retried twice, then put back in the queue once if the ball is on the ground, then skipped. About 40 s per ball. (Dev: `pickall [seed]`; the end line is `METRIC pickall seed= ok=N/M fail=[...] binMoved= binHits= time=`.)
 - **Bin keep-out:** every flight the script plans (goto, Set, B, Y, the pick) keeps the drone, its arm and a carried ball at least 10 cm above the trash can's rim whenever any part of it is within 0.5 m of the can's edge. A flight that would cross the can low is split into climb, high cruise and descent; a goal next to the can is raised (logged as `METRIC keepout clamp`). Dev: `test bin` runs the adversarial flights; every flight logs `METRIC flight minClear=... nearBin=... binMoved=...`. Sticks are not guarded.
 - **Autonomous pick:** the **Pick** button in Tuning picks the selected ball and drops it in the trash can: the drone flies behind the ball, unfolds the arm, lowers over the ball, closes the gripper gently, climbs above the can's rim, carries the ball over the can and lets go (about 35 s in Slow). A missed grasp is retried up to 2 times. (Dev: `pick N` in `Cache/nightrun_cmd.txt`, `pick N a` stops after lowering over the ball, `pick N b` after lifting it; results are `METRIC pick ...` lines in the log.)
 - **Speed modes:** Slow / Medium / Fast buttons in Tuning. Flights to a ball or corner now follow a smooth, planned path (no overshoot) at the speed of the mode; the sticks scale with the mode too. (Dev: `Cache/nightrun_cmd.txt` takes test commands, e.g. `test flight`.)

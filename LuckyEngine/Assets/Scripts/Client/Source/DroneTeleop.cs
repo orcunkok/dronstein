@@ -284,6 +284,7 @@ namespace Dronstein
 			FlightInput(dt, scale);
 			ArmInput(dt, ArmSpeed * scale);
 			PickUpdate(dt);
+			PickAllUpdate(dt);
 			NavUpdate(dt);
 			ScriptUpdate(dt);
 
@@ -369,6 +370,7 @@ namespace Dronstein
 		void ResetScene()
 		{
 			m_PickPhase = PickPhase.Off;
+			m_PaState = PaState.Off;
 			m_QN = m_QI = 0;
 			m_NavOn = false;
 			m_NavIgnore = true;
@@ -676,7 +678,7 @@ namespace Dronstein
 				if (raw.Trim() is { Length: > 0 } line) Command(line);
 		}
 
-		// mode slow|medium|fast, reset, goto x y z [yaw_deg], ball N, set, pick N [a|b], view drone|gripper|ball [distance], test flight|bin; dev: label X, rawgoto x y z, arm deploy|stow, grip v, tool x y z [dz], binc, log.
+		// mode slow|medium|fast, reset, goto x y z [yaw_deg], ball N, set, pick N [a|b], pickall [seed], view drone|gripper|ball [distance], test flight|bin; dev: label X, rawgoto x y z, arm deploy|stow, grip v, tool x y z [dz], binc, log.
 		void Command(string line)
 		{
 			Log.Info($"CMD {line}");
@@ -696,6 +698,7 @@ namespace Dronstein
 						break;
 					case "ball": m_Tuning.Ball = int.Parse(w[1]); break;
 					case "set": m_Tuning.GoToBall = true; break;
+					case "pickall": PickAllStart(w.Length > 1 ? int.Parse(w[1]) : Environment.TickCount & 0xffff); break;
 					case "pick": m_Tuning.Ball = int.Parse(w[1]); PickStart(m_Tuning.Ball, w.Length > 2 ? w[2][0] : 'c'); break;
 					case "grip": m_ArmTarget[5] = Num(1); m_ArmGoal = null; break;  // dev: gripper command (rad)
 					case "log": Log.Info($"STATE grip={Grip():F3} cmd={m_ArmTarget[5]:F3}"); break;

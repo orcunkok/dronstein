@@ -50,7 +50,9 @@ namespace Dronstein
 		Vector3[] m_PickLegs = new Vector3[3];
 		int m_PickLeg;
 		float m_PickYaw, m_PickTilt, m_PickMaxBallSite, m_PickMinZ;
-		int m_PickStall;
+		int m_PickStall, m_PickReplans;
+		bool m_PickStowed;                 // the arm has been sent to the stowed pose in Transit
+		Vector3 m_PickBallPrev;
 		float m_PickHc;
 		int m_GripQ, m_GripV;               // the gripper joint's places in qpos and qvel
 		float[] m_PickQ = new float[4];
@@ -74,13 +76,14 @@ namespace Dronstein
 			m_PickBinBody = m_Mj.GetBodyID($"lucky_body_{bin.ID}");
 			m_Tuning.SpeedMode = 0;  // slow
 			m_Tuning.Ball = n;
-			m_PickN = n; m_PickStop = stop; m_PickRetry = 0; m_PickClock = 0f;
+			m_PickN = n; m_PickStop = stop; m_PickRetry = 0; m_PickClock = 0f; m_PickReplans = 0; m_PickStowed = false; m_PickDone = false;
 			m_PickBall0 = BodyPos(m_PickBallBody);
 			m_PickBin0 = BodyPos(m_PickBinBody);
 			m_Mj.GetBodyPoseMj(m_PickBinBody, out Vector3 _, out m_PickBinQ0, out Vector3 _, out Vector3 _);
 			m_PickTilt = 0f; m_PickMaxBallSite = 0f; m_PickMinZ = 9f;
 			NavBegin();
 			m_Waypoint = -1; m_ToBall = 0; m_ArmGoal = null;
+			m_PickBallPrev = m_PickBall0;
 			PickIkSelfTest();
 			PickPlanTransit();
 		}
@@ -98,12 +101,14 @@ namespace Dronstein
 			float tt = Math.Clamp(((bin.X - pos.X) * abx + (bin.Y - pos.Y) * aby) / ab2, 0f, 1f);
 			float dx = pos.X + tt * abx - bin.X, dy = pos.Y + tt * aby - bin.Y;
 			float zc = MathF.Sqrt(dx * dx + dy * dy) < ZoneR ? MathF.Max(zPre, ZStowSafe) : zPre;
-			m_PickLegs[0] = new Vector3(pos.X, pos.Y, MathF.Max(zc, m_Target.Z));
+			// a drone that ends a failed pick low (arm down by the ground) first climbs straight up to clear the ground before the arm folds
+			float z0 = m_Mj.GetSitePositionMj(m_GraspSite).Z < 0.25f ? MathF.Max(zc, 0.75f) : zc;
+			m_PickLegs[0] = new Vector3(pos.X, pos.Y, MathF.Max(z0, m_Target.Z));
 			m_PickLegs[1] = new Vector3(m_PickHov.X, m_PickHov.Y, zc);
 			m_PickLegs[2] = m_PickHov;
 			m_PickLeg = 0;
 			PickEnter(PickPhase.Transit, $"high={(zc > zPre + 1e-3f ? 1 : 0)} yaw={m_PickYaw * 57.2958f:F0} hov=({m_PickHov.X:F3},{m_PickHov.Y:F3})");
-			FlyTo(m_PickLegs[0], m_PickYaw);
+			FlyTo(m_PickLegs[0]);  // the heading changes on the next leg, once the arm is folded
 		}
 
 		void PickEnter(PickPhase p, string extra = "")
@@ -123,6 +128,8 @@ namespace Dronstein
 			float moved = MathF.Sqrt((bin.X - m_PickBin0.X) * (bin.X - m_PickBin0.X) + (bin.Y - m_PickBin0.Y) * (bin.Y - m_PickBin0.Y)) * 100f;
 			m_Mj.GetBodyPoseMj(m_PickBinBody, out Vector3 _, out Quaternion q, out Vector3 _, out Vector3 _);
 			float binTilt = 2f * MathF.Acos(Math.Clamp(MathF.Abs(q.X * m_PickBinQ0.X + q.Y * m_PickBinQ0.Y + q.Z * m_PickBinQ0.Z + q.W * m_PickBinQ0.W), 0f, 1f)) * 57.2958f;  // angle from the starting orientation
+			m_PickDone = true; m_PickOkLast = ok; m_PickInBin = inBin; m_PickReason = reason;
+			if (!ok && m_PickPhase is PickPhase.Lift or PickPhase.HoldB or PickPhase.Carry) m_ArmTarget[5] = GripOpen;  // let go of whatever is left in the hand
 			Log.Info($"METRIC pick ball={m_PickN} result={(ok ? "ok" : "fail")} reason={reason} stop={m_PickStop} ballInBin={inBin} binMoved={moved:F2} binTilt={binTilt:F1} " +
 				$"maxTilt={m_PickTilt:F1} ballSiteMax={m_PickMaxBallSite * 100f:F1} minZ={m_PickMinZ:F3} {NavFields()} retries={m_PickRetry} time={m_PickClock:F1}");
 			m_PickPhase = PickPhase.Off;
@@ -238,10 +245,10 @@ namespace Dronstein
 			if (m_Tuning.DoPick) { m_Tuning.DoPick = false; PickStart(m_Tuning.Ball, 'c'); }
 			if (m_PickPhase == PickPhase.Off) return;
 			m_PickClock += dt; m_PickT += dt;
-			m_ArmGoal = null;
+			if (m_PickPhase != PickPhase.Transit) m_ArmGoal = null;  // Transit folds the arm by itself
 			m_PickTilt = MathF.Max(m_PickTilt, MathF.Acos(Math.Clamp(m_R[2, 2], -1f, 1f)) * 57.2958f);
 			m_PickMinZ = MathF.Min(m_PickMinZ, m_Qpos[2]);
-			if (m_PickClock > 400f) { PickEnd(false, "timeout"); return; }
+			if (m_PickClock > 240f) { PickEnd(false, "timeout"); return; }
 
 			Vector3 ball = BodyPos(m_PickBallBody), site = m_Mj.GetSitePositionMj(m_GraspSite);
 			var pos = new Vector3(m_Qpos[0], m_Qpos[1], m_Qpos[2]);
@@ -259,15 +266,31 @@ namespace Dronstein
 			{
 				case PickPhase.Transit:
 				{
-					if (m_PickT > 120f) { PickEnd(false, "transit_timeout"); return; }
+					if (m_PickT > 120f) { PickEnd(false, $"transit_timeout leg={m_PickLeg} stowed={m_PickStowed} stowDone={StowDone()} armGoalNull={m_ArmGoal == null} flying={Flying} yawOn={m_YawOn} yawErr={YawError():F2}"); return; }
+					// fold the arm and close the hand once the fingertips are clear of the ground (a pick can follow a failed one)
+					if (!m_PickStowed && (site.Z > 0.2f || (!Flying && m_PickLeg == 0))) { m_ArmGoal = Stowed; m_PickStowed = true; }  // or the climb is over, whatever the pose
+					if (m_PickStowed) m_ArmTarget[5] = MoveToward(m_ArmTarget[5], GripClosed, GripOpenSpeed * dt);
 					if (m_PickLeg < 3)
 					{
-						if (!Flying && (pos - m_PickLegs[m_PickLeg]).Length() < 0.04f && ++m_PickLeg < 3) FlyTo(m_PickLegs[m_PickLeg]);
+						// leg 1 turns the heading (shortest way), with the arm folded
+						if (!Flying && (pos - m_PickLegs[m_PickLeg]).Length() < 0.04f && (m_PickLeg > 0 || (m_PickStowed && StowDone())) && ++m_PickLeg < 3)
+							FlyTo(m_PickLegs[m_PickLeg], m_PickLeg == 1 ? m_PickYaw : null);
+						break;
+					}
+					// the ball may have rolled since the plan (an earlier drop, a nudge): once it is still, plan again from where it is
+					float bsp = HDist(ball, m_PickBallPrev) / dt;
+					m_PickBallPrev = ball;
+					if (HDist(ball, m_PickBall0) > 0.02f && m_PickReplans < 4)
+					{
+						if (bsp > 0.02f) { m_PickSub = 0f; break; }
+						m_PickReplans++;
+						m_PickBall0 = ball;
+						PickPlanTransit();
 						break;
 					}
 					// the heading must have converged before the arm opens; then 0.5 s of calm
 					var vel = new Vector3(m_Qvel[0], m_Qvel[1], m_Qvel[2]);
-					if (!Flying && !m_YawOn && (pos - m_PickHov).Length() < 0.015f && vel.Length() < 0.03f && MathF.Abs(YawError()) < 0.02f) m_PickSub += dt; else m_PickSub = 0f;
+					if (!Flying && !m_YawOn && StowDone() && (pos - m_PickHov).Length() < 0.015f && vel.Length() < 0.03f && MathF.Abs(YawError()) < 0.02f) m_PickSub += dt; else m_PickSub = 0f;
 					if (m_PickSub >= 0.5f) { m_ArmTarget[5] = GripClosed; PickEnter(PickPhase.Deploy); }
 					break;
 				}
@@ -376,6 +399,16 @@ namespace Dronstein
 					if (m_PickT >= 2f) PickEnd(true, "dropped");
 					break;
 			}
+		}
+
+		// The arm has reached the stowed pose (as far as the joint limits let it: some stowed angles lie past a limit, so ArmGoal itself never finishes).
+		bool StowDone()
+		{
+			if (!m_PickStowed) return false;
+			for (int i = 0; i < 5; i++)
+				if (MathF.Abs(Math.Clamp(Stowed[i], m_ArmLow[i], m_ArmHigh[i]) - m_ArmTarget[i]) > 0.01f) return false;
+			m_ArmGoal = null;
+			return true;
 		}
 
 		static float MoveToward(float v, float goal, float step) => v + Math.Clamp(goal - v, -step, step);
