@@ -56,7 +56,11 @@ namespace Dronstein
 		static readonly float[,] Waypoints = { { 10, 10 }, { 10, -10 }, { -10, -10 }, { -10, 10 } };  // (x, y), MuJoCo frame
 		static readonly string[] Views = { "Drone", "Gripper", "Ball" };  // what the camera can watch; F steps through them
 		// HUD, in pixels: the labels' x from the right edge, the first baseline from the top, the row height, the values' x after the labels.
-		const float HudRight = 380f, HudTop = 60f, HudRow = 44f, HudValueX = 115f;
+		const float HudRight = 320f, HudTop = 60f, HudRow = 44f, HudValueX = 115f;
+		const float HudModeLabelDx = 33f, HudTaskLabelDx = 37f;  // right-aligns MODE and TASK with CAMERA (text has no alignment; widths measured on screen: 96, 62, 60 px)
+		// Rendered pixels per Application.Width unit: the monitor scale (Hyprland, 1.6) times Lucky's editor UI scale
+		// (UiScale in ~/.config/LuckyEngine/LuckyEditor/EditorApplicationSettings.yaml, 0.75). Change it if either changes.
+		const float HudPixelScale = 1.6f * 0.75f;
 		static readonly Vector4 Purple = new(0.8f, 0.6f, 1f, 1f), Yellow = new(1f, 0.847f, 0f, 1f);  // ball view, calibrating (#FFD800)
 		const float MaxDt = 0.05f;  // s, longer frames (hitches) are treated as this long, so one slow frame can't kick the drone
 		// Arm poses for the deploy button, without the gripper (left as is).
@@ -77,7 +81,6 @@ namespace Dronstein
 		float[,] m_R = new float[3, 3], m_Rt = new float[3, 3], m_Mix = new float[4, 5];
 		float[] m_Thrust = new float[4];
 		Entity m_Camera = null!, m_Body = null!, m_GripDot = null!, m_CenterDot = null!;
-		CameraComponent m_CameraView = null!;  // m_Camera's, to find the screen size in rendered pixels
 		float m_GripDotY, m_CenterDotY;  // the dots' fixed height above the ground
 		Tuning m_Tuning = null!;  // the knobs on the entity tagged "Tuning"
 		int m_SelectedBall;          // the ball shown purple (0 = none)
@@ -228,7 +231,6 @@ namespace Dronstein
 			if (m_Missing) return;
 			m_HudCameraColor = m_HudCamera.GetComponent<TextComponent>()!.Color;
 			m_HudModeColor = m_HudMode.GetComponent<TextComponent>()!.Color;
-			m_CameraView = m_Camera.GetComponent<CameraComponent>()!;
 			m_GripDotY = m_GripDot.Translation.Y;
 			m_CenterDotY = m_CenterDot.Translation.Y;
 			// Orbit camera: start from the scene camera's authored offset from the drone.
@@ -486,21 +488,19 @@ namespace Dronstein
 
 		// Top right of the screen: the camera view (purple on a ball), the mode (yellow while calibrating) and the task, the step of a pick.
 		// Screen-space text is placed in rendered pixels from the bottom left. Application.Width/Height are smaller than that
-		// on a scaled display (by the scale factor), so the size comes from the camera: the orbit center projects to the
-		// middle of the screen.
+		// by HudPixelScale, which scripts can't read, so it is a constant.
 		void UpdateHud()
 		{
-			Vector2 middle = m_CameraView.ToScreenSpace(m_OrbitCenter);
-			(uint Width, uint Height) size = ((uint)MathF.Round(2f * middle.X), (uint)MathF.Round(2f * middle.Y));
+			(uint Width, uint Height) size = ((uint)MathF.Round(Application.Width * HudPixelScale), (uint)MathF.Round(Application.Height * HudPixelScale));
 			if (size != m_HudSize)
 			{
 				m_HudSize = size;
 				float x = size.Width - HudRight, y = size.Height - HudTop;
 				m_HudCameraLabel.Translation = new Vector3(x, y, 0f);
 				m_HudCamera.Translation = new Vector3(x + HudValueX, y, 0f);
-				m_HudModeLabel.Translation = new Vector3(x, y - HudRow, 0f);
+				m_HudModeLabel.Translation = new Vector3(x + HudModeLabelDx, y - HudRow, 0f);
 				m_HudMode.Translation = new Vector3(x + HudValueX, y - HudRow, 0f);
-				m_HudTaskLabel.Translation = new Vector3(x, y - 2f * HudRow, 0f);
+				m_HudTaskLabel.Translation = new Vector3(x + HudTaskLabelDx, y - 2f * HudRow, 0f);
 				m_HudTask.Translation = new Vector3(x + HudValueX, y - 2f * HudRow, 0f);
 			}
 			var shown = (m_View, m_SelectedBall, m_Waypoint, m_ToBall, (int)m_PickPhase, (int)m_PaState);
