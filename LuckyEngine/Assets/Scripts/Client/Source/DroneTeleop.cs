@@ -237,6 +237,7 @@ namespace Dronstein
 			m_Elbow = m_Mj.GetBodyID("Lower_Arm");
 			m_Wrist = m_Mj.GetBodyID("Wrist_Pitch_Roll");
 			PickInit();
+			KeepOutInit();
 
 			Log.Info($"DroneTeleop: start at {m_Target}, nq={m_Mj.ModelNq} nu={m_Mj.ModelNu}, {m_DroneBodies.Length} bodies, {m_Mass:F2} kg");
 			LoadBindings();
@@ -283,6 +284,8 @@ namespace Dronstein
 			FlightInput(dt, scale);
 			ArmInput(dt, ArmSpeed * scale);
 			PickUpdate(dt);
+			NavUpdate(dt);
+			ScriptUpdate(dt);
 
 			float[] thrust = MotorThrusts(dt);
 			for (int i = 0; i < 4; i++) m_Motors[i].Value = thrust[i];
@@ -308,7 +311,10 @@ namespace Dronstein
 
 		// Starts a flight from the reference's current state (position, velocity, acceleration: no jump) to `goal`, ending at rest.
 		// yaw (rad, a heading to turn to by the shortest way) is optional, null = keep the heading. The duration is the longest the limits of the mode need.
-		void FlyTo(Vector3 goal, float? yaw = null)
+		void FlyTo(Vector3 goal, float? yaw = null) => RawFlyTo(KeepOut(goal), yaw);  // KeepOut splits it into legs near the bin (DroneTeleopKeepOut.cs)
+
+		// One straight flight, no bin check.
+		void RawFlyTo(Vector3 goal, float? yaw = null)
 		{
 			int m = Mode;
 			float vmax = m_LimV > 0f ? m_LimV : ModeVmax[m], vz = m_LimVz > 0f ? m_LimVz : ModeVz[m], amax = m_LimA > 0f ? m_LimA : ModeAmax[m];
@@ -363,6 +369,9 @@ namespace Dronstein
 		void ResetScene()
 		{
 			m_PickPhase = PickPhase.Off;
+			m_QN = m_QI = 0;
+			m_NavOn = false;
+			m_NavIgnore = true;
 			m_Mj.ResetToInitialState(false);  // false: the simulation clock restarts too
 			m_Mj.GetFullQpos(m_Qpos);
 			m_Target = new Vector3(m_Qpos[0], m_Qpos[1], m_Qpos[2]);
@@ -553,6 +562,7 @@ namespace Dronstein
 				m_ToBall = 0;
 				m_PosOn = m_YawOn = false;
 				PickEnd(false, "sticks");
+				m_QN = m_QI = 0;
 			}
 
 			if (m_YawOn)
@@ -571,7 +581,13 @@ namespace Dronstein
 			if (m_PosOn)
 			{
 				m_PosT += dt;
-				if (m_PosT >= m_PosQ.T) { m_PosQ.Eval(m_PosQ.T, out m_Target, out Vector3 _, out Vector3 _); m_TargetVel = m_TargetAcc = m_AccFF = Vector3.Zero; m_PosOn = false; }
+				if (m_PosT >= m_PosQ.T)
+				{
+					m_PosQ.Eval(m_PosQ.T, out m_Target, out Vector3 _, out Vector3 _);
+					m_TargetVel = m_TargetAcc = m_AccFF = Vector3.Zero;
+					m_PosOn = false;
+					while (!m_PosOn && m_QI < m_QN) RawFlyTo(m_Q[m_QI++]);  // the next leg of a flight split by the keep-out
+				}
 				else m_PosQ.Eval(m_PosT, out m_Target, out m_TargetVel, out m_TargetAcc);
 				m_PosQ.Eval(MathF.Min(m_PosT + AccLead, m_PosQ.T), out Vector3 _, out Vector3 _, out m_AccFF);
 			}
@@ -660,7 +676,7 @@ namespace Dronstein
 				if (raw.Trim() is { Length: > 0 } line) Command(line);
 		}
 
-		// mode slow|medium|fast, reset, goto x y z [yaw_deg], ball N, set, pick N [a|b], view drone|gripper|ball [distance], test flight.
+		// mode slow|medium|fast, reset, goto x y z [yaw_deg], ball N, set, pick N [a|b], view drone|gripper|ball [distance], test flight|bin; dev: label X, rawgoto x y z, arm deploy|stow, grip v, tool x y z [dz], binc, log.
 		void Command(string line)
 		{
 			Log.Info($"CMD {line}");
@@ -684,8 +700,13 @@ namespace Dronstein
 					case "grip": m_ArmTarget[5] = Num(1); m_ArmGoal = null; break;  // dev: gripper command (rad)
 					case "log": Log.Info($"STATE grip={Grip():F3} cmd={m_ArmTarget[5]:F3}"); break;
 					case "tool": m_Tool = new Vector3(Num(1), Num(2), Num(3)); if (w.Length > 4) m_ToolDz = Num(4); break;  // dev: ball centre in the jaw frame, and its height above the ball
+					case "geoms": { for (uint gi = 0; gi < m_Mj.ModelNgeom; gi++) { string gn = m_Mj.GetGeomNameByIndex(gi); if (gn.Contains(w[1])) Log.Info($"GEOM {gi} {gn}"); } break; }  // dev
+					case "label": m_Case = line[6..].Trim(); break;  // dev: names the next flights in the METRIC lines
+					case "rawgoto": m_Waypoint = -1; m_ToBall = 0; RawFlyTo(new Vector3(Num(1), Num(2), Num(3))); m_QN = m_QI = 0; m_NavIgnore = true; break;  // dev: a flight without the bin keep-out (to park low next to the can)
+					case "arm": m_ArmGoal = w[1] == "deploy" ? Deployed : Stowed; m_Deployed = w[1] == "deploy"; break;
+					case "binc": { string r = ""; for (int i = 0; i < m_BinGeoms.Length; i++) r += m_Mj.IsGeomInContact(m_BinGeoms[i]) ? $" {i}:{m_Mj.GetGeomContactForce(m_BinGeoms[i]):F2}" : ""; Log.Info($"BINC rim={m_Rim:F3} contacts[{r} ]"); break; }
 					case "view": m_View = Array.FindIndex(Views, v => v.ToLowerInvariant() == w[1]); if (m_View < 0) m_View = 0; if (w.Length > 2) m_ViewDistance[m_View] = Num(2); break;
-					case "test": if (w[1] == "flight") { m_TestStep = 0; m_TestNew = true; } break;
+					case "test": if (w[1] == "flight") { m_TestStep = 0; m_TestNew = true; } else if (w[1] == "bin") StartBinTest(); break;
 					default: Log.Info($"CMD unknown: {line}"); break;
 				}
 			}
@@ -742,7 +763,7 @@ namespace Dronstein
 				if (sign != 0) { if (m_TestSign != 0 && sign != m_TestSign) m_TestFlips++; m_TestSign = sign; }
 			}
 			if (m_TestTime > 240f) { Log.Info($"METRIC aborted mode={ModeNames[Mode]} step={m_TestStep}: too slow"); m_TestStep = -1; return; }
-			if (m_PosOn || m_YawOn) return;
+			if (Flying || m_YawOn) return;
 
 			if (m_TestFlight < 0f) m_TestFlight = m_TestTime;  // the reference arrived
 			m_TestHold += dt;
