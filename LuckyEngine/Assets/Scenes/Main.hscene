@@ -1257,14 +1257,6 @@ Entities:
       ScriptID: 4272566980
       ScriptName: Dronstein.DroneTeleop
       Fields:
-        - ID: 1937834346
-          Name: MoveSpeed
-          Type: Float
-          Value: 1
-        - ID: 3783553640
-          Name: TurnSpeed
-          Type: Float
-          Value: 1
         - ID: 1312441785
           Name: ArmSpeed
           Type: Float
@@ -1293,42 +1285,6 @@ Entities:
           Name: SelectedBallMaterial
           Type: Material
           Value: 2185301101015856168
-        - ID: 2092749931
-          Name: KpPos
-          Type: Float
-          Value: 2
-        - ID: 4194242218
-          Name: BrakeAcc
-          Type: Float
-          Value: 2
-        - ID: 3378629800
-          Name: KpVel
-          Type: Float
-          Value: 6
-        - ID: 1427675376
-          Name: KiPos
-          Type: Float
-          Value: 8
-        - ID: 3375901921
-          Name: IntegralRange
-          Type: Float
-          Value: 0.3
-        - ID: 4007388648
-          Name: StickSmooth
-          Type: Float
-          Value: 3.5
-        - ID: 3642655048
-          Name: MaxTiltAcc
-          Type: Float
-          Value: 4
-        - ID: 2127192604
-          Name: KpAtt
-          Type: Float
-          Value: 10
-        - ID: 1922690992
-          Name: KdAtt
-          Type: Float
-          Value: 1.5
     MujocoSceneComponent:
       MujocoScene: 2871429880033931469
   - Entity: 7742062062987136463
@@ -1760,14 +1716,26 @@ Entities:
           Name: ShowReach
           Type: Bool
           Value: true
-        - ID: 3844286311
-          Name: MaxSpeed
+        - ID: 354509072
+          Name: SpeedMode
+          Type: Int
+          Value: 2
+        - ID: 2160224974
+          Name: TopSpeed
           Type: Float
-          Value: 50
+          Value: 0
         - ID: 3085311765
           Name: Speed
           Type: Float
           Value: 0
+        - ID: 2404956662
+          Name: GraspReach
+          Type: Float
+          Value: 0.65
+        - ID: 2948441558
+          Name: GraspAngle
+          Type: Float
+          Value: 45
         - ID: 896224755
           Name: Ball
           Type: Int

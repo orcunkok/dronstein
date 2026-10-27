@@ -109,7 +109,10 @@ namespace Dronstein
 		Vector3 m_ErrorIntegral;
 		float m_Yaw = MathF.PI;  // heading of the nose; the X2 spawns with its nose (camera, body -x) along world -x
 		int m_Waypoint = -1;
-		int m_ToBall;         // the ball being flown to (Tuning's Set or B), 0 = none; until the sticks take over
+		int m_ToBall;         // the ball being flown to (Tuning's Navigate to ball or B), 0 = none; until the sticks take over
+		bool m_AutoWas;       // Tuning.AutoOn as last seen
+		int m_AutoMode;       // the Tuning.AutoMode that was started
+		static readonly string[] AutoModeNames = { "navigate to ball", "pick selected ball", "pick all balls" };
 		string? m_BallEntry;  // digits typed after B, null when not typing
 		readonly HashSet<KeyCode> m_KeysDown = new();  // keys down last frame, for Tapped
 		bool m_Precise;
@@ -285,6 +288,7 @@ namespace Dronstein
 			ArmInput(dt, ArmSpeed * scale);
 			PickUpdate(dt);
 			PickAllUpdate(dt);
+			AutoUpdate();
 			NavUpdate(dt);
 			ScriptUpdate(dt);
 
@@ -446,6 +450,36 @@ namespace Dronstein
 			m_Waypoint = -1;
 			m_ToBall = m_SelectedBall;
 			Log.Info($"DroneTeleop: going to ball {m_SelectedBall:00}, goal ({goal.X:F2}, {goal.Y:F2}, {goal.Z:F2})");
+		}
+
+		// Tuning's Autonomous Mode Action switch: turning it on starts the Select Mode action, turning it off stops it and
+		// gives the drone back to manual (as the sticks do). It is turned off here once the action is over, by itself or by the sticks.
+		void AutoUpdate()
+		{
+			if (m_Tuning.AutoOn != m_AutoWas)
+			{
+				m_AutoWas = m_Tuning.AutoOn;
+				if (m_AutoWas)
+				{
+					m_AutoMode = Math.Clamp(m_Tuning.AutoMode, 0, 2);
+					Log.Info($"DroneTeleop: autonomous {AutoModeNames[m_AutoMode]} started");
+					if (m_AutoMode == 0) m_Tuning.GoToBall = true;  // flown later this frame
+					else if (m_AutoMode == 1) PickStart(m_Tuning.Ball, 'c');
+					else PickAllStart(Environment.TickCount & 0xffff);
+					return;  // busy from next frame on
+				}
+				Log.Info("DroneTeleop: autonomous action stopped, manual");
+				m_Waypoint = -1;
+				m_ToBall = 0;
+				m_PosOn = m_YawOn = false;
+				PickEnd(false, "stopped");
+				if (m_PaState != PaState.Off) PickAllEnd("stopped");
+				m_QN = m_QI = 0;
+				return;
+			}
+			if (!m_AutoWas) return;
+			bool busy = m_AutoMode == 0 ? m_ToBall > 0 && Flying : m_AutoMode == 1 ? m_PickPhase != PickPhase.Off : m_PaState != PaState.Off;
+			if (!busy) m_Tuning.AutoOn = m_AutoWas = false;
 		}
 
 		// Top right of the screen: the camera view (purple on a ball) and the mode (yellow while calibrating).

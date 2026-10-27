@@ -242,7 +242,6 @@ namespace Dronstein
 		// Called every frame after the sticks and before the control law.
 		void PickUpdate(float dt)
 		{
-			if (m_Tuning.DoPick) { m_Tuning.DoPick = false; PickStart(m_Tuning.Ball, 'c'); }
 			if (m_PickPhase == PickPhase.Off) return;
 			m_PickClock += dt; m_PickT += dt;
 			if (m_PickPhase != PickPhase.Transit) m_ArmGoal = null;  // Transit folds the arm by itself

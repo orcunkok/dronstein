@@ -6,7 +6,7 @@ using Hazel;
 namespace Dronstein
 {
 	/// <summary>
-	/// Pick All: every golf ball not yet in the can, in a seeded random order, from a random start heading (Tuning's Pick All button,
+	/// Pick All: every golf ball not yet in the can, in a seeded random order, from a random start heading (Tuning's Pick all balls mode,
 	/// or `pickall [seed]` in the command file). Each ball is a normal pick (DroneTeleopPick.cs) planned from the live ball position;
 	/// between balls the drone goes straight from the can to the next ball. A failed pick (after its own 2 grasp retries) is put at the
 	/// end of the queue once if the ball is still on the ground outside the can, then skipped with its reason.
@@ -72,7 +72,6 @@ namespace Dronstein
 
 		void PickAllUpdate(float dt)
 		{
-			if (m_Tuning.DoPickAll) { m_Tuning.DoPickAll = false; PickAllStart(Environment.TickCount & 0xffff); }
 			if (m_PaState == PaState.Off) return;
 			m_PaClock += dt;
 			if (m_PaClock > 3600f) { if (m_PickPhase != PickPhase.Off) PickEnd(false, "pickall_timeout"); PickAllEnd("timeout"); return; }

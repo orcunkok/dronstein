@@ -44,6 +44,9 @@ Assets:
   - Handle: 4512471431298144687
     FilePath: Meshes/Default/Cube.hsmesh
     Type: StaticMesh
+  - Handle: 4659177727710341459
+    FilePath: Scripts/Client/Source/DroneTeleopKeepOut.cs
+    Type: ScriptFile
   - Handle: 4723399741370758433
     FilePath: Scripts/Intermediates/Debug/Dronstein.sourcelink.json
     Type: Motion
@@ -112,6 +115,9 @@ Assets:
     Type: Material
   - Handle: 8935484533300629911
     FilePath: Scripts/Client/Source/DroneTeleop.cs
+    Type: ScriptFile
+  - Handle: 8996062247093160465
+    FilePath: Scripts/Client/Source/DroneTeleopPickAll.cs
     Type: ScriptFile
   - Handle: 9165876777693599905
     FilePath: Robots/Dronstein/assets/Base_Motor.stl
@@ -218,6 +224,9 @@ Assets:
   - Handle: 16102727838158965090
     FilePath: Meshes/Default/Cylinder.hsmesh
     Type: StaticMesh
+  - Handle: 16141801636602312376
+    FilePath: Scripts/Client/Source/DroneTeleopPick.cs
+    Type: ScriptFile
   - Handle: 16763015685236763184
     FilePath: Meshes/Default/Source/Cube.gltf
     Type: MeshSource
