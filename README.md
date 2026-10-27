@@ -28,14 +28,15 @@ To change buttons, edit `LuckyEngine/ControllerBindings.txt`, save it, and press
 ## Keyboard
 | Key | What it does |
 |---|---|
-| F | Camera follows the drone, the gripper or the selected ball |
-| W / S | Zoom in / out |
+| C | Camera follows the drone, the gripper or the selected ball |
+| Q / E | Zoom in / out |
 | Right mouse drag | Rotate the camera |
 | T | Show / hide the arm's reach (the blue half-sphere) |
 | R | Reset the scene: drone, arm, balls and trash can go back to where they started |
 | G | Unfold / fold the arm (same as View on the controller) |
-| B, number, Enter | Fly to that ball, e.g. B 1 1 Enter for ball 11 (same as Tuning's Navigate to ball). A number with no ball is ignored |
+| B, number, Enter | Fly to that ball, e.g. B 1 1 Enter for ball 11 (same as Tuning's Navigate to ball). The keypad digits and keypad Enter work too. A number with no ball is ignored |
 | Y | Fly to the next corner of the test square (blue dots on the ground) |
+| F | Start / stop the Autonomous Mode Action. Starting it sets Select Mode to Pick all balls |
 
 ## Tuning panel
 Select the **Tuning** entity in the scene. Its Properties panel has live knobs you can change while playing:

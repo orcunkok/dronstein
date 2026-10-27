@@ -1,5 +1,5 @@
 # Xbox controller bindings for DroneTeleop. Read when Play starts: edit, save, press Play again.
-# Everything here is on the controller. Fixed keys: Y next test-square waypoint, F camera on drone/gripper/selected ball, W/S zoom, right mouse drag orbits.
+# Everything here is on the controller. Fixed keys: Y next test-square waypoint, C camera on drone/gripper/selected ball, Q/E zoom, F start/stop autonomous action, right mouse drag orbits.
 #
 # Numbers are axes (as Lucky reports this Xbox controller): 0 left stick X, 1 left stick Y, 2 left trigger,
 #   3 right stick X, 4 right stick Y, 5 right trigger. Triggers rest at -1.

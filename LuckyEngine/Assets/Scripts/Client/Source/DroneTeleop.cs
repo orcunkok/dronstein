@@ -10,8 +10,9 @@ namespace Dronstein
 	/// Fly the Skydio X2 and move its SO-100 arm with an Xbox controller.
 	/// The bindings are in ControllerBindings.txt in the project folder.
 	/// Keys: Y flies to the next corner of the test square (blue dots on the ground), for tuning; G folds/unfolds the arm; B, a ball number and Enter fly to that ball;
-	/// R resets the scene; T shows/hides a wire sphere of how far the gripper can reach; F switches the camera between the drone, the gripper and the
-	/// selected ball (Tuning.Ball), W/S zoom in/out. Tuning's Set button flies in behind and above the selected ball, with the ball inside the reach. Drag with the right mouse button to orbit the camera.
+	/// R resets the scene; T shows/hides a wire sphere of how far the gripper can reach; C switches the camera between the drone, the gripper and the
+	/// selected ball (Tuning.Ball), Q/E zoom in/out. F starts/stops the Autonomous Mode Action (starting runs Pick all balls).
+	/// Tuning's Set button flies in behind and above the selected ball, with the ball inside the reach. Drag with the right mouse button to orbit the camera.
 	/// The top right of the screen shows the camera view and the mode: Manual, or Calibration while Y's test square is flown.
 	/// Attach to the entity that holds dronstein.xml (its MujocoScene).
 	///
@@ -54,7 +55,7 @@ namespace Dronstein
 		static readonly float[,] Rotors = { { -0.14f, -0.18f, -0.0201f }, { -0.14f, 0.18f, 0.0201f }, { 0.14f, 0.18f, -0.0201f }, { 0.14f, -0.18f, 0.0201f } };
 		const float MaxThrust = 13f, Gravity = 9.81f, MaxYawTorque = 0.3f;
 		static readonly float[,] Waypoints = { { 10, 10 }, { 10, -10 }, { -10, -10 }, { -10, 10 } };  // (x, y), MuJoCo frame
-		static readonly string[] Views = { "Drone", "Gripper", "Ball" };  // what the camera can watch; F steps through them
+		static readonly string[] Views = { "Drone", "Gripper", "Ball" };  // what the camera can watch; C steps through them
 		// HUD, in pixels: the labels' x from the right edge, the first baseline from the top, the row height, the values' x after the labels.
 		const float HudRight = 320f, HudTop = 60f, HudRow = 44f, HudValueX = 115f;
 		const float HudModeLabelDx = 33f, HudTaskLabelDx = 37f;  // right-aligns MODE and TASK with CAMERA (text has no alignment; widths measured on screen: 96, 62, 60 px)
@@ -288,6 +289,11 @@ namespace Dronstein
 			m_Tuning.TopSpeed = ModeVmax[Mode];
 			PollCommands(dt);
 			if (Tapped(KeyCode.R)) ResetScene();
+			if (Tapped(KeyCode.F))  // start / stop; starting always runs Pick all balls
+			{
+				m_Tuning.AutoOn = !m_Tuning.AutoOn;
+				if (m_Tuning.AutoOn) m_Tuning.AutoMode = 2;
+			}
 			FlightInput(dt, scale);
 			ArmInput(dt, ArmSpeed * scale);
 			PickUpdate(dt);
@@ -457,33 +463,41 @@ namespace Dronstein
 		}
 
 		// Tuning's Autonomous Mode Action switch: turning it on starts the Select Mode action, turning it off stops it and
-		// gives the drone back to manual (as the sticks do). It is turned off here once the action is over, by itself or by the sticks.
+		// gives the drone back to manual (as the sticks do). Changing the Select Mode while it runs restarts it in the new mode.
+		// It is turned off here once the action is over, by itself or by the sticks.
 		void AutoUpdate()
 		{
-			if (m_Tuning.AutoOn != m_AutoWas)
+			int mode = Math.Clamp(m_Tuning.AutoMode, 0, 2);
+			if (m_Tuning.AutoOn != m_AutoWas || (m_AutoWas && mode != m_AutoMode))
 			{
+				if (m_AutoWas) AutoStop();
 				m_AutoWas = m_Tuning.AutoOn;
-				if (m_AutoWas)
-				{
-					m_AutoMode = Math.Clamp(m_Tuning.AutoMode, 0, 2);
-					Log.Info($"DroneTeleop: autonomous {AutoModeNames[m_AutoMode]} started");
-					if (m_AutoMode == 0) m_Tuning.GoToBall = true;  // flown later this frame
-					else if (m_AutoMode == 1) PickStart(m_Tuning.Ball, 'c');
-					else PickAllStart(Environment.TickCount & 0xffff);
-					return;  // busy from next frame on
-				}
-				Log.Info("DroneTeleop: autonomous action stopped, manual");
-				m_Waypoint = -1;
-				m_ToBall = 0;
-				m_PosOn = m_YawOn = false;
-				PickEnd(false, "stopped");
-				if (m_PaState != PaState.Off) PickAllEnd("stopped");
-				m_QN = m_QI = 0;
+				if (m_AutoWas) AutoStart(mode);
 				return;
 			}
 			if (!m_AutoWas) return;
 			bool busy = m_AutoMode == 0 ? m_ToBall > 0 && Flying : m_AutoMode == 1 ? m_PickPhase != PickPhase.Off : m_PaState != PaState.Off;
 			if (!busy) m_Tuning.AutoOn = m_AutoWas = false;
+		}
+
+		void AutoStart(int mode)
+		{
+			m_AutoMode = mode;
+			Log.Info($"DroneTeleop: autonomous {AutoModeNames[m_AutoMode]} started");
+			if (m_AutoMode == 0) m_Tuning.GoToBall = true;  // flown later this frame
+			else if (m_AutoMode == 1) PickStart(m_Tuning.Ball, 'c');
+			else PickAllStart(Environment.TickCount & 0xffff);
+		}
+
+		void AutoStop()
+		{
+			Log.Info("DroneTeleop: autonomous action stopped, manual");
+			m_Waypoint = -1;
+			m_ToBall = 0;
+			m_PosOn = m_YawOn = false;
+			PickEnd(false, "stopped");
+			if (m_PaState != PaState.Off) PickAllEnd("stopped");
+			m_QN = m_QI = 0;
 		}
 
 		// Top right of the screen: the camera view (purple on a ball), the mode (yellow while calibrating) and the task, the step of a pick.
@@ -566,10 +580,10 @@ namespace Dronstein
 			return p;
 		}
 
-		// Drag with the right mouse button to orbit, W/S to zoom; F steps through the drone, the gripper and the selected ball.
+		// Drag with the right mouse button to orbit, Q/E to zoom; C steps through the drone, the gripper and the selected ball.
 		void OrbitCamera(float dt, Vector3 drone, Vector3 gripper, Vector3 ball)
 		{
-			if (Tapped(KeyCode.F)) m_View = (m_View + 1) % Views.Length;
+			if (Tapped(KeyCode.C)) m_View = (m_View + 1) % Views.Length;
 			if (m_View == 2 && m_Ball == null) m_View = 0;  // no ball selected: skip the ball view
 			Vector2 mouse = Input.GetMousePosition();
 			if (Input.IsMouseButtonDown(MouseButton.Right))
@@ -579,7 +593,7 @@ namespace Dronstein
 			}
 			m_LastMouse = mouse;
 
-			float zoom = ((Input.IsKeyDown(KeyCode.S) ? 1f : 0f) - (Input.IsKeyDown(KeyCode.W) ? 1f : 0f)) * ZoomSpeed * dt;
+			float zoom = ((Input.IsKeyDown(KeyCode.E) ? 1f : 0f) - (Input.IsKeyDown(KeyCode.Q) ? 1f : 0f)) * ZoomSpeed * dt;
 			float dist = m_ViewDistance[m_View] = Math.Clamp(m_ViewDistance[m_View] + zoom, 0.3f, 20f);
 
 			Vector3 center = m_OrbitCenter = m_View == 0 ? drone : m_View == 1 ? gripper : ball;
