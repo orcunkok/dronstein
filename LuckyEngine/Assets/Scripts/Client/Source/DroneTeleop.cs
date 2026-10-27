@@ -18,7 +18,7 @@ namespace Dronstein
 	/// The sticks move a target point; a cascaded PID (position -> velocity -> tilt) flies the drone to it.
 	/// All math is in MuJoCo's frame (z up), straight from qpos/qvel.
 	/// </summary>
-	public class DroneTeleop : Entity
+	public partial class DroneTeleop : Entity
 	{
 		public float ArmSpeed = 1.0f;   // rad/s
 		public float PreciseScale = 0.25f;  // speed factor in precise mode
@@ -94,7 +94,7 @@ namespace Dronstein
 		Entity m_HudCameraLabel = null!, m_HudCamera = null!, m_HudModeLabel = null!, m_HudMode = null!;
 		Vector4 m_HudCameraColor, m_HudModeColor;  // the values' colours set in the scene, used when not purple/yellow
 		(uint, uint) m_HudSize;
-		(int, int, int, int) m_HudShown = (-1, -1, -2, -1);  // (m_View, m_SelectedBall, m_Waypoint, m_ToBall)
+		(int, int, int, int, int) m_HudShown = (-1, -1, -2, -1, -1);  // (m_View, m_SelectedBall, m_Waypoint, m_ToBall, m_PickPhase)
 		Vector2 m_LastMouse;
 
 		// Flight
@@ -129,6 +129,7 @@ namespace Dronstein
 		int m_Pad = -1;  // controller ID, -1 when none is connected
 		float m_PadScan;  // s until the next look for a controller while none is in use
 
+		float m_LimV, m_LimVz, m_LimA;     // a flight's own limits instead of the mode's (the pick's slow descent), 0 = the mode's
 		float m_LogTimer, m_MaxTilt;
 		string m_CmdPath = "";
 		float m_CmdTimer;
@@ -235,6 +236,7 @@ namespace Dronstein
 			m_Shoulder = m_Mj.GetBodyID("Upper_Arm");
 			m_Elbow = m_Mj.GetBodyID("Lower_Arm");
 			m_Wrist = m_Mj.GetBodyID("Wrist_Pitch_Roll");
+			PickInit();
 
 			Log.Info($"DroneTeleop: start at {m_Target}, nq={m_Mj.ModelNq} nu={m_Mj.ModelNu}, {m_DroneBodies.Length} bodies, {m_Mass:F2} kg");
 			LoadBindings();
@@ -280,6 +282,7 @@ namespace Dronstein
 			if (Tapped(KeyCode.R)) ResetScene();
 			FlightInput(dt, scale);
 			ArmInput(dt, ArmSpeed * scale);
+			PickUpdate(dt);
 
 			float[] thrust = MotorThrusts(dt);
 			for (int i = 0; i < 4; i++) m_Motors[i].Value = thrust[i];
@@ -308,12 +311,13 @@ namespace Dronstein
 		void FlyTo(Vector3 goal, float? yaw = null)
 		{
 			int m = Mode;
+			float vmax = m_LimV > 0f ? m_LimV : ModeVmax[m], vz = m_LimVz > 0f ? m_LimVz : ModeVz[m], amax = m_LimA > 0f ? m_LimA : ModeAmax[m];
 			goal.Z = MathF.Max(goal.Z, MinHeight);
 			Vector3 d = goal - m_Target;
 			float dh = MathF.Sqrt(d.X * d.X + d.Y * d.Y), dz = MathF.Abs(d.Z);
-			float T = MathF.Max(MathF.Max(Duration(dh, ModeVmax[m], ModeAmax[m]), Duration(dz, ModeVz[m], ModeAmax[m])), ModeTmin[m]);
-			float D = d.Length(), vl = MathF.Min(dh > 1e-4f ? ModeVmax[m] * D / dh : 1e9f, dz > 1e-4f ? ModeVz[m] * D / dz : 1e9f);  // top speed along the line
-			float ta = 1.875f * vl / ModeAmax[m];
+			float T = MathF.Max(MathF.Max(Duration(dh, vmax, amax), Duration(dz, vz, amax)), m_LimV > 0f ? 0.5f : ModeTmin[m]);
+			float D = d.Length(), vl = MathF.Min(dh > 1e-4f ? vmax * D / dh : 1e9f, dz > 1e-4f ? vz * D / dz : 1e9f);  // top speed along the line
+			float ta = 1.875f * vl / amax;
 			if (D > 1e-3f || m_TargetVel.Length() > 1e-2f)
 			{
 				if (D > vl * ta && m_TargetVel.Length() < 0.05f && m_TargetAcc.Length() < 0.2f) m_PosQ.SetCruise(m_Target, d * (1f / D), D, vl, ta);  // long enough to reach vl, from rest
@@ -358,6 +362,7 @@ namespace Dronstein
 		// R: everything back as when Play started (drone, arm, balls, trash can), and the script's flight and arm state with it.
 		void ResetScene()
 		{
+			m_PickPhase = PickPhase.Off;
 			m_Mj.ResetToInitialState(false);  // false: the simulation clock restarts too
 			m_Mj.GetFullQpos(m_Qpos);
 			m_Target = new Vector3(m_Qpos[0], m_Qpos[1], m_Qpos[2]);
@@ -449,12 +454,13 @@ namespace Dronstein
 				m_HudModeLabel.Translation = new Vector3(x, y - HudRow, 0f);
 				m_HudMode.Translation = new Vector3(x + HudValueX, y - HudRow, 0f);
 			}
-			var shown = (m_View, m_SelectedBall, m_Waypoint, m_ToBall);
+			var shown = (m_View, m_SelectedBall, m_Waypoint, m_ToBall, (int)m_PickPhase);
 			if (shown == m_HudShown) return;
 			m_HudShown = shown;
 			SetText(m_HudCamera, m_View == 2 ? $"Ball {m_SelectedBall:00}" : Views[m_View], m_View == 2 ? Purple : m_HudCameraColor);
-			SetText(m_HudMode, m_Waypoint >= 0 ? $"Calibration {m_Waypoint + 1}/4" : m_ToBall > 0 ? $"ToBall {m_ToBall:00}" : "Manual",
-				m_Waypoint >= 0 ? Yellow : m_ToBall > 0 ? Purple : m_HudModeColor);
+			bool pick = m_PickPhase != PickPhase.Off;
+			SetText(m_HudMode, pick ? $"Pick {m_PickN} {m_PickPhase}" : m_Waypoint >= 0 ? $"Calibration {m_Waypoint + 1}/4" : m_ToBall > 0 ? $"ToBall {m_ToBall:00}" : "Manual",
+				pick ? Purple : m_Waypoint >= 0 ? Yellow : m_ToBall > 0 ? Purple : m_HudModeColor);
 		}
 
 		static void SetText(Entity entity, string text, Vector4 color)
@@ -546,6 +552,7 @@ namespace Dronstein
 				m_Waypoint = -1;
 				m_ToBall = 0;
 				m_PosOn = m_YawOn = false;
+				PickEnd(false, "sticks");
 			}
 
 			if (m_YawOn)
@@ -617,7 +624,7 @@ namespace Dronstein
 			}
 
 			float turn = Axis("arm_turn"), bend = Axis("arm_joint"), grip = Pair("gripper_open", "gripper_close");
-			if (turn != 0f || bend != 0f || grip != 0f) m_ArmGoal = null;  // the sticks take over from deploy
+			if (turn != 0f || bend != 0f || grip != 0f) { m_ArmGoal = null; PickEnd(false, "sticks"); }  // the sticks take over from deploy
 			MoveArmJoint(m_RollWrist ? 4 : 0, turn * speed * dt);
 			MoveArmJoint(m_Joint, bend * speed * dt);
 			MoveArmJoint(5, grip * speed * dt);
@@ -653,7 +660,7 @@ namespace Dronstein
 				if (raw.Trim() is { Length: > 0 } line) Command(line);
 		}
 
-		// mode slow|medium|fast, reset, goto x y z [yaw_deg], ball N, set, test flight.
+		// mode slow|medium|fast, reset, goto x y z [yaw_deg], ball N, set, pick N [a|b], view drone|gripper|ball [distance], test flight.
 		void Command(string line)
 		{
 			Log.Info($"CMD {line}");
@@ -673,6 +680,11 @@ namespace Dronstein
 						break;
 					case "ball": m_Tuning.Ball = int.Parse(w[1]); break;
 					case "set": m_Tuning.GoToBall = true; break;
+					case "pick": m_Tuning.Ball = int.Parse(w[1]); PickStart(m_Tuning.Ball, w.Length > 2 ? w[2][0] : 'c'); break;
+					case "grip": m_ArmTarget[5] = Num(1); m_ArmGoal = null; break;  // dev: gripper command (rad)
+					case "log": Log.Info($"STATE grip={Grip():F3} cmd={m_ArmTarget[5]:F3}"); break;
+					case "tool": m_Tool = new Vector3(Num(1), Num(2), Num(3)); if (w.Length > 4) m_ToolDz = Num(4); break;  // dev: ball centre in the jaw frame, and its height above the ball
+					case "view": m_View = Array.FindIndex(Views, v => v.ToLowerInvariant() == w[1]); if (m_View < 0) m_View = 0; if (w.Length > 2) m_ViewDistance[m_View] = Num(2); break;
 					case "test": if (w[1] == "flight") { m_TestStep = 0; m_TestNew = true; } break;
 					default: Log.Info($"CMD unknown: {line}"); break;
 				}

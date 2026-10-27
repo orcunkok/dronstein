@@ -49,9 +49,10 @@ Select the **Tuning** entity in the scene. Its Properties panel has live knobs y
 | **Slow** / **Medium** / **Fast** | Speed mode: sets top speed, acceleration, turn rate and how the sticks feel (about 0.8 / 2.5 / 6 m/s). Flights (Set, B, Y) follow a smooth path that does not overshoot |
 | Ball | Pick a golf ball, 1 to 25. It glows purple. 0 = none |
 | **Set** | Fly to the chosen ball. The drone stops right above it, at the height where the bottom of the reach half-sphere touches the ground |
+| **Pick** | The drone picks the chosen ball by itself and drops it in the trash can (switches to Slow). Moving a stick stops it |
 
 ## On screen
-Top right: what the camera follows (purple when it's a ball) and the mode: **Manual**, **Calibration** (yellow) while flying the test square, or **ToBall 11** (purple, with the ball number) while going to a ball. Moving the sticks switches back to Manual.
+Top right: what the camera follows (purple when it's a ball) and the mode: **Manual**, **Calibration** (yellow) while flying the test square, **ToBall 11** (purple, with the ball number) while going to a ball, or **Pick 14 Carry** (purple, ball number and step) during an autonomous pick. Moving the sticks switches back to Manual.
 
 ## On the ground
 - Green dot: the point right under the drone's center.
@@ -60,6 +61,7 @@ Top right: what the camera follows (purple when it's a ball) and the mode: **Man
 - Golf balls and a trash can: the things to pick up and where they go.
 
 ## Latest changes
+- **Autonomous pick:** the **Pick** button in Tuning picks the selected ball and drops it in the trash can: the drone flies behind the ball, unfolds the arm, lowers over the ball, closes the gripper gently, climbs above the can's rim, carries the ball over the can and lets go (about 35 s in Slow). A missed grasp is retried up to 2 times. (Dev: `pick N` in `Cache/nightrun_cmd.txt`, `pick N a` stops after lowering over the ball, `pick N b` after lifting it; results are `METRIC pick ...` lines in the log.)
 - **Speed modes:** Slow / Medium / Fast buttons in Tuning. Flights to a ball or corner now follow a smooth, planned path (no overshoot) at the speed of the mode; the sticks scale with the mode too. (Dev: `Cache/nightrun_cmd.txt` takes test commands, e.g. `test flight`.)
 - **Trash can can be moved:** it's now a free, light (~1.1 kg) aluminium can you can push with the drone or drag with the mouse (Force Tool).
 - **R resets the scene** (drone, arm, balls, trash can back to the start). The reach half-sphere moved to **T**.

@@ -42,5 +42,10 @@ namespace Dronstein
 
 		[Button("Set")] [Tooltip("Fly in behind the selected ball and low, so the ball sits inside the reach (GraspReach, GraspAngle)")]
 		internal void SetBall() => GoToBall = true;
+
+		internal bool DoPick;  // Pick was clicked; DroneTeleop starts the pick and clears it
+
+		[Button("Pick")] [Tooltip("Pick the selected ball by itself and drop it in the trash can (slow mode); the sticks stop it")]
+		internal void PickBall() => DoPick = true;
 	}
 }
