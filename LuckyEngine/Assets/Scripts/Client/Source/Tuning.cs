@@ -18,9 +18,11 @@ namespace Dronstein
 		public float Speed;
 
 		[Slider(0, 25)] [Tooltip("Golf ball to highlight, 1 to 25 for GolfBall_01 to GolfBall_25 (0 = none)")]
-		public int Ball = 4;
+		public int Ball = 14;
 
-		[Tooltip("Glowing material the selected ball switches to")]
-		public Material? SelectedBallMaterial;
+		internal bool GoToBall;  // Set was clicked; DroneTeleop flies there and clears it
+
+		[Button("Set")] [Tooltip("Fly over the selected ball, low enough that the bottom of the reach half-sphere touches the ground")]
+		internal void SetBall() => GoToBall = true;
 	}
 }

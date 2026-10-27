@@ -11,7 +11,7 @@ namespace Dronstein
 	/// The bindings are in ControllerBindings.txt in the project folder.
 	/// Keys: Y flies to the next corner of the test square (blue dots on the ground), for tuning;
 	/// R shows/hides a wire sphere of how far the gripper can reach; F switches the camera between the drone, the gripper and the
-	/// selected ball (Tuning.Ball), W/S zoom in/out. Drag with the right mouse button to orbit the camera.
+	/// selected ball (Tuning.Ball), W/S zoom in/out. Tuning's Set button flies over the selected ball, reach just touching the ground. Drag with the right mouse button to orbit the camera.
 	/// The top right of the screen shows the camera view and the mode: Manual, or Calibration while Y's test square is flown.
 	/// Attach to the entity that holds dronstein.xml (its MujocoScene).
 	///
@@ -28,6 +28,7 @@ namespace Dronstein
 		public float OrbitSpeed = 0.005f;   // rad per pixel of mouse drag
 		public float GripperViewDistance = 1.232f;  // m, starting camera distance when it looks at the gripper
 		public float ZoomSpeed = 1.427f;    // m/s while W or S is held
+		public Material? SelectedBallMaterial;  // glowing material the selected ball (Tuning.Ball) switches to, none = not highlighted
 
 		// Position loop: error -> desired velocity, capped by Tuning.MaxSpeed and by what BrakeAcc can stop in time.
 		public float KpPos = 2.0f, BrakeAcc = 8f;
@@ -209,7 +210,8 @@ namespace Dronstein
 
 			Vector3 grasp = m_Mj.GetSitePositionMj(m_GraspSite);  // MuJoCo (x, y) on the ground is Lucky (x, -z)
 			Vector3 body = m_Body.Translation;
-			if (m_Tuning.Ball != m_SelectedBall && m_Tuning.SelectedBallMaterial != null) SelectBall(m_Tuning.Ball);
+			if (m_Tuning.Ball != m_SelectedBall) SelectBall(m_Tuning.Ball);
+			if (m_Tuning.GoToBall) GoToBall(grasp);
 			Vector3 ball = m_Ball != null ? BodyPos(m_BallBody) : Vector3.Zero;
 			OrbitCamera(dt, body, new Vector3(grasp.X, grasp.Z, -grasp.Y), new Vector3(ball.X, ball.Z, -ball.Y));
 			UpdateHud();
@@ -220,18 +222,41 @@ namespace Dronstein
 			LogStatus(dt, thrust);
 		}
 
-		// Paints ball n with Tuning's glowing purple material and gives the previously selected ball its own back.
+		// Paints ball n with the glowing purple SelectedBallMaterial and gives the previously selected ball its own back.
 		// Ball n is tagged GolfBall_01, GolfBall_02...
 		void SelectBall(int n)
 		{
-			m_Ball?.GetComponent<StaticMeshComponent>()!.SetMaterial(0, m_BallMaterial!);
+			if (m_BallMaterial != null) m_Ball?.GetComponent<StaticMeshComponent>()!.SetMaterial(0, m_BallMaterial);
+			m_BallMaterial = null;
 			m_SelectedBall = n;
 			m_Ball = n > 0 ? FindEntityByTag($"GolfBall_{n:00}") : null;
 			if (m_Ball == null) return;
+			m_BallBody = m_Mj.GetBodyID($"lucky_body_{m_Ball.ID}");
+			if (SelectedBallMaterial == null) return;
 			var mesh = m_Ball.GetComponent<StaticMeshComponent>()!;
 			m_BallMaterial = mesh.GetMaterial(0);
-			mesh.SetMaterial(0, m_Tuning.SelectedBallMaterial!);
-			m_BallBody = m_Mj.GetBodyID($"lucky_body_{m_Ball.ID}");
+			mesh.SetMaterial(0, SelectedBallMaterial);
+		}
+
+		// Tuning's Set button: puts the reach's center (the shoulder-lift pivot) straight over the selected ball, at the
+		// height where the bottom of the reach half-sphere just touches the ground (z = 0). The pivot's offset from the
+		// drone is taken in the body frame and turned to the heading, level, as the drone will be when it hovers there.
+		void GoToBall(Vector3 tip)
+		{
+			m_Tuning.GoToBall = false;
+			if (m_Ball == null) return;
+			Vector3 ball = BodyPos(m_BallBody), d = BodyPos(m_Shoulder) - new Vector3(m_Qpos[0], m_Qpos[1], m_Qpos[2]);
+			float[,] R = m_R;  // body -> world, from this frame's MotorThrusts
+			float bx = R[0, 0] * d.X + R[1, 0] * d.Y + R[2, 0] * d.Z;
+			float by = R[0, 1] * d.X + R[1, 1] * d.Y + R[2, 1] * d.Z;
+			float bz = R[0, 2] * d.X + R[1, 2] * d.Y + R[2, 2] * d.Z;
+			// Level at heading m_Yaw, body x is (-cos, -sin, 0) and body y (sin, -cos, 0), as in MotorThrusts.
+			float c = MathF.Cos(m_Yaw), s = MathF.Sin(m_Yaw);
+			var offset = new Vector3(-c * bx + s * by, -s * bx - c * by, bz);
+			m_Target = new Vector3(ball.X - offset.X, ball.Y - offset.Y, ReachRadius(tip) - offset.Z);
+			m_TargetVel = m_TargetAcc = Vector3.Zero;
+			m_Waypoint = -1;
+			Log.Info($"DroneTeleop: going to ball {m_SelectedBall:00}, target ({m_Target.X:F2}, {m_Target.Y:F2}, {m_Target.Z:F2})");
 		}
 
 		// Top right of the screen: the camera view (purple on a ball) and the mode (yellow while calibrating).
@@ -269,8 +294,8 @@ namespace Dronstein
 		// shoulder-lift pivot, with the arm's three links laid end to end as radius. Ignores the joint limits.
 		void DrawReach(Vector3 tip)
 		{
-			Vector3 shoulder = BodyPos(m_Shoulder), elbow = BodyPos(m_Elbow), wrist = BodyPos(m_Wrist);
-			float radius = (elbow - shoulder).Length() + (wrist - elbow).Length() + (tip - wrist).Length();
+			Vector3 shoulder = BodyPos(m_Shoulder);
+			float radius = ReachRadius(tip);
 			Vector3 center = new(shoulder.X, shoulder.Z, -shoulder.Y);  // to Lucky's frame (y up)
 			Vector4 color = new(0.2f, 0.9f, 1f, 1f);
 			const int Rings = 6, Meridians = 8, Segments = 32;
@@ -295,6 +320,13 @@ namespace Dronstein
 						center + (dir * MathF.Cos(b) + new Vector3(0f, MathF.Sin(b), 0f)) * radius, color);
 				}
 			}
+		}
+
+		// The arm's three links laid end to end, from the shoulder-lift pivot to the fingertip `tip`.
+		float ReachRadius(Vector3 tip)
+		{
+			Vector3 shoulder = BodyPos(m_Shoulder), elbow = BodyPos(m_Elbow), wrist = BodyPos(m_Wrist);
+			return (elbow - shoulder).Length() + (wrist - elbow).Length() + (tip - wrist).Length();
 		}
 
 		Vector3 BodyPos(uint body)
