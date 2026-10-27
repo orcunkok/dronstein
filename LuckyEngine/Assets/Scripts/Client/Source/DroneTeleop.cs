@@ -9,7 +9,7 @@ namespace Dronstein
 	/// <summary>
 	/// Fly the Skydio X2 and move its SO-100 arm with an Xbox controller.
 	/// The bindings are in ControllerBindings.txt in the project folder.
-	/// Keys: Y flies to the next corner of the test square (blue dots on the ground), for tuning; G folds/unfolds the arm;
+	/// Keys: Y flies to the next corner of the test square (blue dots on the ground), for tuning; G folds/unfolds the arm; B, a ball number and Enter fly to that ball;
 	/// R shows/hides a wire sphere of how far the gripper can reach; F switches the camera between the drone, the gripper and the
 	/// selected ball (Tuning.Ball), W/S zoom in/out. Tuning's Set button flies over the selected ball, reach just touching the ground. Drag with the right mouse button to orbit the camera.
 	/// The top right of the screen shows the camera view and the mode: Manual, or Calibration while Y's test square is flown.
@@ -85,7 +85,7 @@ namespace Dronstein
 		Entity m_HudCameraLabel = null!, m_HudCamera = null!, m_HudModeLabel = null!, m_HudMode = null!;
 		Vector4 m_HudCameraColor, m_HudModeColor;  // the values' colours set in the scene, used when not purple/yellow
 		(uint, uint) m_HudSize;
-		(int, int, int) m_HudShown = (-1, -1, -2);  // (m_View, m_SelectedBall, m_Waypoint)
+		(int, int, int, int) m_HudShown = (-1, -1, -2, -1);  // (m_View, m_SelectedBall, m_Waypoint, m_ToBall)
 		Vector2 m_LastMouse;
 
 		// Flight
@@ -94,6 +94,9 @@ namespace Dronstein
 		Vector3 m_ErrorIntegral;
 		float m_Yaw = MathF.PI;  // heading of the nose; the X2 spawns with its nose (camera, body -x) along world -x
 		int m_Waypoint = -1;
+		int m_ToBall;         // the ball being flown to (Tuning's Set or B), 0 = none; until the sticks take over
+		string? m_BallEntry;  // digits typed after B, null when not typing
+		readonly HashSet<KeyCode> m_KeysDown = new();  // keys down last frame, for Tapped
 		bool m_Precise;
 
 		// Arm
@@ -210,6 +213,7 @@ namespace Dronstein
 
 			Vector3 grasp = m_Mj.GetSitePositionMj(m_GraspSite);  // MuJoCo (x, y) on the ground is Lucky (x, -z)
 			Vector3 body = m_Body.Translation;
+			BallEntry();
 			if (m_Tuning.Ball != m_SelectedBall) SelectBall(m_Tuning.Ball);
 			if (m_Tuning.GoToBall) GoToBall(grasp);
 			Vector3 ball = m_Ball != null ? BodyPos(m_BallBody) : Vector3.Zero;
@@ -217,7 +221,7 @@ namespace Dronstein
 			UpdateHud();
 			m_GripDot.Translation = new Vector3(grasp.X, m_GripDotY, -grasp.Y);
 			m_CenterDot.Translation = new Vector3(body.X, m_CenterDotY, body.Z);
-			if (Input.IsKeyPressed(KeyCode.R)) m_Tuning.ShowReach = !m_Tuning.ShowReach;
+			if (Tapped(KeyCode.R)) m_Tuning.ShowReach = !m_Tuning.ShowReach;
 			if (m_Tuning.ShowReach) DrawReach(grasp);
 			LogStatus(dt, thrust);
 		}
@@ -238,6 +242,36 @@ namespace Dronstein
 			mesh.SetMaterial(0, SelectedBallMaterial);
 		}
 
+		// B, a ball number and Enter (e.g. B 1 1 Enter) selects that ball in Tuning and flies there, like Set.
+		// A number with no ball is ignored.
+		void BallEntry()
+		{
+			// Every key is checked every frame (single |), so Tapped always knows whether it was down last frame.
+			bool b = Tapped(KeyCode.B), enter = Tapped(KeyCode.Enter) | Tapped(KeyCode.KPEnter);
+			int digit = -1;
+			for (int d = 0; d <= 9; d++)
+				if (Tapped(KeyCode.D0 + d) | Tapped(KeyCode.KP0 + d)) digit = d;
+			if (b) { m_BallEntry = ""; return; }
+			if (m_BallEntry == null) return;
+			if (digit >= 0) m_BallEntry += digit;
+			if (!enter) return;
+			if (int.TryParse(m_BallEntry, out int n) && n > 0 && FindEntityByTag($"GolfBall_{n:00}") != null)
+			{
+				m_Tuning.Ball = n;
+				m_Tuning.GoToBall = true;
+			}
+			m_BallEntry = null;
+		}
+
+		// Went down this frame (down now, up last frame), however long it is held. Call once per key per frame.
+		bool Tapped(KeyCode key)
+		{
+			bool down = Input.IsKeyDown(key), tapped = down && !m_KeysDown.Contains(key);
+			if (down) m_KeysDown.Add(key);
+			else m_KeysDown.Remove(key);
+			return tapped;
+		}
+
 		// Tuning's Set button: puts the reach's center (the shoulder-lift pivot) straight over the selected ball, at the
 		// height where the bottom of the reach half-sphere just touches the ground (z = 0). The pivot's offset from the
 		// drone is taken in the body frame and turned to the heading, level, as the drone will be when it hovers there.
@@ -256,6 +290,7 @@ namespace Dronstein
 			m_Target = new Vector3(ball.X - offset.X, ball.Y - offset.Y, ReachRadius(tip) - offset.Z);
 			m_TargetVel = m_TargetAcc = Vector3.Zero;
 			m_Waypoint = -1;
+			m_ToBall = m_SelectedBall;
 			Log.Info($"DroneTeleop: going to ball {m_SelectedBall:00}, target ({m_Target.X:F2}, {m_Target.Y:F2}, {m_Target.Z:F2})");
 		}
 
@@ -276,11 +311,12 @@ namespace Dronstein
 				m_HudModeLabel.Translation = new Vector3(x, y - HudRow, 0f);
 				m_HudMode.Translation = new Vector3(x + HudValueX, y - HudRow, 0f);
 			}
-			var shown = (m_View, m_SelectedBall, m_Waypoint);
+			var shown = (m_View, m_SelectedBall, m_Waypoint, m_ToBall);
 			if (shown == m_HudShown) return;
 			m_HudShown = shown;
 			SetText(m_HudCamera, m_View == 2 ? $"Ball {m_SelectedBall:00}" : Views[m_View], m_View == 2 ? Purple : m_HudCameraColor);
-			SetText(m_HudMode, m_Waypoint >= 0 ? $"Calibration {m_Waypoint + 1}/4" : "Manual", m_Waypoint >= 0 ? Yellow : m_HudModeColor);
+			SetText(m_HudMode, m_Waypoint >= 0 ? $"Calibration {m_Waypoint + 1}/4" : m_ToBall > 0 ? $"ToBall {m_ToBall:00}" : "Manual",
+				m_Waypoint >= 0 ? Yellow : m_ToBall > 0 ? Purple : m_HudModeColor);
 		}
 
 		static void SetText(Entity entity, string text, Vector4 color)
@@ -338,7 +374,7 @@ namespace Dronstein
 		// Drag with the right mouse button to orbit, W/S to zoom; F steps through the drone, the gripper and the selected ball.
 		void OrbitCamera(float dt, Vector3 drone, Vector3 gripper, Vector3 ball)
 		{
-			if (Input.IsKeyPressed(KeyCode.F)) m_View = (m_View + 1) % Views.Length;
+			if (Tapped(KeyCode.F)) m_View = (m_View + 1) % Views.Length;
 			if (m_View == 2 && m_Ball == null) m_View = 0;  // no ball selected: skip the ball view
 			Vector2 mouse = Input.GetMousePosition();
 			if (Input.IsMouseButtonDown(MouseButton.Right))
@@ -368,7 +404,11 @@ namespace Dronstein
 			wantVel.Z = Pair("up", "down") * move;
 			float turn = Pair("turn_left", "turn_right");
 			m_Yaw += turn * TurnSpeed * scale * dt;
-			if (wantVel.Length() > 0f || turn != 0f) m_Waypoint = -1;  // the sticks take over: back to manual mode
+			if (wantVel.Length() > 0f || turn != 0f)  // the sticks take over: back to manual mode
+			{
+				m_Waypoint = -1;
+				m_ToBall = 0;
+			}
 
 			// Ease the speed in and out (critically damped), so acceleration and tilt rise and fall smoothly.
 			m_TargetAcc += ((wantVel - m_TargetVel) * (StickSmooth * StickSmooth) - m_TargetAcc * (2f * StickSmooth)) * dt;
@@ -383,9 +423,10 @@ namespace Dronstein
 				m_TargetAcc.Z = MathF.Max(m_TargetAcc.Z, 0f);
 			}
 
-			if (Input.IsKeyPressed(KeyCode.Y))
+			if (Tapped(KeyCode.Y))
 			{
 				m_Waypoint = (m_Waypoint + 1) % 4;
+				m_ToBall = 0;
 				m_Target.X = Waypoints[m_Waypoint, 0];
 				m_Target.Y = Waypoints[m_Waypoint, 1];
 				Log.Info($"DroneTeleop: going to waypoint {m_Waypoint} ({m_Target.X}, {m_Target.Y})");
@@ -406,7 +447,7 @@ namespace Dronstein
 					m_Joint = i + 1;
 					Log.Info($"Right stick up/down: {ArmJoints[m_Joint]}");
 				}
-			if (Pressed("deploy") || Input.IsKeyPressed(KeyCode.G))
+			if (Tapped(KeyCode.G) | Pressed("deploy"))
 			{
 				m_Deployed = !m_Deployed;
 				m_ArmGoal = m_Deployed ? Deployed : Stowed;

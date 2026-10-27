@@ -33,6 +33,7 @@ To change buttons, edit `LuckyEngine/ControllerBindings.txt`, save it, and press
 | Right mouse drag | Rotate the camera |
 | R | Show / hide the arm's reach (the blue half-sphere) |
 | G | Unfold / fold the arm (same as View on the controller) |
+| B, number, Enter | Fly to that ball, e.g. B 1 1 Enter for ball 11 (same as Tuning's Set). A number with no ball is ignored |
 | Y | Fly to the next corner of the test square (blue dots on the ground) |
 
 ## Tuning panel
@@ -47,7 +48,7 @@ Select the **Tuning** entity in the scene. Its Properties panel has live knobs y
 | **Set** | Fly to the chosen ball. The drone stops right above it, at the height where the bottom of the reach half-sphere touches the ground |
 
 ## On screen
-Top right: what the camera follows (purple when it's a ball) and the mode: **Manual**, or **Calibration** (yellow) while flying the test square.
+Top right: what the camera follows (purple when it's a ball) and the mode: **Manual**, **Calibration** (yellow) while flying the test square, or **ToBall 11** (purple, with the ball number) while going to a ball. Moving the sticks switches back to Manual.
 
 ## On the ground
 - Green dot: the point right under the drone's center.
@@ -56,6 +57,7 @@ Top right: what the camera follows (purple when it's a ball) and the mode: **Man
 - Golf balls and a trash can: the things to pick up and where they go.
 
 ## Latest changes
+- **B key:** type B, a ball number and Enter to fly to that ball. The screen shows ToBall and the ball number.
 - **G key:** unfolds / folds the arm. Unfolded, the upper arm leans slightly back and the forearm reaches forward almost level (about 12° below) instead of hanging straight down.
 - **Fly to a ball:** pick a ball in Tuning and press **Set**. The drone flies over it and lowers until its reach just touches the ground.
 - **Ball selection:** the chosen ball glows purple, and F can point the camera at it.
