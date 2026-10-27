@@ -91,10 +91,10 @@ namespace Dronstein
 		float[] m_ViewDistance = new float[3];  // each view keeps its own zoom
 		int m_View;
 		// HUD texts, moved only when the screen is resized and rewritten only when what they show changes.
-		Entity m_HudCameraLabel = null!, m_HudCamera = null!, m_HudModeLabel = null!, m_HudMode = null!;
+		Entity m_HudCameraLabel = null!, m_HudCamera = null!, m_HudModeLabel = null!, m_HudMode = null!, m_HudTaskLabel = null!, m_HudTask = null!;
 		Vector4 m_HudCameraColor, m_HudModeColor;  // the values' colours set in the scene, used when not purple/yellow
 		(uint, uint) m_HudSize;
-		(int, int, int, int, int) m_HudShown = (-1, -1, -2, -1, -1);  // (m_View, m_SelectedBall, m_Waypoint, m_ToBall, m_PickPhase)
+		(int, int, int, int, int, int) m_HudShown = (-1, -1, -2, -1, -1, -1);  // (m_View, m_SelectedBall, m_Waypoint, m_ToBall, m_PickPhase, m_PaState)
 		Vector2 m_LastMouse;
 
 		// Flight
@@ -223,6 +223,8 @@ namespace Dronstein
 			m_HudCamera = Find("HudCamera");
 			m_HudModeLabel = Find("HudModeLabel");
 			m_HudMode = Find("HudMode");
+			m_HudTaskLabel = Find("HudTaskLabel");
+			m_HudTask = Find("HudTask");
 			if (m_Missing) return;
 			m_HudCameraColor = m_HudCamera.GetComponent<TextComponent>()!.Color;
 			m_HudModeColor = m_HudMode.GetComponent<TextComponent>()!.Color;
@@ -395,7 +397,7 @@ namespace Dronstein
 			Log.Info("DroneTeleop: scene reset");
 		}
 
-		// B, a ball number and Enter (e.g. B 1 1 Enter) selects that ball in Tuning and flies there, like Set.
+		// B, a ball number and Enter (e.g. B 1 1 Enter) selects that ball in Tuning and flies there, like Navigate to ball.
 		// A number with no ball is ignored.
 		void BallEntry()
 		{
@@ -425,7 +427,7 @@ namespace Dronstein
 			return tapped;
 		}
 
-		// Tuning's Set button: puts the reach's center (the shoulder-lift pivot) behind the selected ball along the heading
+		// Tuning's Navigate to ball mode (and B): puts the reach's center (the shoulder-lift pivot) behind the selected ball along the heading
 		// and above it, so the ball sits Tuning.GraspReach of the reach away, Tuning.GraspAngle below level: inside the
 		// half-sphere, where the forward-reaching arm can grab it. If that would take the drone below MinHeight, it stays
 		// at MinHeight and backs off instead, keeping the same distance. The pivot's offset from the drone is taken in the
@@ -482,7 +484,7 @@ namespace Dronstein
 			if (!busy) m_Tuning.AutoOn = m_AutoWas = false;
 		}
 
-		// Top right of the screen: the camera view (purple on a ball) and the mode (yellow while calibrating).
+		// Top right of the screen: the camera view (purple on a ball), the mode (yellow while calibrating) and the task, the step of a pick.
 		// Screen-space text is placed in rendered pixels from the bottom left. Application.Width/Height are smaller than that
 		// on a scaled display (by the scale factor), so the size comes from the camera: the orbit center projects to the
 		// middle of the screen.
@@ -498,14 +500,18 @@ namespace Dronstein
 				m_HudCamera.Translation = new Vector3(x + HudValueX, y, 0f);
 				m_HudModeLabel.Translation = new Vector3(x, y - HudRow, 0f);
 				m_HudMode.Translation = new Vector3(x + HudValueX, y - HudRow, 0f);
+				m_HudTaskLabel.Translation = new Vector3(x, y - 2f * HudRow, 0f);
+				m_HudTask.Translation = new Vector3(x + HudValueX, y - 2f * HudRow, 0f);
 			}
-			var shown = (m_View, m_SelectedBall, m_Waypoint, m_ToBall, (int)m_PickPhase);
+			var shown = (m_View, m_SelectedBall, m_Waypoint, m_ToBall, (int)m_PickPhase, (int)m_PaState);
 			if (shown == m_HudShown) return;
 			m_HudShown = shown;
 			SetText(m_HudCamera, m_View == 2 ? $"Ball {m_SelectedBall:00}" : Views[m_View], m_View == 2 ? Purple : m_HudCameraColor);
-			bool pick = m_PickPhase != PickPhase.Off;
-			SetText(m_HudMode, pick ? $"Pick {m_PickN} {m_PickPhase}" : m_Waypoint >= 0 ? $"Calibration {m_Waypoint + 1}/4" : m_ToBall > 0 ? $"ToBall {m_ToBall:00}" : "Manual",
-				pick ? Purple : m_Waypoint >= 0 ? Yellow : m_ToBall > 0 ? Purple : m_HudModeColor);
+			bool pick = m_PickPhase != PickPhase.Off, pickAll = m_PaState != PaState.Off;  // Pick All flies to its start point before the first pick
+			SetText(m_HudMode, pick ? $"Pick {m_PickN:00}" : pickAll ? "Pick All" : m_Waypoint >= 0 ? $"Calibration {m_Waypoint + 1}/4" : m_ToBall > 0 ? $"ToBall {m_ToBall:00}" : "Manual",
+				pick || pickAll ? Purple : m_Waypoint >= 0 ? Yellow : m_ToBall > 0 ? Purple : m_HudModeColor);
+			SetText(m_HudTask, pick ? (m_PickPhase == PickPhase.HoldB ? "Hold" : m_PickPhase.ToString()) : m_PaState == PaState.Start ? "Go to start" : pickAll ? "Next ball" : "-",
+				pick || pickAll ? Purple : m_HudModeColor);
 		}
 
 		static void SetText(Entity entity, string text, Vector4 color)

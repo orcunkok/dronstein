@@ -7,7 +7,7 @@ A Skydio X2 drone carries an SO-100 arm in Lucky Engine. The goal is to pick up 
 1. Open the `LuckyEngine` project in Lucky Engine.
 2. Press **Play**.
 3. Fly with an Xbox controller. A few extra keys are on the keyboard.
-4. To send the drone to a ball, use the Tuning panel (see below).
+4. To send the drone to a ball or let it pick balls by itself, use the Tuning panel (see below).
 
 ## Controller
 | Button | What it does |
@@ -34,7 +34,7 @@ To change buttons, edit `LuckyEngine/ControllerBindings.txt`, save it, and press
 | T | Show / hide the arm's reach (the blue half-sphere) |
 | R | Reset the scene: drone, arm, balls and trash can go back to where they started |
 | G | Unfold / fold the arm (same as View on the controller) |
-| B, number, Enter | Fly to that ball, e.g. B 1 1 Enter for ball 11 (same as Tuning's Set). A number with no ball is ignored |
+| B, number, Enter | Fly to that ball, e.g. B 1 1 Enter for ball 11 (same as Tuning's Navigate to ball). A number with no ball is ignored |
 | Y | Fly to the next corner of the test square (blue dots on the ground) |
 
 ## Tuning panel
@@ -42,18 +42,44 @@ Select the **Tuning** entity in the scene. Its Properties panel has live knobs y
 
 | Knob | What it does |
 |---|---|
-| Show Reach | Show / hide the arm's reach (same as T) |
-| Speed Mode | Current mode: Slow, Medium or Fast (read only, set with the buttons) |
+| **Show Reach** | Show / hide the arm's reach (same as T) |
+| Speed Mode | Slow, Medium or Fast: sets top speed, acceleration, turn rate and how the sticks feel (about 0.8 / 2.5 / 6 m/s). Kept between runs (saved in `LuckyEngine/SpeedMode.txt`). Flights (Navigate to ball, B, Y) follow a smooth path that does not overshoot |
 | Top Speed | Top speed of the current mode (read only) |
-| Speed | The drone's current speed (read only) |
-| **Slow** / **Medium** / **Fast** | Speed mode: sets top speed, acceleration, turn rate and how the sticks feel (about 0.8 / 2.5 / 6 m/s). Flights (Set, B, Y) follow a smooth path that does not overshoot |
+| Grasp Reach | How far the ball sits from the arm's shoulder when Navigate to ball arrives, as a fraction of the reach (1 = on the half-sphere) |
+| Grasp Angle | How far below level the ball sits from the shoulder when Navigate to ball arrives (90° = straight under it) |
 | Ball | Pick a golf ball, 1 to 25. It glows purple. 0 = none |
-| **Set** | Fly to the chosen ball. The drone stops right above it, at the height where the bottom of the reach half-sphere touches the ground |
-| **Pick** | The drone picks the chosen ball by itself and drops it in the trash can (switches to Slow). Moving a stick stops it |
-| **Pick All** | Starts from a random heading and picks every ball that is not in the trash can yet, in a random order (Slow). Moving a stick stops it |
+| Select Mode | What the button below runs: **Navigate to ball**, **Pick selected ball** or **Pick all balls** (see below) |
+| **Autonomous Mode Action** | **Start Autonomous Action** runs the selected mode and the button turns into **Stop Autonomous Action**. Stop (or moving a stick) gives the drone back to manual. It switches back to Start by itself when the action is over |
+
+The modes:
+- **Navigate to ball:** fly in behind the chosen ball and low, so the ball sits inside the reach (Grasp Reach, Grasp Angle).
+- **Pick selected ball:** the drone picks the chosen ball by itself and drops it in the trash can (switches to Slow).
+- **Pick all balls:** starts from a random point and heading, then picks every ball that is not in the trash can yet, in a random order (Slow).
 
 ## On screen
-Top right: what the camera follows (purple when it's a ball) and the mode: **Manual**, **Calibration** (yellow) while flying the test square, **ToBall 11** (purple, with the ball number) while going to a ball, or **Pick 14 Carry** (purple, ball number and step) during an autonomous pick. Moving the sticks switches back to Manual.
+Top right, three rows:
+- **Camera:** what the camera follows (purple when it's a ball).
+- **Mode:** **Manual**, **Calibration 1/4** (yellow) while flying the test square, **ToBall 11** (purple, with the ball number) while going to a ball, **Pick 14** (purple, with the ball number) during an autonomous pick, or **Pick All** while Pick all balls flies to its start point. Moving the sticks switches back to Manual.
+- **Task:** the step the pick is on, `-` when there is none.
+
+Tasks of a pick, in order:
+
+| Task | What the drone does |
+|---|---|
+| Go to start | Pick all balls only: flying to its random start point and heading, before the first ball |
+| Transit | Arm folded, flies to a point behind the ball (high over the trash can if the way passes near it) and turns its nose toward the can |
+| Deploy | Holds still, opens the gripper and unfolds the arm over the ball |
+| Descend | Slowly lowers until the open jaws are around the ball |
+| Close | Closes the gripper gently (force limited) |
+| Check | Checks that the ball is held. If not, Retry |
+| Retry | Opens, climbs a little, moves behind the ball's new place and deploys again (up to 2 retries) |
+| Lift | Climbs until the ball is above the trash can's rim |
+| Carry | Flies the ball over the trash can |
+| Drop | Opens the gripper; the ball falls in |
+| Retreat | Climbs 15 cm away from the can |
+| Settle | Waits a moment for the ball to settle, then the pick is done |
+| Next ball | Pick all balls only: between two picks |
+| Hold | Dev only (`pick N b`): holds the lifted ball for 10 s instead of carrying it |
 
 ## On the ground
 - Green dot: the point right under the drone's center.
@@ -62,6 +88,9 @@ Top right: what the camera follows (purple when it's a ball) and the mode: **Man
 - Golf balls and a trash can: the things to pick up and where they go.
 
 ## Latest changes
+- **Autonomous Mode Action:** the Navigate to ball (was Set), Pick and Pick All buttons in Tuning are replaced by a **Select Mode** dropdown and one **Start / Stop Autonomous Action** switch. Stop gives the drone back to manual.
+- **Task on screen:** a third row at the top right shows the pick's step (Transit, Descend, Lift…); the Mode row shows only **Pick** and the ball number. Pick all balls now shows **Pick All** / **Go to start** while it flies to its start point, instead of Manual.
+- **Speed Mode dropdown:** the Slow / Medium / Fast buttons are now a dropdown in Tuning, kept between runs in `LuckyEngine/SpeedMode.txt`.
 - **Pick All:** the **Pick All** button in Tuning (Slow mode) sends the drone to a random point with a random heading, then picks every ball that is not in the trash can yet, in a random order, one after the other, straight from the can to the next ball. Each pick plans from the ball's live position (it re-plans if the ball rolled), folds the arm and turns to the new heading in transit (never with the arm down by the ground). A failed pick is retried twice, then put back in the queue once if the ball is on the ground, then skipped. About 40 s per ball. (Dev: `pickall [seed]`; the end line is `METRIC pickall seed= ok=N/M fail=[...] binMoved= binHits= time=`.)
 - **Bin keep-out:** every flight the script plans (goto, Set, B, Y, the pick) keeps the drone, its arm and a carried ball at least 10 cm above the trash can's rim whenever any part of it is within 0.5 m of the can's edge. A flight that would cross the can low is split into climb, high cruise and descent; a goal next to the can is raised (logged as `METRIC keepout clamp`). Dev: `test bin` runs the adversarial flights; every flight logs `METRIC flight minClear=... nearBin=... binMoved=...`. Sticks are not guarded.
 - **Autonomous pick:** the **Pick** button in Tuning picks the selected ball and drops it in the trash can: the drone flies behind the ball, unfolds the arm, lowers over the ball, closes the gripper gently, climbs above the can's rim, carries the ball over the can and lets go (about 35 s in Slow). A missed grasp is retried up to 2 times. (Dev: `pick N` in `Cache/nightrun_cmd.txt`, `pick N a` stops after lowering over the ball, `pick N b` after lifting it; results are `METRIC pick ...` lines in the log.)

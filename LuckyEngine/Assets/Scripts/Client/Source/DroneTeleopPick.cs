@@ -4,7 +4,7 @@ using Hazel;
 namespace Dronstein
 {
 	/// <summary>
-	/// Autonomous pick of one golf ball and drop into the TrashCan (Tuning's Pick button, or `pick N [a|b]` in the command file).
+	/// Autonomous pick of one golf ball and drop into the TrashCan (Tuning's Pick selected ball mode, or `pick N [a|b]` in the command file).
 	/// The design and the numbers behind it are in .claude/nightrun/sim/PICK_DESIGN.md (tried offline in Python MuJoCo first).
 	///
 	/// The drone hovers 0.24 m behind the ball (nose pointing from the ball toward the bin), holds still, and the arm reaches the ball:

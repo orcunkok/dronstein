@@ -1739,7 +1739,15 @@ Entities:
         - ID: 896224755
           Name: Ball
           Type: Int
+          Value: 9
+        - ID: 2239084412
+          Name: AutoMode
+          Type: Int
           Value: 1
+        - ID: 972566898
+          Name: AutoOn
+          Type: Bool
+          Value: true
   - Entity: 10883897787002097870
     Domain: Client
     TagComponent:
@@ -1868,6 +1876,28 @@ Entities:
       Visible: true
     MujocoGeomComponent:
       ID: 16
+  - Entity: 12636400378701213717
+    Domain: Client
+    TagComponent:
+      Tag: HudTask
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [28, 28, 1]
+    TextComponent:
+      TextString: Manual
+      FontHandle: 15916378497832049985
+      Color: [1, 1, 1, 1]
+      LineSpacing: 0
+      Kerning: 0
+      MaxWidth: 10
+      ScreenSpace: true
+      DropShadow: false
+      ShadowDistance: 2
+      ShadowColor: [0, 0, 0, 0.75]
   - Entity: 12642350721738557370
     Domain: Client
     TagComponent:
@@ -2498,6 +2528,28 @@ Entities:
       MaterialTable:
         0: 2116205926439990434
       Visible: true
+  - Entity: 17344206304150135598
+    Domain: Client
+    TagComponent:
+      Tag: HudTaskLabel
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [21, 21, 1]
+    TextComponent:
+      TextString: TASK
+      FontHandle: 15916378497832049985
+      Color: [0.9, 0.93, 0.97, 1]
+      LineSpacing: 0
+      Kerning: 0.12
+      MaxWidth: 10
+      ScreenSpace: true
+      DropShadow: false
+      ShadowDistance: 2
+      ShadowColor: [0, 0, 0, 0.75]
   - Entity: 17849749303881500182
     Domain: Client
     TagComponent:
