@@ -11,11 +11,23 @@ namespace Dronstein
 		[ToggleButton("Visible", "Hidden")] [Tooltip("Wire half-sphere of the gripper's reach (T toggles)")]
 		public bool ShowReach = true;
 
-		[Slider(1f, 50f)] [Units("m/s")] [Tooltip("Top speed of the drone")]
-		public float MaxSpeed = 50f;
+		[Group("Speed")] [ReadOnly] [Dropdown("Slow", "Medium", "Fast")] [Tooltip("Current speed mode (set with the buttons below)")]
+		public int SpeedMode = 0;
 
-		[ReadOnly] [Units("m/s")] [Tooltip("The drone's current speed, written by DroneTeleop")]
+		[Group("Speed")] [ReadOnly] [Units("m/s")] [Tooltip("Top speed of the current mode, written by DroneTeleop")]
+		public float TopSpeed;
+
+		[Group("Speed")] [ReadOnly] [Units("m/s")] [Tooltip("The drone's current speed, written by DroneTeleop")]
 		public float Speed;
+
+		[Button("Slow")] [Tooltip("Precise: ~0.8 m/s")]
+		internal void SetSlow() => SpeedMode = 0;
+
+		[Button("Medium")] [Tooltip("~2.5 m/s")]
+		internal void SetMedium() => SpeedMode = 1;
+
+		[Button("Fast")] [Tooltip("~6 m/s")]
+		internal void SetFast() => SpeedMode = 2;
 
 		[Slider(0, 25)] [Tooltip("Golf ball to highlight, 1 to 25 for GolfBall_01 to GolfBall_25 (0 = none)")]
 		public int Ball = 14;

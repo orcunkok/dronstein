@@ -20,8 +20,6 @@ namespace Dronstein
 	/// </summary>
 	public class DroneTeleop : Entity
 	{
-		public float MoveSpeed = 0.1f;  // m/s
-		public float TurnSpeed = 1.0f;  // rad/s
 		public float ArmSpeed = 1.0f;   // rad/s
 		public float PreciseScale = 0.25f;  // speed factor in precise mode
 		public float MinHeight = 0.269f;    // m, the target point never goes below this
@@ -30,20 +28,31 @@ namespace Dronstein
 		public float ZoomSpeed = 1.427f;    // m/s while W or S is held
 		public Material? SelectedBallMaterial;  // glowing material the selected ball (Tuning.Ball) switches to, none = not highlighted
 
-		// Position loop: error -> desired velocity, capped by Tuning.MaxSpeed and by what BrakeAcc can stop in time.
-		public float KpPos = 2.0f, BrakeAcc = 8f;
+		// Position loop: error to the reference -> velocity correction (on top of the reference velocity).
+		float KpPos = 2.0f;  // not public: public fields get overwritten by values saved in the scene
 		// Velocity loop + integral of the position error (cancels steady offsets the P terms leave).
-		public float KpVel = 6.0f, KiPos = 8.0f, IntegralRange = 0.3f;  // integrate only within IntegralRange m
-		public float StickSmooth = 3.5f;           // 1/s, how quickly stick speed builds up and dies down (higher = snappier, more tilt)
-		public float MaxTiltAcc = 4.0f;            // m/s^2, caps horizontal acceleration (~22 deg tilt)
-		public float KpAtt = 21.258f, KdAtt = 1.5f;  // attitude loop
+		float KpVel = 6.0f, KiPos = 8.0f, IntegralRange = 0.1f;  // integrate only within IntegralRange m, and only while (nearly) hovering
+		float KpAtt = 40f, KdAtt = 2.5f;  // attitude loop
+
+		// Speed modes (Tuning.SpeedMode): Slow, Medium, Fast. A flight is a minimum-jerk quintic from the reference state to the goal, so
+		// it never overshoots; the limits set its duration (peak speed = 1.875 D/T, peak acceleration = 5.774 D/T^2).
+		static readonly string[] ModeNames = { "slow", "medium", "fast" };
+		static readonly float[] ModeVmax = { 0.8f, 2.5f, 6f };        // m/s, horizontal
+		static readonly float[] ModeVz = { 0.4f, 1.0f, 2.5f };        // m/s, vertical (flights and sticks)
+		static readonly float[] ModeAmax = { 0.6f, 2.0f, 4f };        // m/s^2, the reference's peak acceleration (4 m/s^2 = 22 deg tilt)
+		static readonly float[] ModeYawRate = { 0.6f, 1.5f, 2.5f };   // rad/s (flights and sticks)
+		static readonly float[] ModeYawAcc = { 0.6f, 1.5f, 2.5f };    // rad/s^2 (yaw torque is limited by what the rotors can twist, ~0.3 Nm)
+		static readonly float[] ModeTmin = { 1.5f, 1f, 0.8f };        // s, shortest flight
+		static readonly float[] ModeStick = { 0.5f, 1.5f, 4f };       // m/s at full stick
+		static readonly float[] ModeSmooth = { 3f, 2.5f, 2f };        // 1/s, how quickly stick speed builds up and dies down (higher = snappier, more tilt)
+		static readonly float[] ModeTilt = { 1.2f, 3f, 6.5f };        // m/s^2, caps the commanded horizontal acceleration (reference + feedback)
 
 		static readonly string[] Motors = { "thrust1", "thrust2", "thrust3", "thrust4" };
 		static readonly string[] ArmJoints = { "shoulder_pan", "shoulder_lift", "elbow_flex", "wrist_flex", "wrist_roll", "gripper" };
 		static readonly string[] JointSelects = { "select_shoulder", "select_elbow", "select_wrist" };  // bindings for shoulder_lift, elbow_flex, wrist_flex
 		// Rotor positions in the drone body frame and yaw torque per newton, from dronstein.xml.
 		static readonly float[,] Rotors = { { -0.14f, -0.18f, -0.0201f }, { -0.14f, 0.18f, 0.0201f }, { 0.14f, 0.18f, -0.0201f }, { 0.14f, -0.18f, 0.0201f } };
-		const float MaxThrust = 13f, Gravity = 9.81f;
+		const float MaxThrust = 13f, Gravity = 9.81f, MaxYawTorque = 0.3f;
 		static readonly float[,] Waypoints = { { 10, 10 }, { 10, -10 }, { -10, -10 }, { -10, 10 } };  // (x, y), MuJoCo frame
 		static readonly string[] Views = { "Drone", "Gripper", "Ball" };  // what the camera can watch; F steps through them
 		// HUD, in pixels: the labels' x from the right edge, the first baseline from the top, the row height, the values' x after the labels.
@@ -90,7 +99,13 @@ namespace Dronstein
 
 		// Flight
 		Vector3 m_Target;                  // the point the drone chases
-		Vector3 m_TargetVel, m_TargetAcc;  // how fast the sticks move it (smoothed), both fed forward
+		Vector3 m_TargetVel, m_TargetAcc;  // its velocity and acceleration (from the sticks, smoothed, or from the trajectory), both fed forward
+		Quintic m_PosQ, m_YawQ;            // the flight to a goal (yaw uses X only)
+		float m_PosT, m_YawT;              // s into them
+		bool m_PosOn, m_YawOn;
+		float m_YawRate;                   // rad/s, the yaw reference's rate, fed forward
+		Vector3 m_AccFF;                   // the reference acceleration actually fed forward: a little ahead of m_TargetAcc, since the tilt takes AccLead to build up
+		const float AccLead = 0.05f;       // s
 		Vector3 m_ErrorIntegral;
 		float m_Yaw = MathF.PI;  // heading of the nose; the X2 spawns with its nose (camera, body -x) along world -x
 		int m_Waypoint = -1;
@@ -115,6 +130,58 @@ namespace Dronstein
 		float m_PadScan;  // s until the next look for a controller while none is in use
 
 		float m_LogTimer, m_MaxTilt;
+		string m_CmdPath = "";
+		float m_CmdTimer;
+
+		// A flight: a quintic polynomial p(t) from (p0, v0, a0) to (pf, 0, 0) in time T (continuous acceleration, no overshoot), or, for a long
+		// flight from rest, a straight line with a cruise: a smootherstep speed ramp up to Vl over Ta, constant Vl, the mirrored ramp down.
+		struct Quintic
+		{
+			public Vector3 P0, V0, A0, C3, C4, C5;
+			public float T;
+			public bool Cruise;
+			public Vector3 Dir;
+			public float D, Vl, Ta;
+			public void SetCruise(Vector3 p0, Vector3 dir, float d, float vl, float ta)
+			{
+				P0 = p0; Dir = dir; D = d; Vl = vl; Ta = ta; T = d / vl + ta;
+				Cruise = true;
+			}
+			// Speed ramp from rest to Vl (smootherstep): distance, speed, acceleration after t.
+			void Ramp(float t, out float s, out float v, out float a)
+			{
+				float u = t / Ta, u2 = u * u, u3 = u2 * u;
+				s = Vl * Ta * u2 * u2 * (u2 - 3f * u + 2.5f);
+				v = Vl * u3 * (6f * u2 - 15f * u + 10f);
+				a = Vl / Ta * 30f * u2 * (u2 - 2f * u + 1f);
+			}
+			public void Set(Vector3 p0, Vector3 v0, Vector3 a0, Vector3 pf, float t)
+			{
+				P0 = p0; V0 = v0; A0 = a0; T = t;
+				Cruise = false;
+				Vector3 d = pf - p0;
+				float t2 = t * t;
+				C3 = (d * 20f - v0 * (12f * t) - a0 * (3f * t2)) * (1f / (2f * t2 * t));
+				C4 = (d * -30f + v0 * (16f * t) + a0 * (3f * t2)) * (1f / (2f * t2 * t2));
+				C5 = (d * 12f - v0 * (6f * t) - a0 * t2) * (1f / (2f * t2 * t2 * t));
+			}
+			public void Eval(float t, out Vector3 p, out Vector3 v, out Vector3 a)
+			{
+				if (Cruise)
+				{
+					float ds, dv, da;
+					if (t < Ta) Ramp(t, out ds, out dv, out da);
+					else if (t > T - Ta) { Ramp(T - t, out ds, out dv, out da); ds = D - ds; da = -da; }
+					else { ds = Vl * (t - 0.5f * Ta); dv = Vl; da = 0f; }
+					p = P0 + Dir * ds; v = Dir * dv; a = Dir * da;
+					return;
+				}
+				float t2 = t * t, t3 = t2 * t, t4 = t3 * t;
+				p = P0 + V0 * t + A0 * (0.5f * t2) + C3 * t3 + C4 * t4 + C5 * (t4 * t);
+				v = V0 + A0 * t + C3 * (3f * t2) + C4 * (4f * t3) + C5 * (5f * t4);
+				a = A0 + C3 * (6f * t) + C4 * (12f * t2) + C5 * (20f * t3);
+			}
+		}
 
 		protected override void OnCreate()
 		{
@@ -142,7 +209,7 @@ namespace Dronstein
 			m_Qvel = new float[m_Mj.ModelNv];
 
 			m_Mj.GetFullQpos(m_Qpos);
-			m_Target = new Vector3(m_Qpos[0], m_Qpos[1], m_Qpos[2] + 0.5f);  // take off 0.5 m
+			m_Target = new Vector3(m_Qpos[0], m_Qpos[1], m_Qpos[2]);
 			m_Tuning = Find("Tuning")?.As<Tuning>()!;
 			m_Camera = Find("Camera");
 			m_Body = Find("x2");
@@ -171,6 +238,9 @@ namespace Dronstein
 
 			Log.Info($"DroneTeleop: start at {m_Target}, nq={m_Mj.ModelNq} nu={m_Mj.ModelNu}, {m_DroneBodies.Length} bodies, {m_Mass:F2} kg");
 			LoadBindings();
+			m_CmdPath = Path.GetFullPath(Path.Combine(Application.DataDirectoryPath!, "..", "Cache", "nightrun_cmd.txt"));
+			Log.Info($"DroneTeleop: command file {m_CmdPath}, KpAtt={KpAtt} KdAtt={KdAtt} KpPos={KpPos} KpVel={KpVel} KiPos={KiPos}");
+			FlyTo(m_Target + new Vector3(0f, 0f, 0.5f));  // take off 0.5 m
 		}
 
 		// The entity with this tag; logs and sets m_Missing when there is none.
@@ -204,12 +274,16 @@ namespace Dronstein
 			}
 			float scale = m_Precise ? PreciseScale : 1f;
 
+			m_Tuning.SpeedMode = Mode;
+			m_Tuning.TopSpeed = ModeVmax[Mode];
+			PollCommands(dt);
 			if (Tapped(KeyCode.R)) ResetScene();
 			FlightInput(dt, scale);
 			ArmInput(dt, ArmSpeed * scale);
 
 			float[] thrust = MotorThrusts(dt);
 			for (int i = 0; i < 4; i++) m_Motors[i].Value = thrust[i];
+			TestUpdate(dt);
 			for (int i = 0; i < 6; i++) m_Arm[i].Value = m_ArmTarget[i];
 
 			Vector3 grasp = m_Mj.GetSitePositionMj(m_GraspSite);  // MuJoCo (x, y) on the ground is Lucky (x, -z)
@@ -226,6 +300,44 @@ namespace Dronstein
 			if (m_Tuning.ShowReach) DrawReach(grasp);
 			LogStatus(dt, thrust);
 		}
+
+		int Mode => Math.Clamp(m_Tuning.SpeedMode, 0, 2);
+
+		// Starts a flight from the reference's current state (position, velocity, acceleration: no jump) to `goal`, ending at rest.
+		// yaw (rad, a heading to turn to by the shortest way) is optional, null = keep the heading. The duration is the longest the limits of the mode need.
+		void FlyTo(Vector3 goal, float? yaw = null)
+		{
+			int m = Mode;
+			goal.Z = MathF.Max(goal.Z, MinHeight);
+			Vector3 d = goal - m_Target;
+			float dh = MathF.Sqrt(d.X * d.X + d.Y * d.Y), dz = MathF.Abs(d.Z);
+			float T = MathF.Max(MathF.Max(Duration(dh, ModeVmax[m], ModeAmax[m]), Duration(dz, ModeVz[m], ModeAmax[m])), ModeTmin[m]);
+			float D = d.Length(), vl = MathF.Min(dh > 1e-4f ? ModeVmax[m] * D / dh : 1e9f, dz > 1e-4f ? ModeVz[m] * D / dz : 1e9f);  // top speed along the line
+			float ta = 1.875f * vl / ModeAmax[m];
+			if (D > 1e-3f || m_TargetVel.Length() > 1e-2f)
+			{
+				if (D > vl * ta && m_TargetVel.Length() < 0.05f && m_TargetAcc.Length() < 0.2f) m_PosQ.SetCruise(m_Target, d * (1f / D), D, vl, ta);  // long enough to reach vl, from rest
+				else m_PosQ.Set(m_Target, m_TargetVel, m_TargetAcc, goal, T);
+				m_PosT = 0f;
+				m_PosOn = true;
+			}
+			if (yaw is float y) TurnTo(m_Yaw + MathF.IEEERemainder(y - m_Yaw, 2f * MathF.PI));
+		}
+
+		// Turns the heading to `yaw` exactly (rad, not wrapped: pass m_Yaw + delta for a given turn).
+		void TurnTo(float yaw)
+		{
+			int m = Mode;
+			float d = MathF.Abs(yaw - m_Yaw);
+			if (d < 1e-3f) return;
+			float T = MathF.Max(Duration(d, ModeYawRate[m], ModeYawAcc[m]), ModeTmin[m]);
+			m_YawQ.Set(new Vector3(m_Yaw, 0, 0), new Vector3(m_YawRate, 0, 0), Vector3.Zero, new Vector3(yaw, 0, 0), T);
+			m_YawT = 0f;
+			m_YawOn = true;
+		}
+
+		// Time the quintic needs for distance d: its peak speed is 1.875 d/T, its peak acceleration 5.774 d/T^2.
+		static float Duration(float d, float vmax, float amax) => d < 1e-4f ? 0f : MathF.Max(1.875f * d / vmax, MathF.Sqrt(5.774f * d / amax));
 
 		// Paints ball n with the glowing purple SelectedBallMaterial and gives the previously selected ball its own back.
 		// Ball n is tagged GolfBall_01, GolfBall_02...
@@ -248,9 +360,13 @@ namespace Dronstein
 		{
 			m_Mj.ResetToInitialState(false);  // false: the simulation clock restarts too
 			m_Mj.GetFullQpos(m_Qpos);
-			m_Target = new Vector3(m_Qpos[0], m_Qpos[1], m_Qpos[2] + 0.5f);  // take off 0.5 m, as in OnCreate
+			m_Target = new Vector3(m_Qpos[0], m_Qpos[1], m_Qpos[2]);
 			m_TargetVel = m_TargetAcc = m_ErrorIntegral = Vector3.Zero;
+			m_PosOn = m_YawOn = false;
+			m_YawRate = 0f;
+			m_TestStep = -1;
 			m_Yaw = MathF.PI;
+			FlyTo(m_Target + new Vector3(0f, 0f, 0.5f));  // take off 0.5 m, as in OnCreate
 			m_Waypoint = -1;
 			m_ToBall = 0;
 			m_ArmTarget = [.. Stowed, -0.174f];
@@ -309,11 +425,11 @@ namespace Dronstein
 			float dist = m_Tuning.GraspReach * ReachRadius(tip), angle = m_Tuning.GraspAngle * MathF.PI / 180f;
 			float up = MathF.Max(dist * MathF.Sin(angle), MinHeight + offset.Z - ball.Z);  // pivot above the ball
 			float back = MathF.Sqrt(MathF.Max(dist * dist - up * up, 0f));                  // pivot behind it
-			m_Target = new Vector3(ball.X - c * back - offset.X, ball.Y - s * back - offset.Y, ball.Z + up - offset.Z);
-			m_TargetVel = m_TargetAcc = Vector3.Zero;
+			var goal = new Vector3(ball.X - c * back - offset.X, ball.Y - s * back - offset.Y, ball.Z + up - offset.Z);
+			FlyTo(goal);
 			m_Waypoint = -1;
 			m_ToBall = m_SelectedBall;
-			Log.Info($"DroneTeleop: going to ball {m_SelectedBall:00}, target ({m_Target.X:F2}, {m_Target.Y:F2}, {m_Target.Z:F2})");
+			Log.Info($"DroneTeleop: going to ball {m_SelectedBall:00}, goal ({goal.X:F2}, {goal.Y:F2}, {goal.Z:F2})");
 		}
 
 		// Top right of the screen: the camera view (purple on a ball) and the mode (yellow while calibrating).
@@ -419,23 +535,48 @@ namespace Dronstein
 		// mode, until the sticks are used again).
 		void FlightInput(float dt, float scale)
 		{
-			float move = MoveSpeed * scale;
+			int mode = Mode;
 			var forward = new Vector3(MathF.Cos(m_Yaw), MathF.Sin(m_Yaw), 0f);
 			var left = new Vector3(-MathF.Sin(m_Yaw), MathF.Cos(m_Yaw), 0f);
-			Vector3 wantVel = (forward * Axis("forward_back") + left * Axis("left_right")) * move;
-			wantVel.Z = Pair("up", "down") * move;
+			Vector3 wantVel = (forward * Axis("forward_back") + left * Axis("left_right")) * (ModeStick[mode] * scale);
+			wantVel.Z = Pair("up", "down") * ModeVz[mode] * scale;
 			float turn = Pair("turn_left", "turn_right");
-			m_Yaw += turn * TurnSpeed * scale * dt;
-			if (wantVel.Length() > 0f || turn != 0f)  // the sticks take over: back to manual mode
+			if (wantVel.Length() > 0f || turn != 0f)  // the sticks take over: back to manual mode, continuing from the reference state
 			{
 				m_Waypoint = -1;
 				m_ToBall = 0;
+				m_PosOn = m_YawOn = false;
 			}
 
-			// Ease the speed in and out (critically damped), so acceleration and tilt rise and fall smoothly.
-			m_TargetAcc += ((wantVel - m_TargetVel) * (StickSmooth * StickSmooth) - m_TargetAcc * (2f * StickSmooth)) * dt;
-			m_TargetVel += m_TargetAcc * dt;
-			m_Target += m_TargetVel * dt;
+			if (m_YawOn)
+			{
+				m_YawQ.Eval(m_YawT += dt, out Vector3 p, out Vector3 v, out Vector3 _);
+				if (m_YawT >= m_YawQ.T) { m_YawQ.Eval(m_YawQ.T, out p, out v, out Vector3 _); v = Vector3.Zero; m_YawOn = false; }
+				m_Yaw = p.X;
+				m_YawRate = v.X;
+			}
+			else
+			{
+				m_YawRate = 0f;
+				m_Yaw += turn * ModeYawRate[mode] * scale * dt;
+			}
+
+			if (m_PosOn)
+			{
+				m_PosT += dt;
+				if (m_PosT >= m_PosQ.T) { m_PosQ.Eval(m_PosQ.T, out m_Target, out Vector3 _, out Vector3 _); m_TargetVel = m_TargetAcc = m_AccFF = Vector3.Zero; m_PosOn = false; }
+				else m_PosQ.Eval(m_PosT, out m_Target, out m_TargetVel, out m_TargetAcc);
+				m_PosQ.Eval(MathF.Min(m_PosT + AccLead, m_PosQ.T), out Vector3 _, out Vector3 _, out m_AccFF);
+			}
+			else
+			{
+				// Ease the speed in and out (critically damped), so acceleration and tilt rise and fall smoothly.
+				float w = ModeSmooth[mode];
+				m_TargetAcc += ((wantVel - m_TargetVel) * (w * w) - m_TargetAcc * (2f * w)) * dt;
+				m_TargetVel += m_TargetAcc * dt;
+				m_Target += m_TargetVel * dt;
+				m_AccFF = m_TargetAcc;
+			}
 
 			// Keep the target above the ground, so holding "down" on the ground can't bury it.
 			if (m_Target.Z < MinHeight)
@@ -449,9 +590,8 @@ namespace Dronstein
 			{
 				m_Waypoint = (m_Waypoint + 1) % 4;
 				m_ToBall = 0;
-				m_Target.X = Waypoints[m_Waypoint, 0];
-				m_Target.Y = Waypoints[m_Waypoint, 1];
-				Log.Info($"DroneTeleop: going to waypoint {m_Waypoint} ({m_Target.X}, {m_Target.Y})");
+				FlyTo(new Vector3(Waypoints[m_Waypoint, 0], Waypoints[m_Waypoint, 1], m_Target.Z));
+				Log.Info($"DroneTeleop: going to waypoint {m_Waypoint} ({Waypoints[m_Waypoint, 0]}, {Waypoints[m_Waypoint, 1]})");
 			}
 		}
 
@@ -496,6 +636,155 @@ namespace Dronstein
 		void MoveArmJoint(int joint, float delta)
 		{
 			m_ArmTarget[joint] = Math.Clamp(m_ArmTarget[joint] + delta, m_ArmLow[joint], m_ArmHigh[joint]);
+		}
+
+		// ---- Dev tools (see .claude/nightrun/BRIEF.md): the command file, and the flight test it can start.
+
+		// Cache/nightrun_cmd.txt, polled 4 times a second: each line is a command, then the file is emptied.
+		void PollCommands(float dt)
+		{
+			if ((m_CmdTimer -= dt) > 0f) return;
+			m_CmdTimer = 0.25f;
+			if (!File.Exists(m_CmdPath)) return;
+			string text = File.ReadAllText(m_CmdPath);
+			if (text.Length == 0) return;
+			File.WriteAllText(m_CmdPath, "");
+			foreach (string raw in text.Split('\n'))
+				if (raw.Trim() is { Length: > 0 } line) Command(line);
+		}
+
+		// mode slow|medium|fast, reset, goto x y z [yaw_deg], ball N, set, test flight.
+		void Command(string line)
+		{
+			Log.Info($"CMD {line}");
+			string[] w = line.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+			float Num(int i) => float.Parse(w[i], CultureInfo.InvariantCulture);
+			try
+			{
+				switch (w[0])
+				{
+					case "mode": { int i = Array.IndexOf(ModeNames, w[1]); if (i >= 0) m_Tuning.SpeedMode = i; break; }
+					case "reset": ResetScene(); break;
+					case "trace": m_Trace = w[1] == "on"; break;
+					case "goto":
+						m_Waypoint = -1;
+						m_ToBall = 0;
+						FlyTo(new Vector3(Num(1), Num(2), Num(3)), w.Length > 4 ? Num(4) * MathF.PI / 180f : null);
+						break;
+					case "ball": m_Tuning.Ball = int.Parse(w[1]); break;
+					case "set": m_Tuning.GoToBall = true; break;
+					case "test": if (w[1] == "flight") { m_TestStep = 0; m_TestNew = true; } break;
+					default: Log.Info($"CMD unknown: {line}"); break;
+				}
+			}
+			catch (Exception e) when (e is FormatException or IndexOutOfRangeException) { Log.Info($"CMD bad arguments: {line}"); }
+		}
+
+		// `test flight`: from the current point, in the current mode, climb to 1.8 m (clear of balls and bin), then these moves in turn
+		// (relative to where the last one ended, yaw in degrees), 4 s of hover after each. One METRIC line per move, then `METRIC done`.
+		static readonly (string Name, float X, float Y, float Z, float Yaw)[] TestMoves =
+		{
+			("1m", 1, 0, 0, 0), ("5m", -5, 0, 0, 0), ("20m", 20, 0, 0, 0), ("up1m", 0, 0, 1, 0), ("down1m", 0, 0, -1, 0),
+			("yaw90", 0, 0, 0, 90), ("yaw180+5m", 0, 5, 0, 180), ("return", 0, 0, 0, 0),
+		};
+		const float TestHeight = 1.8f, TestHold = 4f, TestWindow = 3f;  // m, s hovering after each move, s of it that is measured
+		bool m_Trace;                     // `trace on`: 20 TRACE lines a second during the test (along-track reference vs true state)
+		float m_TraceT;
+		Vector3 m_TestP0;
+		int m_TestStep = -1;              // -1 = off, 0 = the climb (not measured), n = TestMoves[n - 1]
+		bool m_TestNew;                   // the step has not begun yet
+		float m_TestTime, m_TestHold;     // s since the step began, s hovering since the flight ended
+		Vector3 m_TestStart, m_TestGoal, m_TestDir;  // where the test began, this step's goal, and its direction of travel
+		float m_TestStartYaw, m_TestGoalYaw, m_TestYawDelta;
+		float m_TestPeak, m_TestOver, m_TestYawOver, m_TestTilt, m_TestArrive, m_TestOut, m_TestFlight;
+		int m_TestFlips, m_TestSign, m_TestN;
+		double m_TestSx, m_TestSy, m_TestSz, m_TestSq, m_TestSyaw;  // sums of the error to the goal over the measured window
+
+		// Measures from the true MuJoCo state (qpos, qvel), against the final goal, not the reference.
+		void TestUpdate(float dt)
+		{
+			if (m_TestStep < 0) return;
+			var pos = new Vector3(m_Qpos[0], m_Qpos[1], m_Qpos[2]);
+			var vel = new Vector3(m_Qvel[0], m_Qvel[1], m_Qvel[2]);
+			if (m_TestNew) BeginTestStep();
+			m_TestTime += dt;
+			Vector3 e = pos - m_TestGoal;
+			// Heading error against the goal: the reference m_Yaw is unbounded, the true heading is it plus a small wrapped difference (no 180 deg ambiguity).
+			float eYaw = MathF.IEEERemainder(MathF.Atan2(-m_R[1, 0], -m_R[0, 0]) - m_Yaw, 2f * MathF.PI) + m_Yaw - m_TestGoalYaw;
+			if (m_Trace && (m_TraceT -= dt) <= 0f)
+			{
+				m_TraceT = 0.05f;
+				Log.Info($"TRACE t={m_TestTime:F2} ref={Vector3.Dot(m_Target - m_TestP0, m_TestDir):F3} act={Vector3.Dot(pos - m_TestP0, m_TestDir):F3} " +
+					$"vref={Vector3.Dot(m_TargetVel, m_TestDir):F2} vact={Vector3.Dot(vel, m_TestDir):F2} aref={Vector3.Dot(m_TargetAcc, m_TestDir):F2} tilt={m_TestTilt:F1} " +
+					$"thr={MathF.Min(MathF.Min(m_Thrust[0], m_Thrust[1]), MathF.Min(m_Thrust[2], m_Thrust[3])):F1}..{MathF.Max(MathF.Max(m_Thrust[0], m_Thrust[1]), MathF.Max(m_Thrust[2], m_Thrust[3])):F1} yaw={eYaw * 57.3f:F1}");
+			}
+			m_TestPeak = MathF.Max(m_TestPeak, vel.Length());
+			m_TestOver = MathF.Max(m_TestOver, Vector3.Dot(e, m_TestDir));
+			m_TestYawOver = MathF.Max(m_TestYawOver, MathF.Sign(m_TestYawDelta) * eYaw);
+			if (e.Length() > 0.02f || MathF.Abs(eYaw) > 0.01745f) m_TestOut = m_TestTime;
+			else if (m_TestArrive < 0f) m_TestArrive = m_TestTime;
+			{
+				// Oscillation: how often the along-track error changes sign by more than 3 mm either way (1 = it overshot once and came back).
+				float ea = Vector3.Dot(e, m_TestDir);
+				int sign = ea > 0.003f ? 1 : ea < -0.003f ? -1 : 0;
+				if (sign != 0) { if (m_TestSign != 0 && sign != m_TestSign) m_TestFlips++; m_TestSign = sign; }
+			}
+			if (m_TestTime > 240f) { Log.Info($"METRIC aborted mode={ModeNames[Mode]} step={m_TestStep}: too slow"); m_TestStep = -1; return; }
+			if (m_PosOn || m_YawOn) return;
+
+			if (m_TestFlight < 0f) m_TestFlight = m_TestTime;  // the reference arrived
+			m_TestHold += dt;
+			if (m_TestHold > TestHold - TestWindow)
+			{
+				m_TestN++;
+				m_TestSx += e.X; m_TestSy += e.Y; m_TestSz += e.Z;
+				m_TestSq += (double)e.X * e.X + (double)e.Y * e.Y + (double)e.Z * e.Z;
+				m_TestSyaw += eYaw;
+			}
+			if (m_TestHold < TestHold) return;
+
+			if (m_TestStep > 0)
+			{
+				double n = m_TestN, mx = m_TestSx / n, my = m_TestSy / n, mz = m_TestSz / n;
+				double rms = Math.Sqrt(Math.Max(m_TestSq / n - (mx * mx + my * my + mz * mz), 0.0));  // spread around the mean
+				Log.Info($"METRIC mode={ModeNames[Mode]} move={TestMoves[m_TestStep - 1].Name} time={m_TestFlight:F2} peakSpeed={m_TestPeak:F2} " +
+					$"overshoot={MathF.Max(m_TestOver, 0f) * 100f:F2} finalErr={Math.Sqrt(mx * mx + my * my + mz * mz) * 100:F2} settle={m_TestOut:F2} " +
+					$"hoverRms={rms * 1000:F2} maxTilt={m_TestTilt:F1} yawErr={Math.Abs(m_TestSyaw / n) * 180 / Math.PI:F2} " +
+					$"yawOver={MathF.Max(m_TestYawOver, 0f) * 180f / MathF.PI:F2} osc={m_TestFlips}");
+			}
+			else m_TestStart = m_TestGoal;
+			if (++m_TestStep > TestMoves.Length) { Log.Info($"METRIC done mode={ModeNames[Mode]}"); m_TestStep = -1; }
+			else m_TestNew = true;
+		}
+
+		void BeginTestStep()
+		{
+			m_TestNew = false;
+			m_TestTime = m_TestHold = 0f;
+			m_TestPeak = m_TestOver = m_TestYawOver = m_TestTilt = 0f;
+			m_TestArrive = m_TestFlight = -1f;
+			m_TestOut = 0f;
+			m_TestFlips = m_TestSign = m_TestN = 0;
+			m_TestSx = m_TestSy = m_TestSz = m_TestSq = m_TestSyaw = 0.0;
+			if (m_TestStep == 0)
+			{
+				m_TestGoal = new Vector3(m_Target.X, m_Target.Y, MathF.Max(m_Target.Z, TestHeight));
+				m_TestStartYaw = m_Yaw;
+				m_TestYawDelta = 0f;
+			}
+			else
+			{
+				var mv = TestMoves[m_TestStep - 1];
+				bool back = mv.Name == "return";
+				m_TestGoal = back ? m_TestStart : m_Target + new Vector3(mv.X, mv.Y, mv.Z);
+				m_TestYawDelta = back ? MathF.IEEERemainder(m_TestStartYaw - m_Yaw, 2f * MathF.PI) : mv.Yaw * MathF.PI / 180f;
+			}
+			Vector3 d = m_TestGoal - m_Target;
+			m_TestP0 = m_Target;
+			m_TestDir = d.Length() > 1e-3f ? d.Normalized() : Vector3.Zero;
+			m_TestGoalYaw = m_Yaw + m_TestYawDelta;
+			FlyTo(m_TestGoal);
+			TurnTo(m_TestGoalYaw);
 		}
 
 		void LoadBindings()
@@ -591,7 +880,9 @@ namespace Dronstein
 			m_Tuning.Speed = vel.Length();
 			float[,] R = m_R;  // body -> world
 			QuatToMatrix(m_Qpos[3], m_Qpos[4], m_Qpos[5], m_Qpos[6], R);
-			m_MaxTilt = MathF.Max(m_MaxTilt, MathF.Acos(Math.Clamp(R[2, 2], -1f, 1f)) * 180f / MathF.PI);
+			float tilt = MathF.Acos(Math.Clamp(R[2, 2], -1f, 1f)) * 180f / MathF.PI;
+			m_MaxTilt = MathF.Max(m_MaxTilt, tilt);
+			m_TestTilt = MathF.Max(m_TestTilt, tilt);
 
 			// Center of mass of the drone + arm.
 			var com = Vector3.Zero;
@@ -602,17 +893,24 @@ namespace Dronstein
 			}
 			com = com * (1f / m_Mass);
 
-			// Position loop: fly at a speed we can still brake from (sqrt profile), plus the sticks' velocity.
+			// Position loop: velocity = the reference's + a correction for the error to the reference (linear: the reference never asks for more than it can do).
 			Vector3 err = m_Target - pos;
-			float dist = err.Length();
-			float speed = MathF.Min(MathF.Min(KpPos * dist, MathF.Sqrt(2f * BrakeAcc * dist)), m_Tuning.MaxSpeed);
-			Vector3 velTarget = (dist > 1e-6f ? err * (speed / dist) : Vector3.Zero) + m_TargetVel;
-			if (dist < IntegralRange) m_ErrorIntegral += err * dt;
+			Vector3 corr = err * KpPos;
+			float cl = corr.Length(), cmax = ModeVmax[Mode];
+			if (cl > cmax) corr *= cmax / cl;
+			Vector3 velTarget = corr + m_TargetVel;
+			// Integral only while hovering near the reference, so it can't wind up during a flight; clamped.
+			if (err.Length() < IntegralRange && m_TargetVel.Length() < 0.2f)
+			{
+				m_ErrorIntegral += err * dt;
+				m_ErrorIntegral = new Vector3(Math.Clamp(m_ErrorIntegral.X, -0.25f, 0.25f), Math.Clamp(m_ErrorIntegral.Y, -0.25f, 0.25f), Math.Clamp(m_ErrorIntegral.Z, -0.25f, 0.25f));
+			}
 
-			// Velocity loop: desired acceleration in world frame, horizontal part capped by the tilt limit.
-			Vector3 acc = (velTarget - vel) * KpVel + m_ErrorIntegral * KiPos + m_TargetAcc;
+			// Velocity loop: desired acceleration in world frame (reference acceleration fed forward), horizontal part capped by the tilt limit.
+			Vector3 acc = (velTarget - vel) * KpVel + m_ErrorIntegral * KiPos + m_AccFF;
 			float horiz = MathF.Sqrt(acc.X * acc.X + acc.Y * acc.Y);
-			if (horiz > MaxTiltAcc) { acc.X *= MaxTiltAcc / horiz; acc.Y *= MaxTiltAcc / horiz; }
+			float tiltAcc = ModeTilt[Mode];
+			if (horiz > tiltAcc) { acc.X *= tiltAcc / horiz; acc.Y *= tiltAcc / horiz; }
 			// Sink at most at half g: asking for more than g would point the thrust down and flip the drone.
 			acc.Z = MathF.Max(acc.Z, -0.5f * Gravity);
 			Vector3 force = (acc + new Vector3(0f, 0f, Gravity)) * m_Mass;
@@ -636,7 +934,9 @@ namespace Dronstein
 				return e;
 			}
 			var attErr = new Vector3(E(2, 1), E(0, 2), E(1, 0)) * 0.5f;
-			Vector3 torque = attErr * -KpAtt - angVel * KdAtt;
+			var yawRef = new Vector3(R[2, 0], R[2, 1], R[2, 2]) * m_YawRate;  // world z in the body frame: the yaw rate reference as a body rate
+			Vector3 torque = attErr * -KpAtt - (angVel - yawRef) * KdAtt;
+			torque.Z = Math.Clamp(torque.Z, -MaxYawTorque, MaxYawTorque);  // a bigger twist would saturate the rotors and upset roll/pitch
 
 			// Mixer: which rotor thrusts give this total thrust and torque about the center of mass.
 			Vector3 d = com - pos;

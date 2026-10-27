@@ -43,8 +43,10 @@ Select the **Tuning** entity in the scene. Its Properties panel has live knobs y
 | Knob | What it does |
 |---|---|
 | Show Reach | Show / hide the arm's reach (same as T) |
-| Max Speed | Top speed of the drone |
+| Speed Mode | Current mode: Slow, Medium or Fast (read only, set with the buttons) |
+| Top Speed | Top speed of the current mode (read only) |
 | Speed | The drone's current speed (read only) |
+| **Slow** / **Medium** / **Fast** | Speed mode: sets top speed, acceleration, turn rate and how the sticks feel (about 0.8 / 2.5 / 6 m/s). Flights (Set, B, Y) follow a smooth path that does not overshoot |
 | Ball | Pick a golf ball, 1 to 25. It glows purple. 0 = none |
 | **Set** | Fly to the chosen ball. The drone stops right above it, at the height where the bottom of the reach half-sphere touches the ground |
 
@@ -58,6 +60,7 @@ Top right: what the camera follows (purple when it's a ball) and the mode: **Man
 - Golf balls and a trash can: the things to pick up and where they go.
 
 ## Latest changes
+- **Speed modes:** Slow / Medium / Fast buttons in Tuning. Flights to a ball or corner now follow a smooth, planned path (no overshoot) at the speed of the mode; the sticks scale with the mode too. (Dev: `Cache/nightrun_cmd.txt` takes test commands, e.g. `test flight`.)
 - **Trash can can be moved:** it's now a free, light (~1.1 kg) aluminium can you can push with the drone or drag with the mouse (Force Tool).
 - **R resets the scene** (drone, arm, balls, trash can back to the start). The reach half-sphere moved to **T**.
 - **B key:** type B, a ball number and Enter to fly to that ball. The screen shows ToBall and the ball number.
