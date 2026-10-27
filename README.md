@@ -31,7 +31,8 @@ To change buttons, edit `LuckyEngine/ControllerBindings.txt`, save it, and press
 | F | Camera follows the drone, the gripper or the selected ball |
 | W / S | Zoom in / out |
 | Right mouse drag | Rotate the camera |
-| R | Show / hide the arm's reach (the blue half-sphere) |
+| T | Show / hide the arm's reach (the blue half-sphere) |
+| R | Reset the scene: drone, arm, balls and trash can go back to where they started |
 | G | Unfold / fold the arm (same as View on the controller) |
 | B, number, Enter | Fly to that ball, e.g. B 1 1 Enter for ball 11 (same as Tuning's Set). A number with no ball is ignored |
 | Y | Fly to the next corner of the test square (blue dots on the ground) |
@@ -41,7 +42,7 @@ Select the **Tuning** entity in the scene. Its Properties panel has live knobs y
 
 | Knob | What it does |
 |---|---|
-| Show Reach | Show / hide the arm's reach (same as R) |
+| Show Reach | Show / hide the arm's reach (same as T) |
 | Max Speed | Top speed of the drone |
 | Speed | The drone's current speed (read only) |
 | Ball | Pick a golf ball, 1 to 25. It glows purple. 0 = none |
@@ -57,6 +58,8 @@ Top right: what the camera follows (purple when it's a ball) and the mode: **Man
 - Golf balls and a trash can: the things to pick up and where they go.
 
 ## Latest changes
+- **Trash can can be moved:** it's now a free, light (~1.1 kg) aluminium can you can push with the drone or drag with the mouse (Force Tool).
+- **R resets the scene** (drone, arm, balls, trash can back to the start). The reach half-sphere moved to **T**.
 - **B key:** type B, a ball number and Enter to fly to that ball. The screen shows ToBall and the ball number.
 - **G key:** unfolds / folds the arm. Unfolded, the upper arm leans slightly back and the forearm reaches forward almost level (about 12° below) instead of hanging straight down.
 - **Fly to a ball:** pick a ball in Tuning and press **Set**. The drone flies over it and lowers until its reach just touches the ground.

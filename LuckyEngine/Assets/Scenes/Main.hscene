@@ -329,12 +329,12 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: TrashCan_Wall
-    Parent: 0
+    Parent: 9191149044170001192
     Children:
       []
     TransformComponent:
       Position: [0.19, 0.235, 0]
-      Rotation: [0, -0, -0.1326]
+      Rotation: [0, 0, -0.1326]
       Scale: [0.01, 0.454, 0.09]
     StaticMeshComponent:
       AssetID: 4512471431298144687
@@ -342,7 +342,7 @@ Entities:
         0: 7935106140740169735
       Visible: true
     MujocoBoxColliderComponent:
-      Density: 500
+      Density: 135
       Friction: [1, 0.1, 0.01]
       Contype: 1
       Conaffinity: 1
@@ -597,7 +597,7 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: TrashCan_Wall_02
-    Parent: 0
+    Parent: 9191149044170001192
     Children:
       []
     TransformComponent:
@@ -610,7 +610,7 @@ Entities:
         0: 7935106140740169735
       Visible: true
     MujocoBoxColliderComponent:
-      Density: 500
+      Density: 135
       Friction: [1, 0.1, 0.01]
       Contype: 1
       Conaffinity: 1
@@ -1041,7 +1041,7 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: TrashCan_Wall_09
-    Parent: 0
+    Parent: 9191149044170001192
     Children:
       []
     TransformComponent:
@@ -1054,7 +1054,7 @@ Entities:
         0: 7935106140740169735
       Visible: true
     MujocoBoxColliderComponent:
-      Density: 500
+      Density: 135
       Friction: [1, 0.1, 0.01]
       Contype: 1
       Conaffinity: 1
@@ -1095,7 +1095,7 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: TrashCan_Wall_11
-    Parent: 0
+    Parent: 9191149044170001192
     Children:
       []
     TransformComponent:
@@ -1108,7 +1108,7 @@ Entities:
         0: 7935106140740169735
       Visible: true
     MujocoBoxColliderComponent:
-      Density: 500
+      Density: 135
       Friction: [1, 0.1, 0.01]
       Contype: 1
       Conaffinity: 1
@@ -1117,12 +1117,12 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: TrashCan_Wall_01
-    Parent: 0
+    Parent: 9191149044170001192
     Children:
       []
     TransformComponent:
       Position: [0.1755, 0.235, 0.0727]
-      Rotation: [0.0547, -0.3891, -0.1433]
+      Rotation: [0.0546999, -0.3891, -0.1433]
       Scale: [0.01, 0.454, 0.09]
     StaticMeshComponent:
       AssetID: 4512471431298144687
@@ -1130,7 +1130,7 @@ Entities:
         0: 7935106140740169735
       Visible: true
     MujocoBoxColliderComponent:
-      Density: 500
+      Density: 135
       Friction: [1, 0.1, 0.01]
       Contype: 1
       Conaffinity: 1
@@ -1335,7 +1335,7 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: TrashCan_Wall_10
-    Parent: 0
+    Parent: 9191149044170001192
     Children:
       []
     TransformComponent:
@@ -1348,7 +1348,7 @@ Entities:
         0: 7935106140740169735
       Visible: true
     MujocoBoxColliderComponent:
-      Density: 500
+      Density: 135
       Friction: [1, 0.1, 0.01]
       Contype: 1
       Conaffinity: 1
@@ -1395,7 +1395,7 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: TrashCan_Wall_06
-    Parent: 0
+    Parent: 9191149044170001192
     Children:
       []
     TransformComponent:
@@ -1408,7 +1408,7 @@ Entities:
         0: 7935106140740169735
       Visible: true
     MujocoBoxColliderComponent:
-      Density: 500
+      Density: 135
       Friction: [1, 0.1, 0.01]
       Contype: 1
       Conaffinity: 1
@@ -1446,7 +1446,7 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: TrashCan_Wall_04
-    Parent: 0
+    Parent: 9191149044170001192
     Children:
       []
     TransformComponent:
@@ -1459,7 +1459,7 @@ Entities:
         0: 7935106140740169735
       Visible: true
     MujocoBoxColliderComponent:
-      Density: 500
+      Density: 135
       Friction: [1, 0.1, 0.01]
       Contype: 1
       Conaffinity: 1
@@ -1500,6 +1500,56 @@ Entities:
       MaterialTable:
         0: 10640983446431700429
       Visible: true
+  - Entity: 9191149044170001192
+    Domain: Client
+    TagComponent:
+      Tag: TrashCan
+    Parent: 0
+    Children:
+      - Handle: 16934321559144847468
+      - Handle: 395192763572778910
+      - Handle: 7182490334214803807
+      - Handle: 1849911393853918678
+      - Handle: 10375493529259363725
+      - Handle: 8778222048644347155
+      - Handle: 18301639991373565343
+      - Handle: 8170836057042241114
+      - Handle: 14716781457493885884
+      - Handle: 12174914177517664916
+      - Handle: 6887470786088073126
+      - Handle: 7742062062987136463
+      - Handle: 7073880693530988424
+      - Handle: 11362599785995514587
+      - Handle: 10883897787002097870
+      - Handle: 16033505588855615432
+      - Handle: 16456055512201389535
+    TransformComponent:
+      Position: [0, 0.006, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    MujocoCylinderColliderComponent:
+      Density: 135
+      Radius: 0.165
+      HalfHeight: 0.005
+      Friction: [1, 0.1, 0.01]
+      Contype: 1
+      Conaffinity: 1
+      Condim: -1
+    MujocoJointComponent:
+      Type: "\x00"
+      Position: [0, 0, 0]
+      Axis: [0, 1, 0]
+      Limited: false
+      LimitMin: -3.14159
+      LimitMax: 3.14159
+      LimitSolref: [0.02, 1]
+      LimitSolimp: [0.9, 0.95, 0.001]
+      Stiffness: 0
+      Damping: 0.001
+      Armature: 0.1
+      FrictionLoss: 0
+      SpringRef: 0
+      JointId: -1
   - Entity: 9226193199443051660
     Domain: Client
     TagComponent:
@@ -1673,7 +1723,7 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: TrashCan_Wall_03
-    Parent: 0
+    Parent: 9191149044170001192
     Children:
       []
     TransformComponent:
@@ -1686,7 +1736,7 @@ Entities:
         0: 7935106140740169735
       Visible: true
     MujocoBoxColliderComponent:
-      Density: 500
+      Density: 135
       Friction: [1, 0.1, 0.01]
       Contype: 1
       Conaffinity: 1
@@ -1726,7 +1776,7 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: TrashCan_Wall_13
-    Parent: 0
+    Parent: 9191149044170001192
     Children:
       []
     TransformComponent:
@@ -1739,7 +1789,7 @@ Entities:
         0: 7935106140740169735
       Visible: true
     MujocoBoxColliderComponent:
-      Density: 500
+      Density: 135
       Friction: [1, 0.1, 0.01]
       Contype: 1
       Conaffinity: 1
@@ -1777,11 +1827,11 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: TrashCan_Wall_12
-    Parent: 0
+    Parent: 9191149044170001192
     Children:
       []
     TransformComponent:
-      Position: [-0, 0.235, -0.19]
+      Position: [0, 0.235, -0.19]
       Rotation: [-1.5708, 1.4382, -1.5708]
       Scale: [0.01, 0.454, 0.09]
     StaticMeshComponent:
@@ -1790,7 +1840,7 @@ Entities:
         0: 7935106140740169735
       Visible: true
     MujocoBoxColliderComponent:
-      Density: 500
+      Density: 135
       Friction: [1, 0.1, 0.01]
       Contype: 1
       Conaffinity: 1
@@ -1812,12 +1862,12 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: TrashCan_Wall_08
-    Parent: 0
+    Parent: 9191149044170001192
     Children:
       []
     TransformComponent:
       Position: [-0.19, 0.235, 0]
-      Rotation: [3.1416, -0, -3.009]
+      Rotation: [-3.14159, 0, -3.009]
       Scale: [0.01, 0.454, 0.09]
     StaticMeshComponent:
       AssetID: 4512471431298144687
@@ -1825,7 +1875,7 @@ Entities:
         0: 7935106140740169735
       Visible: true
     MujocoBoxColliderComponent:
-      Density: 500
+      Density: 135
       Friction: [1, 0.1, 0.01]
       Contype: 1
       Conaffinity: 1
@@ -2105,7 +2155,7 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: TrashCan_Wall_07
-    Parent: 0
+    Parent: 9191149044170001192
     Children:
       []
     TransformComponent:
@@ -2118,7 +2168,7 @@ Entities:
         0: 7935106140740169735
       Visible: true
     MujocoBoxColliderComponent:
-      Density: 500
+      Density: 135
       Friction: [1, 0.1, 0.01]
       Contype: 1
       Conaffinity: 1
@@ -2219,7 +2269,7 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: TrashCan_Wall_14
-    Parent: 0
+    Parent: 9191149044170001192
     Children:
       []
     TransformComponent:
@@ -2232,7 +2282,7 @@ Entities:
         0: 7935106140740169735
       Visible: true
     MujocoBoxColliderComponent:
-      Density: 500
+      Density: 135
       Friction: [1, 0.1, 0.01]
       Contype: 1
       Conaffinity: 1
@@ -2295,12 +2345,12 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: TrashCan_Wall_15
-    Parent: 0
+    Parent: 9191149044170001192
     Children:
       []
     TransformComponent:
       Position: [0.1755, 0.235, -0.0727]
-      Rotation: [-0.0547, 0.3891, -0.1433]
+      Rotation: [-0.0546999, 0.3891, -0.1433]
       Scale: [0.01, 0.454, 0.09]
     StaticMeshComponent:
       AssetID: 4512471431298144687
@@ -2308,7 +2358,7 @@ Entities:
         0: 7935106140740169735
       Visible: true
     MujocoBoxColliderComponent:
-      Density: 500
+      Density: 135
       Friction: [1, 0.1, 0.01]
       Contype: 1
       Conaffinity: 1
@@ -2333,7 +2383,7 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: TrashCan_Floor
-    Parent: 0
+    Parent: 9191149044170001192
     Children:
       []
     TransformComponent:
@@ -2346,7 +2396,7 @@ Entities:
         0: 7935106140740169735
       Visible: true
     MujocoCylinderColliderComponent:
-      Density: 500
+      Density: 135
       Radius: 0.5
       HalfHeight: 0.5
       Friction: [1, 0.1, 0.01]
@@ -2560,7 +2610,7 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: TrashCan_Wall_05
-    Parent: 0
+    Parent: 9191149044170001192
     Children:
       []
     TransformComponent:
@@ -2573,7 +2623,7 @@ Entities:
         0: 7935106140740169735
       Visible: true
     MujocoBoxColliderComponent:
-      Density: 500
+      Density: 135
       Friction: [1, 0.1, 0.01]
       Contype: 1
       Conaffinity: 1

@@ -10,8 +10,8 @@ namespace Dronstein
 	/// Fly the Skydio X2 and move its SO-100 arm with an Xbox controller.
 	/// The bindings are in ControllerBindings.txt in the project folder.
 	/// Keys: Y flies to the next corner of the test square (blue dots on the ground), for tuning; G folds/unfolds the arm; B, a ball number and Enter fly to that ball;
-	/// R shows/hides a wire sphere of how far the gripper can reach; F switches the camera between the drone, the gripper and the
-	/// selected ball (Tuning.Ball), W/S zoom in/out. Tuning's Set button flies over the selected ball, reach just touching the ground. Drag with the right mouse button to orbit the camera.
+	/// R resets the scene; T shows/hides a wire sphere of how far the gripper can reach; F switches the camera between the drone, the gripper and the
+	/// selected ball (Tuning.Ball), W/S zoom in/out. Tuning's Set button flies in behind and above the selected ball, with the ball inside the reach. Drag with the right mouse button to orbit the camera.
 	/// The top right of the screen shows the camera view and the mode: Manual, or Calibration while Y's test square is flown.
 	/// Attach to the entity that holds dronstein.xml (its MujocoScene).
 	///
@@ -204,6 +204,7 @@ namespace Dronstein
 			}
 			float scale = m_Precise ? PreciseScale : 1f;
 
+			if (Tapped(KeyCode.R)) ResetScene();
 			FlightInput(dt, scale);
 			ArmInput(dt, ArmSpeed * scale);
 
@@ -221,7 +222,7 @@ namespace Dronstein
 			UpdateHud();
 			m_GripDot.Translation = new Vector3(grasp.X, m_GripDotY, -grasp.Y);
 			m_CenterDot.Translation = new Vector3(body.X, m_CenterDotY, body.Z);
-			if (Tapped(KeyCode.R)) m_Tuning.ShowReach = !m_Tuning.ShowReach;
+			if (Tapped(KeyCode.T)) m_Tuning.ShowReach = !m_Tuning.ShowReach;
 			if (m_Tuning.ShowReach) DrawReach(grasp);
 			LogStatus(dt, thrust);
 		}
@@ -240,6 +241,22 @@ namespace Dronstein
 			var mesh = m_Ball.GetComponent<StaticMeshComponent>()!;
 			m_BallMaterial = mesh.GetMaterial(0);
 			mesh.SetMaterial(0, SelectedBallMaterial);
+		}
+
+		// R: everything back as when Play started (drone, arm, balls, trash can), and the script's flight and arm state with it.
+		void ResetScene()
+		{
+			m_Mj.ResetToInitialState(false);  // false: the simulation clock restarts too
+			m_Mj.GetFullQpos(m_Qpos);
+			m_Target = new Vector3(m_Qpos[0], m_Qpos[1], m_Qpos[2] + 0.5f);  // take off 0.5 m, as in OnCreate
+			m_TargetVel = m_TargetAcc = m_ErrorIntegral = Vector3.Zero;
+			m_Yaw = MathF.PI;
+			m_Waypoint = -1;
+			m_ToBall = 0;
+			m_ArmTarget = [.. Stowed, -0.174f];
+			m_ArmGoal = null;
+			m_Deployed = false;
+			Log.Info("DroneTeleop: scene reset");
 		}
 
 		// B, a ball number and Enter (e.g. B 1 1 Enter) selects that ball in Tuning and flies there, like Set.
@@ -272,9 +289,11 @@ namespace Dronstein
 			return tapped;
 		}
 
-		// Tuning's Set button: puts the reach's center (the shoulder-lift pivot) straight over the selected ball, at the
-		// height where the bottom of the reach half-sphere just touches the ground (z = 0). The pivot's offset from the
-		// drone is taken in the body frame and turned to the heading, level, as the drone will be when it hovers there.
+		// Tuning's Set button: puts the reach's center (the shoulder-lift pivot) behind the selected ball along the heading
+		// and above it, so the ball sits Tuning.GraspReach of the reach away, Tuning.GraspAngle below level: inside the
+		// half-sphere, where the forward-reaching arm can grab it. If that would take the drone below MinHeight, it stays
+		// at MinHeight and backs off instead, keeping the same distance. The pivot's offset from the drone is taken in the
+		// body frame and turned to the heading, level, as the drone will be when it hovers there.
 		void GoToBall(Vector3 tip)
 		{
 			m_Tuning.GoToBall = false;
@@ -287,7 +306,10 @@ namespace Dronstein
 			// Level at heading m_Yaw, body x is (-cos, -sin, 0) and body y (sin, -cos, 0), as in MotorThrusts.
 			float c = MathF.Cos(m_Yaw), s = MathF.Sin(m_Yaw);
 			var offset = new Vector3(-c * bx + s * by, -s * bx - c * by, bz);
-			m_Target = new Vector3(ball.X - offset.X, ball.Y - offset.Y, ReachRadius(tip) - offset.Z);
+			float dist = m_Tuning.GraspReach * ReachRadius(tip), angle = m_Tuning.GraspAngle * MathF.PI / 180f;
+			float up = MathF.Max(dist * MathF.Sin(angle), MinHeight + offset.Z - ball.Z);  // pivot above the ball
+			float back = MathF.Sqrt(MathF.Max(dist * dist - up * up, 0f));                  // pivot behind it
+			m_Target = new Vector3(ball.X - c * back - offset.X, ball.Y - s * back - offset.Y, ball.Z + up - offset.Z);
 			m_TargetVel = m_TargetAcc = Vector3.Zero;
 			m_Waypoint = -1;
 			m_ToBall = m_SelectedBall;

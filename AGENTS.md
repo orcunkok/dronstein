@@ -17,6 +17,7 @@
 - DirectionalLight shines along R·(1,1,1)/√3, R = Rz·Ry·Rx (radians). Straight down: Rotation `0 0.7854 -2.1863`. The SkyLight sun is cosmetic only.
 - Tiled floor: use a Plane (`GroundSurface`), not a Cube (bad top-face UVs). `Ground` is collider only.
 - Use `create_entity` + `add_component` instead of `create_game_object` (which writes a junk `<Name>_Material.hmaterial`).
+- A movable object made of several colliders (e.g. `TrashCan`): put a free `MujocoJoint` **and a collider** on an unscaled parent, then parent the pieces under it; they become one rigid body. A joint on a parent with no collider is ignored (stays world/static).
 - A loaded material is cached: editing its `.hmaterial` won't reload it. Write it once under a new name before first load.
 
 ## Talking to the user
