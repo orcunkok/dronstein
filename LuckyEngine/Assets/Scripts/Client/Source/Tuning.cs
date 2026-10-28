@@ -29,7 +29,7 @@ namespace Dronstein
 		public float GraspAngle = 90f;
 
 		[Slider(0, 25)] [Tooltip("Golf ball to highlight, 1 to 25 for GolfBall_01 to GolfBall_25 (0 = none)")]
-		public int Ball = 9;
+		public int Ball = 17;
 
 		[DisplayName("Select Mode")] [Dropdown("Navigate to ball", "Pick selected ball", "Pick all balls")]
 		[Tooltip("What Autonomous Mode Action runs. Navigate to ball: fly in behind the selected ball and low, so it sits inside the reach (GraspReach, GraspAngle). " +
@@ -38,7 +38,7 @@ namespace Dronstein
 
 		[DisplayName("Autonomous Mode Action")] [ToggleButton("Stop Autonomous Action", "Start Autonomous Action")]
 		[Tooltip("Starts the selected mode; Stop (or the sticks) gives the drone back to manual. Switches back to Start when the action is over")]
-		public bool AutoOn = false;  // DroneTeleop starts AutoMode when it turns on, stops it when it is turned off, and turns it off when the action ends
+		public bool AutoOn = true;  // DroneTeleop starts AutoMode when it turns on, stops it when it is turned off, and turns it off when the action ends
 
 		internal bool GoToBall;  // B + ball number + Enter, or Navigate to ball; DroneTeleop flies there and clears it
 

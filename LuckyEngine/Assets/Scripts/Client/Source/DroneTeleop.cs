@@ -524,7 +524,7 @@ namespace Dronstein
 			bool pick = m_PickPhase != PickPhase.Off, pickAll = m_PaState != PaState.Off;  // Pick All flies to its start point before the first pick
 			SetText(m_HudMode, pick ? $"Pick {m_PickN:00}" : pickAll ? "Pick All" : m_Waypoint >= 0 ? $"Calibration {m_Waypoint + 1}/4" : m_ToBall > 0 ? $"ToBall {m_ToBall:00}" : "Manual",
 				pick || pickAll ? Purple : m_Waypoint >= 0 ? Yellow : m_ToBall > 0 ? Purple : m_HudModeColor);
-			SetText(m_HudTask, pick ? (m_PickPhase == PickPhase.HoldB ? "Hold" : m_PickPhase.ToString()) : m_PaState == PaState.Start ? "Go to start" : pickAll ? "Next ball" : "-",
+			SetText(m_HudTask, pick ? m_PickPhase.ToString() : m_PaState.ToString(),  // the running state's own name (Off when nothing runs)
 				pick || pickAll ? Purple : m_HudModeColor);
 		}
 

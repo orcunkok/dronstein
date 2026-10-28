@@ -13,7 +13,7 @@ namespace Dronstein
 	/// </summary>
 	public partial class DroneTeleop
 	{
-		enum PaState { Off, Start, Next, Picking }
+		enum PaState { Off, Next, Picking }
 
 		PaState m_PaState;
 		int m_PaSeed, m_PaTotal, m_PaOk, m_PaIdx;
@@ -21,7 +21,7 @@ namespace Dronstein
 		readonly HashSet<int> m_PaRetried = new();
 		readonly List<string> m_PaFails = new();
 		readonly uint[] m_PaBodies = new uint[26];
-		float m_PaClock, m_PaWait;
+		float m_PaClock;
 		int m_PaHits, m_PaCur;
 		Vector3 m_PaBin0;
 
@@ -50,16 +50,12 @@ namespace Dronstein
 				if (!BallInBin(m_PaBodies[n])) m_PaQueue.Add(n);
 			}
 			for (int i = m_PaQueue.Count - 1; i > 0; i--) { int j = rng.Next(i + 1); (m_PaQueue[i], m_PaQueue[j]) = (m_PaQueue[j], m_PaQueue[i]); }
-			m_PaSeed = seed; m_PaTotal = m_PaQueue.Count; m_PaOk = 0; m_PaIdx = 0; m_PaClock = 0f; m_PaHits = 0; m_PaWait = 0f;
+			m_PaSeed = seed; m_PaTotal = m_PaQueue.Count; m_PaOk = 0; m_PaIdx = 0; m_PaClock = 0f; m_PaHits = 0;
 			m_PaBin0 = BodyPos(m_PickBinBody);
 			m_Tuning.SpeedMode = 0;
 			m_Waypoint = -1; m_ToBall = 0;
-			// random start: a point 1..3 m out at 0.8..1.5 m height and a random heading (turned to with the arm stowed)
-			float ang = (float)(rng.NextDouble() * 2 * Math.PI), rad = 1.5f + (float)rng.NextDouble() * 2f, yaw = (float)((rng.NextDouble() * 2 - 1) * Math.PI);
-			var start = new Vector3(m_PaBin0.X + rad * MathF.Cos(ang), m_PaBin0.Y + rad * MathF.Sin(ang), 0.8f + (float)rng.NextDouble() * 0.7f);
-			Log.Info($"METRIC pickall seed={seed} start order=[{string.Join(",", m_PaQueue)}] n={m_PaTotal} startPos=({start.X:F2},{start.Y:F2},{start.Z:F2}) startYaw={yaw * 57.2958f:F0}");
-			FlyTo(start, yaw);
-			m_PaState = PaState.Start;
+			Log.Info($"METRIC pickall seed={seed} order=[{string.Join(",", m_PaQueue)}] n={m_PaTotal}");
+			m_PaState = PaState.Next;
 		}
 
 		void PickAllEnd(string why)
@@ -77,9 +73,6 @@ namespace Dronstein
 			if (m_PaClock > 3600f) { if (m_PickPhase != PickPhase.Off) PickEnd(false, "pickall_timeout"); PickAllEnd("timeout"); return; }
 			switch (m_PaState)
 			{
-				case PaState.Start:
-					if (!Flying && !m_YawOn && new Vector3(m_Qvel[0], m_Qvel[1], m_Qvel[2]).Length() < 0.05f && (m_PaWait += dt) > 1f) m_PaState = PaState.Next;
-					break;
 				case PaState.Next:
 					if (m_PaQueue.Count == 0) { PickAllEnd("done"); return; }
 					m_PaCur = m_PaQueue[0]; m_PaQueue.RemoveAt(0); m_PaIdx++;
