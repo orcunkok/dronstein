@@ -2,7 +2,7 @@
 
 Single source of truth for how the drone's Pick All action works. Behaviour is described at a high level; the code has the detail (see the [code map](#code-map) at the bottom).
 
-Last checked against the code: 2026-10-27.
+Last checked against the code: 2026-10-28.
 
 ## 1. What it does
 
@@ -47,7 +47,7 @@ Times are the wait or limit in the code. "Flight" means the time the drone takes
 | Code state | Drone | Gripper and arm | Moves on when | Time | Limit |
 |---|---|---|---|---|---|
 | **PickPhase.Transit** (to the ball) | Flies to the hover point in 2 legs: straight to above it, climbing and turning to the heading on the way, then down to it. Cruises high (clear of the rim with the arm unfolded) if the line passes near the can. | Leg 1: the arm folds and the gripper closes for the cruise; within 1 m of the end the gripper opens and the arm unfolds to the pre-grasp pose of the planned hover (a fixed pose: drone level, ball ahead). Leg 2 (the drone does not wait for the arm): the arm finishes and corrects to the pre-grasp pose from the measured pose. | Arrived, heading turned, arm in the pre-grasp pose, still for 0.5 s. Re-plans if the ball rolled (up to 4 times). | Flight + 0.5 s | 120 s |
-| **PickPhase.Descend** | Descends 10 cm at 4 cm/s to fingertip-at-ball height. | Finishes deploying and tracks the ball. | Reached the height, arm deployed, then 1 s hold. Fails if the ball moved more than 1 cm. | ~3.5 s | 12 s |
+| **PickPhase.Descend** | Descends 5 cm at 4 cm/s to fingertip-at-ball height. | Finishes deploying and tracks the ball. | Reached the height, arm deployed, then 1 s hold. Fails if the ball moved more than 1 cm. | ~2.3 s | 12 s |
 | **PickPhase.Close** | Holds. | Closes at full torque to 0.65 rad, then with a light, fixed squeeze (about 1 N·m) onto the ball, then checks the grasp (jaw angle, grip distance, ball position between the jaws). | Gripper still for 15 frames, or 4 s passed. Ball in the jaws: Lift. Not: Retry (2 times max), then fail. | about 2.1 s | 4 s |
 | **PickPhase.Retry** | Climbs back to pre-grasp height, moves behind the ball's new spot. | Opens. | Back at the pre-grasp pose, then Descend (the arm re-deploys there). | climb + settle | counted |
 | **PickPhase.Lift** | Climbs to carry height, above the can rim with margin. | Holds the ball lightly. | Settled for 0.33 s. | climb + 0.33 s | 60 s |
@@ -59,9 +59,11 @@ Times are the wait or limit in the code. "Flight" means the time the drone takes
 
 The whole pick has a 240 s limit.
 
-The HUD shows the running state's own name: the current PickPhase while a pick runs, otherwise the PaState, and **Off** when nothing runs. Transit is one phase both ways; whether the ball is in the gripper (`m_PickGrasped`, set by Close) decides which way it flies.
+The HUD shows the running state's own name: the current PickPhase while a pick runs, otherwise the PaState, and **Off** when nothing runs. Transit is one phase both ways; whether the ball is in the gripper (`m_PickGrasped`, set by Close) decides which way it flies. Under the task, small timers (seconds): the running whole pick (going to the ball to the drop) under TASK and the running step under the step name, on one line; below them in gray, the last finished pick and the last finished run of the same step, replaced when the running one finishes. The two Transits (to the ball, and carrying it) keep separate last times.
 
-The fixed waits add up to about 4.1 s per ball (0.5 + 1 + 0.33 + 0.5 + 1.8). The rest of the time per ball is flight and the slow descent.
+The fixed waits add up to about 2.3 s per ball (0.5 + 1 + 0.33 + 0.5), plus the ball's fall in Drop (under 1.8 s). The rest of the time per ball is flight, the slow descent and the close.
+
+Why the close is set up the way it is, and what was tried to make it faster: [grasp findings](grasp-findings.md).
 
 Failures inside a pick end it with a reason. The gripper opens if it was carrying the ball.
 
@@ -76,7 +78,8 @@ Queue rules:
 
 - Built once at the start from live ball positions. Balls already in the can are left out.
 - Shuffled with the seed, so a run can be repeated.
-- A ball that fails is requeued once, and only if it is still on the floor (height above 0 and under 6 cm). A second failure skips it and logs why.- Between balls, each pick plans its own route from the drone's current position.
+- A ball that fails is requeued once, and only if it is still on the floor (height above 0 and under 6 cm). A second failure skips it and logs why.
+- Between balls, each pick plans its own route from the drone's current position.
 
 ## 5. How to start and stop
 
@@ -96,7 +99,8 @@ Read this before changing the logic.
 - **Perception is simulated.** Ball and can positions come straight from the simulator's body positions. There is no camera or detector. Real hardware will need a perception step, and the rest of the logic already works from positions, so only the source changes.
 - **Grasp success uses sim-tuned thresholds.** Jaw angle, grip distance and the ball's position between the jaws were tuned in simulation (`.claude/nightrun/sim/PICK_DESIGN.md`). Real grippers need their own checks.
 - **The grasp relies on pressing the ground.** The arm aims at the ball for the drone's *commanded* height (`PickDeploy`), not its measured one. At the ground the drone stops a few mm above its target, so the arm extends, the fingertips press the ground and lift the drone ~5 mm. That pins the jaws during the close. Aiming with the measured height removes the press: the drone then rises during the close, drags the ball to the pad ends (`ballInJaw` y −0.0966, limit −0.093), and every grasp check fails.
-- **Fixed waits.** The drop wait is a fixed time. A condition-based end would be faster and more robust.
+- **Fixed waits.** The hover, bottom and settle waits (0.5 s, 1 s, 0.33 s, 0.5 s) are fixed times. The drop already ends as soon as the ball is in the can.
+- **The close can't simply be made faster.** The jaw has to meet the ball gently, or the ball sits a few mm out on the pads and slips in the carry. About 2.1 s is the fastest close that held 6/6 in a real Pick All; see [grasp findings](grasp-findings.md).
 - **No overlap between picks.** The next transit starts only after the drop has finished.
 - **Random order.** Balls are picked in random order, so transit is not optimised. Nearest-neighbour would shorten it. The seed keeps runs reproducible.
 - **Simple recovery.** A failed ball is retried once, then skipped. The drone never repositions the ball or tries a different one first.
@@ -113,6 +117,10 @@ Grep `/tmp/LuckyEngine/Logs/APP.log` for:
 - `METRIC pickall seed= ok=` — the run summary.
 - `METRIC pick ball= phase=` — each phase change in a pick.
 - `METRIC pick ball= result=` — each pick's end and reason.
+- `METRIC close ball=` — each close: its time, when and at what jaw angle the jaw stopped on the ball, and the grasp settings.
+- `METRIC pick ball= afterClose` — the grasp check; `ballInJaw` y about −0.087 is a good seat, beyond −0.090 tends to slip.
+
+Dev: `gp open|lead|roll|fast|stall <value>` in `Cache/nightrun_cmd.txt` changes the grasp settings live (gripper open angle, squeeze lead, wrist roll in degrees, angle where the fast part of the close ends, still frames that end the close). Each change logs a `GP` line. They reset to the defaults on Play.
 - `METRIC keepout clamp` / `METRIC keepout plan` — the keep-out changed a goal or split a route.
 
 ## 7. Code map

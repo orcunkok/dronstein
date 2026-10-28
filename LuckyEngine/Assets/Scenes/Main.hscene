@@ -401,6 +401,28 @@ Entities:
       FrictionLoss: 0
       SpringRef: 0
       JointId: -1
+  - Entity: 613085265982155445
+    Domain: Client
+    TagComponent:
+      Tag: HudStepTime
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [16, 16, 1]
+    TextComponent:
+      TextString: Manual
+      FontHandle: 15916378497832049985
+      Color: [1, 1, 1, 1]
+      LineSpacing: 0
+      Kerning: 0
+      MaxWidth: 10
+      ScreenSpace: true
+      DropShadow: false
+      ShadowDistance: 2
+      ShadowColor: [0, 0, 0, 0.75]
   - Entity: 899892446410628203
     Domain: Client
     TagComponent:
@@ -914,6 +936,28 @@ Entities:
       FrictionLoss: 0
       SpringRef: 0
       JointId: -1
+  - Entity: 5218755313654649067
+    Domain: Client
+    TagComponent:
+      Tag: HudStepLast
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [16, 16, 1]
+    TextComponent:
+      TextString: Manual
+      FontHandle: 15916378497832049985
+      Color: [1, 1, 1, 1]
+      LineSpacing: 0
+      Kerning: 0
+      MaxWidth: 10
+      ScreenSpace: true
+      DropShadow: false
+      ShadowDistance: 2
+      ShadowColor: [0, 0, 0, 0.75]
   - Entity: 5622593848370521613
     Domain: Client
     TagComponent:
@@ -943,6 +987,28 @@ Entities:
       MaterialTable:
         0: 6658235089502020210
       Visible: true
+  - Entity: 6706635258560106936
+    Domain: Client
+    TagComponent:
+      Tag: HudPickTime
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [16, 16, 1]
+    TextComponent:
+      TextString: Manual
+      FontHandle: 15916378497832049985
+      Color: [1, 1, 1, 1]
+      LineSpacing: 0
+      Kerning: 0
+      MaxWidth: 10
+      ScreenSpace: true
+      DropShadow: false
+      ShadowDistance: 2
+      ShadowColor: [0, 0, 0, 0.75]
   - Entity: 6739932443237291449
     Domain: Client
     TagComponent:
@@ -2171,6 +2237,28 @@ Entities:
       Contype: 1
       Conaffinity: 1
       Condim: -1
+  - Entity: 14892106263772152344
+    Domain: Client
+    TagComponent:
+      Tag: HudPickLast
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [16, 16, 1]
+    TextComponent:
+      TextString: Manual
+      FontHandle: 15916378497832049985
+      Color: [1, 1, 1, 1]
+      LineSpacing: 0
+      Kerning: 0
+      MaxWidth: 10
+      ScreenSpace: true
+      DropShadow: false
+      ShadowDistance: 2
+      ShadowColor: [0, 0, 0, 0.75]
   - Entity: 15517991742549953451
     Domain: Client
     TagComponent:

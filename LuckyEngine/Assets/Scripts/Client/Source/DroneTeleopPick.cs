@@ -116,8 +116,14 @@ namespace Dronstein
 			FlyTo(m_PickLegs[0], m_PickYaw);  // the arm folds on the way
 		}
 
+		// HUD timers: the last whole pick, and each step's last time (slot 0, unused by Off, is the carry Transit; the other Transit flies to the ball).
+		float m_PickLast = -1f;
+		readonly float[] m_StepLast = [-1f, -1f, -1f, -1f, -1f, -1f, -1f, -1f];
+		int StepSlot => m_PickPhase == PickPhase.Transit && m_PickGrasped ? 0 : (int)m_PickPhase;
+
 		void PickEnter(PickPhase p, string extra = "")
 		{
+			if (m_PickPhase != PickPhase.Off) m_StepLast[StepSlot] = m_PickT;
 			m_PickPhase = p; m_PickT = 0f; m_PickSub = 0f; m_PickSettling = false; m_PickStall = 0;
 			Vector3 ball = BodyPos(m_PickBallBody), site = m_Mj.GetSitePositionMj(m_GraspSite);
 			Log.Info($"METRIC pick ball={m_PickN} phase={p} t={m_PickClock:F1} pos=({m_Qpos[0]:F3},{m_Qpos[1]:F3},{m_Qpos[2]:F3}) ball=({ball.X:F3},{ball.Y:F3},{ball.Z:F3}) " +
@@ -134,6 +140,7 @@ namespace Dronstein
 			m_Mj.GetBodyPoseMj(m_PickBinBody, out Vector3 _, out Quaternion q, out Vector3 _, out Vector3 _);
 			float binTilt = 2f * MathF.Acos(Math.Clamp(MathF.Abs(q.X * m_PickBinQ0.X + q.Y * m_PickBinQ0.Y + q.Z * m_PickBinQ0.Z + q.W * m_PickBinQ0.W), 0f, 1f)) * 57.2958f;  // angle from the starting orientation
 			m_PickDone = true; m_PickOkLast = ok; m_PickInBin = inBin; m_PickReason = reason;
+			m_StepLast[StepSlot] = m_PickT; m_PickLast = m_PickClock;
 			if (!ok && PickCarrying) m_ArmTarget[5] = GripOpen;  // let go of whatever is left in the hand
 			Log.Info($"METRIC pick ball={m_PickN} result={(ok ? "ok" : "fail")} reason={reason} stop={m_PickStop} ballInBin={inBin} binMoved={moved:F2} binTilt={binTilt:F1} " +
 				$"maxTilt={m_PickTilt:F1} ballSiteMax={m_PickMaxBallSite * 100f:F1} minZ={m_PickMinZ:F3} {NavFields()} retries={m_PickRetry} time={m_PickClock:F1}");

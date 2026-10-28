@@ -61,11 +61,14 @@ namespace Dronstein
 		// HUD, in pixels: the labels' x from the right edge, the first baseline from the top, the row height, the values' x after the labels.
 		const float HudRight = 320f, HudTop = 60f, HudRow = 44f, HudValueX = 115f;
 		const float HudSpeedDx = 36f;  // the mode value starts this far right of the other values, after the speed letter
+		const float HudTimeRow = 28f, HudTimeDx = 48f;  // the smaller timer row under the task (text scale 16 against 28) and the step from a last time to its running time
+		const float HudPickTimeDx = 65f;  // right-aligns the pick's running time with the labels, like MODE and TASK ("0.00" measured on screen: 31 px)
 		const float HudModeLabelDx = 33f, HudTaskLabelDx = 37f;  // right-aligns MODE and TASK with CAMERA (text has no alignment; widths measured on screen: 96, 62, 60 px)
 		// Rendered pixels per Application.Width unit: the monitor scale (Hyprland, 1.6) times Lucky's editor UI scale
 		// (UiScale in ~/.config/LuckyEngine/LuckyEditor/EditorApplicationSettings.yaml, 0.75). Change it if either changes.
 		const float HudPixelScale = 1.6f * 0.75f;
 		static readonly Vector4 Purple = new(0.8f, 0.6f, 1f, 1f), Yellow = new(1f, 0.847f, 0f, 1f);  // ball view, calibrating (#FFD800)
+		static readonly Vector4 White = new(1f, 1f, 1f, 1f), Gray = new(0.55f, 0.55f, 0.55f, 1f);  // the last pick's time, the step's last time
 		const float MaxDt = 0.05f;  // s, longer frames (hitches) are treated as this long, so one slow frame can't kick the drone
 		// Arm poses for the deploy button, without the gripper (left as is).
 		static readonly float[] Stowed = { 0f, -3.32f, 3.11f, 1.18f, 0f };   // folded up
@@ -99,6 +102,7 @@ namespace Dronstein
 		int m_View;
 		// HUD texts, moved only when the screen is resized and rewritten only when what they show changes.
 		Entity m_HudCameraLabel = null!, m_HudCamera = null!, m_HudModeLabel = null!, m_HudSpeed = null!, m_HudMode = null!, m_HudTaskLabel = null!, m_HudTask = null!;
+		Entity m_HudPickLast = null!, m_HudPickTime = null!, m_HudStepLast = null!, m_HudStepTime = null!;  // one row under the task: last (gray) and running time of the pick, then of its step
 		Vector4 m_HudCameraColor, m_HudModeColor;  // the values' colours set in the scene, used when not purple/yellow
 		(uint, uint) m_HudSize;
 		(int, int, int, int, int, int, int) m_HudShown = (-1, -1, -2, -1, -1, -1, -1);  // (m_View, m_SelectedBall, m_Waypoint, m_ToBall, m_PickPhase, m_PaState, Mode)
@@ -233,6 +237,10 @@ namespace Dronstein
 			m_HudMode = Find("HudMode");
 			m_HudTaskLabel = Find("HudTaskLabel");
 			m_HudTask = Find("HudTask");
+			m_HudPickLast = Find("HudPickLast");
+			m_HudPickTime = Find("HudPickTime");
+			m_HudStepLast = Find("HudStepLast");
+			m_HudStepTime = Find("HudStepTime");
 			if (m_Missing) return;
 			m_HudCameraColor = m_HudCamera.GetComponent<TextComponent>()!.Color;
 			m_HudModeColor = m_HudMode.GetComponent<TextComponent>()!.Color;
@@ -522,7 +530,19 @@ namespace Dronstein
 				m_HudMode.Translation = new Vector3(x + HudValueX + HudSpeedDx, y - HudRow, 0f);
 				m_HudTaskLabel.Translation = new Vector3(x + HudTaskLabelDx, y - 2f * HudRow, 0f);
 				m_HudTask.Translation = new Vector3(x + HudValueX, y - 2f * HudRow, 0f);
+				float yt = y - 2f * HudRow - HudTimeRow;
+				m_HudPickLast.Translation = new Vector3(x + HudPickTimeDx - HudTimeDx, yt, 0f);  // the pick under the labels
+				m_HudPickTime.Translation = new Vector3(x + HudPickTimeDx, yt, 0f);
+				m_HudStepLast.Translation = new Vector3(x + HudValueX, yt, 0f);                  // its step under the values
+				m_HudStepTime.Translation = new Vector3(x + HudValueX + HudTimeDx, yt, 0f);
 			}
+			// Timers, every frame, always shown (0.00 until there is a time), on one row: the whole pick (go to the ball to the drop),
+			// then its step, each running time in purple after its last run (white for the pick, gray for the step).
+			bool picking = m_PickPhase != PickPhase.Off;
+			SetText(m_HudPickTime, $"{(picking ? m_PickClock : 0f):F2}", Purple);
+			SetText(m_HudStepTime, $"{(picking ? m_PickT : 0f):F2}", Purple);
+			SetText(m_HudPickLast, $"{MathF.Max(m_PickLast, 0f):F2}", White);
+			SetText(m_HudStepLast, $"{(picking ? MathF.Max(m_StepLast[StepSlot], 0f) : 0f):F2}", Gray);
 			var shown = (m_View, m_SelectedBall, m_Waypoint, m_ToBall, (int)m_PickPhase, (int)m_PaState, Mode);
 			if (shown == m_HudShown) return;
 			m_HudShown = shown;
