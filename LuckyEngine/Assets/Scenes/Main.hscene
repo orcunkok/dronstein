@@ -2638,6 +2638,28 @@ Entities:
       MaterialTable:
         0: 2116205926439990434
       Visible: true
+  - Entity: 17334527609164016768
+    Domain: Client
+    TagComponent:
+      Tag: HudBalls
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [16, 16, 1]
+    TextComponent:
+      TextString: 0/25
+      FontHandle: 15916378497832049985
+      Color: [1, 1, 1, 1]
+      LineSpacing: 0
+      Kerning: 0
+      MaxWidth: 10
+      ScreenSpace: true
+      DropShadow: false
+      ShadowDistance: 2
+      ShadowColor: [0, 0, 0, 0.75]
   - Entity: 17344206304150135598
     Domain: Client
     TagComponent:

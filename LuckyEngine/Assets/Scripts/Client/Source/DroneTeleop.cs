@@ -59,8 +59,8 @@ namespace Dronstein
 		static readonly float[,] Waypoints = { { 10, 10 }, { 10, -10 }, { -10, -10 }, { -10, 10 } };  // (x, y), MuJoCo frame
 		static readonly string[] Views = { "Drone", "Gripper", "Ball" };  // what the camera can watch; C steps through them
 		// HUD, in pixels: the labels' x from the right edge, the first baseline from the top, the row height, the values' x after the labels.
-		const float HudRight = 320f, HudTop = 60f, HudRow = 44f, HudValueX = 115f;
-		const float HudSpeedDx = 36f;  // the mode value starts this far right of the other values, after the speed letter
+		const float HudRight = 291f, HudTop = 49f, HudRow = 44f, HudValueX = 115f;
+		const float HudSpeedDx = 36f, HudBallsDx = 50f;  // the mode and task values start this far right of the other values, after the speed letter and the ball count (scale 16, "00/25" measured: 41 px, then one space)
 		const float HudTimeRow = 28f, HudTimeDx = 48f;  // the smaller timer row under the task (text scale 16 against 28) and the step from a last time to its running time
 		const float HudPickTimeDx = 65f;  // right-aligns the pick's running time with the labels, like MODE and TASK ("0.00" measured on screen: 31 px)
 		const float HudModeLabelDx = 33f, HudTaskLabelDx = 37f;  // right-aligns MODE and TASK with CAMERA (text has no alignment; widths measured on screen: 96, 62, 60 px)
@@ -101,11 +101,12 @@ namespace Dronstein
 		float[] m_ViewDistance = new float[3];  // each view keeps its own zoom
 		int m_View;
 		// HUD texts, moved only when the screen is resized and rewritten only when what they show changes.
-		Entity m_HudCameraLabel = null!, m_HudCamera = null!, m_HudModeLabel = null!, m_HudSpeed = null!, m_HudMode = null!, m_HudTaskLabel = null!, m_HudTask = null!;
+		Entity m_HudCameraLabel = null!, m_HudCamera = null!, m_HudModeLabel = null!, m_HudSpeed = null!, m_HudMode = null!, m_HudTaskLabel = null!, m_HudBalls = null!, m_HudTask = null!;
 		Entity m_HudPickLast = null!, m_HudPickTime = null!, m_HudStepLast = null!, m_HudStepTime = null!;  // one row under the task: last (gray) and running time of the pick, then of its step
 		Vector4 m_HudCameraColor, m_HudModeColor;  // the values' colours set in the scene, used when not purple/yellow
 		(uint, uint) m_HudSize;
-		(int, int, int, int, int, int, int) m_HudShown = (-1, -1, -2, -1, -1, -1, -1);  // (m_View, m_SelectedBall, m_Waypoint, m_ToBall, m_PickPhase, m_PaState, Mode)
+		(int, int, int, int, int, int, int, int) m_HudShown = (-1, -1, -2, -1, -1, -1, -1, -1);  // (m_View, m_SelectedBall, m_Waypoint, m_ToBall, m_PickPhase, m_PaState, Mode, balls in the can)
+		readonly List<uint> m_BallBodies = new();  // every golf ball's MuJoCo body, for the HUD's ball count
 		Vector2 m_LastMouse;
 
 		// Flight
@@ -236,12 +237,17 @@ namespace Dronstein
 			m_HudSpeed = Find("HudSpeed");
 			m_HudMode = Find("HudMode");
 			m_HudTaskLabel = Find("HudTaskLabel");
+			m_HudBalls = Find("HudBalls");
 			m_HudTask = Find("HudTask");
 			m_HudPickLast = Find("HudPickLast");
 			m_HudPickTime = Find("HudPickTime");
 			m_HudStepLast = Find("HudStepLast");
 			m_HudStepTime = Find("HudStepTime");
+			Entity bin = Find("TrashCan");
 			if (m_Missing) return;
+			m_PickBinBody = m_Mj.GetBodyID($"lucky_body_{bin.ID}");
+			for (int n = 1; n <= 25; n++)
+				if (FindEntityByTag($"GolfBall_{n:00}") is Entity e) m_BallBodies.Add(m_Mj.GetBodyID($"lucky_body_{e.ID}"));
 			m_HudCameraColor = m_HudCamera.GetComponent<TextComponent>()!.Color;
 			m_HudModeColor = m_HudMode.GetComponent<TextComponent>()!.Color;
 			m_GripDotY = m_GripDot.Translation.Y;
@@ -529,7 +535,7 @@ namespace Dronstein
 				m_HudSpeed.Translation = new Vector3(x + HudValueX, y - HudRow, 0f);
 				m_HudMode.Translation = new Vector3(x + HudValueX + HudSpeedDx, y - HudRow, 0f);
 				m_HudTaskLabel.Translation = new Vector3(x + HudTaskLabelDx, y - 2f * HudRow, 0f);
-				m_HudTask.Translation = new Vector3(x + HudValueX, y - 2f * HudRow, 0f);
+				m_HudBalls.Translation = new Vector3(x + HudValueX, y - 2f * HudRow, 0f);
 				float yt = y - 2f * HudRow - HudTimeRow;
 				m_HudPickLast.Translation = new Vector3(x + HudPickTimeDx - HudTimeDx, yt, 0f);  // the pick under the labels
 				m_HudPickTime.Translation = new Vector3(x + HudPickTimeDx, yt, 0f);
@@ -537,22 +543,25 @@ namespace Dronstein
 				m_HudStepTime.Translation = new Vector3(x + HudValueX + HudTimeDx, yt, 0f);
 			}
 			// Timers, every frame, always shown (0.00 until there is a time), on one row: the whole pick (go to the ball to the drop),
-			// then its step, each running time in purple after its last run (white for the pick, gray for the step).
-			bool picking = m_PickPhase != PickPhase.Off;
+			// then its step, each running time in purple after the last pick (white) and the previous step (gray).
+			bool picking = m_PickPhase != PickPhase.Off, running = picking || m_PaState != PaState.Off;  // Pick All flies to its start point before the first pick
+			m_HudTask.Translation = m_HudBalls.Translation + new Vector3(running ? HudBallsDx : 0f, 0f, 0f);  // after the ball count, which shows only while running
 			SetText(m_HudPickTime, $"{(picking ? m_PickClock : 0f):F2}", Purple);
 			SetText(m_HudStepTime, $"{(picking ? m_PickT : 0f):F2}", Purple);
 			SetText(m_HudPickLast, $"{MathF.Max(m_PickLast, 0f):F2}", White);
-			SetText(m_HudStepLast, $"{(picking ? MathF.Max(m_StepLast[StepSlot], 0f) : 0f):F2}", Gray);
-			var shown = (m_View, m_SelectedBall, m_Waypoint, m_ToBall, (int)m_PickPhase, (int)m_PaState, Mode);
+			SetText(m_HudStepLast, $"{MathF.Max(m_StepLast, 0f):F2}", Gray);
+			int inBin = 0;
+			foreach (uint b in m_BallBodies) if (BallInBin(b)) inBin++;
+			var shown = (m_View, m_SelectedBall, m_Waypoint, m_ToBall, (int)m_PickPhase, (int)m_PaState, Mode, inBin);
 			if (shown == m_HudShown) return;
 			m_HudShown = shown;
 			SetText(m_HudSpeed, ModeNames[Mode][..1].ToUpperInvariant(), ModeColors[Mode]);
+			SetText(m_HudBalls, running ? $"{inBin:00}/{m_BallBodies.Count}" : "", Purple);
 			SetText(m_HudCamera, m_View == 2 ? $"Ball {m_SelectedBall:00}" : Views[m_View], m_View == 2 ? Purple : m_HudCameraColor);
-			bool pick = m_PickPhase != PickPhase.Off, pickAll = m_PaState != PaState.Off;  // Pick All flies to its start point before the first pick
-			SetText(m_HudMode, pick ? $"Pick {m_PickN:00}" : pickAll ? "Pick All" : m_Waypoint >= 0 ? $"Calibration {m_Waypoint + 1}/4" : m_ToBall > 0 ? $"ToBall {m_ToBall:00}" : "Manual",
-				pick || pickAll ? Purple : m_Waypoint >= 0 ? Yellow : m_ToBall > 0 ? Purple : m_HudModeColor);
-			SetText(m_HudTask, pick ? m_PickPhase.ToString() : m_PaState.ToString(),  // the running state's own name (Off when nothing runs)
-				pick || pickAll ? Purple : m_HudModeColor);
+			SetText(m_HudMode, picking ? $"Pick {m_PickN:00}" : running ? "Pick All" : m_Waypoint >= 0 ? $"Calib {m_Waypoint + 1}/4" : m_ToBall > 0 ? $"ToBall {m_ToBall:00}" : "Manual",
+				running ? Purple : m_Waypoint >= 0 ? Yellow : m_ToBall > 0 ? Purple : m_HudModeColor);
+			SetText(m_HudTask, picking ? m_PickPhase.ToString() : m_PaState.ToString(),  // the running state's own name (Off when nothing runs)
+				running ? Purple : m_HudModeColor);
 		}
 
 		static void SetText(Entity entity, string text, Vector4 color)
