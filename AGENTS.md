@@ -7,6 +7,7 @@
 ## Lucky Engine
 - Work through the Lucky MCP (`lucky`, http://127.0.0.1:19331/mcp) from the start. Don't hand-edit Lucky's own files (`AssetRegistry.hzr`, `.hmaterial` handles, `.hscene`) or invent asset handles. If no tool fits, stop and ask.
 - Scripts: edit `LuckyEngine/Assets/Scripts/Client/Source/*.cs`, then `build_script_assembly`. Use Lucky's inspector attributes (`read_doc("patterns/inspector-attributes")`), e.g. `[Button("Label")]` methods for buttons.
+- Always build when you're done: after any script change reaches the user's checkout (edit, copy or branch switch), exit Play and `build_script_assembly`, so Lucky never runs a stale script.
 - You may stop and start Play as needed. Entities can only be edited in Edit mode.
 - Test only a fresh build: exit Play, `build_script_assembly`, then enter Play. Before trusting any result, check `APP.log` has a `DroneTeleop: start` line *after* the latest `Build succeeded` line; if not, the old script is still running. Building or entering Play while Play runs doesn't restart it.
 - Read only the log lines written since your run started (note `wc -l` of `APP.log` first, or check the `start` line); the log also holds older runs and is reset when Lucky restarts.

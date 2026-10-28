@@ -14,7 +14,7 @@ namespace Dronstein
 		public bool ShowReach = true;
 
 		[Group("Speed")] [Dropdown("Slow", "Medium", "Fast")] [Tooltip("Speed mode, kept between runs (saved in SpeedMode.txt)")]
-		public int SpeedMode = 1;
+		public int SpeedMode = 2;
 
 		[Group("Speed")] [ReadOnly] [Units("m/s")] [Tooltip("Top speed of the current mode, written by DroneTeleop")]
 		public float TopSpeed;

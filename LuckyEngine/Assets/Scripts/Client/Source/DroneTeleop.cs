@@ -108,7 +108,7 @@ namespace Dronstein
 		Quintic m_PosQ, m_YawQ;            // the flight to a goal (yaw uses X only)
 		float m_PosT, m_YawT;              // s into them
 		bool m_PosOn, m_YawOn;
-		float m_YawRate, m_YawAcc;         // rad/s, rad/s^2: the yaw reference's rate (fed forward) and its change
+		float m_YawRate;                   // rad/s, the yaw reference's rate, fed forward
 		Vector3 m_AccFF;                   // the reference acceleration actually fed forward: a little ahead of m_TargetAcc, since the tilt takes AccLead to build up
 		const float AccLead = 0.05f;       // s
 		Vector3 m_ErrorIntegral;
@@ -357,7 +357,7 @@ namespace Dronstein
 			float d = MathF.Abs(yaw - m_Yaw);
 			if (d < 1e-3f) return;
 			float T = MathF.Max(Duration(d, ModeYawRate[m], ModeYawAcc[m]), ModeTmin[m]);
-			m_YawQ.Set(new Vector3(m_Yaw, 0, 0), new Vector3(m_YawRate, 0, 0), new Vector3(m_YawAcc, 0, 0), new Vector3(yaw, 0, 0), T);
+			m_YawQ.Set(new Vector3(m_Yaw, 0, 0), new Vector3(m_YawRate, 0, 0), Vector3.Zero, new Vector3(yaw, 0, 0), T);
 			m_YawT = 0f;
 			m_YawOn = true;
 		}
@@ -394,7 +394,7 @@ namespace Dronstein
 			m_Target = new Vector3(m_Qpos[0], m_Qpos[1], m_Qpos[2]);
 			m_TargetVel = m_TargetAcc = m_ErrorIntegral = Vector3.Zero;
 			m_PosOn = m_YawOn = false;
-			m_YawRate = m_YawAcc = 0f;
+			m_YawRate = 0f;
 			m_TestStep = -1;
 			m_Yaw = MathF.PI;
 			FlyTo(m_Target + new Vector3(0f, 0f, 0.5f));  // take off 0.5 m, as in OnCreate
@@ -624,18 +624,16 @@ namespace Dronstein
 
 			if (m_YawOn)
 			{
-				m_YawQ.Eval(m_YawT += dt, out Vector3 p, out Vector3 v, out Vector3 a);
-				if (m_YawT >= m_YawQ.T) { m_YawQ.Eval(m_YawQ.T, out p, out v, out a); v = a = Vector3.Zero; m_YawOn = false; }
+				m_YawQ.Eval(m_YawT += dt, out Vector3 p, out Vector3 v, out Vector3 _);
+				if (m_YawT >= m_YawQ.T) { m_YawQ.Eval(m_YawQ.T, out p, out v, out Vector3 _); v = Vector3.Zero; m_YawOn = false; }
 				m_Yaw = p.X;
 				m_YawRate = v.X;
-				m_YawAcc = a.X;
 			}
 			else
 			{
-				// Ease the turn rate in and out like the stick speed below: a sudden full rate asks for more twist than the rotors have.
-				float w = ModeSmooth[mode];
-				m_YawAcc += ((turn * ModeYawRate[mode] * scale - m_YawRate) * (w * w) - m_YawAcc * (2f * w)) * dt;
-				m_YawRate += m_YawAcc * dt;
+				// Ramp the turn rate to the stick's at the mode's yaw acceleration: as fast as the rotors can twist, so it starts and stops without lag.
+				float step = ModeYawAcc[mode] * dt;
+				m_YawRate += Math.Clamp(turn * ModeYawRate[mode] * scale - m_YawRate, -step, step);
 				m_Yaw += m_YawRate * dt;
 			}
 
