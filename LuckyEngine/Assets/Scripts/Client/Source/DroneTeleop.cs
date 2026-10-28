@@ -752,6 +752,7 @@ namespace Dronstein
 					case "pick": m_Tuning.Ball = int.Parse(w[1]); PickStart(m_Tuning.Ball, w.Length > 2 ? w[2][0] : 'c'); break;
 					case "grip": m_ArmTarget[5] = Num(1); m_ArmGoal = null; break;  // dev: gripper command (rad)
 					case "log": Log.Info($"STATE grip={Grip():F3} cmd={m_ArmTarget[5]:F3}"); break;
+					case "gp": GraspParam(w[1], Num(2)); break;  // dev: grasp test knobs (DroneTeleopPick.cs)
 					case "tool": m_Tool = new Vector3(Num(1), Num(2), Num(3)); if (w.Length > 4) m_ToolDz = Num(4); break;  // dev: ball centre in the jaw frame, and its height above the ball
 					case "geoms": { for (uint gi = 0; gi < m_Mj.ModelNgeom; gi++) { string gn = m_Mj.GetGeomNameByIndex(gi); if (gn.Contains(w[1])) Log.Info($"GEOM {gi} {gn}"); } break; }  // dev
 					case "label": m_Case = line[6..].Trim(); break;  // dev: names the next flights in the METRIC lines

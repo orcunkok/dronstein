@@ -21,8 +21,10 @@ namespace Dronstein
 		const float HPick = 0.42f;          // m, drone origin height while the fingertips are at ball level
 		const float Standoff = 0.24f;       // m, drone origin to ball along the nose
 		const float PreDz = 0.05f;          // m, the descent starts this far above HPick
-		const float PickRoll = 1.5708f;     // wrist_roll: jaws open sideways
-		const float GripOpen = 0.90f, GripClosed = -0.174f;
+		const float PickRoll0 = 1.5708f;    // wrist_roll the IK constants below were derived at: jaws open sideways
+		float PickRoll = PickRoll0;         // wrist_roll for the pick (dev: `gp roll`)
+		float GripOpen = 0.90f;             // dev: `gp open`
+		const float GripClosed = -0.174f;
 		const float PickArmSpeed = 0.8f, GripOpenSpeed = 1.5f;  // rad/s
 		const float DescentV = 0.04f, DescentA = 0.3f;          // m/s, m/s^2: the drone's slow descent over the ball
 		const float Rim = 0.46f, SafeLow = Rim + 0.10f + 0.03f; // bin rim; lowest point near the bin must stay above SafeLow (3 cm margin)
@@ -30,7 +32,11 @@ namespace Dronstein
 		const float ApproachR = 1.0f;       // m, the arm unfolds this close to the end of the cruise (~3 s from folded at PickArmSpeed)
 		const float StowedLow = 0.133f;     // m, lowest point of the stowed arm below the drone origin
 		const float ZDeploySafe = SafeLow + HPick + 0.02f;  // the drone origin over the can with the arm unfolded
-		const float SqueezeLead = 0.02f;    // rad, close command leads the measured jaw angle: torque = kp * lead = 1 Nm
+		float SqueezeLead = 0.02f;          // rad, close command leads the measured jaw angle: torque = kp * lead = 1 Nm (dev: `gp lead`)
+		const float FastLead = 0.1f;        // rad: the close leads by this (full torque) while the jaw is above GripSlowAt
+		float GripSlowAt = 0f;              // rad, 0 = no fast part (dev: `gp fast`)
+		int StallFrames = 30;               // frames the jaw must be still to end the close (dev: `gp stall`)
+		float m_PickStopG, m_PickStopT;     // jaw angle and time when the jaw last came to a stop in Close
 		const float BinFloorR = 0.165f;
 		// Ball centre in the Fixed_Jaw frame (x, y, z) and its height above the ball centre.
 		static readonly Vector3 Tool0 = new(-0.030f, -0.0857f, -0.006f);   // the offsets the IK constants below were derived with
@@ -177,6 +183,8 @@ namespace Dronstein
 			float tx = t.X, ty = t.Y, tz = t.Z;
 			// Wrist-to-tool with the finger vertical: the tool offset moves it by jaw (-dz, -dx, +dy) in the body frame.
 			Vector3 dt = m_Tool - Tool0, wo = new(IkWoff0.X - dt.Z, IkWoff0.Y - dt.X, IkWoff0.Z + dt.Y);
+			float rr = PickRoll - PickRoll0, cr = MathF.Cos(rr), sr = MathF.Sin(rr);
+			wo = new Vector3(cr * wo.X - sr * wo.Y, sr * wo.X + cr * wo.Y, wo.Z);  // the wrist roll turns the tool offset about the (vertical) finger
 			float l1 = MathF.Sqrt(IkE.X * IkE.X + IkE.Z * IkE.Z), l2 = MathF.Sqrt(IkW.X * IkW.X + IkW.Z * IkW.Z);
 			float a = wo.Y, dx = tx - IkC.X, dy = ty - IkC.Y, rr2 = dx * dx + dy * dy - a * a;
 			if (rr2 < 0f) return false;
@@ -338,10 +346,12 @@ namespace Dronstein
 				case PickPhase.Close:
 				{
 					// Force-limited close: the command leads the measured angle by SqueezeLead, so the jaw pushes with ~1 Nm instead of the saturated 3.5 Nm.
-					m_ArmTarget[5] = Math.Clamp(MathF.Max(GripClosed, g - SqueezeLead), m_ArmLow[5], m_ArmHigh[5]);
+					m_ArmTarget[5] = Math.Clamp(MathF.Max(GripClosed, g - (GripSlowAt > 0f && g > GripSlowAt ? FastLead : SqueezeLead)), m_ArmLow[5], m_ArmHigh[5]);
 					float gv = m_Qvel[m_GripV];
 					m_PickStall = MathF.Abs(gv) < 0.01f ? m_PickStall + 1 : 0;
-					if (m_PickStall <= 30 && m_PickT <= 4f) break;
+					if (m_PickStall == 1) { m_PickStopG = g; m_PickStopT = m_PickT; }
+					if (m_PickStall <= StallFrames && m_PickT <= 4f) break;
+					Log.Info($"METRIC close ball={m_PickN} time={m_PickT:F2} stopT={m_PickStopT:F2} stopG={m_PickStopG:F3} open={GripOpen:F2} lead={SqueezeLead:F3} roll={PickRoll * 57.2958f:F0} fast={GripSlowAt:F2} stall={StallFrames}");
 					// the close is over: the grasp is checked here, with the jaws still on the ball
 					float dist = (ball - site).Length();
 					Vector3 inJaw = InJaw(ball);
@@ -411,6 +421,20 @@ namespace Dronstein
 			m_ArmTarget[5] = MoveToward(m_ArmTarget[5], GripOpen, GripOpenSpeed * dt);
 			ArmServo(ball + new Vector3(0f, 0f, m_ToolDz + (m_Target.Z - HPick)), PickArmSpeed, dt, out bool arrived);
 			return arrived && MathF.Abs(m_ArmTarget[5] - GripOpen) < 0.01f;
+		}
+
+		// Dev (`gp name value`): grasp knobs for tests: open (rad), lead (rad), roll (deg), fast (GripSlowAt rad, 0 = off), stall (frames).
+		void GraspParam(string name, float v)
+		{
+			switch (name)
+			{
+				case "open": GripOpen = v; break;
+				case "lead": SqueezeLead = v; break;
+				case "roll": PickRoll = v * MathF.PI / 180f; break;
+				case "fast": GripSlowAt = v; break;
+				case "stall": StallFrames = (int)v; break;
+			}
+			Log.Info($"GP open={GripOpen:F2} lead={SqueezeLead:F3} roll={PickRoll * 57.2958f:F0} fast={GripSlowAt:F2} stall={StallFrames}");
 		}
 
 		// The ball is in the gripper and the drone is lifting it or carrying it to the bin (the squeeze and the slip check run then).
