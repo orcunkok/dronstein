@@ -17,11 +17,11 @@ A Skydio X2 drone carries an SO-100 arm in Lucky Engine. The goal is to pick up 
 | LB / RB | Turn left / right |
 | Menu | Slow, precise mode on/off |
 | View | Unfold / fold the arm |
-| Right stick left/right | Turn the arm (or roll the wrist after pressing A) |
+| Right stick left/right | Turn the arm |
 | Right stick up/down | Move the chosen joint |
 | X / Y / B | Choose the shoulder / elbow / wrist joint |
-| A | Switch the right stick between turning the arm and rolling the wrist |
 | D-pad up / down | Open / close the gripper |
+| D-pad left / right | Roll the wrist |
 
 To change buttons, edit `LuckyEngine/ControllerBindings.txt`, save it, and press Play again.
 
@@ -68,8 +68,8 @@ Tasks of a pick, in order:
 | Task | What the drone does |
 |---|---|
 | Go to start | Pick all balls only: flying to its random start point and heading, before the first ball |
-| Transit | Arm folded, flies to a point behind the ball (high over the trash can if the way passes near it) and turns its nose toward the can |
-| Deploy | Holds still, opens the gripper and unfolds the arm over the ball |
+| Transit | Flies to a point behind the ball (high over the trash can if the way passes near it), turning its nose toward the can, arm folded; the arm unfolds during the last metre |
+| Deploy | Holds still and corrects the unfolded arm to the ball (a small step) |
 | Descend | Slowly lowers until the open jaws are around the ball |
 | Close | Closes the gripper gently (force limited) |
 | Check | Checks that the ball is held. If not, Retry |
@@ -92,7 +92,7 @@ Tasks of a pick, in order:
 - **Autonomous Mode Action:** the Navigate to ball (was Set), Pick and Pick All buttons in Tuning are replaced by a **Select Mode** dropdown and one **Start / Stop Autonomous Action** switch. Stop gives the drone back to manual.
 - **Task on screen:** a third row at the top right shows the pick's step (Transit, Descend, Lift…); the Mode row shows only **Pick** and the ball number. Pick all balls now shows **Pick All** / **Go to start** while it flies to its start point, instead of Manual.
 - **Speed Mode dropdown:** the Slow / Medium / Fast buttons are now a dropdown in Tuning, kept between runs in `LuckyEngine/SpeedMode.txt`.
-- **Pick All:** the **Pick All** button in Tuning (Slow mode) sends the drone to a random point with a random heading, then picks every ball that is not in the trash can yet, in a random order, one after the other, straight from the can to the next ball. Each pick plans from the ball's live position (it re-plans if the ball rolled), folds the arm and turns to the new heading in transit (never with the arm down by the ground). A failed pick is retried twice, then put back in the queue once if the ball is on the ground, then skipped. About 40 s per ball. (Dev: `pickall [seed]`; the end line is `METRIC pickall seed= ok=N/M fail=[...] binMoved= binHits= time=`.)
+- **Pick All:** the **Pick All** button in Tuning (Slow mode) sends the drone to a random point with a random heading, then picks every ball that is not in the trash can yet, in a random order, one after the other, straight from the can to the next ball. Each pick plans from the ball's live position (it re-plans if the ball rolled), folds the arm and turns to the new heading in transit, and unfolds it during the last metre. A failed pick is retried twice, then put back in the queue once if the ball is on the ground, then skipped. About 40 s per ball. (Dev: `pickall [seed]`; the end line is `METRIC pickall seed= ok=N/M fail=[...] binMoved= binHits= time=`.)
 - **Bin keep-out:** every flight the script plans (goto, Set, B, Y, the pick) keeps the drone, its arm and a carried ball at least 10 cm above the trash can's rim whenever any part of it is within 0.5 m of the can's edge. A flight that would cross the can low is split into climb, high cruise and descent; a goal next to the can is raised (logged as `METRIC keepout clamp`). Dev: `test bin` runs the adversarial flights; every flight logs `METRIC flight minClear=... nearBin=... binMoved=...`. Sticks are not guarded.
 - **Autonomous pick:** the **Pick** button in Tuning picks the selected ball and drops it in the trash can: the drone flies behind the ball, unfolds the arm, lowers over the ball, closes the gripper gently, climbs above the can's rim, carries the ball over the can and lets go (about 35 s in Slow). A missed grasp is retried up to 2 times. (Dev: `pick N` in `Cache/nightrun_cmd.txt`, `pick N a` stops after lowering over the ball, `pick N b` after lifting it; results are `METRIC pick ...` lines in the log.)
 - **Speed modes:** Slow / Medium / Fast buttons in Tuning. Flights to a ball or corner now follow a smooth, planned path (no overshoot) at the speed of the mode; the sticks scale with the mode too. (Dev: `Cache/nightrun_cmd.txt` takes test commands, e.g. `test flight`.)

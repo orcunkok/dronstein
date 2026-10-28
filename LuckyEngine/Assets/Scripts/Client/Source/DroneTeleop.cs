@@ -119,13 +119,13 @@ namespace Dronstein
 		static readonly string[] AutoModeNames = { "navigate to ball", "pick selected ball", "pick all balls" };
 		string? m_BallEntry;  // digits typed after B, null when not typing
 		readonly HashSet<KeyCode> m_KeysDown = new();  // keys down last frame, for Tapped
+		readonly HashSet<string> m_ButtonsDown = new();  // controller bindings down last frame, for Pressed
 		bool m_Precise;
 
 		// Arm
 		float[] m_ArmTarget = [.. Stowed, -0.174f];  // starts stowed, gripper slightly closed
 		float[]? m_ArmGoal;  // pose the arm is moving to after deploy, null when the sticks drive it
 		bool m_Deployed;
-		bool m_RollWrist;   // right stick left/right: false = shoulder_pan, true = wrist_roll
 		int m_Joint = 1;    // the joint on right stick up/down
 
 		// Controller: ControllerBindings.txt, parsed once when Play starts.
@@ -674,14 +674,9 @@ namespace Dronstein
 			}
 		}
 
-		// Right stick moves the selected joints, the d-pad the gripper; deploy swings the arm to a pose.
+		// Right stick moves the selected joints, the d-pad the gripper (up/down) and the wrist roll (left/right); deploy swings the arm to a pose.
 		void ArmInput(float dt, float speed)
 		{
-			if (Pressed("roll_wrist"))
-			{
-				m_RollWrist = !m_RollWrist;
-				Log.Info($"Right stick left/right: {(m_RollWrist ? "wrist_roll" : "shoulder_pan")}");
-			}
 			for (int i = 0; i < 3; i++)
 				if (Pressed(JointSelects[i]))
 				{
@@ -695,9 +690,10 @@ namespace Dronstein
 				Log.Info($"Arm: {(m_Deployed ? "deploying" : "stowing")}");
 			}
 
-			float turn = Axis("arm_turn"), bend = Axis("arm_joint"), grip = Pair("gripper_open", "gripper_close");
-			if (turn != 0f || bend != 0f || grip != 0f) { m_ArmGoal = null; PickEnd(false, "sticks"); }  // the sticks take over from deploy
-			MoveArmJoint(m_RollWrist ? 4 : 0, turn * speed * dt);
+			float turn = Axis("arm_turn"), bend = Axis("arm_joint"), grip = Pair("gripper_open", "gripper_close"), roll = Pair("roll_right", "roll_left");
+			if (turn != 0f || bend != 0f || grip != 0f || roll != 0f) { m_ArmGoal = null; PickEnd(false, "sticks"); }  // the sticks take over from deploy
+			MoveArmJoint(0, turn * speed * dt);
+			MoveArmJoint(4, roll * speed * dt);
 			MoveArmJoint(m_Joint, bend * speed * dt);
 			MoveArmJoint(5, grip * speed * dt);
 
@@ -917,10 +913,7 @@ namespace Dronstein
 
 		float AxisValue(Bind b) => Input.GetControllerAxis(m_Pad, b.Axis) * b.Sign;
 
-		// `pressed`: went down this frame, else held.
-		bool Button(Bind b, bool pressed) => b.Raw >= 0
-			? (pressed ? Input.IsControllerButtonPressed(m_Pad, b.Raw) : Input.IsControllerButtonDown(m_Pad, b.Raw))
-			: (pressed ? Input.IsControllerButtonPressed(m_Pad, b.Button) : Input.IsControllerButtonDown(m_Pad, b.Button));
+		bool Button(Bind b) => b.Raw >= 0 ? Input.IsControllerButtonDown(m_Pad, b.Raw) : Input.IsControllerButtonDown(m_Pad, b.Button);
 
 		// Analog axis with the deadzone applied, 0 when unbound.
 		float Axis(string name)
@@ -930,10 +923,17 @@ namespace Dronstein
 		}
 
 		// Held: a button down, or an axis (e.g. a trigger) pushed past halfway.
-		bool Held(string name) => Bound(name, out Bind b) && (b.Axis >= 0 ? AxisValue(b) > 0.5f : Button(b, pressed: false));
+		bool Held(string name) => Bound(name, out Bind b) && (b.Axis >= 0 ? AxisValue(b) > 0.5f : Button(b));
 
-		// Went down this frame. Only buttons count, never axes.
-		bool Pressed(string name) => Bound(name, out Bind b) && b.Axis < 0 && Button(b, pressed: true);
+		// Went down this frame (down now, up last frame), like Tapped: Lucky's own "pressed" lasts one engine frame and can fall
+		// between two script updates. Only buttons count, never axes. Call once per name per frame.
+		bool Pressed(string name)
+		{
+			bool down = Bound(name, out Bind b) && b.Axis < 0 && Button(b), tapped = down && !m_ButtonsDown.Contains(name);
+			if (down) m_ButtonsDown.Add(name);
+			else m_ButtonsDown.Remove(name);
+			return tapped;
+		}
 
 		// +1 while `plus` is held, -1 while `minus` is, 0 for both or neither.
 		float Pair(string plus, string minus) => (Held(plus) ? 1f : 0f) - (Held(minus) ? 1f : 0f);

@@ -1,13 +1,14 @@
 # Xbox controller bindings for DroneTeleop. Read when Play starts: edit, save, press Play again.
 # Everything here is on the controller. Fixed keys: Y next test-square waypoint, C camera on drone/gripper/selected ball, Q/E zoom, F start/stop autonomous action, right mouse drag orbits.
 #
-# Numbers are axes (as Lucky reports this Xbox controller): 0 left stick X, 1 left stick Y, 2 left trigger,
-#   3 right stick X, 4 right stick Y, 5 right trigger. Triggers rest at -1.
+# Numbers are axes (as Lucky reports this Xbox controller): 0 left stick X, 1 left stick Y, 2 right stick X,
+#   3 right stick Y, 4 left trigger, 5 right trigger. Triggers rest at -1.
 #   A minus flips the direction (pushing a stick up or left reads negative), e.g. -1.
 #   Where an action is on/off (up, down, turn, gripper), an axis counts when pushed past halfway.
 # Names are buttons: A B X Y LeftBumper RightBumper Start Guide LeftJoystick RightJoystick DPadUp DPadDown DPadLeft DPadRight
-# bN is raw button number N, for buttons without a name (Lucky has none for View, the small button left of Xbox).
-#   Standard Xbox numbers: b6 View, b7 Menu, b8 Xbox button.
+# bN is raw button number N. This controller (the newer Xbox Wireless Controller, with the Share button, over Bluetooth)
+#   doesn't match Lucky's names, so every button here is raw:
+#   b0 A, b1 B, b3 X, b4 Y, b6 LB, b7 RB, b10 View, b11 Menu; the D-pad comes after the buttons: b15 up, b16 right, b17 down, b18 left.
 # If something is on the wrong stick or button, set log_axes = true: the log then prints every axis and
 # the buttons held (raw numbers and names), once a second, in /tmp/LuckyEngine/Logs/APP.log.
 
@@ -15,21 +16,22 @@
 forward_back = -1            # left stick up/down (analog)
 left_right   = -0            # left stick left/right (analog)
 up           = 5             # right trigger
-down         = 2             # left trigger
-turn_left    = LeftBumper
-turn_right   = RightBumper
-precise      = b7            # Menu button: quarter speed on/off
+down         = 4             # left trigger
+turn_left    = b6            # LB
+turn_right   = b7            # RB
+precise      = b11           # Menu button: quarter speed on/off
 deadzone     = 0.15          # stick values below this count as 0
 
 # Arm
-arm_turn        = -3         # right stick left/right: shoulder_pan, or wrist_roll after roll_wrist (analog)
-arm_joint       = -4         # right stick up/down: the selected joint (analog)
-select_shoulder = X          # shoulder_lift on the right stick up/down
-select_elbow    = Y          # elbow_flex
-select_wrist    = B          # wrist_flex
-roll_wrist      = A          # switch right stick left/right between shoulder_pan and wrist_roll
-gripper_open    = DPadUp
-gripper_close   = DPadDown
-deploy          = b6         # View button: deploy / stow the arm
+arm_turn        = -2         # right stick left/right: shoulder_pan (analog)
+arm_joint       = -3         # right stick up/down: the selected joint (analog)
+select_shoulder = b3         # X: shoulder_lift on the right stick up/down
+select_elbow    = b4         # Y: elbow_flex
+select_wrist    = b1         # B: wrist_flex
+roll_left       = b18        # D-pad left: wrist_roll
+roll_right      = b16        # D-pad right
+gripper_open    = b15        # D-pad up
+gripper_close   = b17        # D-pad down
+deploy          = b10        # View button: deploy / stow the arm
 
 log_axes = false

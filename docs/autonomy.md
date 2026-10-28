@@ -46,13 +46,13 @@ Times are the wait or limit in the code. "Flight" means the time the drone takes
 
 | Code state | Drone | Gripper and arm | Moves on when | Time | Limit |
 |---|---|---|---|---|---|
-| **PickPhase.Transit** (to the ball) | Flies to the hover point in 3 legs (climb, turn to the heading, fly in). Cruises high if the line passes near the can. | Leg 1: arm folds to stowed, gripper closes. Legs 2–3: gripper opens and the arm deploys to the pre-grasp pose. | Arrived, heading turned, still for 0.5 s. Re-plans if the ball rolled (up to 4 times). | Flight + 0.5 s | 120 s |
+| **PickPhase.Transit** (to the ball) | Flies to the hover point in 2 legs: straight to above it, climbing and turning to the heading on the way, then down to it. Cruises high (clear of the rim with the arm unfolded) if the line passes near the can. | Leg 1: the arm folds and the gripper closes for the cruise; within 1 m of the end the gripper opens and the arm unfolds to the pre-grasp pose of the planned hover (a fixed pose: drone level, ball ahead). Leg 2 (the drone does not wait for the arm): the arm finishes and corrects to the pre-grasp pose from the measured pose. | Arrived, heading turned, arm in the pre-grasp pose, still for 0.5 s. Re-plans if the ball rolled (up to 4 times). | Flight + 0.5 s | 120 s |
 | **PickPhase.Descend** | Descends 10 cm at 4 cm/s to fingertip-at-ball height. | Finishes deploying and tracks the ball. | Reached the height, arm deployed, then 1 s hold. Fails if the ball moved more than 1 cm. | ~3.5 s | 12 s |
 | **PickPhase.Close** | Holds. | Closes with a light, fixed squeeze (about 1 N·m), then checks the grasp (jaw angle, grip distance, ball position between the jaws). | Gripper stopped, or 4 s passed. Ball in the jaws: Lift. Not: Retry (2 times max), then fail. | up to 4 s | 4 s |
 | **PickPhase.Retry** | Climbs back to pre-grasp height, moves behind the ball's new spot. | Opens. | Back at the pre-grasp pose, then Descend (the arm re-deploys there). | climb + settle | counted |
 | **PickPhase.Lift** | Climbs to carry height, above the can rim with margin. | Holds the ball lightly. | Settled for 0.33 s. | climb + 0.33 s | 60 s |
 | **PickPhase.Transit** (with the ball) | Flies to above the can, keeping the ball's offset. | Holds the ball; the arm stays as it is. | Settled over the can for 0.5 s. | flight + 0.5 s | 120 s |
-| **PickPhase.Drop** | Holds. | Opens. | Fixed time, then the pick is marked ok. | 1.8 s | none |
+| **PickPhase.Drop** | Holds. | Opens. | The ball is in the can (or 1.8 s), then the pick is marked ok. | ball fall, ≤ 1.8 s | none |
 | **PickPhase.HoldB** | Holds at lift height. | Holds the ball. | 10 s, then the pick ends. Used only by the single-pick test stop `b`. | 10 s | none |
 | **PaState.Next** | No pick running. | — | Starts the next pick, which begins in PickPhase.Transit in the same step. Stays here only if that pick fails to start. | ~0 s | none |
 | **PaState.Picking** | Whatever the current PickPhase does. | Same as the current PickPhase. | The pick ends and its result is recorded. | pick time | 240 s (the pick's limit) |

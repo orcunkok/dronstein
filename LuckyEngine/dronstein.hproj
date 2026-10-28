@@ -14,7 +14,7 @@ Project:
   ScriptAssemblyName: Dronstein
   StartScene: Scenes/Main.hscene
   AutomaticallyReloadAssembly: true
-  AutoSave: true
+  AutoSave: false
   AutoSaveInterval: 60
   Audio:
     FileStreamingDurationThreshold: 30

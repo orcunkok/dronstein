@@ -1743,11 +1743,11 @@ Entities:
         - ID: 2239084412
           Name: AutoMode
           Type: Int
-          Value: 1
+          Value: 0
         - ID: 972566898
           Name: AutoOn
           Type: Bool
-          Value: true
+          Value: false
   - Entity: 10883897787002097870
     Domain: Client
     TagComponent:
