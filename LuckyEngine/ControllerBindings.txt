@@ -8,7 +8,7 @@
 # Names are buttons: A B X Y LeftBumper RightBumper Start Guide LeftJoystick RightJoystick DPadUp DPadDown DPadLeft DPadRight
 # bN is raw button number N. This controller (the newer Xbox Wireless Controller, with the Share button, over Bluetooth)
 #   doesn't match Lucky's names, so every button here is raw:
-#   b0 A, b1 B, b3 X, b4 Y, b6 LB, b7 RB, b10 View, b11 Menu; the D-pad comes after the buttons: b15 up, b16 right, b17 down, b18 left.
+#   b0 A (and Share), b1 B, b3 X, b4 Y, b6 LB, b7 RB, b10 View, b11 Menu; the D-pad comes after the buttons: b15 up, b16 right, b17 down, b18 left.
 # If something is on the wrong stick or button, set log_axes = true: the log then prints every axis and
 # the buttons held (raw numbers and names), once a second, in /tmp/LuckyEngine/Logs/APP.log.
 
@@ -20,6 +20,7 @@ down         = 4             # left trigger
 turn_left    = b6            # LB
 turn_right   = b7            # RB
 precise      = b11           # Menu button: quarter speed on/off
+speed        = b0            # Share (middle) button: slow -> medium -> fast; this controller reports Share as b0, same as A
 deadzone     = 0.15          # stick values below this count as 0
 
 # Arm

@@ -48,6 +48,7 @@ namespace Dronstein
 		static readonly float[] ModeStick = { 0.5f, 1.5f, 4f };       // m/s at full stick
 		static readonly float[] ModeSmooth = { 3f, 2.5f, 2f };        // 1/s, how quickly stick speed builds up and dies down (higher = snappier, more tilt)
 		static readonly float[] ModeTilt = { 1.2f, 3f, 6.5f };        // m/s^2, caps the commanded horizontal acceleration (reference + feedback)
+		static readonly Vector4[] ModeColors = { new(0.30f, 0.80f, 0.52f, 1f), new(1f, 0.62f, 0.20f, 1f), new(0.94f, 0.33f, 0.36f, 1f) };  // HUD S/M/F: green, orange, red
 
 		static readonly string[] Motors = { "thrust1", "thrust2", "thrust3", "thrust4" };
 		static readonly string[] ArmJoints = { "shoulder_pan", "shoulder_lift", "elbow_flex", "wrist_flex", "wrist_roll", "gripper" };
@@ -59,6 +60,7 @@ namespace Dronstein
 		static readonly string[] Views = { "Drone", "Gripper", "Ball" };  // what the camera can watch; C steps through them
 		// HUD, in pixels: the labels' x from the right edge, the first baseline from the top, the row height, the values' x after the labels.
 		const float HudRight = 320f, HudTop = 60f, HudRow = 44f, HudValueX = 115f;
+		const float HudSpeedDx = 36f;  // the mode value starts this far right of the other values, after the speed letter
 		const float HudModeLabelDx = 33f, HudTaskLabelDx = 37f;  // right-aligns MODE and TASK with CAMERA (text has no alignment; widths measured on screen: 96, 62, 60 px)
 		// Rendered pixels per Application.Width unit: the monitor scale (Hyprland, 1.6) times Lucky's editor UI scale
 		// (UiScale in ~/.config/LuckyEngine/LuckyEditor/EditorApplicationSettings.yaml, 0.75). Change it if either changes.
@@ -96,10 +98,10 @@ namespace Dronstein
 		float[] m_ViewDistance = new float[3];  // each view keeps its own zoom
 		int m_View;
 		// HUD texts, moved only when the screen is resized and rewritten only when what they show changes.
-		Entity m_HudCameraLabel = null!, m_HudCamera = null!, m_HudModeLabel = null!, m_HudMode = null!, m_HudTaskLabel = null!, m_HudTask = null!;
+		Entity m_HudCameraLabel = null!, m_HudCamera = null!, m_HudModeLabel = null!, m_HudSpeed = null!, m_HudMode = null!, m_HudTaskLabel = null!, m_HudTask = null!;
 		Vector4 m_HudCameraColor, m_HudModeColor;  // the values' colours set in the scene, used when not purple/yellow
 		(uint, uint) m_HudSize;
-		(int, int, int, int, int, int) m_HudShown = (-1, -1, -2, -1, -1, -1);  // (m_View, m_SelectedBall, m_Waypoint, m_ToBall, m_PickPhase, m_PaState)
+		(int, int, int, int, int, int, int) m_HudShown = (-1, -1, -2, -1, -1, -1, -1);  // (m_View, m_SelectedBall, m_Waypoint, m_ToBall, m_PickPhase, m_PaState, Mode)
 		Vector2 m_LastMouse;
 
 		// Flight
@@ -227,6 +229,7 @@ namespace Dronstein
 			m_HudCameraLabel = Find("HudCameraLabel");
 			m_HudCamera = Find("HudCamera");
 			m_HudModeLabel = Find("HudModeLabel");
+			m_HudSpeed = Find("HudSpeed");
 			m_HudMode = Find("HudMode");
 			m_HudTaskLabel = Find("HudTaskLabel");
 			m_HudTask = Find("HudTask");
@@ -286,6 +289,7 @@ namespace Dronstein
 			}
 			float scale = m_Precise ? PreciseScale : 1f;
 
+			if (Pressed("speed")) m_Tuning.SpeedMode = (Mode + 1) % 3;  // slow -> medium -> fast -> slow
 			m_Tuning.SpeedMode = Mode;
 			m_Tuning.TopSpeed = ModeVmax[Mode];
 			PollCommands(dt);
@@ -514,13 +518,15 @@ namespace Dronstein
 				m_HudCameraLabel.Translation = new Vector3(x, y, 0f);
 				m_HudCamera.Translation = new Vector3(x + HudValueX, y, 0f);
 				m_HudModeLabel.Translation = new Vector3(x + HudModeLabelDx, y - HudRow, 0f);
-				m_HudMode.Translation = new Vector3(x + HudValueX, y - HudRow, 0f);
+				m_HudSpeed.Translation = new Vector3(x + HudValueX, y - HudRow, 0f);
+				m_HudMode.Translation = new Vector3(x + HudValueX + HudSpeedDx, y - HudRow, 0f);
 				m_HudTaskLabel.Translation = new Vector3(x + HudTaskLabelDx, y - 2f * HudRow, 0f);
 				m_HudTask.Translation = new Vector3(x + HudValueX, y - 2f * HudRow, 0f);
 			}
-			var shown = (m_View, m_SelectedBall, m_Waypoint, m_ToBall, (int)m_PickPhase, (int)m_PaState);
+			var shown = (m_View, m_SelectedBall, m_Waypoint, m_ToBall, (int)m_PickPhase, (int)m_PaState, Mode);
 			if (shown == m_HudShown) return;
 			m_HudShown = shown;
+			SetText(m_HudSpeed, ModeNames[Mode][..1].ToUpperInvariant(), ModeColors[Mode]);
 			SetText(m_HudCamera, m_View == 2 ? $"Ball {m_SelectedBall:00}" : Views[m_View], m_View == 2 ? Purple : m_HudCameraColor);
 			bool pick = m_PickPhase != PickPhase.Off, pickAll = m_PaState != PaState.Off;  // Pick All flies to its start point before the first pick
 			SetText(m_HudMode, pick ? $"Pick {m_PickN:00}" : pickAll ? "Pick All" : m_Waypoint >= 0 ? $"Calibration {m_Waypoint + 1}/4" : m_ToBall > 0 ? $"ToBall {m_ToBall:00}" : "Manual",
@@ -952,7 +958,7 @@ namespace Dronstein
 				var axes = new float[6];
 				for (int i = 0; i < 6; i++) axes[i] = Input.GetControllerAxis(m_Pad, i);
 				var held = new List<string>();
-				for (int i = 0; i < 16; i++)
+				for (int i = 0; i < 32; i++)
 					if (Input.IsControllerButtonDown(m_Pad, i)) held.Add($"b{i}");
 				foreach (GamepadButton button in Enum.GetValues<GamepadButton>())
 					if (Input.IsControllerButtonDown(m_Pad, button)) held.Add(button.ToString());

@@ -32,10 +32,10 @@ namespace Dronstein
 		const float ApproachR = 1.0f;       // m, the arm unfolds this close to the end of the cruise (~3 s from folded at PickArmSpeed)
 		const float StowedLow = 0.133f;     // m, lowest point of the stowed arm below the drone origin
 		const float ZDeploySafe = SafeLow + HPick + 0.02f;  // the drone origin over the can with the arm unfolded
-		float SqueezeLead = 0.02f;          // rad, close command leads the measured jaw angle: torque = kp * lead = 1 Nm (dev: `gp lead`)
+		float SqueezeLead = 0.02f;          // rad, close command leads the measured jaw angle: torque = kp * lead = 1 Nm (dev: `gp lead`). More seats the ball out on the pads: it slips
 		const float FastLead = 0.1f;        // rad: the close leads by this (full torque) while the jaw is above GripSlowAt
-		float GripSlowAt = 0f;              // rad, 0 = no fast part (dev: `gp fast`)
-		int StallFrames = 30;               // frames the jaw must be still to end the close (dev: `gp stall`)
+		float GripSlowAt = 0.65f;           // rad, ~0.2 rad before the ball; 0 = no fast part (dev: `gp fast`). Closer fails: the jaw hits the ball too fast
+		int StallFrames = 15;               // frames the jaw must be still to end the close (dev: `gp stall`)
 		float m_PickStopG, m_PickStopT;     // jaw angle and time when the jaw last came to a stop in Close
 		const float BinFloorR = 0.165f;
 		// Ball centre in the Fixed_Jaw frame (x, y, z) and its height above the ball centre.
@@ -345,7 +345,7 @@ namespace Dronstein
 				}
 				case PickPhase.Close:
 				{
-					// Force-limited close: the command leads the measured angle by SqueezeLead, so the jaw pushes with ~1 Nm instead of the saturated 3.5 Nm.
+					// Force-limited close: full torque (FastLead) down to GripSlowAt, then the command leads the measured angle by SqueezeLead, so the jaw meets the ball with ~1 Nm instead of the saturated 3.5 Nm.
 					m_ArmTarget[5] = Math.Clamp(MathF.Max(GripClosed, g - (GripSlowAt > 0f && g > GripSlowAt ? FastLead : SqueezeLead)), m_ArmLow[5], m_ArmHigh[5]);
 					float gv = m_Qvel[m_GripV];
 					m_PickStall = MathF.Abs(gv) < 0.01f ? m_PickStall + 1 : 0;
