@@ -10,12 +10,12 @@ namespace Dronstein
 	/// The drone hovers 0.24 m behind the ball (nose pointing from the ball toward the bin), holds still, and the arm reaches the ball:
 	/// every frame the joint targets come from an analytic IK of the ball's position in the *measured* drone frame, so the small hover
 	/// errors are absorbed by the arm. The drone alone provides the vertical travel (the arm keeps its fingers vertical).
-	/// Phases: Transit (stowed arm), Deploy (arm + open gripper), Descend (drone lowers over the ball), Close (force-limited),
-	/// Check (grasp detected? else open and retry), Lift, Carry (above the bin rim), Drop, Retreat, Settle.
+	/// Phases: Transit (stowed arm), Descend (drone lowers over the ball), Close (force-limited),
+	/// Lift, Transit (carries the ball to above the bin rim), Drop. Close checks the grasp itself (Grasped); no grasp means open and retry.
 	/// </summary>
 	public partial class DroneTeleop
 	{
-		enum PickPhase { Off, Transit, Deploy, Descend, Close, Check, Retry, Lift, HoldB, Carry, Drop, Retreat, Settle }
+		enum PickPhase { Off, Transit, Descend, Close, Retry, Lift, HoldB, Drop }
 
 		// Design constants (PICK_DESIGN.md). Jaw-frame offsets and the gripper numbers were measured again in Lucky.
 		const float HPick = 0.42f;          // m, drone origin height while the fingertips are at ball level
@@ -52,6 +52,8 @@ namespace Dronstein
 		float m_PickYaw, m_PickTilt, m_PickMaxBallSite, m_PickMinZ;
 		int m_PickStall, m_PickReplans;
 		bool m_PickStowed;                 // the arm has been sent to the stowed pose in Transit
+		bool m_PickDeployed;               // the arm is at the pre-grasp pose with the gripper open (PickDeploy)
+		bool m_PickGrasped;                // the ball is in the gripper (set by Close): Transit carries it to the bin
 		Vector3 m_PickBallPrev;
 		float m_PickHc;
 		int m_GripQ, m_GripV;               // the gripper joint's places in qpos and qvel
@@ -76,7 +78,7 @@ namespace Dronstein
 			m_PickBinBody = m_Mj.GetBodyID($"lucky_body_{bin.ID}");
 			m_Tuning.SpeedMode = 0;  // slow
 			m_Tuning.Ball = n;
-			m_PickN = n; m_PickStop = stop; m_PickRetry = 0; m_PickClock = 0f; m_PickReplans = 0; m_PickStowed = false; m_PickDone = false;
+			m_PickN = n; m_PickStop = stop; m_PickRetry = 0; m_PickClock = 0f; m_PickReplans = 0; m_PickStowed = false; m_PickDeployed = false; m_PickGrasped = false; m_PickDone = false;
 			m_PickBall0 = BodyPos(m_PickBallBody);
 			m_PickBin0 = BodyPos(m_PickBinBody);
 			m_Mj.GetBodyPoseMj(m_PickBinBody, out Vector3 _, out m_PickBinQ0, out Vector3 _, out Vector3 _);
@@ -129,7 +131,7 @@ namespace Dronstein
 			m_Mj.GetBodyPoseMj(m_PickBinBody, out Vector3 _, out Quaternion q, out Vector3 _, out Vector3 _);
 			float binTilt = 2f * MathF.Acos(Math.Clamp(MathF.Abs(q.X * m_PickBinQ0.X + q.Y * m_PickBinQ0.Y + q.Z * m_PickBinQ0.Z + q.W * m_PickBinQ0.W), 0f, 1f)) * 57.2958f;  // angle from the starting orientation
 			m_PickDone = true; m_PickOkLast = ok; m_PickInBin = inBin; m_PickReason = reason;
-			if (!ok && m_PickPhase is PickPhase.Lift or PickPhase.HoldB or PickPhase.Carry) m_ArmTarget[5] = GripOpen;  // let go of whatever is left in the hand
+			if (!ok && PickCarrying) m_ArmTarget[5] = GripOpen;  // let go of whatever is left in the hand
 			Log.Info($"METRIC pick ball={m_PickN} result={(ok ? "ok" : "fail")} reason={reason} stop={m_PickStop} ballInBin={inBin} binMoved={moved:F2} binTilt={binTilt:F1} " +
 				$"maxTilt={m_PickTilt:F1} ballSiteMax={m_PickMaxBallSite * 100f:F1} minZ={m_PickMinZ:F3} {NavFields()} retries={m_PickRetry} time={m_PickClock:F1}");
 			m_PickPhase = PickPhase.Off;
@@ -244,7 +246,7 @@ namespace Dronstein
 		{
 			if (m_PickPhase == PickPhase.Off) return;
 			m_PickClock += dt; m_PickT += dt;
-			if (m_PickPhase != PickPhase.Transit) m_ArmGoal = null;  // Transit folds the arm by itself
+			if (m_PickPhase != PickPhase.Transit || m_PickGrasped) m_ArmGoal = null;  // Transit folds the arm by itself, never while carrying
 			m_PickTilt = MathF.Max(m_PickTilt, MathF.Acos(Math.Clamp(m_R[2, 2], -1f, 1f)) * 57.2958f);
 			m_PickMinZ = MathF.Min(m_PickMinZ, m_Qpos[2]);
 			if (m_PickClock > 240f) { PickEnd(false, "timeout"); return; }
@@ -252,7 +254,7 @@ namespace Dronstein
 			Vector3 ball = BodyPos(m_PickBallBody), site = m_Mj.GetSitePositionMj(m_GraspSite);
 			var pos = new Vector3(m_Qpos[0], m_Qpos[1], m_Qpos[2]);
 			float g = Grip();
-			bool carrying = m_PickPhase is PickPhase.Lift or PickPhase.HoldB or PickPhase.Carry;
+			bool carrying = PickCarrying;
 			if (carrying)
 			{
 				float bs = (ball - site).Length();
@@ -261,14 +263,23 @@ namespace Dronstein
 				m_ArmTarget[5] = Math.Clamp(MathF.Max(GripClosed, g - SqueezeLead), m_ArmLow[5], m_ArmHigh[5]);  // keep the light squeeze, don't re-latch lower
 			}
 
+			// the arm deploys outside the states: during Transit once the arm is folded (leg 1 on), and during Descend
+			if (m_PickPhase == PickPhase.Descend || (m_PickPhase == PickPhase.Transit && m_PickLeg > 0 && !m_PickGrasped)) m_PickDeployed = PickDeploy(ball, dt);
+
 			switch (m_PickPhase)
 			{
 				case PickPhase.Transit:
 				{
 					if (m_PickT > 120f) { PickEnd(false, $"transit_timeout leg={m_PickLeg} stowed={m_PickStowed} stowDone={StowDone()} armGoalNull={m_ArmGoal == null} flying={Flying} yawOn={m_YawOn} yawErr={YawError():F2}"); return; }
+					if (m_PickGrasped)  // the carry: to above the bin with the ball, then drop it
+					{
+						if (!PickSettled(m_PickGoal, 0.015f, 0.03f, 0.5f, dt)) break;
+						PickEnter(PickPhase.Drop, $"ballToBin={new Vector2(ball.X - m_PickBin0.X, ball.Y - m_PickBin0.Y).Length() * 100f:F1}cm");
+						break;
+					}
 					// fold the arm and close the hand once the fingertips are clear of the ground (a pick can follow a failed one)
 					if (!m_PickStowed && (site.Z > 0.2f || (!Flying && m_PickLeg == 0))) { m_ArmGoal = Stowed; m_PickStowed = true; }  // or the climb is over, whatever the pose
-					if (m_PickStowed) m_ArmTarget[5] = MoveToward(m_ArmTarget[5], GripClosed, GripOpenSpeed * dt);
+					if (m_PickStowed && m_PickLeg == 0) m_ArmTarget[5] = MoveToward(m_ArmTarget[5], GripClosed, GripOpenSpeed * dt);
 					if (m_PickLeg < 3)
 					{
 						// leg 1 turns the heading (shortest way), with the arm folded
@@ -289,32 +300,16 @@ namespace Dronstein
 					}
 					// the heading must have converged before the arm opens; then 0.5 s of calm
 					var vel = new Vector3(m_Qvel[0], m_Qvel[1], m_Qvel[2]);
-					if (!Flying && !m_YawOn && StowDone() && (pos - m_PickHov).Length() < 0.015f && vel.Length() < 0.03f && MathF.Abs(YawError()) < 0.02f) m_PickSub += dt; else m_PickSub = 0f;
-					if (m_PickSub >= 0.5f) { m_ArmTarget[5] = GripClosed; PickEnter(PickPhase.Deploy); }
-					break;
-				}
-				case PickPhase.Deploy:
-				{
-					// gripper opens, arm goes to the pre-grasp pose: the same drone-frame pose as at ground level, the drone is just PreDz higher
-					m_ArmTarget[5] = MoveToward(m_ArmTarget[5], GripOpen, GripOpenSpeed * dt);
-					Vector3 tool = ball + new Vector3(0f, 0f, m_ToolDz + (pos.Z - HPick));
-					if (!ArmServo(tool, PickArmSpeed, dt, out bool arrived)) { PickEnd(false, $"ik_unreachable phase=Deploy tool_d_z={tool.Z - pos.Z:F3}"); return; }
-					if (m_PickT > 12f) { PickEnd(false, "deploy_timeout"); return; }
-					if (!m_PickSettling) { if (arrived && MathF.Abs(m_ArmTarget[5] - GripOpen) < 0.01f && m_PickT > 0.5f) { m_PickSettling = true; m_PickSub = 0f; } break; }
-					if ((m_PickSub += dt) >= 0.75f)
-					{
-						PickEnter(PickPhase.Descend, $"driftXY={new Vector2(pos.X - m_PickHov.X, pos.Y - m_PickHov.Y).Length() * 100f:F1}cm");
-						PickFly(new Vector3(pos.X, pos.Y, HPick), DescentV, DescentV, DescentA);
-					}
+					if (!Flying && !m_YawOn && (pos - m_PickHov).Length() < 0.015f && vel.Length() < 0.03f && MathF.Abs(YawError()) < 0.02f) m_PickSub += dt; else m_PickSub = 0f;
+					if (m_PickSub >= 0.5f) PickDescend(pos);
 					break;
 				}
 				case PickPhase.Descend:
 				{
-					float dz = m_Target.Z - HPick;
-					if (!ArmServo(m_PickBall0 + new Vector3(0f, 0f, dz + m_ToolDz), PickArmSpeed, dt, out bool _)) { PickEnd(false, "ik_unreachable phase=Descend"); return; }
+					if (m_PickT > 12f) { PickEnd(false, "deploy_timeout"); return; }
 					float moved = new Vector2(ball.X - m_PickBall0.X, ball.Y - m_PickBall0.Y).Length() * 100f;
 					if (moved > 1f) { PickEnd(false, $"ball_moved_by_approach {moved:F1}cm"); return; }
-					if (Flying) break;
+					if (Flying || !m_PickDeployed) break;
 					if ((m_PickSub += dt) < 1f) break;
 					Vector3 inJaw = InJaw(ball);
 					Log.Info($"METRIC pick ball={m_PickN} atGround ballMoved={(ball - m_PickBall0).Length() * 100f:F2}cm ballInJaw=({inJaw.X:F4},{inJaw.Y:F4},{inJaw.Z:F4}) " +
@@ -329,19 +324,15 @@ namespace Dronstein
 					m_ArmTarget[5] = Math.Clamp(MathF.Max(GripClosed, g - SqueezeLead), m_ArmLow[5], m_ArmHigh[5]);
 					float gv = m_Qvel[m_GripV];
 					m_PickStall = MathF.Abs(gv) < 0.01f ? m_PickStall + 1 : 0;
-					if (m_PickStall > 30 || m_PickT > 4f) PickEnter(PickPhase.Check);
-					break;
-				}
-				case PickPhase.Check:
-				{
+					if (m_PickStall <= 30 && m_PickT <= 4f) break;
+					// the close is over: the grasp is checked here, with the jaws still on the ball
 					float dist = (ball - site).Length();
 					Vector3 inJaw = InJaw(ball);
 					Log.Info($"METRIC pick ball={m_PickN} afterClose grip={g:F3} ballSite={dist * 100f:F1}cm ballMoved={(ball - m_PickBall0).Length() * 100f:F2}cm ballInJaw=({inJaw.X:F4},{inJaw.Y:F4},{inJaw.Z:F4})");
-					// jaw angle says a ball is in, it is at the grip site, and not pushed toward the pad ends (it would slip out in the lift)
-					if (g > 0.30f && g < 0.60f && dist < 0.03f && inJaw.Y > -0.093f && MathF.Abs(inJaw.Z + 0.003f) < 0.006f)
+					if (Grasped(g, dist, inJaw))
 					{
 						m_PickHc = pos.Z + (SafeLow + 0.02f - MathF.Min(site.Z - 0.004f, ball.Z - 0.0214f));
-						PickEnter(PickPhase.Lift, $"hc={m_PickHc:F2}");
+						m_PickGrasped = true; PickEnter(PickPhase.Lift, $"hc={m_PickHc:F2}");
 						PickFly(new Vector3(pos.X, pos.Y, m_PickHc), 0f, 0f, 0f);
 					}
 					else if (m_PickRetry >= 2) PickEnd(false, $"grasp_not_detected grip={g:F2} ballSite={dist * 100f:F1}cm");
@@ -361,7 +352,7 @@ namespace Dronstein
 					}
 					if (!m_PickSettling) break;
 					if (m_PickLeg == 0 && !Flying && MathF.Abs(pos.Z - (HPick + PreDz)) < 0.03f) { FlyTo(m_PickHov); m_PickLeg = 1; }
-					else if (m_PickLeg == 1 && PickSettled(m_PickHov, 0.015f, 0.03f, 0.5f, dt)) PickEnter(PickPhase.Deploy);
+					else if (m_PickLeg == 1 && PickSettled(m_PickHov, 0.015f, 0.03f, 0.5f, dt)) PickDescend(pos);
 					break;
 				}
 				case PickPhase.Lift:
@@ -373,29 +364,16 @@ namespace Dronstein
 					Log.Info($"METRIC pick ball={m_PickN} liftDone ballZ={ball.Z:F3} ballSite={(ball - site).Length() * 100f:F1}cm");
 					if (m_PickStop == 'b') { PickEnter(PickPhase.HoldB); break; }
 					m_PickGoal = new Vector3(m_PickBin0.X - m_PickCarryOffset.X, m_PickBin0.Y - m_PickCarryOffset.Y, m_PickHc);
-					PickEnter(PickPhase.Carry, $"goal=({m_PickGoal.X:F3},{m_PickGoal.Y:F3})");
+					PickEnter(PickPhase.Transit, $"goal=({m_PickGoal.X:F3},{m_PickGoal.Y:F3})");
 					FlyTo(m_PickGoal);
 					break;
 				}
 				case PickPhase.HoldB:
 					if (m_PickT >= 10f) PickEnd(m_PickMaxBallSite < 0.03f, "stage_b");
 					break;
-				case PickPhase.Carry:
-				{
-					if (m_PickT > 90f) { PickEnd(false, "carry_timeout"); return; }
-					if (!PickSettled(m_PickGoal, 0.015f, 0.03f, 0.5f, dt)) break;
-					PickEnter(PickPhase.Drop, $"ballToBin={new Vector2(ball.X - m_PickBin0.X, ball.Y - m_PickBin0.Y).Length() * 100f:F1}cm");
-					break;
-				}
 				case PickPhase.Drop:
 					m_ArmTarget[5] = MoveToward(m_ArmTarget[5], GripOpen, GripOpenSpeed * dt);
-					if (m_PickT >= 1.8f) { PickEnter(PickPhase.Retreat); FlyTo(new Vector3(pos.X, pos.Y, pos.Z + 0.15f)); }
-					break;
-				case PickPhase.Retreat:
-					if (m_PickT >= 1.7f) PickEnter(PickPhase.Settle);
-					break;
-				case PickPhase.Settle:
-					if (m_PickT >= 2f) PickEnd(true, "dropped");
+					if (m_PickT >= 1.8f) PickEnd(true, "dropped");
 					break;
 			}
 		}
@@ -409,6 +387,30 @@ namespace Dronstein
 			m_ArmGoal = null;
 			return true;
 		}
+
+		// The drone lowers over the ball from the hover point. The arm deploys during it (PickDeploy).
+		void PickDescend(Vector3 pos)
+		{
+			PickEnter(PickPhase.Descend, $"driftXY={new Vector2(pos.X - m_PickHov.X, pos.Y - m_PickHov.Y).Length() * 100f:F1}cm");
+			PickFly(new Vector3(pos.X, pos.Y, HPick), DescentV, DescentV, DescentA);
+		}
+
+		// The gripper opens and the arm goes to the pre-grasp pose for the drone's commanded height: the same drone-frame pose as at ground level,
+		// so the arm holds it while the drone descends. The commanded, not the measured, height: at the ground the tool point stays put, so the
+		// fingertips press the ground and lift the drone ~5 mm, which pins the jaws for the close (with the measured height the drone rises
+		// during the close instead and drags the ball to the pad ends: no grasp). Called every frame from PickUpdate. True when the arm is there with the gripper open.
+		bool PickDeploy(Vector3 ball, float dt)
+		{
+			m_ArmTarget[5] = MoveToward(m_ArmTarget[5], GripOpen, GripOpenSpeed * dt);
+			ArmServo(ball + new Vector3(0f, 0f, m_ToolDz + (m_Target.Z - HPick)), PickArmSpeed, dt, out bool arrived);
+			return arrived && MathF.Abs(m_ArmTarget[5] - GripOpen) < 0.01f;
+		}
+
+		// The ball is in the gripper and the drone is lifting it or carrying it to the bin (the squeeze and the slip check run then).
+		bool PickCarrying => m_PickGrasped && m_PickPhase is PickPhase.Lift or PickPhase.HoldB or PickPhase.Transit;
+
+		// The grasp is held when the jaw angle says a ball is in, it is at the grip site, and it is not pushed toward the pad ends (it would slip out in the lift).
+		static bool Grasped(float g, float dist, Vector3 inJaw) => g > 0.30f && g < 0.60f && dist < 0.03f && inJaw.Y > -0.093f && MathF.Abs(inJaw.Z + 0.003f) < 0.006f;
 
 		static float MoveToward(float v, float goal, float step) => v + Math.Clamp(goal - v, -step, step);
 	}

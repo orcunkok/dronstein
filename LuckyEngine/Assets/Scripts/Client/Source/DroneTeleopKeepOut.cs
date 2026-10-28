@@ -68,7 +68,7 @@ namespace Dronstein
 			Part(pos, BodyPos(m_Wrist), 0.05f);
 			Part(pos, BodyPos(m_Elbow), 0.04f);
 			Part(pos, BodyPos(m_Shoulder), 0.04f);
-			if (m_PickPhase is PickPhase.Lift or PickPhase.HoldB or PickPhase.Carry) Part(pos, BodyPos(m_PickBallBody), 0.0214f);
+			if (PickCarrying) Part(pos, BodyPos(m_PickBallBody), 0.0214f);
 		}
 
 		void Part(Vector3 pos, Vector3 p, float radius)

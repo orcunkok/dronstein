@@ -29,7 +29,7 @@ namespace Dronstein
 		public float GraspAngle = 90f;
 
 		[Slider(0, 25)] [Tooltip("Golf ball to highlight, 1 to 25 for GolfBall_01 to GolfBall_25 (0 = none)")]
-		public int Ball = 17;
+		public int Ball = 1;
 
 		[DisplayName("Select Mode")] [Dropdown("Navigate to ball", "Pick selected ball", "Pick all balls")]
 		[Tooltip("What Autonomous Mode Action runs. Navigate to ball: fly in behind the selected ball and low, so it sits inside the reach (GraspReach, GraspAngle). " +
