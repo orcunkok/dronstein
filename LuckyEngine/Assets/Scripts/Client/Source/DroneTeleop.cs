@@ -332,7 +332,7 @@ namespace Dronstein
 			if (m_Tuning.Ball != m_SelectedBall) SelectBall(m_Tuning.Ball);
 			if (m_Tuning.GoToBall) GoToBall(grasp);
 			Vector3 ball = m_Ball != null ? BodyPos(m_BallBody) : Vector3.Zero;
-			OrbitCamera(dt, body, new Vector3(grasp.X, grasp.Z, -grasp.Y), new Vector3(ball.X, ball.Z, -ball.Y));
+			if (!X500Flight.Piloted) OrbitCamera(dt, body, new Vector3(grasp.X, grasp.Z, -grasp.Y), new Vector3(ball.X, ball.Z, -ball.Y));
 			UpdateHud();
 			m_GripDot.Translation = new Vector3(grasp.X, m_GripDotY, -grasp.Y);
 			m_CenterDot.Translation = new Vector3(body.X, m_CenterDotY, body.Z);
@@ -951,7 +951,7 @@ namespace Dronstein
 		bool Bound(string name, out Bind b)
 		{
 			b = default;
-			return m_Pad >= 0 && m_Bindings.TryGetValue(name, out b);
+			return m_Pad >= 0 && !X500Flight.Piloted && m_Bindings.TryGetValue(name, out b);  // V gives the controller to the X500
 		}
 
 		float AxisValue(Bind b) => Input.GetControllerAxis(m_Pad, b.Axis) * b.Sign;

@@ -47,6 +47,7 @@ FOAM = mat(0.025, 0.025, 0.025, 0.0, 0.9)
 RED = mat(0.55, 0.02, 0.02, 0.0, 0.8)
 PROP = mat(0.02, 0.02, 0.02, 0.0, 0.4)
 GPS = mat(0.05, 0.05, 0.055, 0.0, 0.3)
+BATTERY = mat(0.35, 0.36, 0.38, 0.0, 0.5)
 
 # Effective densities (kg/m^3) for solid colliders standing in for real parts.
 D_PLATE = 1600.0          # solid 2 mm carbon plate
@@ -248,6 +249,11 @@ def build(edit):
     for k, x in enumerate((-0.035, 0.055)):
         b.box(f"rail_hanger_{k}", (0.016, 0.016, 0.082), (x, BOTTOM - 0.008, 0), BLACK, D_PLASTIC, bevel=0.002)
     b.box("battery_board", (0.150, 0.002, 0.090), (0.029, rail_y - 0.0075, 0), CARBON, D_PLATE, bevel=0.002)
+    # 4S 3300 mAh pack, 0.36 kg, strapped under the board. With it the model weighs what the X500v2 frame
+    # params' hover throttle (0.29 of 4 x 1.15 kgf) lifts: about 1.33 kg.
+    battery = (0.135, 0.030, 0.043)
+    b.box("battery", battery, (0.029, rail_y - 0.0085 - battery[1] / 2, 0), BATTERY,
+          0.36 / (battery[0] * battery[1] * battery[2]), bevel=0.004)
 
     # Landing gear: per side one 16 mm leg splayed 20 deg, a T-joint, a 10 mm skid with foam and caps.
     for s, side in ((1.0, "left"), (-1.0, "right")):
