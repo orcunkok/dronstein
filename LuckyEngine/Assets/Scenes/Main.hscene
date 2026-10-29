@@ -225,9 +225,9 @@ SceneSettings:
     ShowGrid: true
     ShowSelectedWireframe: false
     ShowAnimationDebug: false
-    ShowColliders: false
+    ShowColliders: true
     ColliderMode: 1
-    ShowCollidersOnTop: false
+    ShowCollidersOnTop: true
     ColliderFamilyMask: 63
     ShowSpotlightCoverage: false
 PrefabManager:
@@ -987,6 +987,660 @@ Entities:
       MaterialTable:
         0: 6658235089502020210
       Visible: true
+  - Entity: 6101122454267235339
+    Domain: Client
+    TagComponent:
+      Tag: x500v2_Render
+    Parent: 6194209042865817008
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    PodGeneratedMeshComponent:
+      PodGraph: 472466418818970438
+      BodyNameHash: 11237128339808159654
+      MaterialTable:
+        0: 0
+  - Entity: 6194209042865817008
+    Domain: Client
+    TagComponent:
+      Tag: x500v2
+    Parent: 13381946272434087292
+    Children:
+      - Handle: 6101122454267235339
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, -0, 0]
+      Scale: [1, 1, 1]
+    PodGeneratedBodyComponent:
+      PodGraph: 472466418818970438
+      BodyNameHash: 11237128339808159654
+      RestTranslation: [0, 0, 0]
+      RestRotation: [0, 0, 0, 1]
+    MujocoCompoundColliderComponent:
+      Density: 1600
+      Friction: [1, 0.1, 0.01]
+      Contype: 1
+      Conaffinity: 1
+      Condim: -1
+      Prims:
+        - Type: 0
+          HalfExtents: [0.072, 0.001, 0.072]
+          Axis: 0
+          LocalPosition: [0, 0.015, 0]
+          LocalRotation: [0, 0, 0, 1]
+          Density: 1600
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 0
+          HalfExtents: [0.072, 0.001, 0.072]
+          Axis: 0
+          LocalPosition: [0, -0.015, 0]
+          LocalRotation: [0, 0, 0, 1]
+          Density: 1600
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 0
+          HalfExtents: [0.042, 0.0085, 0.022]
+          Axis: 0
+          LocalPosition: [0.01, 0.0245, 0]
+          LocalRotation: [0, 0, 0, 1]
+          Density: 950
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.004, 0.0495, 0]
+          Axis: 1
+          LocalPosition: [-0.05, 0.0655, 0]
+          LocalRotation: [0, 0, 0, 1]
+          Density: 1200
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.03, 0.008, 0]
+          Axis: 1
+          LocalPosition: [-0.05, 0.123, 0]
+          LocalRotation: [0, 0, 0, 1]
+          Density: 950
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 0
+          HalfExtents: [0.017, 0.014, 0.015]
+          Axis: 0
+          LocalPosition: [0.066468, 0, 0.066468]
+          LocalRotation: [0, -0.382683, 0, 0.92388]
+          Density: 600
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.008, 0.088, 0]
+          Axis: 1
+          LocalPosition: [0.104652, 0, 0.104652]
+          LocalRotation: [0.653282, 0.270598, -0.270598, 0.653282]
+          Density: 375
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 0
+          HalfExtents: [0.023, 0.011, 0.013]
+          Axis: 0
+          LocalPosition: [0.169706, 0, 0.169706]
+          LocalRotation: [0, -0.382683, 0, 0.92388]
+          Density: 600
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.016, 0.002, 0]
+          Axis: 1
+          LocalPosition: [0.176777, 0.013, 0.176777]
+          LocalRotation: [0, 0, 0, 1]
+          Density: 600
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.0139, 0.014, 0]
+          Axis: 1
+          LocalPosition: [0.176777, 0.029, 0.176777]
+          LocalRotation: [0, 0, 0, 1]
+          Density: 3700
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.008, 0.004, 0]
+          Axis: 1
+          LocalPosition: [0.176777, 0.048, 0.176777]
+          LocalRotation: [0, 0, 0, 1]
+          Density: 630
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 0
+          HalfExtents: [0.059, 0.002, 0.01]
+          Axis: 0
+          LocalPosition: [0.235666, 0.048, 0.210777]
+          LocalRotation: [0.100967, -0.257401, 0.027054, 0.960634]
+          Density: 630
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 0
+          HalfExtents: [0.059, 0.002, 0.01]
+          Axis: 0
+          LocalPosition: [0.117887, 0.048, 0.142777]
+          LocalRotation: [-0.027054, 0.960634, 0.100967, 0.257401]
+          Density: 630
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 0
+          HalfExtents: [0.017, 0.014, 0.015]
+          Axis: 0
+          LocalPosition: [-0.066468, 0, 0.066468]
+          LocalRotation: [0, 0.92388, 0, -0.382683]
+          Density: 600
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.008, 0.088, 0]
+          Axis: 1
+          LocalPosition: [-0.104652, 0, 0.104652]
+          LocalRotation: [0.653282, -0.270598, 0.270598, 0.653282]
+          Density: 375
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 0
+          HalfExtents: [0.023, 0.011, 0.013]
+          Axis: 0
+          LocalPosition: [-0.169706, 0, 0.169706]
+          LocalRotation: [0, 0.92388, 0, -0.382683]
+          Density: 600
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.016, 0.002, 0]
+          Axis: 1
+          LocalPosition: [-0.176777, 0.013, 0.176777]
+          LocalRotation: [0, 0, 0, 1]
+          Density: 600
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.0139, 0.014, 0]
+          Axis: 1
+          LocalPosition: [-0.176777, 0.029, 0.176777]
+          LocalRotation: [0, 0, 0, 1]
+          Density: 3700
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.008, 0.004, 0]
+          Axis: 1
+          LocalPosition: [-0.176777, 0.048, 0.176777]
+          LocalRotation: [0, 0, 0, 1]
+          Density: 630
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 0
+          HalfExtents: [0.059, 0.002, 0.01]
+          Axis: 0
+          LocalPosition: [-0.164969, 0.048, 0.243744]
+          LocalRotation: [0.0800734, -0.639266, 0.0671896, 0.761848]
+          Density: 630
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 0
+          HalfExtents: [0.059, 0.002, 0.01]
+          Axis: 0
+          LocalPosition: [-0.188585, 0.048, 0.10981]
+          LocalRotation: [-0.0671896, 0.761848, 0.0800734, 0.639266]
+          Density: 630
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 0
+          HalfExtents: [0.017, 0.014, 0.015]
+          Axis: 0
+          LocalPosition: [-0.066468, 0, -0.066468]
+          LocalRotation: [0, 0.92388, 0, 0.382683]
+          Density: 600
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.008, 0.088, 0]
+          Axis: 1
+          LocalPosition: [-0.104652, 0, -0.104652]
+          LocalRotation: [-0.653282, 0.270598, 0.270598, 0.653282]
+          Density: 375
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 0
+          HalfExtents: [0.023, 0.011, 0.013]
+          Axis: 0
+          LocalPosition: [-0.169706, 0, -0.169706]
+          LocalRotation: [0, 0.92388, 0, 0.382683]
+          Density: 600
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.016, 0.002, 0]
+          Axis: 1
+          LocalPosition: [-0.176777, 0.013, -0.176777]
+          LocalRotation: [0, 0, 0, 1]
+          Density: 600
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.0139, 0.014, 0]
+          Axis: 1
+          LocalPosition: [-0.176777, 0.029, -0.176777]
+          LocalRotation: [0, 0, 0, 1]
+          Density: 3700
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.008, 0.004, 0]
+          Axis: 1
+          LocalPosition: [-0.176777, 0.048, -0.176777]
+          LocalRotation: [0, 0, 0, 1]
+          Density: 630
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 0
+          HalfExtents: [0.059, 0.002, 0.01]
+          Axis: 0
+          LocalPosition: [-0.220486, 0.048, -0.124686]
+          LocalRotation: [-0.0441756, 0.901343, -0.094735, -0.420303]
+          Density: 630
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 0
+          HalfExtents: [0.059, 0.002, 0.01]
+          Axis: 0
+          LocalPosition: [-0.133067, 0.048, -0.228868]
+          LocalRotation: [-0.094735, 0.420303, 0.0441756, 0.901343]
+          Density: 630
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 0
+          HalfExtents: [0.017, 0.014, 0.015]
+          Axis: 0
+          LocalPosition: [0.066468, 0, -0.066468]
+          LocalRotation: [0, 0.382683, 0, 0.92388]
+          Density: 600
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.008, 0.088, 0]
+          Axis: 1
+          LocalPosition: [0.104652, 0, -0.104652]
+          LocalRotation: [-0.653282, -0.270598, -0.270598, 0.653282]
+          Density: 375
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 0
+          HalfExtents: [0.023, 0.011, 0.013]
+          Axis: 0
+          LocalPosition: [0.169706, 0, -0.169706]
+          LocalRotation: [0, 0.382683, 0, 0.92388]
+          Density: 600
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.016, 0.002, 0]
+          Axis: 1
+          LocalPosition: [0.176777, 0.013, -0.176777]
+          LocalRotation: [0, 0, 0, 1]
+          Density: 600
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.0139, 0.014, 0]
+          Axis: 1
+          LocalPosition: [0.176777, 0.029, -0.176777]
+          LocalRotation: [0, 0, 0, 1]
+          Density: 3700
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.008, 0.004, 0]
+          Axis: 1
+          LocalPosition: [0.176777, 0.048, -0.176777]
+          LocalRotation: [0, 0, 0, 1]
+          Density: 630
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 0
+          HalfExtents: [0.059, 0.002, 0.01]
+          Axis: 0
+          LocalPosition: [0.108777, 0.048, -0.176777]
+          LocalRotation: [-6.40052e-18, 0.994522, -0.104528, -6.08969e-17]
+          Density: 630
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 0
+          HalfExtents: [0.059, 0.002, 0.01]
+          Axis: 0
+          LocalPosition: [0.244777, 0.048, -0.176777]
+          LocalRotation: [-0.104528, 6.08969e-17, 6.40052e-18, 0.994522]
+          Density: 630
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.005, 0.125, 0]
+          Axis: 1
+          LocalPosition: [0.029, -0.0293, -0.03]
+          LocalRotation: [0.5, 0.5, 0.5, -0.5]
+          Density: 575
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.005, 0.125, 0]
+          Axis: 1
+          LocalPosition: [0.029, -0.0293, 0.03]
+          LocalRotation: [0.5, 0.5, 0.5, -0.5]
+          Density: 575
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 0
+          HalfExtents: [0.008, 0.008, 0.041]
+          Axis: 0
+          LocalPosition: [-0.035, -0.024, 0]
+          LocalRotation: [0, 0, 0, 1]
+          Density: 600
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 0
+          HalfExtents: [0.008, 0.008, 0.041]
+          Axis: 0
+          LocalPosition: [0.055, -0.024, 0]
+          LocalRotation: [0, 0, 0, 1]
+          Density: 600
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 0
+          HalfExtents: [0.075, 0.001, 0.045]
+          Axis: 0
+          LocalPosition: [0.029, -0.0368, 0]
+          LocalRotation: [0, 0, 0, 1]
+          Density: 1600
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 0
+          HalfExtents: [0.0195, 0.018, 0.015]
+          Axis: 0
+          LocalPosition: [0, -0.034, 0.0567]
+          LocalRotation: [0.984808, 0, 0, 0.173648]
+          Density: 600
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.008, 0.0923706, 0]
+          Axis: 1
+          LocalPosition: [0, -0.1054, 0.0862926]
+          LocalRotation: [0.984808, 0, 0, 0.173648]
+          Density: 375
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.0105, 0.0255403, 0]
+          Axis: 1
+          LocalPosition: [0, -0.2082, 0.123709]
+          LocalRotation: [-0.173648, -0, 0, 0.984808]
+          Density: 600
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.01, 0.02, 0]
+          Axis: 1
+          LocalPosition: [0, -0.2322, 0.1326]
+          LocalRotation: [0.5, 0.5, 0.5, -0.5]
+          Density: 600
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.005, 0.112, 0]
+          Axis: 1
+          LocalPosition: [0, -0.2322, 0.1326]
+          LocalRotation: [0.5, 0.5, 0.5, -0.5]
+          Density: 575
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.01, 0.045, 0]
+          Axis: 1
+          LocalPosition: [0.067, -0.2322, 0.1326]
+          LocalRotation: [0.5, 0.5, 0.5, -0.5]
+          Density: 250
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.0055, 0.0074, 0]
+          Axis: 1
+          LocalPosition: [0.1194, -0.2322, 0.1326]
+          LocalRotation: [0.5, 0.5, 0.5, -0.5]
+          Density: 1100
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.01, 0.045, 0]
+          Axis: 1
+          LocalPosition: [-0.067, -0.2322, 0.1326]
+          LocalRotation: [0.5, 0.5, 0.5, -0.5]
+          Density: 250
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.0055, 0.0074, 0]
+          Axis: 1
+          LocalPosition: [-0.1194, -0.2322, 0.1326]
+          LocalRotation: [0.5, -0.5, 0.5, 0.5]
+          Density: 1100
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 0
+          HalfExtents: [0.0195, 0.018, 0.015]
+          Axis: 0
+          LocalPosition: [0, -0.034, -0.0567]
+          LocalRotation: [0.984808, 0, 0, -0.173648]
+          Density: 600
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.008, 0.0923706, 0]
+          Axis: 1
+          LocalPosition: [0, -0.1054, -0.0862926]
+          LocalRotation: [0.984808, 0, 0, -0.173648]
+          Density: 375
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.0105, 0.0255403, 0]
+          Axis: 1
+          LocalPosition: [0, -0.2082, -0.123709]
+          LocalRotation: [0.173648, 0, 0, 0.984808]
+          Density: 600
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.01, 0.02, 0]
+          Axis: 1
+          LocalPosition: [0, -0.2322, -0.1326]
+          LocalRotation: [0.5, 0.5, 0.5, -0.5]
+          Density: 600
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.005, 0.112, 0]
+          Axis: 1
+          LocalPosition: [0, -0.2322, -0.1326]
+          LocalRotation: [0.5, 0.5, 0.5, -0.5]
+          Density: 575
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.01, 0.045, 0]
+          Axis: 1
+          LocalPosition: [0.067, -0.2322, -0.1326]
+          LocalRotation: [0.5, 0.5, 0.5, -0.5]
+          Density: 250
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.0055, 0.0074, 0]
+          Axis: 1
+          LocalPosition: [0.1194, -0.2322, -0.1326]
+          LocalRotation: [0.5, 0.5, 0.5, -0.5]
+          Density: 1100
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.01, 0.045, 0]
+          Axis: 1
+          LocalPosition: [-0.067, -0.2322, -0.1326]
+          LocalRotation: [0.5, 0.5, 0.5, -0.5]
+          Density: 250
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+        - Type: 3
+          HalfExtents: [0.0055, 0.0074, 0]
+          Axis: 1
+          LocalPosition: [-0.1194, -0.2322, -0.1326]
+          LocalRotation: [0.5, -0.5, 0.5, 0.5]
+          Density: 1100
+          Friction: [1, 0.1, 0.01]
+          Contype: 1
+          Conaffinity: 1
+          Condim: -1
+    MujocoJointComponent:
+      Type: "\x00"
+      Position: [0, 0, 0]
+      Axis: [0, 0, 0]
+      Limited: false
+      LimitMin: 0
+      LimitMax: 0
+      LimitSolref: [0.02, 1]
+      LimitSolimp: [0.9, 0.95, 0.001]
+      Stiffness: 0
+      Damping: 0
+      Armature: 0
+      FrictionLoss: 0
+      SpringRef: 0
+      JointId: -1
   - Entity: 6706635258560106936
     Domain: Client
     TagComponent:
@@ -2117,6 +2771,23 @@ Entities:
       FrictionLoss: 0
       SpringRef: 0
       JointId: -1
+  - Entity: 13381946272434087292
+    Domain: Client
+    TagComponent:
+      Tag: HolybroX500V2
+    Parent: 0
+    Children:
+      - Handle: 6194209042865817008
+    TransformComponent:
+      Position: [-5, 0.2452, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    PodComponent:
+      Kind: 0
+      PodGraph: 472466418818970438
+      ArticulationBaked: true
+      MaterialTable:
+        0: 0
   - Entity: 13632217528594285167
     Domain: Client
     TagComponent:

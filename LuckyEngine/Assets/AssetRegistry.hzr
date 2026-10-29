@@ -1,4 +1,7 @@
 Assets:
+  - Handle: 472466418818970438
+    FilePath: Robots/X500V2/source/x500v2.hpodgraph
+    Type: PodGraph
   - Handle: 582577758136275818
     FilePath: Robots/Dronstein/assets/Upper_Arm.stl
     Type: MeshSource
