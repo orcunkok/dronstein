@@ -301,7 +301,9 @@ def build(edit):
 def mjcf(colliders):
     """The X500's MuJoCo body and the six motors X500Flight.cs sets: force along world x/y/z (N) and torque about
     the body's x/y/z (N m). Collision geoms are invisible: the procedural mesh is the look."""
-    geoms = "\n".join(f"      {g[:-2]} group=\"3\" rgba=\"0 0 0 0\"/>" for g in colliders)
+    # fluidcoef 0 turns MuJoCo's own air drag (dronstein.xml sets density) off: X500Flight.cs owns the X500's drag.
+    geoms = "\n".join(f"      {g[:-2]} group=\"3\" rgba=\"0 0 0 0\" fluidshape=\"ellipsoid\" fluidcoef=\"0 0 0 0 0\"/>"
+                       for g in colliders)
     axes = ("fx", "1 0 0 0 0 0"), ("fy", "0 1 0 0 0 0"), ("fz", "0 0 1 0 0 0"), \
            ("tx", "0 0 0 1 0 0"), ("ty", "0 0 0 0 1 0"), ("tz", "0 0 0 0 0 1")
     motors = "\n".join(f'    <motor name="{BODY}_{n}" joint="{BODY}_free" gear="{g}" ctrllimited="false"/>' for n, g in axes)

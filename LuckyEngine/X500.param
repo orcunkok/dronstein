@@ -12,7 +12,9 @@ SIM_THST_EXPO   0.65     # thrust curve: thrust = (1-e)*u + e*u^2 of the command
 SIM_MOT_TAU     0.05     # s, motor/prop time constant
 SIM_YAW_COEF    0.016    # m, rotor drag torque per newton of thrust (yaw authority)
 SIM_DRAG_CDA    0.04     # m^2, body drag area (Cd*A): sets top speed at full lean
-SIM_DRAG_LIN    0.15     # N per m/s, rotor drag (blade flapping/induced drag)
+SIM_DRAG_LIN    0.48     # N per m/s, rotor drag (blade flapping/induced drag): 0.35/s at 1.36 kg, an estimate inside
+                         # ArduPilot's EK3_DRAG_MCOEF range (0.1-1.0); set it from the real drone's logs. MuJoCo's own air
+                         # drag is off for the X500 (x500v2.mjcf), so these two are all the drag there is.
 SIM_ARM_LEN     0.25     # m, centre to motor (500 mm wheelbase)
 
 # --- Motors (ESC command fraction, as ArduPilot outputs)
@@ -45,4 +47,10 @@ PILOT_SPD_UP    2.5      # m/s while the climb trigger is held
 PILOT_SPD_DN    2.5
 PILOT_ACC_Z     2.5      # m/s^2
 PILOT_Y_RATE    90       # deg/s while a turn bumper is held
+
+# --- Loiter (Share switches Loiter <-> Manual): the stick sets a speed, letting go brakes and holds the spot
+LOIT_SPEED      5.0      # m/s at full stick
+LOIT_ACC_MAX    2.5      # m/s^2, how fast the speed builds up and brakes
+PSC_NE_POS_P    1.0      # position error -> speed
+PSC_NE_VEL_P    2.0      # speed error -> acceleration (then lean)
 

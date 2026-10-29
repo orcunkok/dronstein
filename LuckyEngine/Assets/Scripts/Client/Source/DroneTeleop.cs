@@ -11,7 +11,8 @@ namespace Dronstein
 	/// The bindings are in ControllerBindings.txt in the project folder.
 	/// Keys: Y flies to the next corner of the test square (blue dots on the ground), for tuning; G folds/unfolds the arm; B, a ball number and Enter fly to that ball;
 	/// R resets the scene; T shows/hides a wire sphere of how far the gripper can reach; C switches the camera between the drone, the gripper, the
-	/// selected ball (Tuning.Ball) and the X500 V2, Q/E zoom in/out. F starts/stops the Autonomous Mode Action (starting runs Pick all balls).
+	/// selected ball (Tuning.Ball) and the X500 V2, Q/E zoom in/out. The right stick orbits and the D-pad zooms when the camera
+	/// has them: always while the X500 is flown, and for Dronstein after camera_toggle (the arm has them otherwise). F starts/stops the Autonomous Mode Action (starting runs Pick all balls).
 	/// Tuning's Set button flies in behind and above the selected ball, with the ball inside the reach. Drag with the right mouse button to orbit the camera.
 	/// The top right of the screen shows the camera view and the mode: Manual, or Calibration while Y's test square is flown.
 	/// Attach to the entity that holds dronstein.xml (its MujocoScene).
@@ -100,6 +101,9 @@ namespace Dronstein
 		Vector3 m_OrbitCenter;  // the point it looks at, which is always the middle of the screen
 		float[] m_ViewDistance = new float[4];  // each view keeps its own zoom
 		uint m_X500Body;  // the Holybro X500 V2 (X500Flight.cs flies it), for its camera view
+		bool m_CameraSticks;  // camera_toggle: Dronstein's right stick and D-pad move the camera instead of the arm
+		bool m_X500Was;       // X500Flight.Piloted as last seen: V also moves the camera to the drone now flown
+		const float CameraStickSpeed = 2f;  // rad/s at full right stick
 		int m_View;
 		// HUD texts, moved only when the screen is resized and rewritten only when what they show changes.
 		Entity m_HudCameraLabel = null!, m_HudCamera = null!, m_HudModeLabel = null!, m_HudSpeed = null!, m_HudMode = null!, m_HudTaskLabel = null!, m_HudBalls = null!, m_HudTask = null!;
@@ -107,7 +111,7 @@ namespace Dronstein
 		Vector4 m_HudCameraColor, m_HudModeColor;  // the values' colours set in the scene, used when not purple/yellow
 		string m_TaskLabel = "";  // the TASK label's text, hidden while the X500 is flown
 		(uint, uint) m_HudSize;
-		(int, int, int, int, int, int, int, int, bool) m_HudShown = (-1, -1, -2, -1, -1, -1, -1, -1, false);  // (m_View, m_SelectedBall, m_Waypoint, m_ToBall, m_PickPhase, m_PaState, Mode, balls in the can, X500 flown)
+		(int, int, int, int, int, int, int, int, int) m_HudShown = (-1, -1, -2, -1, -1, -1, -1, -1, -1);  // (m_View, m_SelectedBall, m_Waypoint, m_ToBall, m_PickPhase, m_PaState, Mode, balls in the can, X500: 0 not flown, 1 Manual, 2 Loiter)
 		readonly List<uint> m_BallBodies = new();  // every golf ball's MuJoCo body, for the HUD's ball count
 		Vector2 m_LastMouse;
 
@@ -319,7 +323,18 @@ namespace Dronstein
 				if (m_Tuning.AutoOn) m_Tuning.AutoMode = 2;
 			}
 			FlightInput(dt, scale);
-			ArmInput(dt, ArmSpeed * scale);
+			if (Pressed("camera_toggle"))
+			{
+				m_CameraSticks = !m_CameraSticks;
+				Log.Info($"Right stick and D-pad: {(m_CameraSticks ? "camera" : "arm")}");
+			}
+			if (X500Flight.Piloted != m_X500Was)  // V: the camera goes to the drone now flown
+			{
+				m_X500Was = X500Flight.Piloted;
+				m_View = m_X500Was ? 3 : 0;
+			}
+			bool cameraSticks = m_X500Was || m_CameraSticks;
+			ArmInput(dt, ArmSpeed * scale, !cameraSticks);
 			PickUpdate(dt);
 			PickAllUpdate(dt);
 			AutoUpdate();
@@ -338,7 +353,7 @@ namespace Dronstein
 			if (m_Tuning.GoToBall) GoToBall(grasp);
 			Vector3 ball = m_Ball != null ? BodyPos(m_BallBody) : Vector3.Zero;
 			Vector3 x500 = BodyPos(m_X500Body);
-			OrbitCamera(dt, body, new Vector3(grasp.X, grasp.Z, -grasp.Y), new Vector3(ball.X, ball.Z, -ball.Y), new Vector3(x500.X, x500.Z, -x500.Y));
+			OrbitCamera(dt, body, new Vector3(grasp.X, grasp.Z, -grasp.Y), new Vector3(ball.X, ball.Z, -ball.Y), new Vector3(x500.X, x500.Z, -x500.Y), cameraSticks);
 			UpdateHud();
 			m_GripDot.Translation = new Vector3(grasp.X, m_GripDotY, -grasp.Y);
 			m_CenterDot.Translation = new Vector3(body.X, m_CenterDotY, body.Z);
@@ -555,7 +570,7 @@ namespace Dronstein
 			// Timers, every frame, always shown (0.00 until there is a time), on one row: the whole pick (go to the ball to the drop),
 			// then its step, each running time in purple after the last pick (white) and the previous step (gray).
 			bool picking = m_PickPhase != PickPhase.Off, running = picking || m_PaState != PaState.Off;  // Pick All flies to its start point before the first pick
-			bool x500 = X500Flight.Piloted;  // the X500 has no speed modes, tasks or timers: MODE shows Manual only
+			bool x500 = X500Flight.Piloted;  // the X500 has no speed modes, tasks or timers: MODE shows Loiter or Manual only
 			m_HudTask.Translation = m_HudBalls.Translation + new Vector3(running ? HudBallsDx : 0f, 0f, 0f);  // after the ball count, which shows only while running
 			m_HudMode.Translation = m_HudSpeed.Translation + new Vector3(x500 ? 0f : HudSpeedDx, 0f, 0f);    // after the speed letter, which the X500 hasn't
 			SetText(m_HudPickTime, x500 ? "" : $"{(picking ? m_PickClock : 0f):F2}", Purple);
@@ -564,7 +579,7 @@ namespace Dronstein
 			SetText(m_HudStepLast, x500 ? "" : $"{MathF.Max(m_StepLast, 0f):F2}", Gray);
 			int inBin = 0;
 			foreach (uint b in m_BallBodies) if (BallInBin(b)) inBin++;
-			var shown = (m_View, m_SelectedBall, m_Waypoint, m_ToBall, (int)m_PickPhase, (int)m_PaState, Mode, inBin, x500);
+			var shown = (m_View, m_SelectedBall, m_Waypoint, m_ToBall, (int)m_PickPhase, (int)m_PaState, Mode, inBin, x500 ? (X500Flight.Loiter ? 2 : 1) : 0);
 			if (shown == m_HudShown) return;
 			m_HudShown = shown;
 			SetText(m_HudCamera, m_View == 2 ? $"Ball {m_SelectedBall:00}" : Views[m_View], m_View == 2 ? Purple : m_HudCameraColor);
@@ -572,7 +587,7 @@ namespace Dronstein
 			if (x500)
 			{
 				SetText(m_HudSpeed, "", m_HudModeColor);
-				SetText(m_HudMode, "Manual", m_HudModeColor);
+				SetText(m_HudMode, X500Flight.Loiter ? "Loiter" : "Manual", m_HudModeColor);
 				SetText(m_HudBalls, "", Purple);
 				SetText(m_HudTask, "", m_HudModeColor);
 				return;
@@ -638,7 +653,8 @@ namespace Dronstein
 		}
 
 		// Drag with the right mouse button to orbit, Q/E to zoom; C steps through the drone, the gripper, the selected ball and the X500.
-		void OrbitCamera(float dt, Vector3 drone, Vector3 gripper, Vector3 ball, Vector3 x500)
+		// With `sticks` the right stick orbits too and the D-pad zooms.
+		void OrbitCamera(float dt, Vector3 drone, Vector3 gripper, Vector3 ball, Vector3 x500, bool sticks)
 		{
 			if (Tapped(KeyCode.C)) m_View = (m_View + 1) % Views.Length;
 			if (m_View == 2 && m_Ball == null) m_View = 3;  // no ball selected: skip the ball view
@@ -649,8 +665,15 @@ namespace Dronstein
 				m_OrbitPitch = Math.Clamp(m_OrbitPitch + (mouse.Y - m_LastMouse.Y) * OrbitSpeed, -1.4f, 1.4f);
 			}
 			m_LastMouse = mouse;
+			float zoomPad = 0f;
+			if (sticks)
+			{
+				m_OrbitYaw -= Axis("camera_yaw", true) * CameraStickSpeed * dt;
+				m_OrbitPitch = Math.Clamp(m_OrbitPitch + Axis("camera_pitch", true) * CameraStickSpeed * dt, -1.4f, 1.4f);
+				zoomPad = (Held("zoom_out", true) ? 1f : 0f) - (Held("zoom_in", true) ? 1f : 0f);
+			}
 
-			float zoom = ((Input.IsKeyDown(KeyCode.E) ? 1f : 0f) - (Input.IsKeyDown(KeyCode.Q) ? 1f : 0f)) * ZoomSpeed * dt;
+			float zoom = ((Input.IsKeyDown(KeyCode.E) ? 1f : 0f) - (Input.IsKeyDown(KeyCode.Q) ? 1f : 0f) + zoomPad) * ZoomSpeed * dt;
 			float dist = m_ViewDistance[m_View] = Math.Clamp(m_ViewDistance[m_View] + zoom, 0.3f, 20f);
 
 			Vector3 center = m_OrbitCenter = m_View == 0 ? drone : m_View == 1 ? gripper : m_View == 2 ? ball : x500;
@@ -734,7 +757,8 @@ namespace Dronstein
 		}
 
 		// Right stick moves the selected joints, the d-pad the gripper (up/down) and the wrist roll (left/right); deploy swings the arm to a pose.
-		void ArmInput(float dt, float speed)
+		// `sticks`: the right stick and D-pad are the arm's (not the camera's).
+		void ArmInput(float dt, float speed, bool sticks)
 		{
 			for (int i = 0; i < 3; i++)
 				if (Pressed(JointSelects[i]))
@@ -749,7 +773,8 @@ namespace Dronstein
 				Log.Info($"Arm: {(m_Deployed ? "deploying" : "stowing")}");
 			}
 
-			float turn = Axis("arm_turn"), bend = Axis("arm_joint"), grip = Pair("gripper_open", "gripper_close"), roll = Pair("roll_right", "roll_left");
+			float turn = 0f, bend = 0f, grip = 0f, roll = 0f;
+			if (sticks) (turn, bend, grip, roll) = (Axis("arm_turn"), Axis("arm_joint"), Pair("gripper_open", "gripper_close"), Pair("roll_right", "roll_left"));
 			if (turn != 0f || bend != 0f || grip != 0f || roll != 0f) { m_ArmGoal = null; PickEnd(false, "sticks"); }  // the sticks take over from deploy
 			MoveArmJoint(0, turn * speed * dt);
 			MoveArmJoint(4, roll * speed * dt);
@@ -964,11 +989,12 @@ namespace Dronstein
 			return null;
 		}
 
-		// The binding for `name`; false when it isn't bound or no controller is connected.
-		bool Bound(string name, out Bind b)
+		// The binding for `name`; false when it isn't bound, no controller is connected, or V gave the controller to the X500
+		// (except for the camera's, `camera`).
+		bool Bound(string name, out Bind b, bool camera = false)
 		{
 			b = default;
-			return m_Pad >= 0 && !X500Flight.Piloted && m_Bindings.TryGetValue(name, out b);  // V gives the controller to the X500
+			return m_Pad >= 0 && (camera || !X500Flight.Piloted) && m_Bindings.TryGetValue(name, out b);
 		}
 
 		float AxisValue(Bind b) => Input.GetControllerAxis(m_Pad, b.Axis) * b.Sign;
@@ -976,14 +1002,14 @@ namespace Dronstein
 		bool Button(Bind b) => b.Raw >= 0 ? Input.IsControllerButtonDown(m_Pad, b.Raw) : Input.IsControllerButtonDown(m_Pad, b.Button);
 
 		// Analog axis with the deadzone applied, 0 when unbound.
-		float Axis(string name)
+		float Axis(string name, bool camera = false)
 		{
-			float v = Bound(name, out Bind b) && b.Axis >= 0 ? AxisValue(b) : 0f;
+			float v = Bound(name, out Bind b, camera) && b.Axis >= 0 ? AxisValue(b) : 0f;
 			return MathF.Abs(v) < m_Deadzone ? 0f : v;
 		}
 
 		// Held: a button down, or an axis (e.g. a trigger) pushed past halfway.
-		bool Held(string name) => Bound(name, out Bind b) && (b.Axis >= 0 ? AxisValue(b) > 0.5f : Button(b));
+		bool Held(string name, bool camera = false) => Bound(name, out Bind b, camera) && (b.Axis >= 0 ? AxisValue(b) > 0.5f : Button(b));
 
 		// Went down this frame (down now, up last frame), like Tapped: Lucky's own "pressed" lasts one engine frame and can fall
 		// between two script updates. Only buttons count, never axes. Call once per name per frame.

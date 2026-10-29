@@ -7,9 +7,11 @@ using Hazel;
 namespace Dronstein
 {
 	/// <summary>
-	/// Flies the Holybro X500 V2 with Dronstein's controller bindings (ControllerBindings.txt): the left stick leans it
-	/// forward/back and left/right (up to ANGLE_MAX), LT climbs and RT descends (swapped from Dronstein), the bumpers turn; let go and it holds its
-	/// altitude. V switches the controller between the X500 and Dronstein; the camera (C) is DroneTeleop's.
+	/// Flies the Holybro X500 V2 with Dronstein's controller bindings (ControllerBindings.txt): LT climbs and RT descends
+	/// (swapped from Dronstein), the bumpers turn, and the left stick moves it, in one of two modes (Share switches):
+	/// - Loiter (default, ArduPilot's Loiter): the stick sets a speed (up to LOIT_SPEED); let go and it brakes and holds its spot.
+	/// - Manual (ArduPilot's AltHold): the stick sets the lean (up to ANGLE_MAX); let go and it levels but coasts.
+	/// Both hold the altitude. V switches the controller between the X500 and Dronstein; the camera (C) is DroneTeleop's.
 	///
 	/// Two halves, both set by X500.param in the project folder:
 	/// - Motors(): the drone. Each motor's ESC command (0..1, as ArduPilot outputs it) becomes thrust through spin min/max,
@@ -26,6 +28,8 @@ namespace Dronstein
 	{
 		/// True while the X500 has the controller (DroneTeleop then ignores it and shows the X500's mode on the HUD).
 		public static bool Piloted;
+		/// Loiter (true) or Manual; Share switches it, the HUD shows it.
+		public static bool Loiter = true;
 
 		const float G = 9.81f, Rho = 1.225f;
 
@@ -55,13 +59,16 @@ namespace Dronstein
 		float m_RollT, m_PitchT, m_YawT, m_YawRateT;  // shaped targets (rad, rad/s)
 		float m_AltT, m_ClimbT;                        // altitude target and its climb rate
 		float m_AltMin = float.NaN;                    // resting height: the altitude target never goes below it
+		float m_PosX, m_PosY, m_VelX, m_VelY;          // Loiter's target position and velocity (world x/y)
 		readonly float[] m_I = new float[3], m_DErr = new float[3], m_D = new float[3];
 		float m_Thr;
+		bool m_ShareDown;
 
 		protected override void OnCreate()
 		{
 			LoadParams();
 			LoadBindings();
+			Loiter = true;
 			Entity? scene = FindEntityByTag("Dronstein");
 			if (scene == null)
 			{
@@ -206,18 +213,56 @@ namespace Dronstein
 			BodyRotation(m_R);
 			float phi = MathF.Atan2(m_R[2, 1], m_R[2, 2]), theta = -MathF.Asin(Math.Clamp(m_R[2, 0], -1f, 1f));
 			float psi = MathF.Atan2(m_R[1, 0], m_R[0, 0]);
-			float alt = m_Q[m_Qpos + 2], vz = m_V[m_Qvel + 2];
+			float x = m_Q[m_Qpos], y = m_Q[m_Qpos + 1], alt = m_Q[m_Qpos + 2];
+			float vx = m_V[m_Qvel], vy = m_V[m_Qvel + 1], vz = m_V[m_Qvel + 2];
 			float[] w = { m_V[m_Qvel + 3], m_V[m_Qvel + 4], m_V[m_Qvel + 5] };  // body rates (FLU)
 
-			if (float.IsNaN(m_AltMin))  // first frame: start holding where it stands
+			bool share = Held("speed");  // Share: Loiter <-> Manual
+			if (share && !m_ShareDown)
 			{
-				m_AltMin = m_AltT = alt;
+				Loiter = !Loiter;
+				(m_PosX, m_PosY, m_VelX, m_VelY) = (x, y, vx, vy);  // Loiter starts from where it is, at the speed it has
+			}
+			m_ShareDown = share;
+
+			// On the ground and not climbing (and at the start): no thrust, every target follows the drone.
+			if (float.IsNaN(m_AltMin) || (m_AltT <= m_AltMin && climb <= 0f && alt < m_AltMin + 0.05f))
+			{
+				if (float.IsNaN(m_AltMin)) m_AltMin = alt;
+				m_AltT = m_AltMin;
+				m_RollT = m_PitchT = m_YawRateT = m_ClimbT = m_Thr = 0f;
 				m_YawT = psi;
+				(m_PosX, m_PosY, m_VelX, m_VelY) = (x, y, 0f, 0f);
+				Array.Clear(m_I);
+				Array.Clear(m_D);
+				for (int i = 0; i < 4; i++) m_Cmd[i] = P["MOT_SPIN_MIN"];
+				return;
+			}
+
+			float maxAngle = P["ANGLE_MAX"] * MathF.PI / 180f, tc = P["ATC_INPUT_TC"];
+			float rollIn = roll * maxAngle, pitchIn = pitch * maxAngle;  // Manual: the stick is the lean
+			if (Loiter)
+			{
+				// The stick is a velocity in the heading frame; the target velocity moves toward it at LOIT_ACC_MAX, so
+				// letting go brakes at that rate. The target position follows it, and holds when it stops.
+				float c = MathF.Cos(psi), s = MathF.Sin(psi), speed = P["LOIT_SPEED"];
+				float wantX = (c * pitch + s * roll) * speed, wantY = (s * pitch - c * roll) * speed;  // roll is positive to the right
+				float dvx = wantX - m_VelX, dvy = wantY - m_VelY, dv = MathF.Sqrt(dvx * dvx + dvy * dvy), step = P["LOIT_ACC_MAX"] * dt;
+				if (dv > step) { dvx *= step / dv; dvy *= step / dv; }
+				m_VelX += dvx; m_VelY += dvy;
+				m_PosX += m_VelX * dt; m_PosY += m_VelY * dt;
+				// Position -> velocity -> acceleration (plus the target's own), capped at what ANGLE_MAX can give.
+				float posP = P["PSC_NE_POS_P"], velP = P["PSC_NE_VEL_P"];
+				float ax = velP * (m_VelX + posP * (m_PosX - x) - vx) + dvx / dt, ay = velP * (m_VelY + posP * (m_PosY - y) - vy) + dvy / dt;
+				float a = MathF.Sqrt(ax * ax + ay * ay), aMax = G * MathF.Tan(maxAngle);
+				if (a > aMax) { ax *= aMax / a; ay *= aMax / a; }
+				// To the heading frame, then lean: nose down accelerates forward, a roll to the right accelerates right.
+				pitchIn = MathF.Atan((c * ax + s * ay) / G);
+				rollIn = -MathF.Atan((-s * ax + c * ay) / G);
 			}
 
 			// Lean targets, shaped by ATC_INPUT_TC; the yaw rate ramps at ATC_ACC_Y_MAX.
-			float maxAngle = P["ANGLE_MAX"] * MathF.PI / 180f, tc = P["ATC_INPUT_TC"];
-			float rollRate = (roll * maxAngle - m_RollT) / tc, pitchRate = (pitch * maxAngle - m_PitchT) / tc;
+			float rollRate = (rollIn - m_RollT) / tc, pitchRate = (pitchIn - m_PitchT) / tc;
 			m_RollT += rollRate * dt;
 			m_PitchT += pitchRate * dt;
 			float yawStep = P["ATC_ACC_Y_MAX"] * MathF.PI / 180f * dt;
@@ -259,32 +304,32 @@ namespace Dronstein
 			Mix(o[0], o[1], o[2]);
 		}
 
-		// Quad X mix: thrust fraction per motor (roll and pitch first, then yaw, then throttle shifted to fit), then
-		// back through the thrust curve to ESC commands, as ArduPilot's motor library does.
+		// Quad X mix: thrust fraction per motor, roll and pitch first (throttle shifted to fit them), then yaw in whatever
+		// room the motors have left, so a yaw never changes the total thrust; then back through the thrust curve to ESC
+		// commands, as ArduPilot's motor library does.
 		void Mix(float roll, float pitch, float yaw)
 		{
-			float[] rp = new float[4], y = new float[4];
+			float[] rp = new float[4];
 			float lo = 0f, hi = 0f;
 			for (int i = 0; i < 4; i++)
 			{
 				rp[i] = 0.5f * (MotorY[i] * roll - MotorX[i] * pitch);  // left motors lift a roll right, front motors drop for nose down
-				y[i] = -0.5f * Spin[i] * yaw;                             // CW motors speed up to yaw left
 				lo = MathF.Min(lo, rp[i]); hi = MathF.Max(hi, rp[i]);
 			}
 			float rpScale = hi - lo > 1f ? 1f / (hi - lo) : 1f;
-			float room = MathF.Max(0f, 1f - (hi - lo) * rpScale);       // what roll and pitch leave for yaw
-			float yawScale = MathF.Abs(yaw) > room ? room / MathF.Abs(yaw) : 1f;  // yaw spreads the motors by |yaw|
-			lo = 1f; hi = -1f;
+			float thr = Math.Clamp(m_Thr, -lo * rpScale, 1f - hi * rpScale);
+			float yawMax = 1f;  // a motor that yaw speeds up must stay under 1, one it slows down above 0
 			for (int i = 0; i < 4; i++)
 			{
-				rp[i] = rp[i] * rpScale + y[i] * yawScale;
-				lo = MathF.Min(lo, rp[i]); hi = MathF.Max(hi, rp[i]);
+				rp[i] = thr + rp[i] * rpScale;
+				yawMax = MathF.Min(yawMax, -Spin[i] * yaw > 0f ? 2f * (1f - rp[i]) : 2f * rp[i]);
 			}
-			float thr = Math.Clamp(m_Thr, -lo, 1f - hi);
+			yawMax = MathF.Max(yawMax, 0f);
+			yaw = Math.Clamp(yaw, -yawMax, yawMax);
 			float e = P["SIM_THST_EXPO"], spinMin = P["MOT_SPIN_MIN"], spinMax = P["MOT_SPIN_MAX"];
 			for (int i = 0; i < 4; i++)
 			{
-				float t = Math.Clamp(thr + rp[i], 0f, 1f);
+				float t = Math.Clamp(rp[i] - 0.5f * Spin[i] * yaw, 0f, 1f);  // CW motors speed up to yaw left
 				float u = (-(1f - e) + MathF.Sqrt((1f - e) * (1f - e) + 4f * e * t)) / (2f * e);  // inverse thrust curve
 				m_Cmd[i] = spinMin + (spinMax - spinMin) * u;
 			}
@@ -315,7 +360,8 @@ namespace Dronstein
 			if ((m_LogTimer += dt) < 1f) return;
 			m_LogTimer = 0f;
 			float tilt = MathF.Acos(Math.Clamp(m_R[2, 2], -1f, 1f)) * 180f / MathF.PI;
-			Log.Info($"X500Flight: {(Piloted ? "piloted" : "holding")} alt={m_Q[m_Qpos + 2]:F2} vz={m_V[m_Qvel + 2]:F2} " +
+			Log.Info($"X500Flight: {(Loiter ? "Loiter" : "Manual")}{(Piloted ? ", piloted" : "")} x={m_Q[m_Qpos]:F2} y={m_Q[m_Qpos + 1]:F2} " +
+				$"v={MathF.Sqrt(m_V[m_Qvel] * m_V[m_Qvel] + m_V[m_Qvel + 1] * m_V[m_Qvel + 1]):F2} alt={m_Q[m_Qpos + 2]:F2} vz={m_V[m_Qvel + 2]:F2} " +
 				$"tilt={tilt:F1} thr={m_Thr:F2} thrust=[{m_Thrust[0]:F1} {m_Thrust[1]:F1} {m_Thrust[2]:F1} {m_Thrust[3]:F1}] dt={dt * 1000f:F1}ms");
 		}
 	}

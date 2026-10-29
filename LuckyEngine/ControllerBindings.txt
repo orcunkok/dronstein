@@ -35,4 +35,12 @@ gripper_open    = b15        # D-pad up
 gripper_close   = b17        # D-pad down
 deploy          = b10        # View button: deploy / stow the arm
 
+# Camera: the right stick and D-pad move it while the X500 is flown (V), and for Dronstein after camera_toggle.
+# A can't be the toggle: this controller reports A as b0, the same as Share (speed, and the X500's Loiter/Manual).
+camera_toggle   = b14        # right stick click: Dronstein's right stick and D-pad switch between the arm and the camera
+camera_yaw      = 2          # right stick left/right: orbit around
+camera_pitch    = -3         # right stick up/down: orbit up/down
+zoom_in         = b15        # D-pad up
+zoom_out        = b17        # D-pad down
+
 log_axes = false
