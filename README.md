@@ -28,7 +28,7 @@ To change buttons, edit `LuckyEngine/ControllerBindings.txt`, save it, and press
 ## Keyboard
 | Key | What it does |
 |---|---|
-| C | Camera follows the drone, the gripper or the selected ball |
+| C | Camera follows the drone, the gripper, the selected ball or the X500 V2 |
 | Q / E | Zoom in / out |
 | Right mouse drag | Rotate the camera |
 | T | Show / hide the arm's reach (the blue half-sphere) |
@@ -88,7 +88,15 @@ Tasks of a pick, in order:
 - Checkered ground: each tile is 1 m.
 - Golf balls and a trash can: the things to pick up and where they go.
 
+## Holybro X500 V2
+A second drone, a Holybro X500 V2 with a 4S battery (1.36 kg), stands at the edge of the field. Press **V** to give it the controller, and V again to give it back to Dronstein. The camera is separate: **C** steps to **X500 V2** (orbit and zoom as usual). While you fly it, the screen shows MODE Manual and no task or timers.
+
+It uses Dronstein's buttons (`ControllerBindings.txt`): the left stick leans it forward/back and left/right (up to 30°), LT / RT climb and descend (2.5 m/s, swapped from Dronstein for now), LB / RB turn. Let go and it holds its altitude and levels, but it doesn't brake: it coasts like the real one.
+
+Everything about it is in `LuckyEngine/X500.param`: the drone (`SIM_*`: thrust, motor lag, yaw, drag), the motors (`MOT_*`) and the autopilot's gains (ArduPilot's X500v2 frame file) and limits. Change `SIM_*` to match logs of the real drone. `tools/x500v2/build_x500v2.py` builds its look and its physics.
+
 ## Latest changes
+- **Holybro X500 V2 flies:** V hands it the controller, with the same buttons as Dronstein; physics and gains are in `LuckyEngine/X500.param` (see Holybro X500 V2 above).
 - **Autonomous Mode Action:** the Navigate to ball (was Set), Pick and Pick All buttons in Tuning are replaced by a **Select Mode** dropdown and one **Start / Stop Autonomous Action** switch. Stop gives the drone back to manual.
 - **Task on screen:** a third row at the top right shows the pick's step (Transit, Descend, Lift…); the Mode row shows only **Pick** and the ball number. Pick all balls now shows **Pick All** / **Go to start** while it flies to its start point, instead of Manual.
 - **Speed Mode dropdown:** the Slow / Medium / Fast buttons are now a dropdown in Tuning, kept between runs in `LuckyEngine/SpeedMode.txt`.

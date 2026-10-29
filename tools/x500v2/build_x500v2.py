@@ -1,17 +1,20 @@
-"""Build the Holybro X500 V2 as a Lucky procedural graph (Pod) with MuJoCo colliders.
+"""Build the Holybro X500 V2: its look as a Lucky procedural graph (Pod), its physics as MJCF.
 
 Run with the editor open (Edit mode):
     PYTHONPATH=<LuckyEngine>/Data/Authoring/python python3 build_x500v2.py <new output dir>
 
-Writes <out>/x500v2.hpodgraph. The scene uses it from Assets/Robots/X500V2/source/x500v2.hpodgraph:
-after a rebuild copy it over that file and refresh assets; the HolybroX500V2 entity re-cooks.
+Writes into <out>:
+- x500v2.hpodgraph: the visual mesh only. The scene uses it from Assets/Robots/X500V2/source/x500v2.hpodgraph.
+- x500v2.mjcf: the MuJoCo body (free joint, collision geoms with the parts' masses) and six motors on its free joint
+  that X500Flight.cs drives. Lucky can't push a procedural body (docs/needs-AddBodyForceWorld.md), so the physics
+  is MJCF: dronstein.xml includes it from Assets/Robots/X500V2/x500v2.mjcf, and the HolybroX500V2 entity follows it.
+After a rebuild copy both over those files and refresh assets.
 
-Every part below is one entry that makes both the
-visual mesh and its MuJoCo collider from the same numbers, so the colliders sit
-exactly on the visible tubes and plates. One rigid body with a free joint, no flight.
+Every part below is one entry that makes both the visual mesh and its collision geom from the same numbers, so the
+colliders sit exactly on the visible tubes and plates.
 
-Frame: Pod/Lucky, Y up, +X forward (front arms at +X), sides along Z, metres.
-Origin is the frame centre, half way between the two plates.
+Frame: Pod/Lucky, Y up, +X forward (front arms at +X), sides along Z, metres. The MJCF body frame is the same frame
+turned to MuJoCo's Z up: x forward, y left, z up. Origin is the frame centre, half way between the two plates.
 
 Sources:
 - Holybro X500 V2 spec: 500 mm wheelbase, 144x144x2 mm plates 28 mm apart,
@@ -31,6 +34,7 @@ from pod_authoring import Literal, McpSession
 
 ENDPOINT = "http://127.0.0.1:19331/mcp"
 BODY = "x500v2"
+SPAWN = (-5.0, 0.0, 0.2423)   # MuJoCo world: resting on the ground (no drop: it twists landing), clear of the golf balls
 
 
 def mat(r, g, b, metal, rough):
@@ -47,6 +51,7 @@ FOAM = mat(0.025, 0.025, 0.025, 0.0, 0.9)
 RED = mat(0.55, 0.02, 0.02, 0.0, 0.8)
 PROP = mat(0.02, 0.02, 0.02, 0.0, 0.4)
 GPS = mat(0.05, 0.05, 0.055, 0.0, 0.3)
+BATTERY = mat(0.35, 0.36, 0.38, 0.0, 0.5)
 
 # Effective densities (kg/m^3) for solid colliders standing in for real parts.
 D_PLATE = 1600.0          # solid 2 mm carbon plate
@@ -121,6 +126,15 @@ def quat_xyzw(r):
 
 
 IDENTITY = [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
+TO_MJ = [[1.0, 0.0, 0.0], [0.0, 0.0, -1.0], [0.0, 1.0, 0.0]]   # Pod (x, y, z) -> MJCF body (x, -z, y)
+
+
+def to_mj(p):
+    return [sum(TO_MJ[i][j] * p[j] for j in range(3)) for i in range(3)]
+
+
+def fmt(values):
+    return " ".join(f"{v:.6g}" for v in values)
 
 
 # ---------------------------------------------------------------- parts
@@ -139,9 +153,6 @@ class Builder:
                         Material=material, Name=name)
         self.meshes.append(e.node("SetMeshName", name, Geometry=shaded.output("Geometry"), Name=name))
 
-    def _collide(self, node, name, density, **pins):
-        self.colliders.append((node, name, dict(pins, Density=density)))
-
     def box(self, name, size, pos, material, density, rot=IDENTITY, collide=True, bevel=0.0008):
         e = self.edit
         cube = e.node("MeshCube", name, SizeX=size[0], SizeY=size[1], SizeZ=size[2])
@@ -150,8 +161,9 @@ class Builder:
                          Offset=bevel, Segments=2)
         self._place(rounded, name, rot, pos, material)
         if collide:
-            self._collide("AddCollisionBox", name, density, HalfExtents=[s / 2 for s in size],
-                          PosePos=list(pos), PoseQuat=quat_xyzw(rot))
+            x, y, z, w = quat_xyzw(mul(TO_MJ, rot))   # the box's own axes, seen from the MJCF body frame
+            self.colliders.append(f'<geom name="{BODY}_{name}" type="box" size="{fmt(s / 2 for s in size)}" '
+                                  f'pos="{fmt(to_mj(pos))}" quat="{fmt((w, x, y, z))}" density="{density:g}"/>')
             self.mass += density * size[0] * size[1] * size[2]
 
     def tube(self, name, p0, p1, radius, material, density, sides=24, collide=True):
@@ -168,15 +180,9 @@ class Builder:
                          Offset=min(0.0006, radius * 0.15), Segments=2, AngleThreshold=0.6)
         self._place(rounded, name, rot, mid, material)
         if collide:
-            self._collide("AddCollisionCylinder", name, density, Radius=radius, HalfLength=length / 2,
-                          Axis=Literal("Menu", "Y"), PosePos=mid, PoseQuat=quat_xyzw(rot))
+            self.colliders.append(f'<geom name="{BODY}_{name}" type="cylinder" size="{radius:g}" '
+                                  f'fromto="{fmt(to_mj(p0))} {fmt(to_mj(p1))}" density="{density:g}"/>')
             self.mass += density * math.pi * radius * radius * length
-
-    def add_colliders(self, asset):
-        for node, name, pins in self.colliders:
-            asset = self.edit.node(node, f"{name} collider", Asset=asset.output("Asset"), Body=BODY,
-                                   Name=name, **pins)
-        return asset
 
     def join(self):
         e = self.edit
@@ -248,6 +254,11 @@ def build(edit):
     for k, x in enumerate((-0.035, 0.055)):
         b.box(f"rail_hanger_{k}", (0.016, 0.016, 0.082), (x, BOTTOM - 0.008, 0), BLACK, D_PLASTIC, bevel=0.002)
     b.box("battery_board", (0.150, 0.002, 0.090), (0.029, rail_y - 0.0075, 0), CARBON, D_PLATE, bevel=0.002)
+    # 4S 3300 mAh pack, 0.36 kg, strapped under the board. With it the model weighs what the X500v2 frame
+    # params' hover throttle (0.29 of 4 x 1.15 kgf) lifts: about 1.33 kg.
+    battery = (0.135, 0.030, 0.043)
+    b.box("battery", battery, (0.029, rail_y - 0.0085 - battery[1] / 2, 0), BATTERY,
+          0.36 / (battery[0] * battery[1] * battery[2]), bevel=0.004)
 
     # Landing gear: per side one 16 mm leg splayed 20 deg, a T-joint, a 10 mm skid with foam and caps.
     for s, side in ((1.0, "left"), (-1.0, "right")):
@@ -283,12 +294,21 @@ def build(edit):
             b.tube(f"end_cap_{side}_{k}", (edge, SKID_Y, s * SKID_LAT), (cap, SKID_Y, s * SKID_LAT), 0.0055,
                    BLACK, 1100.0)
 
-    mesh = b.join()
-    tagged = edit.node("SetMeshBodyMembership", "body faces", Geometry=mesh.output("Geometry"), Body=BODY)
-    asset = edit.node("DeclareBody", "declare body", Asset=tagged.output("Geometry"), Name=BODY)
-    free = edit.node("AttachFreeJoint", "free joint", Asset=b.add_colliders(asset).output("Asset"), Body=BODY)
-    edit.output(free, "Asset", name="Asset")
+    edit.output(b.join(), "Geometry")
     return b
+
+
+def mjcf(colliders):
+    """The X500's MuJoCo body and the six motors X500Flight.cs sets: force along world x/y/z (N) and torque about
+    the body's x/y/z (N m). Collision geoms are invisible: the procedural mesh is the look."""
+    geoms = "\n".join(f"      {g[:-2]} group=\"3\" rgba=\"0 0 0 0\"/>" for g in colliders)
+    axes = ("fx", "1 0 0 0 0 0"), ("fy", "0 1 0 0 0 0"), ("fz", "0 0 1 0 0 0"), \
+           ("tx", "0 0 0 1 0 0"), ("ty", "0 0 0 0 1 0"), ("tz", "0 0 0 0 0 1")
+    motors = "\n".join(f'    <motor name="{BODY}_{n}" joint="{BODY}_free" gear="{g}" ctrllimited="false"/>' for n, g in axes)
+    return (f"<!-- Holybro X500 V2 physics, written by tools/x500v2/build_x500v2.py: edit that, not this. -->\n"
+            f"<mujoco>\n  <worldbody>\n    <body name=\"{BODY}\" pos=\"{fmt(SPAWN)}\">\n"
+            f"      <freejoint name=\"{BODY}_free\"/>\n{geoms}\n    </body>\n  </worldbody>\n"
+            f"  <actuator>\n{motors}\n  </actuator>\n</mujoco>\n")
 
 
 def main():
@@ -299,7 +319,8 @@ def main():
     with graph.edit() as edit:
         b = build(edit)
     path = graph.save(out / "x500v2.hpodgraph")
-    print(f"saved {path}: {len(b.colliders)} colliders, {len(b.meshes)} meshes, collider mass {b.mass:.3f} kg")
+    (out / "x500v2.mjcf").write_text(mjcf(b.colliders))
+    print(f"saved {path} ({len(b.meshes)} meshes) and x500v2.mjcf ({len(b.colliders)} geoms, {b.mass:.3f} kg)")
     print(f"lowest point y={GROUND:.4f} m below the frame centre")
 
 

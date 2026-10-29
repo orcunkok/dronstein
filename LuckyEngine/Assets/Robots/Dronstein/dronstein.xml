@@ -188,4 +188,5 @@
     <position class="wrist_roll" name="wrist_roll" joint="wrist_roll" inheritrange="1"/>
     <position class="gripper" name="gripper" joint="gripper" inheritrange="1"/>
   </actuator>
+  <include file="../X500V2/x500v2.mjcf"/>  <!-- the Holybro X500 V2 (physics; X500Flight.cs flies it) -->
 </mujoco>

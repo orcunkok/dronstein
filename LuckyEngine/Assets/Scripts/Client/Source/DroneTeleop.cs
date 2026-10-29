@@ -10,8 +10,8 @@ namespace Dronstein
 	/// Fly the Skydio X2 and move its SO-100 arm with an Xbox controller.
 	/// The bindings are in ControllerBindings.txt in the project folder.
 	/// Keys: Y flies to the next corner of the test square (blue dots on the ground), for tuning; G folds/unfolds the arm; B, a ball number and Enter fly to that ball;
-	/// R resets the scene; T shows/hides a wire sphere of how far the gripper can reach; C switches the camera between the drone, the gripper and the
-	/// selected ball (Tuning.Ball), Q/E zoom in/out. F starts/stops the Autonomous Mode Action (starting runs Pick all balls).
+	/// R resets the scene; T shows/hides a wire sphere of how far the gripper can reach; C switches the camera between the drone, the gripper, the
+	/// selected ball (Tuning.Ball) and the X500 V2, Q/E zoom in/out. F starts/stops the Autonomous Mode Action (starting runs Pick all balls).
 	/// Tuning's Set button flies in behind and above the selected ball, with the ball inside the reach. Drag with the right mouse button to orbit the camera.
 	/// The top right of the screen shows the camera view and the mode: Manual, or Calibration while Y's test square is flown.
 	/// Attach to the entity that holds dronstein.xml (its MujocoScene).
@@ -57,7 +57,7 @@ namespace Dronstein
 		static readonly float[,] Rotors = { { -0.14f, -0.18f, -0.0201f }, { -0.14f, 0.18f, 0.0201f }, { 0.14f, 0.18f, -0.0201f }, { 0.14f, -0.18f, 0.0201f } };
 		const float MaxThrust = 13f, Gravity = 9.81f, MaxYawTorque = 0.3f;
 		static readonly float[,] Waypoints = { { 10, 10 }, { 10, -10 }, { -10, -10 }, { -10, 10 } };  // (x, y), MuJoCo frame
-		static readonly string[] Views = { "Drone", "Gripper", "Ball" };  // what the camera can watch; C steps through them
+		static readonly string[] Views = { "Drone", "Gripper", "Ball", "X500 V2" };  // what the camera can watch; C steps through them
 		// HUD, in pixels: the labels' x from the right edge, the first baseline from the top, the row height, the values' x after the labels.
 		const float HudRight = 291f, HudTop = 49f, HudRow = 44f, HudValueX = 115f;
 		const float HudSpeedDx = 36f, HudBallsDx = 50f;  // the mode and task values start this far right of the other values, after the speed letter and the ball count (scale 16, "00/25" measured: 41 px, then one space)
@@ -98,14 +98,16 @@ namespace Dronstein
 		// Orbit camera: the camera sits on a sphere around what it watches (Views[m_View]) and looks at its center.
 		float m_OrbitYaw, m_OrbitPitch;
 		Vector3 m_OrbitCenter;  // the point it looks at, which is always the middle of the screen
-		float[] m_ViewDistance = new float[3];  // each view keeps its own zoom
+		float[] m_ViewDistance = new float[4];  // each view keeps its own zoom
+		uint m_X500Body;  // the Holybro X500 V2 (X500Flight.cs flies it), for its camera view
 		int m_View;
 		// HUD texts, moved only when the screen is resized and rewritten only when what they show changes.
 		Entity m_HudCameraLabel = null!, m_HudCamera = null!, m_HudModeLabel = null!, m_HudSpeed = null!, m_HudMode = null!, m_HudTaskLabel = null!, m_HudBalls = null!, m_HudTask = null!;
 		Entity m_HudPickLast = null!, m_HudPickTime = null!, m_HudStepLast = null!, m_HudStepTime = null!;  // one row under the task: last (gray) and running time of the pick, then of its step
 		Vector4 m_HudCameraColor, m_HudModeColor;  // the values' colours set in the scene, used when not purple/yellow
+		string m_TaskLabel = "";  // the TASK label's text, hidden while the X500 is flown
 		(uint, uint) m_HudSize;
-		(int, int, int, int, int, int, int, int) m_HudShown = (-1, -1, -2, -1, -1, -1, -1, -1);  // (m_View, m_SelectedBall, m_Waypoint, m_ToBall, m_PickPhase, m_PaState, Mode, balls in the can)
+		(int, int, int, int, int, int, int, int, bool) m_HudShown = (-1, -1, -2, -1, -1, -1, -1, -1, false);  // (m_View, m_SelectedBall, m_Waypoint, m_ToBall, m_PickPhase, m_PaState, Mode, balls in the can, X500 flown)
 		readonly List<uint> m_BallBodies = new();  // every golf ball's MuJoCo body, for the HUD's ball count
 		Vector2 m_LastMouse;
 
@@ -258,6 +260,9 @@ namespace Dronstein
 			m_OrbitYaw = MathF.Atan2(offset.X, offset.Z);
 			m_OrbitPitch = MathF.Asin(Math.Clamp(offset.Y / m_ViewDistance[0], -1f, 1f));
 			m_ViewDistance[1] = m_ViewDistance[2] = GripperViewDistance;
+			m_ViewDistance[3] = m_ViewDistance[0];
+			m_X500Body = m_Mj.GetBodyID("x500v2");
+			m_TaskLabel = m_HudTaskLabel.GetComponent<TextComponent>()!.Text;
 			m_GraspSite = m_Mj.GetSiteID("grasp_site");
 			m_Shoulder = m_Mj.GetBodyID("Upper_Arm");
 			m_Elbow = m_Mj.GetBodyID("Lower_Arm");
@@ -332,7 +337,8 @@ namespace Dronstein
 			if (m_Tuning.Ball != m_SelectedBall) SelectBall(m_Tuning.Ball);
 			if (m_Tuning.GoToBall) GoToBall(grasp);
 			Vector3 ball = m_Ball != null ? BodyPos(m_BallBody) : Vector3.Zero;
-			OrbitCamera(dt, body, new Vector3(grasp.X, grasp.Z, -grasp.Y), new Vector3(ball.X, ball.Z, -ball.Y));
+			Vector3 x500 = BodyPos(m_X500Body);
+			OrbitCamera(dt, body, new Vector3(grasp.X, grasp.Z, -grasp.Y), new Vector3(ball.X, ball.Z, -ball.Y), new Vector3(x500.X, x500.Z, -x500.Y));
 			UpdateHud();
 			m_GripDot.Translation = new Vector3(grasp.X, m_GripDotY, -grasp.Y);
 			m_CenterDot.Translation = new Vector3(body.X, m_CenterDotY, body.Z);
@@ -549,19 +555,30 @@ namespace Dronstein
 			// Timers, every frame, always shown (0.00 until there is a time), on one row: the whole pick (go to the ball to the drop),
 			// then its step, each running time in purple after the last pick (white) and the previous step (gray).
 			bool picking = m_PickPhase != PickPhase.Off, running = picking || m_PaState != PaState.Off;  // Pick All flies to its start point before the first pick
+			bool x500 = X500Flight.Piloted;  // the X500 has no speed modes, tasks or timers: MODE shows Manual only
 			m_HudTask.Translation = m_HudBalls.Translation + new Vector3(running ? HudBallsDx : 0f, 0f, 0f);  // after the ball count, which shows only while running
-			SetText(m_HudPickTime, $"{(picking ? m_PickClock : 0f):F2}", Purple);
-			SetText(m_HudStepTime, $"{(picking ? m_PickT : 0f):F2}", Purple);
-			SetText(m_HudPickLast, $"{MathF.Max(m_PickLast, 0f):F2}", White);
-			SetText(m_HudStepLast, $"{MathF.Max(m_StepLast, 0f):F2}", Gray);
+			m_HudMode.Translation = m_HudSpeed.Translation + new Vector3(x500 ? 0f : HudSpeedDx, 0f, 0f);    // after the speed letter, which the X500 hasn't
+			SetText(m_HudPickTime, x500 ? "" : $"{(picking ? m_PickClock : 0f):F2}", Purple);
+			SetText(m_HudStepTime, x500 ? "" : $"{(picking ? m_PickT : 0f):F2}", Purple);
+			SetText(m_HudPickLast, x500 ? "" : $"{MathF.Max(m_PickLast, 0f):F2}", White);
+			SetText(m_HudStepLast, x500 ? "" : $"{MathF.Max(m_StepLast, 0f):F2}", Gray);
 			int inBin = 0;
 			foreach (uint b in m_BallBodies) if (BallInBin(b)) inBin++;
-			var shown = (m_View, m_SelectedBall, m_Waypoint, m_ToBall, (int)m_PickPhase, (int)m_PaState, Mode, inBin);
+			var shown = (m_View, m_SelectedBall, m_Waypoint, m_ToBall, (int)m_PickPhase, (int)m_PaState, Mode, inBin, x500);
 			if (shown == m_HudShown) return;
 			m_HudShown = shown;
+			SetText(m_HudCamera, m_View == 2 ? $"Ball {m_SelectedBall:00}" : Views[m_View], m_View == 2 ? Purple : m_HudCameraColor);
+			m_HudTaskLabel.GetComponent<TextComponent>()!.Text = x500 ? "" : m_TaskLabel;
+			if (x500)
+			{
+				SetText(m_HudSpeed, "", m_HudModeColor);
+				SetText(m_HudMode, "Manual", m_HudModeColor);
+				SetText(m_HudBalls, "", Purple);
+				SetText(m_HudTask, "", m_HudModeColor);
+				return;
+			}
 			SetText(m_HudSpeed, ModeNames[Mode][..1].ToUpperInvariant(), ModeColors[Mode]);
 			SetText(m_HudBalls, running ? $"{inBin:00}/{m_BallBodies.Count}" : "", Purple);
-			SetText(m_HudCamera, m_View == 2 ? $"Ball {m_SelectedBall:00}" : Views[m_View], m_View == 2 ? Purple : m_HudCameraColor);
 			SetText(m_HudMode, picking ? $"Pick {m_PickN:00}" : running ? "Pick All" : m_Waypoint >= 0 ? $"Calib {m_Waypoint + 1}/4" : m_ToBall > 0 ? $"ToBall {m_ToBall:00}" : "Manual",
 				running ? Purple : m_Waypoint >= 0 ? Yellow : m_ToBall > 0 ? Purple : m_HudModeColor);
 			SetText(m_HudTask, picking ? m_PickPhase.ToString() : m_PaState.ToString(),  // the running state's own name (Off when nothing runs)
@@ -620,11 +637,11 @@ namespace Dronstein
 			return p;
 		}
 
-		// Drag with the right mouse button to orbit, Q/E to zoom; C steps through the drone, the gripper and the selected ball.
-		void OrbitCamera(float dt, Vector3 drone, Vector3 gripper, Vector3 ball)
+		// Drag with the right mouse button to orbit, Q/E to zoom; C steps through the drone, the gripper, the selected ball and the X500.
+		void OrbitCamera(float dt, Vector3 drone, Vector3 gripper, Vector3 ball, Vector3 x500)
 		{
 			if (Tapped(KeyCode.C)) m_View = (m_View + 1) % Views.Length;
-			if (m_View == 2 && m_Ball == null) m_View = 0;  // no ball selected: skip the ball view
+			if (m_View == 2 && m_Ball == null) m_View = 3;  // no ball selected: skip the ball view
 			Vector2 mouse = Input.GetMousePosition();
 			if (Input.IsMouseButtonDown(MouseButton.Right))
 			{
@@ -636,7 +653,7 @@ namespace Dronstein
 			float zoom = ((Input.IsKeyDown(KeyCode.E) ? 1f : 0f) - (Input.IsKeyDown(KeyCode.Q) ? 1f : 0f)) * ZoomSpeed * dt;
 			float dist = m_ViewDistance[m_View] = Math.Clamp(m_ViewDistance[m_View] + zoom, 0.3f, 20f);
 
-			Vector3 center = m_OrbitCenter = m_View == 0 ? drone : m_View == 1 ? gripper : ball;
+			Vector3 center = m_OrbitCenter = m_View == 0 ? drone : m_View == 1 ? gripper : m_View == 2 ? ball : x500;
 			var dir = new Vector3(MathF.Sin(m_OrbitYaw) * MathF.Cos(m_OrbitPitch), MathF.Sin(m_OrbitPitch), MathF.Cos(m_OrbitYaw) * MathF.Cos(m_OrbitPitch));
 			m_Camera.Translation = center + dir * dist;
 			m_Camera.Rotation = new Vector3(-m_OrbitPitch, m_OrbitYaw, 0f);  // the camera looks down its -z, so this faces the center
@@ -951,7 +968,7 @@ namespace Dronstein
 		bool Bound(string name, out Bind b)
 		{
 			b = default;
-			return m_Pad >= 0 && m_Bindings.TryGetValue(name, out b);
+			return m_Pad >= 0 && !X500Flight.Piloted && m_Bindings.TryGetValue(name, out b);  // V gives the controller to the X500
 		}
 
 		float AxisValue(Bind b) => Input.GetControllerAxis(m_Pad, b.Axis) * b.Sign;
