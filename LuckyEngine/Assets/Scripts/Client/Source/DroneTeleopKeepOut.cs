@@ -8,7 +8,7 @@ namespace Dronstein
 	/// Bin keep-out for every flight the script plans (FlyTo: goto, Set/B, Y, the pick, the test moves). The bin is a vertical cylinder
 	/// up to its rim, read live (it can be pushed). Rule: whenever any part of the drone's footprint (rotors, the arm as it is now,
 	/// the ball in hand) is within 0.5 m of the bin's edge, its lowest point must be at least 10 cm above the rim.
-	/// A straight (diagonal) flight that would break the rule is split into climb, cruise (high) over the zone, then straight to the goal; a goal that is itself too low
+	/// A straight (diagonal) flight that would break the rule is split into a climb along it, cruise (high) over the zone, then straight to the goal; a goal that is itself too low
 	/// inside the zone is raised (METRIC keepout clamp). The same extent is measured from the true state every frame while a
 	/// flight or a pick runs and logged when it ends (METRIC flight minClear=... nearBin=...).
 	/// </summary>
@@ -103,15 +103,27 @@ namespace Dronstein
 			}
 			float tu = LastUnsafe(p0, goal, bin, zone, zsafe - 0.01f);
 			if (tu < 0f) return goal;  // straight, diagonal when the heights differ
-			float te = MathF.Min(tu + 0.02f, 1f);
-			Vector3 e = p0 + (goal - p0) * te;                                      // where the straight track is safe from on
+			bool high = goal.Z >= zsafe - 0.01f;                                    // a high goal: the cruise ends at it
+			float ts = MathF.Max(FirstUnsafe(p0, goal, bin, zone, zsafe - 0.01f) - 0.06f, 0f), te = MathF.Min(tu + 0.02f, 1f);
+			Vector3 s = p0 + (goal - p0) * ts, e = p0 + (goal - p0) * te;          // the straight track is unsafe between these
 			var legs = new List<Vector3>(3);
-			if (p0.Z < zsafe) legs.Add(new Vector3(p0.X, p0.Y, zsafe));            // climb where it is
-			legs.Add(new Vector3(e.X, e.Y, MathF.Max(e.Z, zsafe)));                 // cruise high over the zone, along the track
-			if (te < 1f || goal.Z < zsafe) legs.Add(goal);                                        // then straight (diagonal) to the goal
+			if (p0.Z < zsafe) legs.Add(new Vector3(s.X, s.Y, zsafe));              // climb along the track (straight up when it starts unsafe)
+			legs.Add(high ? goal : new Vector3(e.X, e.Y, MathF.Max(e.Z, zsafe)));   // cruise high over the zone, along the track
+			if (!high) legs.Add(goal);                                              // then straight (diagonal) down to the goal
 			for (int i = 1; i < legs.Count; i++) m_Q[m_QN++] = legs[i];
 			Log.Info($"METRIC keepout plan legs={legs.Count} zsafe={zsafe:F2} zone={zone:F2} from=({p0.X:F2},{p0.Y:F2},{p0.Z:F2}) to=({goal.X:F2},{goal.Y:F2},{goal.Z:F2})");
 			return legs[0];
+		}
+
+		// The first fraction of the straight flight a -> b where the origin is below zsafe with its ground track within `zone` of the bin.
+		static float FirstUnsafe(Vector3 a, Vector3 b, Vector3 bin, float zone, float zsafe)
+		{
+			for (int i = 0; i <= 50; i++)
+			{
+				Vector3 p = a + (b - a) * (i / 50f);
+				if (HDist(p, bin) < zone && p.Z < zsafe) return i / 50f;
+			}
+			return 1f;
 		}
 
 		// The last fraction of the straight flight a -> b where the origin is below zsafe with its ground track within `zone` of the bin, -1 when none.

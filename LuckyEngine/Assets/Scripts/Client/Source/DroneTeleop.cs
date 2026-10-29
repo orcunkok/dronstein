@@ -42,8 +42,8 @@ namespace Dronstein
 		static readonly float[] ModeVmax = { 0.8f, 2.5f, 6f };        // m/s, horizontal
 		static readonly float[] ModeVz = { 0.4f, 1.0f, 2.5f };        // m/s, vertical (flights and sticks)
 		static readonly float[] ModeAmax = { 0.6f, 2.0f, 4f };        // m/s^2, the reference's peak acceleration (4 m/s^2 = 22 deg tilt)
-		static readonly float[] ModeYawRate = { 0.6f, 1.5f, 2.5f };   // rad/s (flights and sticks)
-		static readonly float[] ModeYawAcc = { 0.6f, 1.5f, 2.5f };    // rad/s^2 (yaw torque is limited by what the rotors can twist, ~0.3 Nm)
+		static readonly float[] ModeYawRate = { 1.5f, 1.5f, 2.5f };   // rad/s (flights and sticks)
+		static readonly float[] ModeYawAcc = { 1.5f, 1.5f, 2.5f };    // rad/s^2 (yaw torque is limited by what the rotors can twist, ~0.3 Nm)
 		static readonly float[] ModeTmin = { 1.5f, 1f, 0.8f };        // s, shortest flight
 		static readonly float[] ModeStick = { 0.5f, 1.5f, 4f };       // m/s at full stick
 		static readonly float[] ModeSmooth = { 3f, 2.5f, 2f };        // 1/s, how quickly stick speed builds up and dies down (higher = snappier, more tilt)
@@ -344,8 +344,12 @@ namespace Dronstein
 		int Mode => Math.Clamp(m_Tuning.SpeedMode, 0, 2);
 
 		// Starts a flight from the reference's current state (position, velocity, acceleration: no jump) to `goal`, ending at rest.
-		// yaw (rad, a heading to turn to by the shortest way) is optional, null = keep the heading. The duration is the longest the limits of the mode need.
-		void FlyTo(Vector3 goal, float? yaw = null) => RawFlyTo(KeepOut(goal), yaw);  // KeepOut splits it into legs near the bin (DroneTeleopKeepOut.cs)
+		// yaw (rad, a heading to turn to by the shortest way) is optional, null = the nose turns toward the goal on the way (kept on a short or vertical
+		// flight). The duration is the longest the limits of the mode need.
+		void FlyTo(Vector3 goal, float? yaw = null) => RawFlyTo(KeepOut(goal), yaw ?? HeadingTo(goal));  // KeepOut splits it into legs near the bin (DroneTeleopKeepOut.cs)
+
+		// Heading from the reference toward `goal`, null when it is less than 0.3 m away horizontally.
+		float? HeadingTo(Vector3 goal) => HDist(goal, m_Target) > 0.3f ? MathF.Atan2(goal.Y - m_Target.Y, goal.X - m_Target.X) : null;
 
 		// One straight flight, no bin check.
 		void RawFlyTo(Vector3 goal, float? yaw = null)
@@ -475,7 +479,7 @@ namespace Dronstein
 			float up = MathF.Max(dist * MathF.Sin(angle), MinHeight + offset.Z - ball.Z);  // pivot above the ball
 			float back = MathF.Sqrt(MathF.Max(dist * dist - up * up, 0f));                  // pivot behind it
 			var goal = new Vector3(ball.X - c * back - offset.X, ball.Y - s * back - offset.Y, ball.Z + up - offset.Z);
-			FlyTo(goal);
+			FlyTo(goal, m_Yaw);  // the offset is for this heading: keep it
 			m_Waypoint = -1;
 			m_ToBall = m_SelectedBall;
 			Log.Info($"DroneTeleop: going to ball {m_SelectedBall:00}, goal ({goal.X:F2}, {goal.Y:F2}, {goal.Z:F2})");
