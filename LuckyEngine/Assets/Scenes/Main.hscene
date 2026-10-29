@@ -898,6 +898,22 @@ Entities:
       MaterialTable:
         0: 10640983446431700429
       Visible: true
+  - Entity: 4967737373694624147
+    Domain: Client
+    TagComponent:
+      Tag: X500Prop3
+    Parent: 18058982992389060768
+    Children:
+      []
+    TransformComponent:
+      Position: [0.176777, 0.048, -0.176777]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, -1]
+    PodComponent:
+      Kind: 0
+      PodGraph: 14389522373660214116
+      MaterialTable:
+        0: 0
   - Entity: 5216942334575228420
     Domain: Client
     TagComponent:
@@ -1179,6 +1195,22 @@ Entities:
       Contype: 1
       Conaffinity: 1
       Condim: -1
+  - Entity: 7095842094467470985
+    Domain: Client
+    TagComponent:
+      Tag: X500Prop4
+    Parent: 18058982992389060768
+    Children:
+      []
+    TransformComponent:
+      Position: [-0.176777, 0.048, 0.176777]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, -1]
+    PodComponent:
+      Kind: 0
+      PodGraph: 14389522373660214116
+      MaterialTable:
+        0: 0
   - Entity: 7182490334214803807
     Domain: Client
     TagComponent:
@@ -1376,6 +1408,22 @@ Entities:
       Contype: 1
       Conaffinity: 1
       Condim: -1
+  - Entity: 7853346001960992735
+    Domain: Client
+    TagComponent:
+      Tag: X500Prop2
+    Parent: 18058982992389060768
+    Children:
+      []
+    TransformComponent:
+      Position: [-0.176777, 0.048, -0.176777]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    PodComponent:
+      Kind: 0
+      PodGraph: 14389522373660214116
+      MaterialTable:
+        0: 0
   - Entity: 7877977864254300973
     Domain: Client
     TagComponent:
@@ -2224,7 +2272,7 @@ Entities:
     Children:
       - Handle: 18058982992389060768
     TransformComponent:
-      Position: [-5, 0.2452, 0]
+      Position: [-5, 0.2423, 1.49012e-08]
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
@@ -2327,6 +2375,28 @@ Entities:
       MaterialTable:
         0: 10640983446431700429
       Visible: true
+  - Entity: 15750824792875002819
+    Domain: Client
+    TagComponent:
+      Tag: HudArm
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [16, 16, 1]
+    TextComponent:
+      TextString: ""
+      FontHandle: 15916378497832049985
+      Color: [1, 1, 1, 1]
+      LineSpacing: 0
+      Kerning: 0
+      MaxWidth: 10
+      ScreenSpace: true
+      DropShadow: false
+      ShadowDistance: 2
+      ShadowColor: [0, 0, 0, 0.75]
   - Entity: 15816677538361509217
     Domain: Client
     TagComponent:
@@ -2501,6 +2571,22 @@ Entities:
       MaterialTable:
         0: 10640983446431700429
       Visible: true
+  - Entity: 16665276476672919994
+    Domain: Client
+    TagComponent:
+      Tag: X500Prop1
+    Parent: 18058982992389060768
+    Children:
+      []
+    TransformComponent:
+      Position: [0.176777, 0.048, 0.176777]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    PodComponent:
+      Kind: 0
+      PodGraph: 14389522373660214116
+      MaterialTable:
+        0: 0
   - Entity: 16934321559144847468
     Domain: Client
     TagComponent:
@@ -2740,7 +2826,10 @@ Entities:
       Tag: HolybroX500V2
     Parent: 14339033916604750231
     Children:
-      []
+      - Handle: 16665276476672919994
+      - Handle: 7853346001960992735
+      - Handle: 4967737373694624147
+      - Handle: 7095842094467470985
     TransformComponent:
       Position: [0, 0, 0]
       Rotation: [1.5708, 0, 0]
@@ -2751,6 +2840,14 @@ Entities:
       Fields:
         - ID: 3230847861
           Name: Piloted
+          Type: Bool
+          Value: false
+        - ID: 4160428385
+          Name: Loiter
+          Type: Bool
+          Value: false
+        - ID: 2905386633
+          Name: Armed
           Type: Bool
           Value: false
     PodComponent:

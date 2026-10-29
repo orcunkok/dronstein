@@ -43,4 +43,9 @@ camera_pitch    = -3         # right stick up/down: orbit up/down
 zoom_in         = b15        # D-pad up
 zoom_out        = b17        # D-pad down
 
+# Holybro X500 (read by X500Flight only; Dronstein ignores the controller while V gives it to the X500)
+x500_arm         = b4        # Y: arm / disarm, on the ground
+x500_mode        = b1        # B: Loiter <-> Manual (also takes RTL back)
+x500_takeoff_rtl = b0        # Share: takeoff on the ground, return home in the air (press again to take it back). A is b0 too
+
 log_axes = false

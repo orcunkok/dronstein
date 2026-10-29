@@ -64,6 +64,9 @@ namespace Dronstein
 		const float HudSpeedDx = 36f, HudBallsDx = 50f;  // the mode and task values start this far right of the other values, after the speed letter and the ball count (scale 16, "00/25" measured: 41 px, then one space)
 		const float HudTimeRow = 28f, HudTimeDx = 48f;  // the smaller timer row under the task (text scale 16 against 28) and the step from a last time to its running time
 		const float HudPickTimeDx = 65f;  // right-aligns the pick's running time with the labels, like MODE and TASK ("0.00" measured on screen: 31 px)
+		// The X500's Armed / Disarmed ends just left of the MODE label: text has no alignment, so each word starts its own
+		// width (at the timers' scale 16, estimated) plus a gap left of the label.
+		const float HudArmedDx = 66f, HudDisarmedDx = 88f;
 		const float HudModeLabelDx = 33f, HudTaskLabelDx = 37f;  // right-aligns MODE and TASK with CAMERA (text has no alignment; widths measured on screen: 96, 62, 60 px)
 		// Rendered pixels per Application.Width unit: the monitor scale (Hyprland, 1.6) times Lucky's editor UI scale
 		// (UiScale in ~/.config/LuckyEngine/LuckyEditor/EditorApplicationSettings.yaml, 0.75). Change it if either changes.
@@ -107,11 +110,12 @@ namespace Dronstein
 		int m_View;
 		// HUD texts, moved only when the screen is resized and rewritten only when what they show changes.
 		Entity m_HudCameraLabel = null!, m_HudCamera = null!, m_HudModeLabel = null!, m_HudSpeed = null!, m_HudMode = null!, m_HudTaskLabel = null!, m_HudBalls = null!, m_HudTask = null!;
+		Entity? m_HudArm;  // the X500's Armed / Disarmed, left of MODE (optional: tagged HudArm)
 		Entity m_HudPickLast = null!, m_HudPickTime = null!, m_HudStepLast = null!, m_HudStepTime = null!;  // one row under the task: last (gray) and running time of the pick, then of its step
 		Vector4 m_HudCameraColor, m_HudModeColor;  // the values' colours set in the scene, used when not purple/yellow
 		string m_TaskLabel = "";  // the TASK label's text, hidden while the X500 is flown
 		(uint, uint) m_HudSize;
-		(int, int, int, int, int, int, int, int, int) m_HudShown = (-1, -1, -2, -1, -1, -1, -1, -1, -1);  // (m_View, m_SelectedBall, m_Waypoint, m_ToBall, m_PickPhase, m_PaState, Mode, balls in the can, X500: 0 not flown, 1 Manual, 2 Loiter)
+		(int, int, int, int, int, int, int, int, string) m_HudShown = (-1, -1, -2, -1, -1, -1, -1, -1, "?");  // (m_View, m_SelectedBall, m_Waypoint, m_ToBall, m_PickPhase, m_PaState, Mode, balls in the can, the X500's mode and arming, "" when not flown)
 		readonly List<uint> m_BallBodies = new();  // every golf ball's MuJoCo body, for the HUD's ball count
 		Vector2 m_LastMouse;
 
@@ -249,6 +253,7 @@ namespace Dronstein
 			m_HudPickTime = Find("HudPickTime");
 			m_HudStepLast = Find("HudStepLast");
 			m_HudStepTime = Find("HudStepTime");
+			m_HudArm = FindEntityByTag("HudArm");
 			Entity bin = Find("TrashCan");
 			if (m_Missing) return;
 			m_PickBinBody = m_Mj.GetBodyID($"lucky_body_{bin.ID}");
@@ -570,16 +575,17 @@ namespace Dronstein
 			// Timers, every frame, always shown (0.00 until there is a time), on one row: the whole pick (go to the ball to the drop),
 			// then its step, each running time in purple after the last pick (white) and the previous step (gray).
 			bool picking = m_PickPhase != PickPhase.Off, running = picking || m_PaState != PaState.Off;  // Pick All flies to its start point before the first pick
-			bool x500 = X500Flight.Piloted;  // the X500 has no speed modes, tasks or timers: MODE shows Loiter or Manual only
+			bool x500 = X500Flight.Piloted;  // the X500 has no speed modes, tasks or timers: MODE shows its mode, then Armed / Disarmed
 			m_HudTask.Translation = m_HudBalls.Translation + new Vector3(running ? HudBallsDx : 0f, 0f, 0f);  // after the ball count, which shows only while running
 			m_HudMode.Translation = m_HudSpeed.Translation + new Vector3(x500 ? 0f : HudSpeedDx, 0f, 0f);    // after the speed letter, which the X500 hasn't
+			if (m_HudArm != null) m_HudArm.Translation = m_HudModeLabel.Translation - new Vector3(X500Flight.Armed ? HudArmedDx : HudDisarmedDx, 0f, 0f);
 			SetText(m_HudPickTime, x500 ? "" : $"{(picking ? m_PickClock : 0f):F2}", Purple);
 			SetText(m_HudStepTime, x500 ? "" : $"{(picking ? m_PickT : 0f):F2}", Purple);
 			SetText(m_HudPickLast, x500 ? "" : $"{MathF.Max(m_PickLast, 0f):F2}", White);
 			SetText(m_HudStepLast, x500 ? "" : $"{MathF.Max(m_StepLast, 0f):F2}", Gray);
 			int inBin = 0;
 			foreach (uint b in m_BallBodies) if (BallInBin(b)) inBin++;
-			var shown = (m_View, m_SelectedBall, m_Waypoint, m_ToBall, (int)m_PickPhase, (int)m_PaState, Mode, inBin, x500 ? (X500Flight.Loiter ? 2 : 1) : 0);
+			var shown = (m_View, m_SelectedBall, m_Waypoint, m_ToBall, (int)m_PickPhase, (int)m_PaState, Mode, inBin, x500 ? X500Flight.ModeName + (X500Flight.Armed ? "+" : "-") : "");
 			if (shown == m_HudShown) return;
 			m_HudShown = shown;
 			SetText(m_HudCamera, m_View == 2 ? $"Ball {m_SelectedBall:00}" : Views[m_View], m_View == 2 ? Purple : m_HudCameraColor);
@@ -587,12 +593,14 @@ namespace Dronstein
 			if (x500)
 			{
 				SetText(m_HudSpeed, "", m_HudModeColor);
-				SetText(m_HudMode, X500Flight.Loiter ? "Loiter" : "Manual", m_HudModeColor);
+				SetText(m_HudMode, X500Flight.ModeName, m_HudModeColor);
+				if (m_HudArm != null) SetText(m_HudArm, X500Flight.Armed ? "Armed" : "Disarmed", X500Flight.Armed ? ModeColors[0] : ModeColors[2]);  // green / red
 				SetText(m_HudBalls, "", Purple);
 				SetText(m_HudTask, "", m_HudModeColor);
 				return;
 			}
-			SetText(m_HudSpeed, ModeNames[Mode][..1].ToUpperInvariant(), ModeColors[Mode]);
+			if (m_HudArm != null) SetText(m_HudArm, "", m_HudModeColor);
+			SetText(m_HudSpeed,ModeNames[Mode][..1].ToUpperInvariant(), ModeColors[Mode]);
 			SetText(m_HudBalls, running ? $"{inBin:00}/{m_BallBodies.Count}" : "", Purple);
 			SetText(m_HudMode, picking ? $"Pick {m_PickN:00}" : running ? "Pick All" : m_Waypoint >= 0 ? $"Calib {m_Waypoint + 1}/4" : m_ToBall > 0 ? $"ToBall {m_ToBall:00}" : "Manual",
 				running ? Purple : m_Waypoint >= 0 ? Yellow : m_ToBall > 0 ? Purple : m_HudModeColor);

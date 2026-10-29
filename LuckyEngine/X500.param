@@ -48,9 +48,15 @@ PILOT_SPD_DN    2.5
 PILOT_ACC_Z     2.5      # m/s^2
 PILOT_Y_RATE    90       # deg/s while a turn bumper is held
 
-# --- Loiter (Share switches Loiter <-> Manual): the stick sets a speed, letting go brakes and holds the spot
+# --- Loiter (B switches Loiter <-> Manual): the stick sets a speed, letting go brakes and holds the spot
 LOIT_SPEED      5.0      # m/s at full stick
 LOIT_ACC_MAX    2.5      # m/s^2, how fast the speed builds up and brakes
 PSC_NE_POS_P    1.0      # position error -> speed
 PSC_NE_VEL_P    2.0      # speed error -> acceleration (then lean)
+
+# --- Takeoff and RTL (Share): takeoff on the ground, return home (where it was armed) in the air
+TKOFF_ALT       0.5      # m above the ground
+RTL_ALT         3        # m above home: RTL climbs to this first if it is lower
+RTL_SPEED       5        # m/s back to home (it brakes at LOIT_ACC_MAX)
+LAND_SPEED      0.5      # m/s down over home; it disarms when it lands
 

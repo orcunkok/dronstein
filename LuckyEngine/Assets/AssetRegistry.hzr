@@ -209,6 +209,9 @@ Assets:
   - Handle: 14151601812946333791
     FilePath: Scripts/Client/Source/X500Flight.cs
     Type: ScriptFile
+  - Handle: 14389522373660214116
+    FilePath: Robots/X500V2Prop/source/x500v2_prop.hpodgraph
+    Type: PodGraph
   - Handle: 14589933624847578576
     FilePath: ContentVault/Robots/SO100Pod/assets/Fixed_Jaw_Collision_1.stl
     Type: MeshSource

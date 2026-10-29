@@ -8,7 +8,8 @@
 - Work through the Lucky MCP (`lucky`, http://127.0.0.1:19331/mcp) from the start. Don't hand-edit Lucky's own files (`AssetRegistry.hzr`, `.hmaterial` handles, `.hscene`) or invent asset handles. If no tool fits, stop and ask.
 - Scripts: edit `LuckyEngine/Assets/Scripts/Client/Source/*.cs`, then `build_script_assembly`. Use Lucky's inspector attributes (`read_doc("patterns/inspector-attributes")`), e.g. `[Button("Label")]` methods for buttons.
 - Always build when you're done: after any script change reaches the user's checkout (edit, copy or branch switch), exit Play and `build_script_assembly`, so Lucky never runs a stale script.
-- You may stop and start Play as needed. Entities can only be edited in Edit mode.
+- While you are working, Lucky is yours: stop and start Play as much as you need, don't wait for the user. Entities can only be edited in Edit mode.
+- The user may not be watching the CLI and may use Lucky at the same time (e.g. a Play session you didn't start, or edits in the editor). If that gets in your way, carry on and alert them in your reply to leave Lucky alone while you work.
 - Test only a fresh build: exit Play, `build_script_assembly`, then enter Play. Before trusting any result, check `APP.log` has a `DroneTeleop: start` line *after* the latest `Build succeeded` line; if not, the old script is still running. Building or entering Play while Play runs doesn't restart it.
 - Read only the log lines written since your run started (note `wc -l` of `APP.log` first, or check the `start` line); the log also holds older runs and is reset when Lucky restarts.
 - Start a run with the dev command file: write e.g. `pick 14` or `pickall` to `LuckyEngine/Cache/nightrun_cmd.txt` (commands: `case "..."` in `DroneTeleop.cs`).

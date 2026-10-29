@@ -90,21 +90,24 @@ Tasks of a pick, in order:
 - Golf balls and a trash can: the things to pick up and where they go.
 
 ## Holybro X500 V2
-A second drone, a Holybro X500 V2 with a 4S battery (1.36 kg), stands at the edge of the field. Press **V** to give it the controller, and V again to give it back to Dronstein; the camera goes with it (CAMERA X500 V2 / Drone), and **C** still steps through all the views. While you fly the X500 its right stick orbits the camera and D-pad up / down zooms, and the screen shows its MODE and no task or timers.
+A second drone, a Holybro X500 V2 with a 4S battery (1.36 kg), stands at the edge of the field. Press **V** to give it the controller, and V again to give it back to Dronstein; the camera goes with it (CAMERA X500 V2 / Drone), and **C** still steps through all the views. While you fly the X500 its right stick orbits the camera and D-pad up / down zooms, and the screen shows its MODE and, left of it, **Armed** (green) or **Disarmed** (red), with no task or timers.
 
-It uses Dronstein's buttons (`ControllerBindings.txt`): LT / RT climb and descend (2.5 m/s, swapped from Dronstein for now), LB / RB turn, and the left stick moves it. **Share** switches between two modes, shown on the screen as MODE:
+It uses Dronstein's buttons (`ControllerBindings.txt`): LT / RT climb and descend (2.5 m/s, swapped from Dronstein for now), LB / RB turn, and the left stick moves it. **B** switches between two modes, shown on the screen as MODE:
 
 | Mode | Left stick | Let go |
 |---|---|---|
 | **Loiter** (default) | Sets a speed, up to 5 m/s | It brakes and holds its spot |
 | **Manual** | Sets the lean, up to 30° | It levels and coasts until drag stops it, like the real one |
 
-Both hold the altitude. On the ground the props idle until you climb.
+Both hold the altitude.
+
+It starts **disarmed**. **Y** arms it (props idle) and disarms it, on the ground only. **Share** takes off to 0.5 m on the ground, and in the air returns home (MODE **RTL**): up to 3 m, back over the spot where it was armed, down at 0.5 m/s, and it disarms when it lands. Share again, B or any stick or trigger takes RTL back. The props spin with their motors' thrust. (A is the same button as Share on this controller.)
 
 Everything about it is in `LuckyEngine/X500.param`: the drone (`SIM_*`: thrust, motor lag, yaw, drag), the motors (`MOT_*`) and the autopilot's gains (ArduPilot's X500v2 frame file) and limits. Change `SIM_*` to match logs of the real drone. `tools/x500v2/build_x500v2.py` builds its look and its physics.
 
 ## Latest changes
-- **X500 Loiter mode:** Share switches the X500 between Loiter (default: let go and it stops) and Manual (it coasts). Yawing no longer bobs it up and down, it idles on the ground, and its drag is set only by `X500.param`.
+- **X500 arming, takeoff and RTL:** Y arms / disarms, Share takes off (0.5 m) or returns home (RTL), B switches Loiter / Manual; the screen shows Armed / Disarmed next to MODE, and the props spin.
+- **X500 Loiter mode:** B (was Share) switches the X500 between Loiter (default: let go and it stops) and Manual (it coasts). Yawing no longer bobs it up and down, it idles on the ground, and its drag is set only by `X500.param`.
 - **Holybro X500 V2 flies:** V hands it the controller, with the same buttons as Dronstein; physics and gains are in `LuckyEngine/X500.param` (see Holybro X500 V2 above).
 - **Autonomous Mode Action:** the Navigate to ball (was Set), Pick and Pick All buttons in Tuning are replaced by a **Select Mode** dropdown and one **Start / Stop Autonomous Action** switch. Stop gives the drone back to manual.
 - **Task on screen:** a third row at the top right shows the pick's step (Transit, Descend, Lift…); the Mode row shows only **Pick** and the ball number. Pick all balls now shows **Pick All** / **Go to start** while it flies to its start point, instead of Manual.

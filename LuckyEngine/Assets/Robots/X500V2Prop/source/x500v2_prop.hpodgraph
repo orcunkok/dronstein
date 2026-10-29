@@ -1,0 +1,30 @@
+nodes:
+  - id: 1
+    type: MeshCylinder
+    name: prop_hub
+    inputs:
+      Sides: {kind: Int32, value: 20}
+      Radius: {kind: Float, value: 0.00800000038}
+      Height: {kind: Float, value: 0.00800000038}
+      CapFill: {kind: Menu, value: 2188cbc6abca857b}
+  - {id: 2, type: BevelEdge, name: prop_hub rims, inputs: {Offset: {kind: Float, value: 0.000600000028}, Segments: {kind: Int32, value: 2}, AngleThreshold: {kind: Float, value: 0.600000024}}}
+  - {id: 3, type: Transform, name: prop_hub pose, inputs: {Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [0, 0, 0]}}}
+  - {id: 4, type: SetMaterial, name: prop_hub material, inputs: {Material: {kind: Material, value: [0.0199999996, 0.0199999996, 0.0199999996, 1, 0, 0.400000006]}, Name: {kind: String, value: prop_hub}}}
+  - {id: 5, type: SetMeshName, name: prop_hub, inputs: {Name: {kind: String, value: prop_hub}}}
+  - {id: 6, type: MeshCube, name: prop_blade_0, inputs: {SizeX: {kind: Float, value: 0.118000001}, SizeY: {kind: Float, value: 0.00400000019}, SizeZ: {kind: Float, value: 0.0199999996}}}
+  - {id: 7, type: BevelEdge, name: prop_blade_0 edges, inputs: {Offset: {kind: Float, value: 0.00150000001}, Segments: {kind: Int32, value: 2}}}
+  - {id: 8, type: Transform, name: prop_blade_0 pose, inputs: {Rotation: {kind: Float3, value: [0.209439516, -0, 0]}, Translation: {kind: Float3, value: [0.0680000037, 0, -0]}}}
+  - {id: 9, type: SetMaterial, name: prop_blade_0 material, inputs: {Material: {kind: Material, value: [0.0199999996, 0.0199999996, 0.0199999996, 1, 0, 0.400000006]}, Name: {kind: String, value: prop_blade_0}}}
+  - {id: 10, type: SetMeshName, name: prop_blade_0, inputs: {Name: {kind: String, value: prop_blade_0}}}
+  - {id: 11, type: MeshCube, name: prop_blade_1, inputs: {SizeX: {kind: Float, value: 0.118000001}, SizeY: {kind: Float, value: 0.00400000019}, SizeZ: {kind: Float, value: 0.0199999996}}}
+  - {id: 12, type: BevelEdge, name: prop_blade_1 edges, inputs: {Offset: {kind: Float, value: 0.00150000001}, Segments: {kind: Int32, value: 2}}}
+  - {id: 13, type: Transform, name: prop_blade_1 pose, inputs: {Rotation: {kind: Float3, value: [-2.93215322, 1.22464685e-16, 3.14159274]}, Translation: {kind: Float3, value: [-0.0680000037, 0, -8.32759863e-18]}}}
+  - {id: 14, type: SetMaterial, name: prop_blade_1 material, inputs: {Material: {kind: Material, value: [0.0199999996, 0.0199999996, 0.0199999996, 1, 0, 0.400000006]}, Name: {kind: String, value: prop_blade_1}}}
+  - {id: 15, type: SetMeshName, name: prop_blade_1, inputs: {Name: {kind: String, value: prop_blade_1}}}
+  - {id: 16, type: JoinGeometry, name: assemble}
+  - {id: 17, type: JoinGeometry, name: assemble}
+links: [{from: {node: 1, pin: Geometry}, to: {node: 2, pin: Geometry}}, {from: {node: 2, pin: Geometry}, to: {node: 3, pin: Geometry}}, {from: {node: 3, pin: Geometry}, to: {node: 4, pin: Geometry}}, {from: {node: 4, pin: Geometry}, to: {node: 5, pin: Geometry}}, {from: {node: 6, pin: Geometry}, to: {node: 7, pin: Geometry}}, {from: {node: 7, pin: Geometry}, to: {node: 8, pin: Geometry}}, {from: {node: 8, pin: Geometry}, to: {node: 9, pin: Geometry}}, {from: {node: 9, pin: Geometry}, to: {node: 10, pin: Geometry}}, {from: {node: 11, pin: Geometry}, to: {node: 12, pin: Geometry}}, {from: {node: 12, pin: Geometry}, to: {node: 13, pin: Geometry}}, {from: {node: 13, pin: Geometry}, to: {node: 14, pin: Geometry}}, {from: {node: 14, pin: Geometry}, to: {node: 15, pin: Geometry}}, {from: {node: 5, pin: Geometry}, to: {node: 16, pin: A}}, {from: {node: 10, pin: Geometry}, to: {node: 16, pin: B}}, {from: {node: 16, pin: Geometry}, to: {node: 17, pin: A}}, {from: {node: 15, pin: Geometry}, to: {node: 17, pin: B}}]
+outputs:
+  Geometry:
+    node: 17
+    pin: Geometry

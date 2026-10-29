@@ -4,14 +4,20 @@ Run with the editor open (Edit mode):
     PYTHONPATH=<LuckyEngine>/Data/Authoring/python python3 build_x500v2.py <new output dir>
 
 Writes into <out>:
-- x500v2.hpodgraph: the visual mesh only. The scene uses it from Assets/Robots/X500V2/source/x500v2.hpodgraph.
+- x500v2.hpodgraph: the visual mesh only, without the props. The scene uses it from
+  Assets/Robots/X500V2/source/x500v2.hpodgraph.
+- x500v2_prop.hpodgraph: one 1045 prop (two blades and the hub), centred at the origin, spinning about +Y. It is
+  shaped for a CCW motor (seen from above); a CW motor's prop is its mirror image (scale Z by -1). The scene places
+  four, one per motor (PROP_CENTRES), and spins them.
 - x500v2.mjcf: the MuJoCo body (free joint, collision geoms with the parts' masses) and six motors on its free joint
   that X500Flight.cs drives. Lucky can't push a procedural body (docs/needs-AddBodyForceWorld.md), so the physics
   is MJCF: dronstein.xml includes it from Assets/Robots/X500V2/x500v2.mjcf, and the HolybroX500V2 entity follows it.
 After a rebuild copy both over those files and refresh assets.
 
 Every part below is one entry that makes both the visual mesh and its collision geom from the same numbers, so the
-colliders sit exactly on the visible tubes and plates.
+colliders sit exactly on the visible tubes and plates. The spinning props are one thin disc collider per motor.
+Under the frame hangs Holybro's payload platform (a black aluminium plate on the dual rails) with the battery strapped
+under it and the GPS mast rising from its front corner to the M10 puck.
 
 Frame: Pod/Lucky, Y up, +X forward (front arms at +X), sides along Z, metres. The MJCF body frame is the same frame
 turned to MuJoCo's Z up: x forward, y left, z up. Origin is the frame centre, half way between the two plates.
@@ -52,6 +58,7 @@ RED = mat(0.55, 0.02, 0.02, 0.0, 0.8)
 PROP = mat(0.02, 0.02, 0.02, 0.0, 0.4)
 GPS = mat(0.05, 0.05, 0.055, 0.0, 0.3)
 BATTERY = mat(0.35, 0.36, 0.38, 0.0, 0.5)
+ALU_BLACK = mat(0.025, 0.025, 0.028, 0.6, 0.45)   # black anodised aluminium
 
 # Effective densities (kg/m^3) for solid colliders standing in for real parts.
 D_PLATE = 1600.0          # solid 2 mm carbon plate
@@ -61,7 +68,11 @@ D_PLASTIC = 600.0         # moulded clamps, mostly hollow
 D_FOAM = 250.0            # foam sleeve including the tube inside
 D_MOTOR = 3700.0          # 2216 motor, 68 g
 D_PROP = 630.0            # 1045 prop, 12 g
-D_ELEC = 950.0            # flight controller, GPS puck
+D_ELEC = 950.0            # flight controller
+D_PLATFORM = 1667.0       # 2 mm aluminium payload plate with its lightening cut-outs, 60 g
+D_MAST = 780.0            # 10 mm carbon GPS mast tube as a solid rod, ~10 g
+D_GPS = 730.0             # M10 GPS puck, ~33 g
+D_PROP_DISC = 39.5        # 12 g prop and hub spread over its spinning disc (r 127 mm, 6 mm thick)
 
 
 # ---------------------------------------------------------------- rotations
@@ -180,9 +191,14 @@ class Builder:
                          Offset=min(0.0006, radius * 0.15), Segments=2, AngleThreshold=0.6)
         self._place(rounded, name, rot, mid, material)
         if collide:
-            self.colliders.append(f'<geom name="{BODY}_{name}" type="cylinder" size="{radius:g}" '
-                                  f'fromto="{fmt(to_mj(p0))} {fmt(to_mj(p1))}" density="{density:g}"/>')
-            self.mass += density * math.pi * radius * radius * length
+            self.tube_collider(name, p0, p1, radius, density)
+
+    def tube_collider(self, name, p0, p1, radius, density):
+        """A collision cylinder only, nothing drawn (the spinning prop discs)."""
+        length = math.sqrt(sum((b - a) ** 2 for a, b in zip(p0, p1)))
+        self.colliders.append(f'<geom name="{BODY}_{name}" type="cylinder" size="{radius:g}" '
+                              f'fromto="{fmt(to_mj(p0))} {fmt(to_mj(p1))}" density="{density:g}"/>')
+        self.mass += density * math.pi * radius * radius * length
 
     def join(self):
         e = self.edit
@@ -200,6 +216,12 @@ BOTTOM = -(PLATE_Y + PLATE_T / 2)   # underside of the bottom plate, -0.016
 ARM_R = 0.008
 MOTOR_RADIAL = 0.25       # 500 mm wheelbase / 2
 LEG_TILT = math.radians(20.0)
+PROP_Y = 0.048            # prop plane above the frame centre
+PROP_R = 0.127            # 1045: 10 inch
+PROP_PITCH = math.radians(12)
+# Prop centres (Pod frame), ArduPilot motor order: 1 front-right CCW, 2 back-left CCW, 3 front-left CW, 4 back-right CW.
+_D = MOTOR_RADIAL * math.sqrt(0.5)
+PROP_CENTRES = ((_D, PROP_Y, _D), (-_D, PROP_Y, -_D), (_D, PROP_Y, -_D), (-_D, PROP_Y, _D))
 
 # Landing gear, one side (+Z); measured from the PX4 frame mesh relative to the bottom plate.
 LEG_TOP = (0.0547, BOTTOM - 0.0026)          # (lateral, y) where the leg leaves its clamp
@@ -218,9 +240,6 @@ def build(edit):
         b.box(name, (PLATE, PLATE_T, PLATE), (0, y, 0), CARBON, D_PLATE, bevel=0.003)
     b.box("flight_controller", (0.084, 0.017, 0.044), (0.010, PLATE_Y + PLATE_T / 2 + 0.0085, 0), BLACK, D_ELEC,
           bevel=0.003)
-    mast_x = -0.050
-    b.tube("gps_mast", (mast_x, PLATE_Y + PLATE_T / 2, 0), (mast_x, 0.115, 0), 0.004, BLACK, 1200.0, sides=12)
-    b.tube("gps_puck", (mast_x, 0.115, 0), (mast_x, 0.131, 0), 0.030, GPS, D_ELEC, sides=40)
 
     # Arms in X layout: front-right, front-left, back-left, back-right.
     for i, deg in enumerate((45, 135, 225, 315)):
@@ -237,23 +256,30 @@ def build(edit):
         b.tube(f"motor_{i}", at(MOTOR_RADIAL, 0.015), at(MOTOR_RADIAL, 0.043), 0.0139, MOTOR, D_MOTOR, sides=32)
         b.tube(f"motor_shaft_{i}", at(MOTOR_RADIAL, 0.043), at(MOTOR_RADIAL, 0.056), 0.0025, METAL, 7800.0,
                sides=12, collide=False)
-        b.tube(f"prop_hub_{i}", at(MOTOR_RADIAL, 0.044), at(MOTOR_RADIAL, 0.052), 0.008, PROP, D_PROP, sides=20)
-        # 1045 prop: two blades, 127 mm tip radius, pitched ~12 deg. Each pair turned differently for looks.
-        spin = math.radians(30 + 50 * i)
-        for k, side in enumerate((1.0, -1.0)):
-            blade_dir = (math.cos(spin) * side, 0.0, math.sin(spin) * side)
-            centre = (u[0] * MOTOR_RADIAL + blade_dir[0] * 0.068, 0.048,
-                      u[2] * MOTOR_RADIAL + blade_dir[2] * 0.068)
-            rot = mul(yaw(math.atan2(-blade_dir[2], blade_dir[0])), roll(math.radians(12) * side))
-            b.box(f"prop_{i}_{k}", (0.118, 0.004, 0.020), centre, PROP, D_PROP, rot=rot, bevel=0.0015)
+        # The prop spins: it is drawn by x500v2_prop.hpodgraph; here only its disc collides.
+        b.tube_collider(f"prop_disc_{i}", at(MOTOR_RADIAL, PROP_Y - 0.003), at(MOTOR_RADIAL, PROP_Y + 0.003), PROP_R,
+                        D_PROP_DISC)
 
-    # Rails under the frame (dual 10 mm x 250 mm) with two hanger blocks and the battery board.
+    # Rails under the frame (dual 10 mm x 250 mm) with two hanger blocks, and Holybro's payload platform clamped
+    # on them: a 2 mm black aluminium plate reaching forward past the frame plates.
     rail_y = BOTTOM - 0.0133
     for k, z in enumerate((-0.030, 0.030)):
         b.tube(f"rail_{k}", (-0.096, rail_y, z), (0.154, rail_y, z), 0.005, CARBON, D_TUBE10)
     for k, x in enumerate((-0.035, 0.055)):
         b.box(f"rail_hanger_{k}", (0.016, 0.016, 0.082), (x, BOTTOM - 0.008, 0), BLACK, D_PLASTIC, bevel=0.002)
-    b.box("battery_board", (0.150, 0.002, 0.090), (0.029, rail_y - 0.0075, 0), CARBON, D_PLATE, bevel=0.002)
+    plate_y = rail_y - 0.0075
+    b.box("payload_platform", (0.180, 0.002, 0.100), (0.055, plate_y, 0), ALU_BLACK, D_PLATFORM, bevel=0.0008)
+    for k, (x, z) in enumerate(((-0.020, -0.030), (-0.020, 0.030), (0.130, -0.030), (0.130, 0.030))):
+        b.box(f"rail_clamp_{k}", (0.016, 0.014, 0.018), (x, rail_y - 0.001, z), BLACK, D_PLASTIC, bevel=0.002)
+    # GPS mast: a 10 mm carbon tube from a clamp on the platform's front corner, past the frame's front edge, up to
+    # the M10 puck 10 cm above the top plate.
+    mast_x, mast_z = 0.110, 0.045
+    mast_base = plate_y + 0.001
+    puck_y = PLATE_Y + PLATE_T / 2 + 0.100
+    b.box("gps_mast_clamp", (0.020, 0.016, 0.020), (mast_x, mast_base + 0.008, mast_z), BLACK, D_PLASTIC,
+          bevel=0.002)
+    b.tube("gps_mast", (mast_x, mast_base + 0.016, mast_z), (mast_x, puck_y, mast_z), 0.005, CARBON, D_MAST, sides=16)
+    b.tube("gps_puck", (mast_x, puck_y, mast_z), (mast_x, puck_y + 0.016, mast_z), 0.030, GPS, D_GPS, sides=40)
     # 4S 3300 mAh pack, 0.36 kg, strapped under the board. With it the model weighs what the X500v2 frame
     # params' hover throttle (0.29 of 4 x 1.15 kgf) lifts: about 1.33 kg.
     battery = (0.135, 0.030, 0.043)
@@ -298,6 +324,20 @@ def build(edit):
     return b
 
 
+def build_prop(edit):
+    """One 1045 prop for a CCW motor, centred at the origin, spinning about +Y: hub and two blades, each pitched so
+    its leading edge (the side it turns toward, CCW seen from above) is up."""
+    b = Builder(edit)
+    b.tube("prop_hub", (0.0, -0.004, 0.0), (0.0, 0.004, 0.0), 0.008, PROP, D_PROP, sides=20, collide=False)
+    for k, heading in enumerate((0.0, math.pi)):
+        c, s = math.cos(heading), math.sin(heading)
+        rot = mul(yaw(heading), roll(PROP_PITCH))
+        b.box(f"prop_blade_{k}", (0.118, 0.004, 0.020), (c * 0.068, 0.0, -s * 0.068), PROP, D_PROP, rot=rot,
+              collide=False, bevel=0.0015)
+    edit.output(b.join(), "Geometry")
+    return b
+
+
 def mjcf(colliders):
     """The X500's MuJoCo body and the six motors X500Flight.cs sets: force along world x/y/z (N) and torque about
     the body's x/y/z (N m). Collision geoms are invisible: the procedural mesh is the look."""
@@ -321,8 +361,13 @@ def main():
     with graph.edit() as edit:
         b = build(edit)
     path = graph.save(out / "x500v2.hpodgraph")
+    prop = session.graph("Holybro X500 V2 prop", directory=out)
+    with prop.edit() as edit:
+        build_prop(edit)
+    prop_path = prop.save(out / "x500v2_prop.hpodgraph")
     (out / "x500v2.mjcf").write_text(mjcf(b.colliders))
-    print(f"saved {path} ({len(b.meshes)} meshes) and x500v2.mjcf ({len(b.colliders)} geoms, {b.mass:.3f} kg)")
+    print(f"saved {path} ({len(b.meshes)} meshes), {prop_path} and x500v2.mjcf ({len(b.colliders)} geoms, {b.mass:.3f} kg)")
+    print("prop centres (Pod frame, motors 1-4): " + "; ".join(fmt(c) for c in PROP_CENTRES))
     print(f"lowest point y={GROUND:.4f} m below the frame centre")
 
 

@@ -8,10 +8,13 @@ namespace Dronstein
 {
 	/// <summary>
 	/// Flies the Holybro X500 V2 with Dronstein's controller bindings (ControllerBindings.txt): LT climbs and RT descends
-	/// (swapped from Dronstein), the bumpers turn, and the left stick moves it, in one of two modes (Share switches):
+	/// (swapped from Dronstein), the bumpers turn, and the left stick moves it, in one of two modes (x500_mode, B, switches):
 	/// - Loiter (default, ArduPilot's Loiter): the stick sets a speed (up to LOIT_SPEED); let go and it brakes and holds its spot.
 	/// - Manual (ArduPilot's AltHold): the stick sets the lean (up to ANGLE_MAX); let go and it levels but coasts.
-	/// Both hold the altitude. V switches the controller between the X500 and Dronstein; the camera (C) is DroneTeleop's.
+	/// Both hold the altitude. It starts disarmed: x500_arm (Y) arms and disarms it on the ground. x500_takeoff_rtl (Share)
+	/// takes off to TKOFF_ALT on the ground, and in the air returns home (where it was armed): up to RTL_ALT, over, down at
+	/// LAND_SPEED, then it disarms. Share again, B or any stick or trigger takes RTL back.
+	/// V switches the controller between the X500 and Dronstein; the camera (C) is DroneTeleop's.
 	///
 	/// Two halves, both set by X500.param in the project folder:
 	/// - Motors(): the drone. Each motor's ESC command (0..1, as ArduPilot outputs it) becomes thrust through spin min/max,
@@ -28,8 +31,13 @@ namespace Dronstein
 	{
 		/// True while the X500 has the controller (DroneTeleop then ignores it and shows the X500's mode on the HUD).
 		public static bool Piloted;
-		/// Loiter (true) or Manual; Share switches it, the HUD shows it.
+		/// Loiter (true) or Manual; B switches it.
 		public static bool Loiter = true;
+		/// Armed (motors spin, it can fly) or disarmed; Y switches it on the ground. The HUD shows it.
+		public static bool Armed;
+		/// What MODE shows on the HUD: Takeoff or RTL while those run, Loiter or Manual otherwise.
+		public static string ModeName => s_Rtl ? "RTL" : s_Takeoff ? "Takeoff" : Loiter ? "Loiter" : "Manual";
+		static bool s_Rtl, s_Takeoff;  // Share's takeoff and return home, until done or taken back
 
 		const float G = 9.81f, Rho = 1.225f;
 
@@ -62,13 +70,21 @@ namespace Dronstein
 		float m_PosX, m_PosY, m_VelX, m_VelY;          // Loiter's target position and velocity (world x/y)
 		readonly float[] m_I = new float[3], m_DErr = new float[3], m_D = new float[3];
 		float m_Thr;
-		bool m_ShareDown;
+		float m_HomeX, m_HomeY;                        // where it was armed: RTL flies back here
+		readonly HashSet<string> m_ButtonsDown = new();  // buttons down last frame, for Pressed
+
+		// Props: entities tagged X500Prop1..4 (children of this entity, motor order), spun about their local +Y.
+		readonly Entity?[] m_Props = new Entity?[4];
+		readonly float[] m_PropAngle = new float[4];
+		const float PropSpinMax = 60f, PropSpinIdle = 10f;  // rad/s on screen at full thrust and at idle (real rpm would alias)
 
 		protected override void OnCreate()
 		{
 			LoadParams();
 			LoadBindings();
 			Loiter = true;
+			Armed = s_Rtl = s_Takeoff = false;
+			for (int i = 0; i < 4; i++) m_Props[i] = FindEntityByTag($"X500Prop{i + 1}");  // optional: no tag, no spin
 			Entity? scene = FindEntityByTag("Dronstein");
 			if (scene == null)
 			{
@@ -148,6 +164,7 @@ namespace Dronstein
 			{
 				m_LastTime = now;
 				m_AltMin = float.NaN;
+				Armed = s_Rtl = s_Takeoff = false;
 				StopMotors();
 				return;
 			}
@@ -159,6 +176,7 @@ namespace Dronstein
 			m_Mj.GetFullQvel(m_V);
 			Control(dt);
 			Motors(dt);
+			SpinProps(dt);
 			Status(dt);
 		}
 
@@ -217,36 +235,79 @@ namespace Dronstein
 			float vx = m_V[m_Qvel], vy = m_V[m_Qvel + 1], vz = m_V[m_Qvel + 2];
 			float[] w = { m_V[m_Qvel + 3], m_V[m_Qvel + 4], m_V[m_Qvel + 5] };  // body rates (FLU)
 
-			bool share = Held("speed");  // Share: Loiter <-> Manual
-			if (share && !m_ShareDown)
+			// The target only creeps to the floor (the descent slows near it), hence the 1 cm.
+			bool grounded = float.IsNaN(m_AltMin) || (m_AltT <= m_AltMin + 0.01f && alt < m_AltMin + 0.05f);
+			if (Pressed("x500_arm") && grounded)  // Y: arm / disarm, on the ground only
+			{
+				Armed = !Armed;
+				(m_HomeX, m_HomeY) = (x, y);
+				Log.Info($"X500Flight: {(Armed ? "armed" : "disarmed")}");
+			}
+			if (Pressed("x500_mode"))  // B: Loiter <-> Manual, and takes RTL / takeoff back
 			{
 				Loiter = !Loiter;
+				s_Rtl = s_Takeoff = false;
 				(m_PosX, m_PosY, m_VelX, m_VelY) = (x, y, vx, vy);  // Loiter starts from where it is, at the speed it has
 			}
-			m_ShareDown = share;
+			if (Pressed("x500_takeoff_rtl") && Armed)  // Share: takeoff on the ground, return home (or take it back) in the air
+			{
+				if (grounded) s_Takeoff = true;
+				else
+				{
+					s_Rtl = !s_Rtl;
+					s_Takeoff = false;
+					(m_PosX, m_PosY, m_VelX, m_VelY) = (x, y, vx, vy);
+				}
+				Log.Info($"X500Flight: {ModeName}");
+			}
+			if (pitch != 0f || roll != 0f || climb != 0f || turn != 0f) s_Rtl = s_Takeoff = false;  // the pilot takes over
+			if (!Armed) climb = 0f;
 
-			// On the ground and not climbing (and at the start): no thrust, every target follows the drone.
-			if (float.IsNaN(m_AltMin) || (m_AltT <= m_AltMin && climb <= 0f && alt < m_AltMin + 0.05f))
+			// Disarmed, or on the ground and not climbing (and at the start): no thrust, every target follows the drone.
+			if (!Armed || (grounded && climb <= 0f && !s_Takeoff))
 			{
 				if (float.IsNaN(m_AltMin)) m_AltMin = alt;
+				if (s_Rtl) { Armed = s_Rtl = false; Log.Info("X500Flight: home, landed, disarmed"); }
 				m_AltT = m_AltMin;
 				m_RollT = m_PitchT = m_YawRateT = m_ClimbT = m_Thr = 0f;
 				m_YawT = psi;
 				(m_PosX, m_PosY, m_VelX, m_VelY) = (x, y, 0f, 0f);
 				Array.Clear(m_I);
 				Array.Clear(m_D);
-				for (int i = 0; i < 4; i++) m_Cmd[i] = P["MOT_SPIN_MIN"];
+				for (int i = 0; i < 4; i++) m_Cmd[i] = Armed ? P["MOT_SPIN_MIN"] : 0f;  // armed: idle (no thrust yet)
 				return;
 			}
 
+			// Takeoff: up to TKOFF_ALT above the ground, holding its spot. RTL, from where its target is: up to RTL_ALT
+			// (unless higher), over home at RTL_SPEED braking at LOIT_ACC_MAX, then down at LAND_SPEED (it disarms on landing).
+			float wantSpeed = P["LOIT_SPEED"], wantDx = 0f, wantDy = 0f;  // auto: the speed to fly and its direction (world)
+			if (s_Takeoff)
+			{
+				float top = m_AltMin + P["TKOFF_ALT"];
+				climb = Math.Clamp(2f * (top - m_AltT), 0f, P["PILOT_SPD_UP"]);
+				if (m_AltT >= top - 0.01f) s_Takeoff = false;
+			}
+			else if (s_Rtl)
+			{
+				float hx = m_HomeX - m_PosX, hy = m_HomeY - m_PosY, dist = MathF.Sqrt(hx * hx + hy * hy), top = m_AltMin + P["RTL_ALT"];
+				if (dist < 0.05f) { (m_PosX, m_PosY) = (m_HomeX, m_HomeY); climb = -P["LAND_SPEED"]; }  // over home: land
+				else if (alt < top - 0.3f) climb = Math.Clamp(2f * (top - m_AltT), 0f, P["PILOT_SPD_UP"]);  // too low: climb first
+				else
+				{
+					wantSpeed = MathF.Min(P["RTL_SPEED"], MathF.Sqrt(2f * P["LOIT_ACC_MAX"] * dist));  // fast enough to stop at home
+					(wantDx, wantDy) = (hx / dist, hy / dist);
+				}
+			}
+			bool auto = s_Takeoff || s_Rtl;
+
 			float maxAngle = P["ANGLE_MAX"] * MathF.PI / 180f, tc = P["ATC_INPUT_TC"];
 			float rollIn = roll * maxAngle, pitchIn = pitch * maxAngle;  // Manual: the stick is the lean
-			if (Loiter)
+			if (Loiter || auto)
 			{
 				// The stick is a velocity in the heading frame; the target velocity moves toward it at LOIT_ACC_MAX, so
 				// letting go brakes at that rate. The target position follows it, and holds when it stops.
-				float c = MathF.Cos(psi), s = MathF.Sin(psi), speed = P["LOIT_SPEED"];
-				float wantX = (c * pitch + s * roll) * speed, wantY = (s * pitch - c * roll) * speed;  // roll is positive to the right
+				float c = MathF.Cos(psi), s = MathF.Sin(psi), speed = wantSpeed;
+				float wantX = (c * pitch + s * roll + wantDx) * speed, wantY = (s * pitch - c * roll + wantDy) * speed;  // roll is positive to the right
 				float dvx = wantX - m_VelX, dvy = wantY - m_VelY, dv = MathF.Sqrt(dvx * dvx + dvy * dvy), step = P["LOIT_ACC_MAX"] * dt;
 				if (dv > step) { dvx *= step / dv; dvy *= step / dv; }
 				m_VelX += dvx; m_VelY += dvy;
@@ -355,12 +416,35 @@ namespace Dronstein
 		bool Held(string name) => Bound(name, out var b)
 			&& (b.Axis >= 0 ? Input.GetControllerAxis(m_Pad, b.Axis) * b.Sign > 0.5f : Input.IsControllerButtonDown(m_Pad, b.Raw));
 
+		// Went down this frame (down now, up last frame). Call once per name per frame.
+		bool Pressed(string name)
+		{
+			bool down = Held(name), pressed = down && !m_ButtonsDown.Contains(name);
+			if (down) m_ButtonsDown.Add(name);
+			else m_ButtonsDown.Remove(name);
+			return pressed;
+		}
+
+		// Props turn with their motor's thrust (a slow idle when armed on the ground, still when disarmed). Rotation is about
+		// the prop's local +Y (up); in a right-handed Y-up frame a positive angle turns +Z toward +X, which seen from above
+		// is counterclockwise, so a CCW motor (Spin +1) adds and a CW one (Spin -1) subtracts.
+		void SpinProps(float dt)
+		{
+			for (int i = 0; i < 4; i++)
+			{
+				if (m_Props[i] is not Entity prop) continue;
+				float w = Armed ? MathF.Max(PropSpinIdle, PropSpinMax * MathF.Sqrt(m_Thrust[i] / P["SIM_THST_MAX"])) : 0f;
+				m_PropAngle[i] = MathF.IEEERemainder(m_PropAngle[i] + Spin[i] * w * dt, 2f * MathF.PI);
+				prop.Rotation = new Vector3(0f, m_PropAngle[i], 0f);
+			}
+		}
+
 		void Status(float dt)
 		{
 			if ((m_LogTimer += dt) < 1f) return;
 			m_LogTimer = 0f;
 			float tilt = MathF.Acos(Math.Clamp(m_R[2, 2], -1f, 1f)) * 180f / MathF.PI;
-			Log.Info($"X500Flight: {(Loiter ? "Loiter" : "Manual")}{(Piloted ? ", piloted" : "")} x={m_Q[m_Qpos]:F2} y={m_Q[m_Qpos + 1]:F2} " +
+			Log.Info($"X500Flight: {ModeName}, {(Armed ? "armed" : "disarmed")}{(Piloted ? ", piloted" : "")} x={m_Q[m_Qpos]:F2} y={m_Q[m_Qpos + 1]:F2} " +
 				$"v={MathF.Sqrt(m_V[m_Qvel] * m_V[m_Qvel] + m_V[m_Qvel + 1] * m_V[m_Qvel + 1]):F2} alt={m_Q[m_Qpos + 2]:F2} vz={m_V[m_Qvel + 2]:F2} " +
 				$"tilt={tilt:F1} thr={m_Thr:F2} thrust=[{m_Thrust[0]:F1} {m_Thrust[1]:F1} {m_Thrust[2]:F1} {m_Thrust[3]:F1}] dt={dt * 1000f:F1}ms");
 		}
