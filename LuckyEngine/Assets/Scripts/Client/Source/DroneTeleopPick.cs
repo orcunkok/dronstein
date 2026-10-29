@@ -80,7 +80,6 @@ namespace Dronstein
 			if (ball == null || bin == null) { Log.Info($"METRIC pick ball={n} result=fail reason=no_ball_or_bin"); return; }
 			m_PickBallBody = m_Mj.GetBodyID($"lucky_body_{ball.ID}");
 			m_PickBinBody = m_Mj.GetBodyID($"lucky_body_{bin.ID}");
-			m_Tuning.SpeedMode = 0;  // slow
 			m_Tuning.Ball = n;
 			m_PickN = n; m_PickStop = stop; m_PickRetry = 0; m_PickClock = 0f; m_PickReplans = 0; m_PickGrasped = false; m_PickDone = false;
 			m_PickBall0 = BodyPos(m_PickBallBody);

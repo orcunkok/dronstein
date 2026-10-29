@@ -52,7 +52,6 @@ namespace Dronstein
 			for (int i = m_PaQueue.Count - 1; i > 0; i--) { int j = rng.Next(i + 1); (m_PaQueue[i], m_PaQueue[j]) = (m_PaQueue[j], m_PaQueue[i]); }
 			m_PaSeed = seed; m_PaTotal = m_PaQueue.Count; m_PaOk = 0; m_PaIdx = 0; m_PaClock = 0f; m_PaHits = 0;
 			m_PaBin0 = BodyPos(m_PickBinBody);
-			m_Tuning.SpeedMode = 0;
 			m_Waypoint = -1; m_ToBall = 0;
 			Log.Info($"METRIC pickall seed={seed} order=[{string.Join(",", m_PaQueue)}] n={m_PaTotal}");
 			m_PaState = PaState.Next;

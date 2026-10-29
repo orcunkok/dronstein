@@ -33,7 +33,7 @@ namespace Dronstein
 
 		[DisplayName("Select Mode")] [Dropdown("Navigate to ball", "Pick selected ball", "Pick all balls")]
 		[Tooltip("What Autonomous Mode Action runs. Navigate to ball: fly in behind the selected ball and low, so it sits inside the reach (GraspReach, GraspAngle). " +
-			"Pick selected ball: pick it and drop it in the trash can (slow mode). Pick all balls: from a random heading, pick every ball not in the can yet, in a random order (slow mode)")]
+			"Pick selected ball: pick it and drop it in the trash can. Pick all balls: from a random heading, pick every ball not in the can yet, in a random order. Both fly at the selected speed mode")]
 		public int AutoMode = 0;
 
 		[DisplayName("Autonomous Mode Action")] [ToggleButton("Stop Autonomous Action", "Start Autonomous Action")]
