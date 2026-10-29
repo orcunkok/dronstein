@@ -29,5 +29,11 @@
 - Don't add a state or phase where a return value does the job: a helper that returns true/false (or a result) is enough. Fewest states, smallest change that does what was asked, no extra modes or options.
 - Don't leave code or docs behind for removed states; delete them with the state.
 
+## Benchmark
+- When the user says "benchmark": run `pickall` on a fresh build (exit Play, `build_script_assembly`, enter Play, write `pickall` to `LuckyEngine/Cache/nightrun_cmd.txt`). Wait until `APP.log` has the `pickall seed=... end=done` line, and check the `DroneTeleop: start` line is after the latest `Build succeeded`.
+- Only record a run after it has ended. Use the `METRIC pick ball=... result=` lines of that run (`time=` field): a per-ball table (ball, result, time), the average per successful pick, the run total from the `end=done` line, and the estimate for 25 picks.
+- Write the record to `benchmarks/benchmark-YYYY-MM-DD-HHMM.md`.
+- Compare it with `benchmarks/benchmark_best.md`. If the new run looks better (more successful picks, or a lower average at the same success count), ask the user whether to overwrite `benchmark_best.md`. Overwrite it only after a yes.
+
 ## Talking to the user
 - "wrap up" means close as done with no summary.
