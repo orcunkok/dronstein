@@ -43,7 +43,7 @@ namespace Dronstein
 		static readonly float[] ModeVz = { 0.4f, 1.0f, 2.5f };        // m/s, vertical (flights and sticks)
 		static readonly float[] ModeAmax = { 0.6f, 2.0f, 4f };        // m/s^2, the reference's peak acceleration (4 m/s^2 = 22 deg tilt)
 		static readonly float[] ModeYawRate = { 1.5f, 1.5f, 2.5f };   // rad/s (flights and sticks)
-		static readonly float[] ModeYawAcc = { 1.5f, 1.5f, 2.5f };    // rad/s^2 (yaw torque is limited by what the rotors can twist, ~0.3 Nm)
+		static readonly float[] ModeYawAcc = { 1.5f, 1.5f, 1.5f };    // rad/s^2 (yaw torque is limited by what the rotors can twist, ~0.3 Nm: more saturates the rotors and the drone loses attitude)
 		static readonly float[] ModeTmin = { 1.5f, 1f, 0.8f };        // s, shortest flight
 		static readonly float[] ModeStick = { 0.5f, 1.5f, 4f };       // m/s at full stick
 		static readonly float[] ModeSmooth = { 3f, 2.5f, 2f };        // 1/s, how quickly stick speed builds up and dies down (higher = snappier, more tilt)
