@@ -16,8 +16,9 @@ After a rebuild copy both over those files and refresh assets.
 
 Every part below is one entry that makes both the visual mesh and its collision geom from the same numbers, so the
 colliders sit exactly on the visible tubes and plates. The spinning props are one thin disc collider per motor.
-Under the frame hangs Holybro's payload platform (a black aluminium plate on the dual rails) with the battery strapped
-under it and the GPS mast rising from its front corner to the M10 puck.
+Under the frame the dual rails carry Holybro's platform board at the front (the GPS mast rises from it to the M10
+puck) and the battery mounting board under the centre, with the battery strapped under it (Holybro's X500 V2
+assembly guide).
 
 Frame: Pod/Lucky, Y up, +X forward (front arms at +X), sides along Z, metres. The MJCF body frame is the same frame
 turned to MuJoCo's Z up: x forward, y left, z up. Origin is the frame centre, half way between the two plates.
@@ -69,9 +70,9 @@ D_FOAM = 250.0            # foam sleeve including the tube inside
 D_MOTOR = 3700.0          # 2216 motor, 68 g
 D_PROP = 630.0            # 1045 prop, 12 g
 D_ELEC = 950.0            # flight controller
-D_PLATFORM = 1667.0       # 2 mm aluminium payload plate with its lightening cut-outs, 60 g
+D_PLATFORM = 2300.0       # 2 mm aluminium boards with their lightening slots (platform ~30 g, battery board ~30 g)
 D_MAST = 780.0            # 10 mm carbon GPS mast tube as a solid rod, ~10 g
-D_GPS = 730.0             # M10 GPS puck, ~33 g
+D_GPS = 880.0             # M10 GPS puck, Ø50 x 14.4 mm, ~25 g (32 g with its mount)
 D_PROP_DISC = 39.5        # 12 g prop and hub spread over its spinning disc (r 127 mm, 6 mm thick)
 
 
@@ -260,30 +261,49 @@ def build(edit):
         b.tube_collider(f"prop_disc_{i}", at(MOTOR_RADIAL, PROP_Y - 0.003), at(MOTOR_RADIAL, PROP_Y + 0.003), PROP_R,
                         D_PROP_DISC)
 
-    # Rails under the frame (dual 10 mm x 250 mm) with two hanger blocks, and Holybro's payload platform clamped
-    # on them: a 2 mm black aluminium plate reaching forward past the frame plates.
+    # Rails under the frame (dual 10 mm x 250 mm, 60 mm apart), as in Holybro's X500 V2 assembly guide: each rail
+    # hangs from the bottom plate on two hangers with rubber gaskets (parts 13, 14).
     rail_y = BOTTOM - 0.0133
+
+    def hanger(name, x, z, down):
+        """A hanger round a rail at (x, z): its rubber gasket ring, and its block reaching `down` (+1 to the board
+        below, -1 up to the bottom plate)."""
+        b.tube(f"{name}_gasket", (x - 0.005, rail_y, z), (x + 0.005, rail_y, z), 0.0085, BLACK, D_PLASTIC, sides=16)
+        b.box(f"{name}_block", (0.012, 0.010, 0.014), (x, rail_y - down * 0.010, z), BLACK, D_PLASTIC, bevel=0.002)
+
     for k, z in enumerate((-0.030, 0.030)):
         b.tube(f"rail_{k}", (-0.096, rail_y, z), (0.154, rail_y, z), 0.005, CARBON, D_TUBE10)
-    for k, x in enumerate((-0.035, 0.055)):
-        b.box(f"rail_hanger_{k}", (0.016, 0.016, 0.082), (x, BOTTOM - 0.008, 0), BLACK, D_PLASTIC, bevel=0.002)
-    plate_y = rail_y - 0.0075
-    b.box("payload_platform", (0.180, 0.002, 0.100), (0.055, plate_y, 0), ALU_BLACK, D_PLATFORM, bevel=0.0008)
-    for k, (x, z) in enumerate(((-0.020, -0.030), (-0.020, 0.030), (0.130, -0.030), (0.130, 0.030))):
-        b.box(f"rail_clamp_{k}", (0.016, 0.014, 0.018), (x, rail_y - 0.001, z), BLACK, D_PLASTIC, bevel=0.002)
-    # GPS mast: a 10 mm carbon tube from a clamp on the platform's front corner, past the frame's front edge, up to
-    # the M10 puck 10 cm above the top plate.
-    mast_x, mast_z = 0.110, 0.045
-    mast_base = plate_y + 0.001
+        for j, x in enumerate((-0.045, 0.045)):
+            hanger(f"rail_hanger_{k}_{j}", x, z, -1)
+
+    # Platform board (part 12): 103 x 75 x 2 mm black aluminium, H-shaped (a notch in the middle of each short end),
+    # hanging under the front end of the rails on four hangers. Companion computers and the GPS mount bolt to it.
+    board_x, board_y = 0.1015, rail_y - 0.0155   # front edge at the rails' end (0.154), board under the hangers
+    b.box("platform_board", (0.073, 0.002, 0.075), (board_x, board_y, 0), ALU_BLACK, D_PLATFORM, bevel=0.0008)
+    for k, (dx, z) in enumerate(((-1, -1), (-1, 1), (1, -1), (1, 1))):  # the H's four tabs either side of the notches
+        b.box(f"platform_tab_{k}", (0.015, 0.002, 0.0225), (board_x + dx * 0.044, board_y, z * 0.02625), ALU_BLACK,
+              D_PLATFORM, bevel=0.0008)
+    for k, (x, z) in enumerate(((0.062, -0.030), (0.062, 0.030), (0.141, -0.030), (0.141, 0.030))):
+        hanger(f"platform_hanger_{k}", x, z, 1)
+
+    # GPS mast (Holybro's suggested spot): a 10 mm carbon tube from a clamp on the board's centreline, in front of the
+    # frame plates, up between the rails to the M10 puck (50 mm across, 14.4 mm thick) 10 cm above the top plate.
+    mast_x = 0.128
     puck_y = PLATE_Y + PLATE_T / 2 + 0.100
-    b.box("gps_mast_clamp", (0.020, 0.016, 0.020), (mast_x, mast_base + 0.008, mast_z), BLACK, D_PLASTIC,
-          bevel=0.002)
-    b.tube("gps_mast", (mast_x, mast_base + 0.016, mast_z), (mast_x, puck_y, mast_z), 0.005, CARBON, D_MAST, sides=16)
-    b.tube("gps_puck", (mast_x, puck_y, mast_z), (mast_x, puck_y + 0.016, mast_z), 0.030, GPS, D_GPS, sides=40)
-    # 4S 3300 mAh pack, 0.36 kg, strapped under the board. With it the model weighs what the X500v2 frame
-    # params' hover throttle (0.29 of 4 x 1.15 kgf) lifts: about 1.33 kg.
+    b.box("gps_mast_clamp", (0.020, 0.012, 0.020), (mast_x, board_y + 0.007, 0), BLACK, D_PLASTIC, bevel=0.002)
+    b.tube("gps_mast", (mast_x, board_y + 0.013, 0), (mast_x, puck_y, 0), 0.005, CARBON, D_MAST, sides=16)
+    b.tube("gps_puck", (mast_x, puck_y, 0), (mast_x, puck_y + 0.0144, 0), 0.025, GPS, D_GPS, sides=40)
+
+    # Battery mounting board (part 9): a slotted plate on two U-legs clipped to the rails under the frame centre,
+    # with the 4S 3300 mAh pack (0.36 kg) strapped under it. With it the model weighs what the X500v2 frame
+    # params' hover throttle (0.29 of 4 x 1.15 kgf) lifts: about 1.35 kg.
+    bat_x, bat_board_y = -0.015, rail_y - 0.026
+    b.box("battery_board", (0.110, 0.002, 0.060), (bat_x, bat_board_y, 0), ALU_BLACK, D_PLATFORM, bevel=0.0008)
+    for k, x in enumerate((bat_x - 0.050, bat_x + 0.050)):  # the U-legs from the board up to the rails
+        b.box(f"battery_board_leg_{k}", (0.008, 0.026, 0.070), (x, bat_board_y + 0.013, 0), BLACK, D_PLASTIC,
+              bevel=0.002)
     battery = (0.135, 0.030, 0.043)
-    b.box("battery", battery, (0.029, rail_y - 0.0085 - battery[1] / 2, 0), BATTERY,
+    b.box("battery", battery, (bat_x, bat_board_y - 0.001 - battery[1] / 2, 0), BATTERY,
           0.36 / (battery[0] * battery[1] * battery[2]), bevel=0.004)
 
     # Landing gear: per side one 16 mm leg splayed 20 deg, a T-joint, a 10 mm skid with foam and caps.
