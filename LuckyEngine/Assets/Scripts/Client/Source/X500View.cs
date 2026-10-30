@@ -2,6 +2,7 @@ using System;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text.Json;
 using Hazel;
 
@@ -157,7 +158,7 @@ namespace Dronstein
 
 		// Rendered pixels per Application.Width unit: Lucky's UI scale times the scale of the monitor its window is on.
 		// Scripts can't read either from Lucky, so: UiScale from Lucky's editor settings, the monitor's scale from
-		// Hyprland (hyprctl). Either missing counts as 1 (no scaling).
+		// macOS (the window's backing scale, 2 on Retina) or Hyprland (hyprctl). Either missing counts as 1 (no scaling).
 		static float PixelScale() => UiScale() * MonitorScale();
 
 		static float UiScale()
@@ -179,6 +180,7 @@ namespace Dronstein
 
 		static float MonitorScale()
 		{
+			if (OperatingSystem.IsMacOS()) return MacScale();
 			try
 			{
 				using JsonDocument clients = JsonDocument.Parse(Hyprctl("clients -j"));
@@ -192,6 +194,26 @@ namespace Dronstein
 			catch (Exception) { }  // not Hyprland
 			return 1f;
 		}
+
+		// [[NSApp mainWindow] backingScaleFactor], or the main screen's when no Lucky window is main (another app is active).
+		static float MacScale()
+		{
+			try
+			{
+				IntPtr app = Msg(objc_getClass("NSApplication"), "sharedApplication"), window = Msg(app, "mainWindow");
+				IntPtr target = window != IntPtr.Zero ? window : Msg(objc_getClass("NSScreen"), "mainScreen");
+				if (target != IntPtr.Zero) return (float)MsgDouble(target, sel_registerName("backingScaleFactor"));
+			}
+			catch (Exception) { }
+			return 1f;
+		}
+
+		static IntPtr Msg(IntPtr obj, string sel) => obj == IntPtr.Zero ? IntPtr.Zero : MsgPtr(obj, sel_registerName(sel));
+		const string ObjC = "/usr/lib/libobjc.A.dylib";
+		[DllImport(ObjC)] static extern IntPtr objc_getClass(string name);
+		[DllImport(ObjC)] static extern IntPtr sel_registerName(string name);
+		[DllImport(ObjC, EntryPoint = "objc_msgSend")] static extern IntPtr MsgPtr(IntPtr obj, IntPtr sel);
+		[DllImport(ObjC, EntryPoint = "objc_msgSend")] static extern double MsgDouble(IntPtr obj, IntPtr sel);
 
 		static string Hyprctl(string args)
 		{

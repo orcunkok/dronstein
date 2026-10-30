@@ -2,99 +2,30 @@ Assets:
   - Handle: 472466418818970438
     FilePath: Robots/X500V2/source/x500v2.hpodgraph
     Type: PodGraph
-  - Handle: 582577758136275818
-    FilePath: Robots/Dronstein/assets/Upper_Arm.stl
-    Type: MeshSource
-  - Handle: 1726357712669796879
-    FilePath: Robots/Dronstein/assets/X2_lowpoly.obj
-    Type: MeshSource
   - Handle: 2116205926439990434
     FilePath: Materials/Waypoint_Soft_Material.hmaterial
     Type: Material
-  - Handle: 2185301101015856168
-    FilePath: Materials/SelectedBall_Material.hmaterial
-    Type: Material
-  - Handle: 2201899189652528337
-    FilePath: ContentVault/Robots/SO100Pod/assets/Fixed_Jaw.stl
-    Type: MeshSource
-  - Handle: 2407108055703145464
-    FilePath: Robots/Dronstein/assets/Upper_Arm_Motor.stl
-    Type: MeshSource
   - Handle: 2871429880033931469
     FilePath: Robots/Dronstein/dronstein.xml
     Type: MujocoScene
-  - Handle: 3223289102708676138
-    FilePath: ContentVault/Robots/SO100Pod/assets/Lower_Arm_Motor.stl
-    Type: MeshSource
-  - Handle: 3264147442041258245
-    FilePath: ContentVault/Robots/SO100Pod/assets/Base.stl
-    Type: MeshSource
-  - Handle: 3305475453455772458
-    FilePath: Materials/Basket_Material.hmaterial
-    Type: Material
-  - Handle: 3315891427435622427
-    FilePath: Robots/Dronstein/assets/Fixed_Jaw.stl
-    Type: MeshSource
-  - Handle: 3493827331486955873
-    FilePath: Robots/Dronstein/assets/Wrist_Pitch_Roll_Motor.stl
-    Type: MeshSource
+  - Handle: 3008810176146964967
+    FilePath: Scripts/Client/Source/X500View.cs
+    Type: ScriptFile
   - Handle: 3725164238943517038
     FilePath: Meshes/Default/Source/Capsule.gltf
-    Type: MeshSource
-  - Handle: 4496952173382825939
-    FilePath: Robots/Dronstein/assets/Rotation_Pitch_Motor.stl
     Type: MeshSource
   - Handle: 4512471431298144687
     FilePath: Meshes/Default/Cube.hsmesh
     Type: StaticMesh
-  - Handle: 4659177727710341459
-    FilePath: Scripts/Client/Source/DroneTeleopKeepOut.cs
-    Type: ScriptFile
   - Handle: 4723399741370758433
     FilePath: Scripts/Intermediates/Debug/Dronstein.sourcelink.json
     Type: Motion
-  - Handle: 4914716808469529681
-    FilePath: Robots/Dronstein/assets/Wrist_Pitch_Roll.stl
-    Type: MeshSource
   - Handle: 4942199622351904206
     FilePath: Scripts/Client/obj/Dronstein.csproj.nuget.dgspec.json
     Type: Motion
-  - Handle: 4972521223205669856
-    FilePath: ContentVault/Robots/SO100Pod/assets/Upper_Arm.stl
-    Type: MeshSource
-  - Handle: 5006524117549791513
-    FilePath: Robots/Dronstein/assets/Lower_Arm.stl
-    Type: MeshSource
-  - Handle: 5503418181994813890
-    FilePath: Robots/Dronstein/assets/Lower_Arm_Motor.stl
-    Type: MeshSource
-  - Handle: 5985639892093096392
-    FilePath: Materials/TrashCan_Wall_Material.hmaterial
-    Type: Material
   - Handle: 6004925888757710830
     FilePath: Scripts/Intermediates/Debug/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs
     Type: ScriptFile
-  - Handle: 6020780471984483339
-    FilePath: ContentVault/Robots/SO100Pod/so_arm100.png
-    Type: Texture
-  - Handle: 6129735853048964031
-    FilePath: Robots/Dronstein/assets/Rotation_Pitch.stl
-    Type: MeshSource
-  - Handle: 6516942821035690005
-    FilePath: Robots/Dronstein/assets/Fixed_Jaw_Motor.stl
-    Type: MeshSource
-  - Handle: 6603741007388352152
-    FilePath: Materials/Basket_Wall_NZ_Material.hmaterial
-    Type: Material
-  - Handle: 6658235089502020210
-    FilePath: Materials/GripDot_Material.hmaterial
-    Type: Material
-  - Handle: 6677227188291702685
-    FilePath: Robots/Dronstein/assets/Fixed_Jaw_Collision_2.stl
-    Type: MeshSource
-  - Handle: 6875906753711644151
-    FilePath: ContentVault/Robots/SO100Pod/so_arm100.xml
-    Type: MujocoScene
   - Handle: 7144994396234222597
     FilePath: Meshes/Default/Source/Sphere.gltf
     Type: MeshSource
@@ -104,27 +35,9 @@ Assets:
   - Handle: 7935106140740169735
     FilePath: Materials/TrashCan_Aluminum.hmaterial
     Type: Material
-  - Handle: 8137856650042923346
-    FilePath: ContentVault/Robots/SO100Pod/assets/Moving_Jaw_Collision_3.stl
-    Type: MeshSource
   - Handle: 8147788432871808966
     FilePath: Scripts/Binaries/Dronstein.deps.json
     Type: Motion
-  - Handle: 8675837025639280246
-    FilePath: Materials/TrashCan_Wood.hmaterial
-    Type: Material
-  - Handle: 8765580369796215293
-    FilePath: Materials/TrashCan_Floor_Material.hmaterial
-    Type: Material
-  - Handle: 8935484533300629911
-    FilePath: Scripts/Client/Source/DroneTeleop.cs
-    Type: ScriptFile
-  - Handle: 8996062247093160465
-    FilePath: Scripts/Client/Source/DroneTeleopPickAll.cs
-    Type: ScriptFile
-  - Handle: 9165876777693599905
-    FilePath: Robots/Dronstein/assets/Base_Motor.stl
-    Type: MeshSource
   - Handle: 9336840270714000039
     FilePath: Scripts/Binaries/Dronstein.runtimeconfig.json
     Type: Motion
@@ -137,93 +50,30 @@ Assets:
   - Handle: 10758258179628656150
     FilePath: Materials/GolfBall_Material.hmaterial
     Type: Material
-  - Handle: 11098384622743558023
-    FilePath: Robots/Dronstein/assets/Moving_Jaw_Collision_3.stl
-    Type: MeshSource
-  - Handle: 11426192023974950934
-    FilePath: ContentVault/Robots/SO100Pod/MG_SO100.hpodgraph
-    Type: PodGraph
-  - Handle: 11504851588609515709
-    FilePath: ContentVault/Robots/SO100Pod/assets/Rotation_Pitch_Motor.stl
-    Type: MeshSource
-  - Handle: 11598156375833495890
-    FilePath: Materials/Basket_Floor_Material.hmaterial
-    Type: Material
-  - Handle: 11601745531691717097
-    FilePath: ContentVault/Robots/SO100Pod/assets/Moving_Jaw.stl
-    Type: MeshSource
-  - Handle: 11726907060136161951
-    FilePath: ContentVault/Robots/SO100Pod/assets/Fixed_Jaw_Collision_2.stl
-    Type: MeshSource
-  - Handle: 11759305556908677780
-    FilePath: ContentVault/Robots/SO100Pod/assets/Wrist_Pitch_Roll.stl
-    Type: MeshSource
   - Handle: 11811293436037047550
     FilePath: Textures/GroundChecker.png
     Type: Texture
-  - Handle: 11849831870074559209
-    FilePath: Materials/Basket_Wall_NX_Material.hmaterial
-    Type: Material
-  - Handle: 12187693992841018117
-    FilePath: Materials/Basket_Wall_PZ_Material.hmaterial
-    Type: Material
-  - Handle: 12313441907476270996
-    FilePath: ContentVault/Robots/SO100Pod/assets/Rotation_Pitch.stl
-    Type: MeshSource
-  - Handle: 12500976438997781264
-    FilePath: Robots/Dronstein/assets/Fixed_Jaw_Collision_1.stl
-    Type: MeshSource
-  - Handle: 12735024957806826396
-    FilePath: Robots/Dronstein/assets/Moving_Jaw_Collision_2.stl
-    Type: MeshSource
-  - Handle: 12809904094814706185
-    FilePath: Materials/Basket_Wall_PX_Material.hmaterial
-    Type: Material
   - Handle: 12882093462498960904
     FilePath: Scenes/Main.hscene
     Type: Scene
-  - Handle: 12908204590787040828
-    FilePath: Materials/CenterDot_Material.hmaterial
-    Type: Material
   - Handle: 13290137406038238993
     FilePath: Meshes/Default/Plane.hsmesh
     Type: StaticMesh
   - Handle: 13341008224982955814
     FilePath: Scripts/Client/obj/project.assets.json
     Type: Motion
-  - Handle: 13365850385770737441
-    FilePath: Robots/Dronstein/assets/Moving_Jaw_Collision_1.stl
-    Type: MeshSource
-  - Handle: 13509781974088747436
-    FilePath: ContentVault/Robots/SO100Pod/assets/Moving_Jaw_Collision_1.stl
-    Type: MeshSource
-  - Handle: 13526010890829648655
-    FilePath: Scripts/Client/Source/Tuning.cs
-    Type: ScriptFile
-  - Handle: 14015958263625143840
-    FilePath: Robots/Dronstein/assets/Base.stl
-    Type: MeshSource
-  - Handle: 14053565775527196325
-    FilePath: Robots/Dronstein/assets/Moving_Jaw.stl
-    Type: MeshSource
   - Handle: 14151601812946333791
     FilePath: Scripts/Client/Source/X500Flight.cs
     Type: ScriptFile
   - Handle: 14389522373660214116
     FilePath: Robots/X500V2Prop/source/x500v2_prop.hpodgraph
     Type: PodGraph
-  - Handle: 14589933624847578576
-    FilePath: ContentVault/Robots/SO100Pod/assets/Fixed_Jaw_Collision_1.stl
-    Type: MeshSource
   - Handle: 14861723440063490683
     FilePath: Meshes/Default/Source/Cone.gltf
     Type: MeshSource
   - Handle: 15420529433532894805
     FilePath: Scripts/Intermediates/Debug/Dronstein.AssemblyInfo.cs
     Type: ScriptFile
-  - Handle: 15577893716602290300
-    FilePath: Robots/Dronstein/assets/X2_lowpoly_texture_SpinningProps_1024.png
-    Type: Texture
   - Handle: 15725964065274453976
     FilePath: Meshes/Default/Source/Torus.gltf
     Type: MeshSource
@@ -233,14 +83,8 @@ Assets:
   - Handle: 16102727838158965090
     FilePath: Meshes/Default/Cylinder.hsmesh
     Type: StaticMesh
-  - Handle: 16141801636602312376
-    FilePath: Scripts/Client/Source/DroneTeleopPick.cs
-    Type: ScriptFile
   - Handle: 16763015685236763184
     FilePath: Meshes/Default/Source/Cube.gltf
-    Type: MeshSource
-  - Handle: 16967982181597063167
-    FilePath: ContentVault/Robots/SO100Pod/assets/Base_Motor.stl
     Type: MeshSource
   - Handle: 16991575206243672906
     FilePath: Materials/Default/GroundMaterial.hmaterial
@@ -248,24 +92,9 @@ Assets:
   - Handle: 17061058600486238403
     FilePath: Meshes/Default/Source/Cylinder.gltf
     Type: MeshSource
-  - Handle: 17268333980315131532
-    FilePath: ContentVault/Robots/SO100Pod/assets/Lower_Arm.stl
-    Type: MeshSource
   - Handle: 17646189633006942707
     FilePath: Meshes/Default/Source/Plane.gltf
-    Type: MeshSource
-  - Handle: 17724718632739972887
-    FilePath: ContentVault/Robots/SO100Pod/assets/Wrist_Pitch_Roll_Motor.stl
     Type: MeshSource
   - Handle: 17848236281465921337
     FilePath: Materials/GroundTiles.hmaterial
     Type: Material
-  - Handle: 18177350362801879680
-    FilePath: ContentVault/Robots/SO100Pod/assets/Upper_Arm_Motor.stl
-    Type: MeshSource
-  - Handle: 18404102435763075937
-    FilePath: ContentVault/Robots/SO100Pod/assets/Fixed_Jaw_Motor.stl
-    Type: MeshSource
-  - Handle: 18425907779850871208
-    FilePath: ContentVault/Robots/SO100Pod/assets/Moving_Jaw_Collision_2.stl
-    Type: MeshSource
