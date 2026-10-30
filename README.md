@@ -19,6 +19,7 @@ A Holybro X500 V2 with a 4S battery (1.36 kg) flies like a stock ArduPilot setup
 | Share | Take off to 0.5 m on the ground; in the air, return home (RTL). Press again to take RTL back. (A is the same button as Share on this controller.) |
 | Right stick | Orbit the camera |
 | D-pad up / down | Zoom in / out |
+| X | Next camera: orbit the X500, follow it (behind its tail), orbit the gripper |
 
 To change buttons, edit `LuckyEngine/ControllerBindings.txt`, save it, and press Play again.
 
@@ -26,6 +27,8 @@ To change buttons, edit `LuckyEngine/ControllerBindings.txt`, save it, and press
 | Key | What it does |
 |---|---|
 | Q / E | Zoom in / out |
+| C | Next camera, same as X on the controller |
+| O | Gripper fully open / fully closed |
 | Right mouse drag | Rotate the camera |
 | R | Reset the scene: the X500, the balls and the trash can go back to where they started |
 
@@ -42,7 +45,7 @@ Both hold the altitude.
 It starts **disarmed**. Y arms it (props idle). **RTL** climbs to 3 m, flies back over the spot where it was armed, comes down at 0.5 m/s and disarms when it lands; B or any stick or trigger takes it back. The props spin with their motors' thrust.
 
 ## On screen
-Top right: **CAMERA** X500 V2, and **MODE** (Loiter, Manual, Takeoff or RTL) with **Armed** (green) or **Disarmed** (red) left of it.
+Top right: **CAMERA** (X500 V2, Follow or Gripper), and **MODE** (Loiter, Manual, Takeoff or RTL) with **Armed** (green) or **Disarmed** (red) left of it.
 
 ## On the ground
 - Checkered ground: each tile is 1 m.

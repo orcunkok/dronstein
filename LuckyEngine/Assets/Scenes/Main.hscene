@@ -233,6 +233,31 @@ SceneSettings:
 PrefabManager:
   []
 Entities:
+  - Entity: 81215081681058999
+    Domain: Client
+    TagComponent:
+      Tag: Claw
+    Parent: 0
+    Children:
+      - Handle: 4385618058133689853
+      - Handle: 12157374869143816941
+      - Handle: 18435202741007044140
+    TransformComponent:
+      Position: [-4, 0.15, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    ScriptComponent:
+      ScriptID: 552679916
+      ScriptName: Dronstein.Claw
+      Fields:
+        - ID: 3845397343
+          Name: OpenAngle
+          Type: Float
+          Value: 59
+        - ID: 1144764563
+          Name: Speed
+          Type: Float
+          Value: 180
   - Entity: 245167270397148752
     Domain: Client
     TagComponent:
@@ -481,7 +506,7 @@ Entities:
     TransformComponent:
       Position: [0, 0, 0]
       Rotation: [0, 0, 0]
-      Scale: [30, 1, 30]
+      Scale: [29.601, 0.986701, 29.601]
     StaticMeshComponent:
       AssetID: 13290137406038238993
       MaterialTable:
@@ -661,6 +686,22 @@ Entities:
       FrictionLoss: 0
       SpringRef: 0
       JointId: -1
+  - Entity: 4385618058133689853
+    Domain: Client
+    TagComponent:
+      Tag: ClawBracket
+    Parent: 81215081681058999
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    PodComponent:
+      Kind: 0
+      PodGraph: 14570699731383293133
+      MaterialTable:
+        0: 0
   - Entity: 4950325791438092324
     Domain: Client
     TagComponent:
@@ -1401,6 +1442,22 @@ Entities:
       Contype: 1
       Conaffinity: 1
       Condim: -1
+  - Entity: 12157374869143816941
+    Domain: Client
+    TagComponent:
+      Tag: ClawFingerL
+    Parent: 81215081681058999
+    Children:
+      []
+    TransformComponent:
+      Position: [-0.012, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    PodComponent:
+      Kind: 0
+      PodGraph: 17478564798814957216
+      MaterialTable:
+        0: 0
   - Entity: 12174914177517664916
     Domain: Client
     TagComponent:
@@ -2184,6 +2241,22 @@ Entities:
       DropShadow: false
       ShadowDistance: 0
       ShadowColor: [0, 0, 0, 0.75]
+  - Entity: 18435202741007044140
+    Domain: Client
+    TagComponent:
+      Tag: ClawFingerR
+    Parent: 81215081681058999
+    Children:
+      []
+    TransformComponent:
+      Position: [0.012, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    PodComponent:
+      Kind: 0
+      PodGraph: 1271349667627160951
+      MaterialTable:
+        0: 0
 SceneAudio:
   MasterReverb:
     Pre-delay: 0

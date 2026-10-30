@@ -1,5 +1,5 @@
 # Xbox controller bindings for the Holybro X500 V2 (X500Flight, X500View). Read when Play starts: edit, save, press Play again.
-# Fixed keys: R resets the scene, Q/E zoom, right mouse drag orbits the camera.
+# Fixed keys: R resets the scene, C steps through the cameras (X500 orbit, follow, gripper), Q/E zoom, right mouse drag orbits the camera.
 #
 # Numbers are axes (as Lucky reports this Xbox controller): 0 left stick X, 1 left stick Y, 2 right stick X,
 #   3 right stick Y, 4 left trigger, 5 right trigger. Triggers rest at -1.
@@ -27,3 +27,4 @@ camera_yaw   = 2             # right stick left/right: orbit around
 camera_pitch = -3            # right stick up/down: orbit up/down
 zoom_in      = b15           # D-pad up
 zoom_out     = b17           # D-pad down
+camera_view  = b3            # X: next camera: X500 orbit -> follow (behind its tail) -> gripper (C on the keyboard)

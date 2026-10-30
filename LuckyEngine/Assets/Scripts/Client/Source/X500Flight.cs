@@ -456,7 +456,7 @@ namespace Dronstein
 			&& (b.Axis >= 0 ? Input.GetControllerAxis(m_Pad, b.Axis) * b.Sign > 0.5f : Input.IsControllerButtonDown(m_Pad, b.Raw));
 
 		// Went down this frame (down now, up last frame). Call once per name per frame.
-		bool Pressed(string name)
+		public bool Pressed(string name)
 		{
 			bool down = Held(name), pressed = down && !m_ButtonsDown.Contains(name);
 			if (down) m_ButtonsDown.Add(name);

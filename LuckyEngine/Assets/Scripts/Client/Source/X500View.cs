@@ -12,7 +12,9 @@ namespace Dronstein
 	/// The view of the Holybro X500 V2: an orbit camera that follows it, the HUD at the top right (CAMERA, MODE and
 	/// Armed / Disarmed) and R, which puts everything back as when Play started (X500, golf balls, trash can).
 	/// Camera: drag with the right mouse button or move the right stick (camera_yaw / camera_pitch) to orbit; Q/E or
-	/// D-pad down/up (zoom_out / zoom_in) to zoom.
+	/// D-pad down/up (zoom_out / zoom_in) to zoom. C or camera_view (X) steps through the cameras: orbit the X500, follow
+	/// it (glued behind its tail), orbit the gripper (the entity tagged Claw, if there is one), and back. Each orbit keeps
+	/// its own zoom.
 	/// Attach to the entity tagged World (its MuJoCo scene holds the X500).
 	/// </summary>
 	public class X500View : Entity
@@ -21,6 +23,11 @@ namespace Dronstein
 		public float ZoomSpeed = 1.5f;     // m/s while Q, E or the D-pad is held
 
 		const float CameraStickSpeed = 2f;  // rad/s at full right stick
+		static readonly Vector3 ClawCenter = new(0f, -0.06f, 0f);  // the gripper camera looks here, between the fingers
+		const float TailBack = 1.2f, TailUp = 0.35f;  // follow camera: m behind the X500's center and above it, in its frame
+		// MuJoCo world -> Lucky world (-90 deg about x), and the camera's frame (looks down -z, y up) -> the X500's FLU.
+		static readonly Quaternion MjToLucky = new(-0.70710678f, 0f, 0f, 0.70710678f), CameraToFlu = new(0.5f, -0.5f, -0.5f, 0.5f);
+		static readonly string[] CameraNames = { "X500 V2", "Follow", "Gripper" };  // the HUD's CAMERA, per m_View
 		// HUD layout in Application.Width/Height units (scaled to rendered pixels by PixelScale): the labels' x from the
 		// right edge, the first baseline from the top, the row height, the values' x after the labels, the text sizes.
 		const float HudRight = 242.5f, HudTop = 41f, HudRow = 36.5f, HudValueX = 96f;
@@ -35,12 +42,14 @@ namespace Dronstein
 		X500Flight? m_Flight;  // the X500's controller reading (camera sticks); null: mouse and keys only
 		uint m_Body;
 		Entity m_Camera = null!, m_HudCameraLabel = null!, m_HudCamera = null!, m_HudModeLabel = null!, m_HudMode = null!;
-		Entity? m_HudArm;  // optional
+		Entity? m_HudArm, m_Claw;  // optional
 		bool m_Missing;  // a tagged entity wasn't found: the script does nothing
 		// Orbit camera: the camera sits on a sphere around the X500 and looks at its center.
 		float m_OrbitYaw, m_OrbitPitch, m_Distance;
+		int m_View;                      // 0 orbit the X500, 1 follow it, 2 orbit the gripper
+		float m_OtherDistance = 0.4f;    // the zoom of the orbit not shown (X500 or gripper), swapped in when it shows
 		Vector2 m_LastMouse;
-		bool m_KeyR;
+		bool m_KeyR, m_KeyC;
 		(uint, uint) m_HudSize;
 		float m_PixelScale = 1f;  // rendered pixels per Application.Width unit, see PixelScale
 		string m_HudShown = "";  // the mode and arming last written, so the texts change only when they do
@@ -55,6 +64,7 @@ namespace Dronstein
 			m_HudModeLabel = Find("HudModeLabel");
 			m_HudMode = Find("HudMode");
 			m_HudArm = FindEntityByTag("HudArm");
+			m_Claw = FindEntityByTag("Claw");
 			if (m_Missing) return;
 			// Start from the scene camera's authored offset from the X500.
 			Vector3 offset = m_Camera.Translation - X500Position();
@@ -86,8 +96,45 @@ namespace Dronstein
 				Log.Info("X500View: scene reset");
 			}
 			m_KeyR = r;
-			OrbitCamera(MathF.Min(dt, 0.05f));
+			bool c = Input.IsKeyDown(KeyCode.C);
+			m_Flight ??= FindEntityByTag("HolybroX500V2")?.As<X500Flight>();  // here, not in OnCreate: its script may start later
+			if ((c && !m_KeyC) | (m_Flight?.Pressed("camera_view") ?? false)) NextView();  // | : Pressed runs every frame
+			m_KeyC = c;
+			if (m_View == 1) FollowCamera();
+			else OrbitCamera(MathF.Min(dt, 0.05f));
 			UpdateHud();
+		}
+
+		// C / camera_view: the next camera; the gripper's orbit is skipped when there is no gripper.
+		void NextView()
+		{
+			m_View = (m_View + 1) % (m_Claw == null ? 2 : 3);
+			if (m_View != 1 && m_Claw != null)  // into one orbit from the other (through follow): swap in its zoom
+				(m_Distance, m_OtherDistance) = (m_OtherDistance, m_Distance);
+			m_HudCamera.GetComponent<TextComponent>()!.Text = CameraNames[m_View];
+		}
+
+		Vector3 Target() => m_View == 2 ? m_Claw!.Translation + ClawCenter : X500Position();
+
+		// Glued to the X500: TailBack behind and TailUp above it, turning, pitching and rolling with it.
+		void FollowCamera()
+		{
+			m_Mj.GetBodyPoseMj(m_Body, out Vector3 _, out Quaternion q, out Vector3 _, out Vector3 _);
+			Quaternion rot = Mul(Mul(MjToLucky, q), CameraToFlu);
+			m_Camera.RotationQuat = rot;
+			m_Camera.Translation = X500Position() + Rotate(rot, new Vector3(0f, TailUp, TailBack));
+		}
+
+		static Quaternion Mul(Quaternion a, Quaternion b) => new(
+			a.W * b.X + a.X * b.W + a.Y * b.Z - a.Z * b.Y,
+			a.W * b.Y - a.X * b.Z + a.Y * b.W + a.Z * b.X,
+			a.W * b.Z + a.X * b.Y - a.Y * b.X + a.Z * b.W,
+			a.W * b.W - a.X * b.X - a.Y * b.Y - a.Z * b.Z);
+
+		static Vector3 Rotate(Quaternion q, Vector3 v)
+		{
+			Vector3 t = Vector3.Cross(q.XYZ, v) * 2f;
+			return v + t * q.W + Vector3.Cross(q.XYZ, t);
 		}
 
 		// The X500's position in Lucky's frame (MuJoCo (x, y, z) is Lucky (x, -z, y)).
@@ -107,7 +154,6 @@ namespace Dronstein
 			}
 			m_LastMouse = mouse;
 			float zoom = (Input.IsKeyDown(KeyCode.E) ? 1f : 0f) - (Input.IsKeyDown(KeyCode.Q) ? 1f : 0f);
-			m_Flight ??= FindEntityByTag("HolybroX500V2")?.As<X500Flight>();  // here, not in OnCreate: its script may start later
 			if (m_Flight != null)
 			{
 				m_OrbitYaw -= m_Flight.Axis("camera_yaw") * CameraStickSpeed * dt;
@@ -118,7 +164,7 @@ namespace Dronstein
 			m_Distance = Math.Clamp(m_Distance + zoom * ZoomSpeed * dt, 0.3f, 20f);
 
 			var dir = new Vector3(MathF.Sin(m_OrbitYaw) * MathF.Cos(m_OrbitPitch), MathF.Sin(m_OrbitPitch), MathF.Cos(m_OrbitYaw) * MathF.Cos(m_OrbitPitch));
-			m_Camera.Translation = X500Position() + dir * m_Distance;
+			m_Camera.Translation = Target() + dir * m_Distance;
 			m_Camera.Rotation = new Vector3(-m_OrbitPitch, m_OrbitYaw, 0f);  // the camera looks down its -z, so this faces the center
 		}
 
