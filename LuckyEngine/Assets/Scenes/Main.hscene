@@ -426,6 +426,22 @@ Entities:
       FrictionLoss: 0
       SpringRef: 0
       JointId: -1
+  - Entity: 756123043266677426
+    Domain: Client
+    TagComponent:
+      Tag: LandingPad_H_Left
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [-5.125, 0.004, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.05, 0.002, 0.4]
+    StaticMeshComponent:
+      AssetID: 4512471431298144687
+      MaterialTable:
+        0: 361373083978553111
+      Visible: true
   - Entity: 944847631712787786
     Domain: Client
     TagComponent:
@@ -594,6 +610,22 @@ Entities:
       DropShadow: false
       ShadowDistance: 2
       ShadowColor: [0, 0, 0, 0.75]
+  - Entity: 3627075593681298681
+    Domain: Client
+    TagComponent:
+      Tag: CenterDot
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [-5, 0.007, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.03, 0.002, 0.03]
+    StaticMeshComponent:
+      AssetID: 16102727838158965090
+      MaterialTable:
+        0: 4203287512373935578
+      Visible: true
   - Entity: 3628357348547977113
     Domain: Client
     TagComponent:
@@ -772,6 +804,22 @@ Entities:
       FrictionLoss: 0
       SpringRef: 0
       JointId: -1
+  - Entity: 6718577171622032375
+    Domain: Client
+    TagComponent:
+      Tag: LandingPad_H_Right
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [-4.875, 0.004, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.05, 0.002, 0.4]
+    StaticMeshComponent:
+      AssetID: 4512471431298144687
+      MaterialTable:
+        0: 361373083978553111
+      Visible: true
   - Entity: 6739932443237291449
     Domain: Client
     TagComponent:
@@ -1843,8 +1891,8 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [0.767245, 0.829052, -1.87054]
-      Rotation: [-0.172826, 3.26539, 0]
+      Position: [0.767247, 0.828951, -1.87054]
+      Rotation: [-0.096477, 1.88443, 0]
       Scale: [1, 1, 1]
     CameraComponent:
       Camera:
@@ -2027,6 +2075,22 @@ Entities:
       FrictionLoss: 0
       SpringRef: 0
       JointId: -1
+  - Entity: 17181758653328439947
+    Domain: Client
+    TagComponent:
+      Tag: LandingPad
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [-5, 0.002, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.8, 0.002, 0.8]
+    StaticMeshComponent:
+      AssetID: 16102727838158965090
+      MaterialTable:
+        0: 15312976335413109328
+      Visible: true
   - Entity: 17276475515001353056
     Domain: Client
     TagComponent:
@@ -2080,6 +2144,22 @@ Entities:
       AssetID: 16102727838158965090
       MaterialTable:
         0: 2116205926439990434
+      Visible: true
+  - Entity: 17437553327821000184
+    Domain: Client
+    TagComponent:
+      Tag: LandingPad_H_Bar
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [-5, 0.004, 0]
+      Rotation: [0, 0, 0]
+      Scale: [0.2, 0.002, 0.05]
+    StaticMeshComponent:
+      AssetID: 4512471431298144687
+      MaterialTable:
+        0: 361373083978553111
       Visible: true
   - Entity: 17849749303881500182
     Domain: Client

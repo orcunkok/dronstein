@@ -90,6 +90,7 @@ namespace Dronstein
 		// Props: entities tagged X500Prop1..4 (children of this entity, motor order), spun about their local +Y.
 		readonly Entity?[] m_Props = new Entity?[4];
 		readonly float[] m_PropAngle = new float[4];
+		Entity? m_CenterDot;  // red dot on the ground below the drone's center (CG reference), shown while armed
 		const float PropSpinMax = 60f, PropSpinIdle = 10f;  // rad/s on screen at full thrust and at idle (real rpm would alias)
 
 		protected override void OnCreate()
@@ -104,6 +105,7 @@ namespace Dronstein
 			Armed = s_Rtl = s_Takeoff = false;
 			s_Calib = -1;
 			for (int i = 0; i < 4; i++) m_Props[i] = FindEntityByTag($"X500Prop{i + 1}");  // optional: no tag, no spin
+			m_CenterDot = FindEntityByTag("CenterDot");  // optional: no tag, no dot
 			Entity? scene = FindEntityByTag("World");
 			if (scene == null)
 			{
@@ -228,6 +230,7 @@ namespace Dronstein
 			Control(dt);
 			Motors(dt);
 			SpinProps(dt);
+			CenterDot();
 			Status(dt);
 		}
 
@@ -511,6 +514,14 @@ namespace Dronstein
 				m_PropAngle[i] = MathF.IEEERemainder(m_PropAngle[i] + Spin[i] * w * dt, 2f * MathF.PI);
 				prop.Rotation = new Vector3(0f, m_PropAngle[i], 0f);
 			}
+		}
+
+		// The dot is shown while armed, straight below the drone's center: MuJoCo (x, y) on the ground is Lucky (x, -z).
+		void CenterDot()
+		{
+			if (m_CenterDot is not Entity dot) return;
+			dot.GetComponent<StaticMeshComponent>()!.Visible = Armed;
+			dot.Translation = new Vector3(m_Q[m_Qpos], dot.Translation.Y, -m_Q[m_Qpos + 1]);
 		}
 
 		void Status(float dt)
