@@ -4,7 +4,7 @@ The Holybro X500 V2 was first a procedural (Pod) body with a free joint. `X500Fl
 torque and drag every frame, but no script API could apply them to that body:
 
 - `MujocoSceneComponent.SetQfrcApplied` returns true, but Lucky's policy layer overwrites `qfrc_applied` every
-  substep, so nothing moves (tested on the X500 and on a golf ball).
+  substep, so nothing moves (tested on the X500 and on a tennis ball).
 - `RigidBodyComponent.AddForce` only drives Jolt bodies.
 - MJCF actuators can't target the body: `lucky_joint_<id>` doesn't exist when `dronstein.xml` compiles.
 

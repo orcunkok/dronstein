@@ -31,3 +31,6 @@
 
 ## Talking to the user
 - "wrap up" means close as done with no summary.
+
+## Where to make changes
+- When you are done, make the changes in the user's main checkout (`~/dev/dronstein`), not only in a worktree. The user runs the editor from there, so worktree-only changes never reach it.

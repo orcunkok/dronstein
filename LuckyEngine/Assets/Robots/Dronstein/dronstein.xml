@@ -1,5 +1,5 @@
 <!-- The scene's MuJoCo world: the Holybro X500 V2 (physics in ../X500V2/x500v2.mjcf, written by
-     tools/x500v2/build_x500v2.py; X500Flight.cs flies it). The golf balls, the trash can and the ground are Lucky
+     tools/x500v2/build_x500v2.py; X500Flight.cs flies it). The tennis balls, the trash can and the ground are Lucky
      collider entities that join this world. Air density/viscosity give the balls and the can their drag; the X500's
      geoms turn it off (X500.param sets its drag). -->
 <mujoco model="dronstein">

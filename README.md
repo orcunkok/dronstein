@@ -1,7 +1,7 @@
 # dronstein
 Lucky Robots: a Holybro X500 V2 drone in Lucky Engine.
 
-A Holybro X500 V2 with a 4S battery (1.36 kg) flies like a stock ArduPilot setup, in a field of golf balls with a trash can. Its physics and autopilot gains are parameters, so they can be matched to the real drone (sim2real).
+A Holybro X500 V2 with a 4S battery (1.36 kg) flies like a stock ArduPilot setup, in a field of tennis balls with a trash can. Its physics and autopilot gains are parameters, so they can be matched to the real drone (sim2real).
 
 ## How to run
 1. Open the `LuckyEngine` project in Lucky Engine.
@@ -52,7 +52,7 @@ Top right: **CAMERA** (X500 V2, Follow or Gripper), and **MODE** (Loiter, Manual
 
 ## On the ground
 - Checkered ground: each tile is 1 m.
-- Golf balls and a trash can: props you can push around with the drone or drag with the mouse (Force Tool).
+- Tennis balls and a trash can: props you can push around with the drone or drag with the mouse (Force Tool).
 - Blue dots: a test square of waypoints, flown with keyboard Y (calibration).
 
 ## Tuning it to the real drone

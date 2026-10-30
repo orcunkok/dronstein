@@ -10,7 +10,7 @@ namespace Dronstein
 {
 	/// <summary>
 	/// The view of the Holybro X500 V2: an orbit camera that follows it, the HUD at the top right (CAMERA, MODE and
-	/// Armed / Disarmed) and R, which puts everything back as when Play started (X500, golf balls, trash can).
+	/// Armed / Disarmed) and R, which puts everything back as when Play started (X500, tennis balls, trash can).
 	/// Camera: drag with the right mouse button or move the right stick (camera_yaw / camera_pitch) to orbit; Q/E or
 	/// D-pad down/up (zoom_out / zoom_in) to zoom. C or camera_view (X) steps through the cameras: orbit the X500, follow
 	/// it (behind its tail, level), orbit the gripper (the entity tagged Claw, if there is one), and back. Each orbit keeps

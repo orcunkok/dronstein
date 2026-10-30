@@ -41,7 +41,7 @@ from pod_authoring import Literal, McpSession
 
 ENDPOINT = "http://127.0.0.1:19331/mcp"
 BODY = "x500v2"
-SPAWN = (-5.0, 0.0, 0.2423)   # MuJoCo world: resting on the ground (no drop: it twists landing), clear of the golf balls
+SPAWN = (-5.0, 0.0, 0.2423)   # MuJoCo world: resting on the ground (no drop: it twists landing), clear of the tennis balls
 
 
 def mat(r, g, b, metal, rough):

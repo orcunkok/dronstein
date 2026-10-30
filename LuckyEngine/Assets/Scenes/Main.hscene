@@ -261,21 +261,21 @@ Entities:
   - Entity: 245167270397148752
     Domain: Client
     TagComponent:
-      Tag: GolfBall_05
+      Tag: TennisBall_05
     Parent: 0
     Children:
       []
     TransformComponent:
-      Position: [1.0775, 0.0214, 0.69]
+      Position: [1.0775, 0.0335, 0.69]
       Rotation: [0, 0, 0]
-      Scale: [0.0427, 0.0427, 0.0427]
+      Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
-        0: 10758258179628656150
+        0: 5906284485229172943
       Visible: true
     MujocoSphereColliderComponent:
-      Density: 1130
+      Density: 368
       Radius: 0.5
       Friction: [1, 0.1, 0.01]
       Contype: 1
@@ -299,21 +299,21 @@ Entities:
   - Entity: 344505556118670621
     Domain: Client
     TagComponent:
-      Tag: GolfBall_02
+      Tag: TennisBall_02
     Parent: 0
     Children:
       []
     TransformComponent:
-      Position: [-2.09, 0.0214, 2.35]
+      Position: [-2.09, 0.0335, 2.35]
       Rotation: [0, 0, 0]
-      Scale: [0.0427, 0.0427, 0.0427]
+      Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
-        0: 10758258179628656150
+        0: 5906284485229172943
       Visible: true
     MujocoSphereColliderComponent:
-      Density: 1130
+      Density: 368
       Radius: 0.5
       Friction: [1, 0.1, 0.01]
       Contype: 1
@@ -391,21 +391,21 @@ Entities:
   - Entity: 602807608784138521
     Domain: Client
     TagComponent:
-      Tag: GolfBall_04
+      Tag: TennisBall_04
     Parent: 0
     Children:
       []
     TransformComponent:
-      Position: [-1.0525, 0.0214, 0.465]
+      Position: [-1.0525, 0.0335, 0.465]
       Rotation: [0, 0, 0]
-      Scale: [0.0427, 0.0427, 0.0427]
+      Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
-        0: 10758258179628656150
+        0: 5906284485229172943
       Visible: true
     MujocoSphereColliderComponent:
-      Density: 1130
+      Density: 368
       Radius: 0.5
       Friction: [1, 0.1, 0.01]
       Contype: 1
@@ -461,21 +461,21 @@ Entities:
   - Entity: 1134009517207024497
     Domain: Client
     TagComponent:
-      Tag: GolfBall_11
+      Tag: TennisBall_11
     Parent: 0
     Children:
       []
     TransformComponent:
-      Position: [-1.0925, 0.0214, 4.2975]
+      Position: [-1.0925, 0.0335, 4.2975]
       Rotation: [0, 0, 0]
-      Scale: [0.0427, 0.0427, 0.0427]
+      Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
-        0: 10758258179628656150
+        0: 5906284485229172943
       Visible: true
     MujocoSphereColliderComponent:
-      Density: 1130
+      Density: 368
       Radius: 0.5
       Friction: [1, 0.1, 0.01]
       Contype: 1
@@ -553,21 +553,21 @@ Entities:
   - Entity: 1979815025508288610
     Domain: Client
     TagComponent:
-      Tag: GolfBall_12
+      Tag: TennisBall_12
     Parent: 0
     Children:
       []
     TransformComponent:
-      Position: [1.165, 0.0214, 1.0625]
+      Position: [1.165, 0.0335, 1.0625]
       Rotation: [0, 0, 0]
-      Scale: [0.0427, 0.0427, 0.0427]
+      Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
-        0: 10758258179628656150
+        0: 5906284485229172943
       Visible: true
     MujocoSphereColliderComponent:
-      Density: 1130
+      Density: 368
       Radius: 0.5
       Friction: [1, 0.1, 0.01]
       Contype: 1
@@ -645,21 +645,21 @@ Entities:
   - Entity: 4022421985475234552
     Domain: Client
     TagComponent:
-      Tag: GolfBall_16
+      Tag: TennisBall_16
     Parent: 0
     Children:
       []
     TransformComponent:
-      Position: [2.945, 0.0214, 1.2275]
+      Position: [2.945, 0.0335, 1.2275]
       Rotation: [0, 0, 0]
-      Scale: [0.0427, 0.0427, 0.0427]
+      Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
-        0: 10758258179628656150
+        0: 5906284485229172943
       Visible: true
     MujocoSphereColliderComponent:
-      Density: 1130
+      Density: 368
       Radius: 0.5
       Friction: [1, 0.1, 0.01]
       Contype: 1
@@ -683,21 +683,21 @@ Entities:
   - Entity: 4349336411905971544
     Domain: Client
     TagComponent:
-      Tag: GolfBall_23
+      Tag: TennisBall_23
     Parent: 0
     Children:
       []
     TransformComponent:
-      Position: [3.6275, 0.0214, 3.325]
+      Position: [3.6275, 0.0335, 3.325]
       Rotation: [0, 0, 0]
-      Scale: [0.0427, 0.0427, 0.0427]
+      Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
-        0: 10758258179628656150
+        0: 5906284485229172943
       Visible: true
     MujocoSphereColliderComponent:
-      Density: 1130
+      Density: 368
       Radius: 0.5
       Friction: [1, 0.1, 0.01]
       Contype: 1
@@ -769,21 +769,21 @@ Entities:
   - Entity: 5216942334575228420
     Domain: Client
     TagComponent:
-      Tag: GolfBall_15
+      Tag: TennisBall_15
     Parent: 0
     Children:
       []
     TransformComponent:
-      Position: [-2.4725, 0.0214, 2.555]
+      Position: [-2.4725, 0.0335, 2.555]
       Rotation: [0, 0, 0]
-      Scale: [0.0427, 0.0427, 0.0427]
+      Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
-        0: 10758258179628656150
+        0: 5906284485229172943
       Visible: true
     MujocoSphereColliderComponent:
-      Density: 1130
+      Density: 368
       Radius: 0.5
       Friction: [1, 0.1, 0.01]
       Contype: 1
@@ -841,21 +841,21 @@ Entities:
   - Entity: 6808467485959760917
     Domain: Client
     TagComponent:
-      Tag: GolfBall_06
+      Tag: TennisBall_06
     Parent: 0
     Children:
       []
     TransformComponent:
-      Position: [1.2525, 0.0214, -2.39]
+      Position: [1.2525, 0.0335, -2.39]
       Rotation: [0, 0, 0]
-      Scale: [0.0427, 0.0427, 0.0427]
+      Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
-        0: 10758258179628656150
+        0: 5906284485229172943
       Visible: true
     MujocoSphereColliderComponent:
-      Density: 1130
+      Density: 368
       Radius: 0.5
       Friction: [1, 0.1, 0.01]
       Contype: 1
@@ -879,21 +879,21 @@ Entities:
   - Entity: 6859745199138401194
     Domain: Client
     TagComponent:
-      Tag: GolfBall_10
+      Tag: TennisBall_10
     Parent: 0
     Children:
       []
     TransformComponent:
-      Position: [4.6975, 0.0214, 1.415]
+      Position: [4.6975, 0.0335, 1.415]
       Rotation: [0, 0, 0]
-      Scale: [0.0427, 0.0427, 0.0427]
+      Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
-        0: 10758258179628656150
+        0: 5906284485229172943
       Visible: true
     MujocoSphereColliderComponent:
-      Density: 1130
+      Density: 368
       Radius: 0.5
       Friction: [1, 0.1, 0.01]
       Contype: 1
@@ -1016,21 +1016,21 @@ Entities:
   - Entity: 7688800538663923338
     Domain: Client
     TagComponent:
-      Tag: GolfBall_03
+      Tag: TennisBall_03
     Parent: 0
     Children:
       []
     TransformComponent:
-      Position: [-1.23, 0.0214, -0.0575]
+      Position: [-1.23, 0.0335, -0.0575]
       Rotation: [0, 0, 0]
-      Scale: [0.0427, 0.0427, 0.0427]
+      Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
-        0: 10758258179628656150
+        0: 5906284485229172943
       Visible: true
     MujocoSphereColliderComponent:
-      Density: 1130
+      Density: 368
       Radius: 0.5
       Friction: [1, 0.1, 0.01]
       Contype: 1
@@ -1117,21 +1117,21 @@ Entities:
   - Entity: 7877977864254300973
     Domain: Client
     TagComponent:
-      Tag: GolfBall_08
+      Tag: TennisBall_08
     Parent: 0
     Children:
       []
     TransformComponent:
-      Position: [3.3225, 0.0214, -1.1325]
+      Position: [3.3225, 0.0335, -1.1325]
       Rotation: [0, 0, 0]
-      Scale: [0.0427, 0.0427, 0.0427]
+      Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
-        0: 10758258179628656150
+        0: 5906284485229172943
       Visible: true
     MujocoSphereColliderComponent:
-      Density: 1130
+      Density: 368
       Radius: 0.5
       Friction: [1, 0.1, 0.01]
       Contype: 1
@@ -1281,21 +1281,21 @@ Entities:
   - Entity: 9226193199443051660
     Domain: Client
     TagComponent:
-      Tag: GolfBall_18
+      Tag: TennisBall_18
     Parent: 0
     Children:
       []
     TransformComponent:
-      Position: [-1.9375, 0.0214, -1.155]
+      Position: [-1.9375, 0.0335, -1.155]
       Rotation: [0, 0, 0]
-      Scale: [0.0427, 0.0427, 0.0427]
+      Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
-        0: 10758258179628656150
+        0: 5906284485229172943
       Visible: true
     MujocoSphereColliderComponent:
-      Density: 1130
+      Density: 368
       Radius: 0.5
       Friction: [1, 0.1, 0.01]
       Contype: 1
@@ -1319,21 +1319,21 @@ Entities:
   - Entity: 9365238450782605957
     Domain: Client
     TagComponent:
-      Tag: GolfBall_17
+      Tag: TennisBall_17
     Parent: 0
     Children:
       []
     TransformComponent:
-      Position: [-3.3425, 0.0214, 1.635]
+      Position: [-3.3425, 0.0335, 1.635]
       Rotation: [0, 0, 0]
-      Scale: [0.0427, 0.0427, 0.0427]
+      Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
-        0: 10758258179628656150
+        0: 5906284485229172943
       Visible: true
     MujocoSphereColliderComponent:
-      Density: 1130
+      Density: 368
       Radius: 0.5
       Friction: [1, 0.1, 0.01]
       Contype: 1
@@ -1357,21 +1357,21 @@ Entities:
   - Entity: 9746366683398954405
     Domain: Client
     TagComponent:
-      Tag: GolfBall_22
+      Tag: TennisBall_22
     Parent: 0
     Children:
       []
     TransformComponent:
-      Position: [-0.925, 0.0214, 3.8075]
+      Position: [-0.925, 0.0335, 3.8075]
       Rotation: [0, 0, 0]
-      Scale: [0.0427, 0.0427, 0.0427]
+      Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
-        0: 10758258179628656150
+        0: 5906284485229172943
       Visible: true
     MujocoSphereColliderComponent:
-      Density: 1130
+      Density: 368
       Radius: 0.5
       Friction: [1, 0.1, 0.01]
       Contype: 1
@@ -1550,21 +1550,21 @@ Entities:
   - Entity: 13129489785444233558
     Domain: Client
     TagComponent:
-      Tag: GolfBall_01
+      Tag: TennisBall_01
     Parent: 0
     Children:
       []
     TransformComponent:
-      Position: [3.2375, 0.0214, 1.585]
+      Position: [3.2375, 0.0335, 1.585]
       Rotation: [0, 0, 0]
-      Scale: [0.0427, 0.0427, 0.0427]
+      Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
-        0: 10758258179628656150
+        0: 5906284485229172943
       Visible: true
     MujocoSphereColliderComponent:
-      Density: 1130
+      Density: 368
       Radius: 0.5
       Friction: [1, 0.1, 0.01]
       Contype: 1
@@ -1588,21 +1588,21 @@ Entities:
   - Entity: 13196638502951336172
     Domain: Client
     TagComponent:
-      Tag: GolfBall_24
+      Tag: TennisBall_24
     Parent: 0
     Children:
       []
     TransformComponent:
-      Position: [0.12, 0.0214, -2.67]
+      Position: [0.12, 0.0335, -2.67]
       Rotation: [0, 0, 0]
-      Scale: [0.0427, 0.0427, 0.0427]
+      Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
-        0: 10758258179628656150
+        0: 5906284485229172943
       Visible: true
     MujocoSphereColliderComponent:
-      Density: 1130
+      Density: 368
       Radius: 0.5
       Friction: [1, 0.1, 0.01]
       Contype: 1
@@ -1626,21 +1626,21 @@ Entities:
   - Entity: 13219196278226597274
     Domain: Client
     TagComponent:
-      Tag: GolfBall_09
+      Tag: TennisBall_09
     Parent: 0
     Children:
       []
     TransformComponent:
-      Position: [-2.635, 0.0214, 2]
+      Position: [-2.635, 0.0335, 2]
       Rotation: [0, 0, 0]
-      Scale: [0.0427, 0.0427, 0.0427]
+      Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
-        0: 10758258179628656150
+        0: 5906284485229172943
       Visible: true
     MujocoSphereColliderComponent:
-      Density: 1130
+      Density: 368
       Radius: 0.5
       Friction: [1, 0.1, 0.01]
       Contype: 1
@@ -1664,21 +1664,21 @@ Entities:
   - Entity: 13632217528594285167
     Domain: Client
     TagComponent:
-      Tag: GolfBall_13
+      Tag: TennisBall_13
     Parent: 0
     Children:
       []
     TransformComponent:
-      Position: [0.9025, 0.0214, -2.045]
+      Position: [0.9025, 0.0335, -2.045]
       Rotation: [0, 0, 0]
-      Scale: [0.0427, 0.0427, 0.0427]
+      Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
-        0: 10758258179628656150
+        0: 5906284485229172943
       Visible: true
     MujocoSphereColliderComponent:
-      Density: 1130
+      Density: 368
       Radius: 0.5
       Friction: [1, 0.1, 0.01]
       Contype: 1
@@ -1737,21 +1737,21 @@ Entities:
   - Entity: 15517991742549953451
     Domain: Client
     TagComponent:
-      Tag: GolfBall_25
+      Tag: TennisBall_25
     Parent: 0
     Children:
       []
     TransformComponent:
-      Position: [1.34, 0.0214, 1.865]
+      Position: [1.34, 0.0335, 1.865]
       Rotation: [0, 0, 0]
-      Scale: [0.0427, 0.0427, 0.0427]
+      Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
-        0: 10758258179628656150
+        0: 5906284485229172943
       Visible: true
     MujocoSphereColliderComponent:
-      Density: 1130
+      Density: 368
       Radius: 0.5
       Friction: [1, 0.1, 0.01]
       Contype: 1
@@ -1813,21 +1813,21 @@ Entities:
   - Entity: 15816677538361509217
     Domain: Client
     TagComponent:
-      Tag: GolfBall_21
+      Tag: TennisBall_21
     Parent: 0
     Children:
       []
     TransformComponent:
-      Position: [2.195, 0.0214, -2.19]
+      Position: [2.195, 0.0335, -2.19]
       Rotation: [0, 0, 0]
-      Scale: [0.0427, 0.0427, 0.0427]
+      Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
-        0: 10758258179628656150
+        0: 5906284485229172943
       Visible: true
     MujocoSphereColliderComponent:
-      Density: 1130
+      Density: 368
       Radius: 0.5
       Friction: [1, 0.1, 0.01]
       Contype: 1
@@ -2027,21 +2027,21 @@ Entities:
   - Entity: 17168540220499114429
     Domain: Client
     TagComponent:
-      Tag: GolfBall_07
+      Tag: TennisBall_07
     Parent: 0
     Children:
       []
     TransformComponent:
-      Position: [0.25, 0.0214, 1.475]
+      Position: [0.25, 0.0335, 1.475]
       Rotation: [0, 0, 0]
-      Scale: [0.0427, 0.0427, 0.0427]
+      Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
-        0: 10758258179628656150
+        0: 5906284485229172943
       Visible: true
     MujocoSphereColliderComponent:
-      Density: 1130
+      Density: 368
       Radius: 0.5
       Friction: [1, 0.1, 0.01]
       Contype: 1
@@ -2081,21 +2081,21 @@ Entities:
   - Entity: 17276475515001353056
     Domain: Client
     TagComponent:
-      Tag: GolfBall_19
+      Tag: TennisBall_19
     Parent: 0
     Children:
       []
     TransformComponent:
-      Position: [-0.865, 0.0214, 2.6775]
+      Position: [-0.865, 0.0335, 2.6775]
       Rotation: [0, 0, 0]
-      Scale: [0.0427, 0.0427, 0.0427]
+      Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
-        0: 10758258179628656150
+        0: 5906284485229172943
       Visible: true
     MujocoSphereColliderComponent:
-      Density: 1130
+      Density: 368
       Radius: 0.5
       Friction: [1, 0.1, 0.01]
       Contype: 1
@@ -2151,21 +2151,21 @@ Entities:
   - Entity: 17849749303881500182
     Domain: Client
     TagComponent:
-      Tag: GolfBall_20
+      Tag: TennisBall_20
     Parent: 0
     Children:
       []
     TransformComponent:
-      Position: [-1.315, 0.0214, -3.965]
+      Position: [-1.315, 0.0335, -3.965]
       Rotation: [0, 0, 0]
-      Scale: [0.0427, 0.0427, 0.0427]
+      Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
-        0: 10758258179628656150
+        0: 5906284485229172943
       Visible: true
     MujocoSphereColliderComponent:
-      Density: 1130
+      Density: 368
       Radius: 0.5
       Friction: [1, 0.1, 0.01]
       Contype: 1
@@ -2220,21 +2220,21 @@ Entities:
   - Entity: 18127450234244442317
     Domain: Client
     TagComponent:
-      Tag: GolfBall_14
+      Tag: TennisBall_14
     Parent: 0
     Children:
       []
     TransformComponent:
-      Position: [-1.5025, 0.0214, -0.845]
+      Position: [-1.5025, 0.0335, -0.845]
       Rotation: [0, 0, 0]
-      Scale: [0.0427, 0.0427, 0.0427]
+      Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
-        0: 10758258179628656150
+        0: 5906284485229172943
       Visible: true
     MujocoSphereColliderComponent:
-      Density: 1130
+      Density: 368
       Radius: 0.5
       Friction: [1, 0.1, 0.01]
       Contype: 1
