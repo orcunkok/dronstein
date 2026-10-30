@@ -7,14 +7,14 @@ using Hazel;
 namespace Dronstein
 {
 	/// <summary>
-	/// Flies the Holybro X500 V2 with Dronstein's controller bindings (ControllerBindings.txt): LT climbs and RT descends
-	/// (swapped from Dronstein), the bumpers turn, and the left stick moves it, in one of two modes (x500_mode, B, switches):
+	/// Flies the Holybro X500 V2 with the controller (ControllerBindings.txt): LT climbs and RT descends, the bumpers turn,
+	/// and the left stick moves it, in one of two modes (x500_mode, B, switches):
 	/// - Loiter (default, ArduPilot's Loiter): the stick sets a speed (up to LOIT_SPEED); let go and it brakes and holds its spot.
 	/// - Manual (ArduPilot's AltHold): the stick sets the lean (up to ANGLE_MAX); let go and it levels but coasts.
 	/// Both hold the altitude. It starts disarmed: x500_arm (Y) arms and disarms it on the ground. x500_takeoff_rtl (Share)
 	/// takes off to TKOFF_ALT on the ground, and in the air returns home (where it was armed): up to RTL_ALT, over, down at
 	/// LAND_SPEED, then it disarms. Share again, B or any stick or trigger takes RTL back.
-	/// V switches the controller between the X500 and Dronstein; the camera (C) is DroneTeleop's.
+	/// The camera, the HUD and R (reset) are X500View's.
 	///
 	/// Two halves, both set by X500.param in the project folder:
 	/// - Motors(): the drone. Each motor's ESC command (0..1, as ArduPilot outputs it) becomes thrust through spin min/max,
@@ -22,15 +22,14 @@ namespace Dronstein
 	///   through six motors on its free joint. Tune SIM_* against the real drone's logs.
 	/// - Control(): a stand-in autopilot (angle P -> rate PID -> quad-X mix, climb rate -> altitude), with the gains from
 	///   ArduPilot's X500v2 frame file. An ArduPilot connection later only has to replace it and feed Motors() its commands.
-	/// The physics body is MJCF (Assets/Robots/X500V2/x500v2.mjcf, included by dronstein.xml): Lucky can't push a procedural
-	/// body (docs/needs-AddBodyForceWorld.md). This script's entity, the procedural mesh, is parented to that body's entity.
+	/// The physics body is MJCF (Assets/Robots/X500V2/x500v2.mjcf, included by the World entity's dronstein.xml): Lucky can't
+	/// push a procedural body (docs/needs-AddBodyForceWorld.md). This script's entity, the procedural mesh, is parented to
+	/// that body's entity.
 	/// Frames: MuJoCo world (z up); the body frame is FLU (x forward, y left, z up).
 	/// Attach to the HolybroX500V2 entity.
 	/// </summary>
 	public class X500Flight : Entity
 	{
-		/// True while the X500 has the controller (DroneTeleop then ignores it and shows the X500's mode on the HUD).
-		public static bool Piloted;
 		/// Loiter (true) or Manual; B switches it.
 		public static bool Loiter = true;
 		/// Armed (motors spin, it can fly) or disarmed; Y switches it on the ground. The HUD shows it.
@@ -52,8 +51,7 @@ namespace Dronstein
 		readonly Dictionary<string, float> P = new();
 		int m_Pad = -1;
 		float m_PadScan;
-		bool m_KeyV;
-		// ControllerBindings.txt, Dronstein's: an axis (Axis >= 0, Sign flips it) or a raw button bN.
+		// ControllerBindings.txt: an axis (Axis >= 0, Sign flips it) or a raw button bN.
 		readonly Dictionary<string, (int Axis, float Sign, int Raw)> m_Bindings = new();
 		float m_Deadzone = 0.1f;
 
@@ -85,10 +83,10 @@ namespace Dronstein
 			Loiter = true;
 			Armed = s_Rtl = s_Takeoff = false;
 			for (int i = 0; i < 4; i++) m_Props[i] = FindEntityByTag($"X500Prop{i + 1}");  // optional: no tag, no spin
-			Entity? scene = FindEntityByTag("Dronstein");
+			Entity? scene = FindEntityByTag("World");
 			if (scene == null)
 			{
-				Log.Error("X500Flight: needs the entity tagged Dronstein (its MuJoCo scene holds the X500); off");
+				Log.Error("X500Flight: needs the entity tagged World (its MuJoCo scene holds the X500); off");
 				m_Off = true;
 				return;
 			}
@@ -128,7 +126,7 @@ namespace Dronstein
 			}
 		}
 
-		// The same file and names DroneTeleop reads: forward_back, left_right, up, down, turn_left, turn_right, deadzone.
+		// The names it reads: forward_back, left_right, up, down, turn_left, turn_right, x500_*, camera_*, zoom_*, deadzone.
 		void LoadBindings()
 		{
 			string path = Path.GetFullPath(Path.Combine(Application.DataDirectoryPath!, "..", "ControllerBindings.txt"));
@@ -147,8 +145,6 @@ namespace Dronstein
 		protected override void OnUpdate(float frameDt)
 		{
 			if (m_Off) return;
-			if (Input.IsKeyDown(KeyCode.V) && !m_KeyV) Piloted = !Piloted;
-			m_KeyV = Input.IsKeyDown(KeyCode.V);
 			if (m_Pad >= 0 && !Input.IsControllerPresent(m_Pad)) m_Pad = -1;
 			if (m_Pad < 0 && (m_PadScan -= frameDt) <= 0f)
 			{
@@ -226,7 +222,7 @@ namespace Dronstein
 		void Control(float dt)
 		{
 			float pitch = Axis("forward_back"), roll = -Axis("left_right");  // left_right is positive to the left
-			float climb = (Held("down") ? P["PILOT_SPD_UP"] : 0f) - (Held("up") ? P["PILOT_SPD_DN"] : 0f);  // LT climbs, RT descends
+			float climb = (Held("up") ? P["PILOT_SPD_UP"] : 0f) - (Held("down") ? P["PILOT_SPD_DN"] : 0f);
 			float turn = (Held("turn_left") ? 1f : 0f) - (Held("turn_right") ? 1f : 0f);
 			BodyRotation(m_R);
 			float phi = MathF.Atan2(m_R[2, 1], m_R[2, 2]), theta = -MathF.Asin(Math.Clamp(m_R[2, 0], -1f, 1f));
@@ -398,22 +394,22 @@ namespace Dronstein
 
 		// ---------------------------------------------------------------- pilot
 
-		// The binding for `name`, while V has given the X500 the controller.
+		// The binding for `name`, while a controller is connected.
 		bool Bound(string name, out (int Axis, float Sign, int Raw) b)
 		{
 			b = default;
-			return Piloted && m_Pad >= 0 && m_Bindings.TryGetValue(name, out b);
+			return m_Pad >= 0 && m_Bindings.TryGetValue(name, out b);
 		}
 
-		// An analog axis (-1..1) with the deadzone, 0 when unbound.
-		float Axis(string name)
+		// An analog axis (-1..1) with the deadzone, 0 when unbound. X500View reads the camera's with it too.
+		public float Axis(string name)
 		{
 			float v = Bound(name, out var b) && b.Axis >= 0 ? Input.GetControllerAxis(m_Pad, b.Axis) * b.Sign : 0f;
 			return MathF.Abs(v) < m_Deadzone ? 0f : Math.Clamp(v, -1f, 1f);
 		}
 
 		// A button down, or an axis (a trigger) pushed past halfway.
-		bool Held(string name) => Bound(name, out var b)
+		public bool Held(string name) => Bound(name, out var b)
 			&& (b.Axis >= 0 ? Input.GetControllerAxis(m_Pad, b.Axis) * b.Sign > 0.5f : Input.IsControllerButtonDown(m_Pad, b.Raw));
 
 		// Went down this frame (down now, up last frame). Call once per name per frame.
@@ -444,7 +440,7 @@ namespace Dronstein
 			if ((m_LogTimer += dt) < 1f) return;
 			m_LogTimer = 0f;
 			float tilt = MathF.Acos(Math.Clamp(m_R[2, 2], -1f, 1f)) * 180f / MathF.PI;
-			Log.Info($"X500Flight: {ModeName}, {(Armed ? "armed" : "disarmed")}{(Piloted ? ", piloted" : "")} x={m_Q[m_Qpos]:F2} y={m_Q[m_Qpos + 1]:F2} " +
+			Log.Info($"X500Flight: {ModeName}, {(Armed ? "armed" : "disarmed")} x={m_Q[m_Qpos]:F2} y={m_Q[m_Qpos + 1]:F2} " +
 				$"v={MathF.Sqrt(m_V[m_Qvel] * m_V[m_Qvel] + m_V[m_Qvel + 1] * m_V[m_Qvel + 1]):F2} alt={m_Q[m_Qpos + 2]:F2} vz={m_V[m_Qvel + 2]:F2} " +
 				$"tilt={tilt:F1} thr={m_Thr:F2} thrust=[{m_Thrust[0]:F1} {m_Thrust[1]:F1} {m_Thrust[2]:F1} {m_Thrust[3]:F1}] dt={dt * 1000f:F1}ms");
 		}

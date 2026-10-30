@@ -10,9 +10,8 @@
 - Always build when you're done: after any script change reaches the user's checkout (edit, copy or branch switch), exit Play and `build_script_assembly`, so Lucky never runs a stale script.
 - While you are working, Lucky is yours: stop and start Play as much as you need, don't wait for the user. Entities can only be edited in Edit mode.
 - The user may not be watching the CLI and may use Lucky at the same time (e.g. a Play session you didn't start, or edits in the editor). If that gets in your way, carry on and alert them in your reply to leave Lucky alone while you work.
-- Test only a fresh build: exit Play, `build_script_assembly`, then enter Play. Before trusting any result, check `APP.log` has a `DroneTeleop: start` line *after* the latest `Build succeeded` line; if not, the old script is still running. Building or entering Play while Play runs doesn't restart it.
+- Test only a fresh build: exit Play, `build_script_assembly`, then enter Play. Before trusting any result, check `APP.log` has an `X500Flight: start` line *after* the latest `Build succeeded` line; if not, the old script is still running. Building or entering Play while Play runs doesn't restart it.
 - Read only the log lines written since your run started (note `wc -l` of `APP.log` first, or check the `start` line); the log also holds older runs and is reset when Lucky restarts.
-- Start a run with the dev command file: write e.g. `pick 14` or `pickall` to `LuckyEngine/Cache/nightrun_cmd.txt` (commands: `case "..."` in `DroneTeleop.cs`).
 - A result that doesn't change at all after a code change (same numbers to the last digit) most likely means a stale build: rebuild and re-check before concluding the change didn't work.
 - Script fields: set with `set_entity_property` (component `Script`). An empty `Material` field is not null in Play: Lucky fills it with a placeholder, so always assign it.
 - Save the scene: `authoring_state` (context_id), then `scene_authoring` inspect of the edited entity (fingerprint), then `authoring_save`.
@@ -29,12 +28,6 @@
 ## Keep it KISS
 - Don't add a state or phase where a return value does the job: a helper that returns true/false (or a result) is enough. Fewest states, smallest change that does what was asked, no extra modes or options.
 - Don't leave code or docs behind for removed states; delete them with the state.
-
-## Benchmark
-- When the user says "benchmark": run `pickall` on a fresh build (exit Play, `build_script_assembly`, enter Play, write `pickall` to `LuckyEngine/Cache/nightrun_cmd.txt`). Wait until `APP.log` has the `pickall seed=... end=done` line, and check the `DroneTeleop: start` line is after the latest `Build succeeded`.
-- Only record a run after it has ended. Use the `METRIC pick ball=... result=` lines of that run (`time=` field).
-- Write the record to `benchmarks/benchmark-YYYY-MM-DD-HHMM.md` and `benchmarks/granular/granular-YYYY-MM-HHMM.md` in same format as them.
-- Compare it with `benchmarks/benchmark_best.md`. If the new run looks better (more successful picks, or a lower average at the same success count), ask the user whether to overwrite `benchmark_best.md`. Overwrite it only after a yes.
 
 ## Talking to the user
 - "wrap up" means close as done with no summary.

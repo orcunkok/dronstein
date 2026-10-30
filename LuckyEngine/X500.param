@@ -1,5 +1,5 @@
-# Holybro X500 V2 in Lucky: physics and the stand-in autopilot (X500Flight.cs). The controller uses Dronstein's
-# ControllerBindings.txt; V on the keyboard switches it (and the camera) between the X500 and Dronstein.
+# Holybro X500 V2 in Lucky: physics and the stand-in autopilot (X500Flight.cs). The controller's buttons are in
+# ControllerBindings.txt.
 # Read when Play starts: edit, save, press Play again. Format: NAME value, # starts a comment.
 #
 # SIM_*  is the drone itself: change these to close the sim2real gap with logs of the real one.

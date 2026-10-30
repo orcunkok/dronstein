@@ -401,48 +401,6 @@ Entities:
       FrictionLoss: 0
       SpringRef: 0
       JointId: -1
-  - Entity: 613085265982155445
-    Domain: Client
-    TagComponent:
-      Tag: HudStepTime
-    Parent: 0
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [16, 16, 1]
-    TextComponent:
-      TextString: Manual
-      FontHandle: 15916378497832049985
-      Color: [1, 1, 1, 1]
-      LineSpacing: 0
-      Kerning: 0
-      MaxWidth: 10
-      ScreenSpace: true
-      DropShadow: false
-      ShadowDistance: 2
-      ShadowColor: [0, 0, 0, 0.75]
-  - Entity: 899892446410628203
-    Domain: Client
-    TagComponent:
-      Tag: geom_33
-    Parent: 7700112233445566778
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.502319, 0.425055, 0.000120759]
-      Rotation: [-1.56957, 3.14157, 1.49592]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 33
   - Entity: 944847631712787786
     Domain: Client
     TagComponent:
@@ -513,26 +471,6 @@ Entities:
       MaterialTable:
         0: 10640983446431700429
       Visible: true
-  - Entity: 1280380803168527019
-    Domain: Client
-    TagComponent:
-      Tag: geom_23
-    Parent: 7700112233445566778
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.568141, 0.443801, 0.0122989]
-      Rotation: [2.96086, 1.40667e-05, -1.57078]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 23
   - Entity: 1291263967692813110
     Domain: Client
     TagComponent:
@@ -549,72 +487,6 @@ Entities:
       MaterialTable:
         0: 17848236281465921337
       Visible: true
-  - Entity: 1293906443204992953
-    Domain: Client
-    TagComponent:
-      Tag: Upper_Arm
-    Parent: 7700112233445566778
-    Children:
-      []
-    TransformComponent:
-      Position: [0.8592, 0.421, 2.98023e-08]
-      Rotation: [-1.5708, 1.5708, 0]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 4
-  - Entity: 1606482729596044648
-    Domain: Client
-    TagComponent:
-      Tag: thrust3
-    Parent: 7700112233445566778
-    Children:
-      []
-    TransformComponent:
-      Position: [1.14, 0.58, -0.18]
-      Rotation: [-1.5708, 0, 0]
-      Scale: [1, 1, 1]
-    MujocoSiteComponent:
-      ID: 2
-  - Entity: 1643102014596316627
-    Domain: Client
-    TagComponent:
-      Tag: geom_10
-    Parent: 7700112233445566778
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.91959, 0.511557, -4.52995e-06]
-      Rotation: [-1.57165, -3.14156, 0.842799]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 10
-  - Entity: 1727890940780189663
-    Domain: Client
-    TagComponent:
-      Tag: geom_0
-    Parent: 7700112233445566778
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.995919, 0.562913, 0.000256479]
-      Rotation: [0.00152445, 3.14096, -1.52428]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 0
   - Entity: 1849911393853918678
     Domain: Client
     TagComponent:
@@ -637,26 +509,6 @@ Entities:
       Contype: 1
       Conaffinity: 1
       Condim: -1
-  - Entity: 1892745408070437724
-    Domain: Client
-    TagComponent:
-      Tag: geom_14
-    Parent: 7700112233445566778
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.8592, 0.432434, -0.000282139]
-      Rotation: [1.59564, -1.66893e-06, 3.14159]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 14
   - Entity: 1979815025508288610
     Domain: Client
     TagComponent:
@@ -695,39 +547,6 @@ Entities:
       FrictionLoss: 0
       SpringRef: 0
       JointId: -1
-  - Entity: 2628477173460188871
-    Domain: Client
-    TagComponent:
-      Tag: Base
-    Parent: 7700112233445566778
-    Children:
-      []
-    TransformComponent:
-      Position: [0.935, 0.54, 0]
-      Rotation: [1.5708, 1.5708, 0]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 2
-  - Entity: 2957686256262325711
-    Domain: Client
-    TagComponent:
-      Tag: geom_25
-    Parent: 7700112233445566778
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.522358, 0.454118, -0.00037095]
-      Rotation: [-1.54822, 1.43267, 1.23738]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 25
   - Entity: 3431107646684660533
     Domain: Client
     TagComponent:
@@ -804,26 +623,6 @@ Entities:
       FrictionLoss: 0
       SpringRef: 0
       JointId: -1
-  - Entity: 4143880066616063889
-    Domain: Client
-    TagComponent:
-      Tag: geom_11
-    Parent: 7700112233445566778
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.901234, 0.493782, 2.98023e-08]
-      Rotation: [-2.47513, 1.5708, 0.699836]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 11
   - Entity: 4349336411905971544
     Domain: Client
     TagComponent:
@@ -862,26 +661,6 @@ Entities:
       FrictionLoss: 0
       SpringRef: 0
       JointId: -1
-  - Entity: 4744146637183244673
-    Domain: Client
-    TagComponent:
-      Tag: geom_22
-    Parent: 7700112233445566778
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.584199, 0.443773, 0.00668463]
-      Rotation: [1.01934, -0.00022316, -1.57299]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 22
   - Entity: 4950325791438092324
     Domain: Client
     TagComponent:
@@ -952,79 +731,6 @@ Entities:
       FrictionLoss: 0
       SpringRef: 0
       JointId: -1
-  - Entity: 5218755313654649067
-    Domain: Client
-    TagComponent:
-      Tag: HudStepLast
-    Parent: 0
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [16, 16, 1]
-    TextComponent:
-      TextString: Manual
-      FontHandle: 15916378497832049985
-      Color: [1, 1, 1, 1]
-      LineSpacing: 0
-      Kerning: 0
-      MaxWidth: 10
-      ScreenSpace: true
-      DropShadow: false
-      ShadowDistance: 2
-      ShadowColor: [0, 0, 0, 0.75]
-  - Entity: 5622593848370521613
-    Domain: Client
-    TagComponent:
-      Tag: thrust4
-    Parent: 7700112233445566778
-    Children:
-      []
-    TransformComponent:
-      Position: [1.14, 0.58, 0.18]
-      Rotation: [-1.5708, 0, 0]
-      Scale: [1, 1, 1]
-    MujocoSiteComponent:
-      ID: 3
-  - Entity: 5937778657849165305
-    Domain: Client
-    TagComponent:
-      Tag: GripDot
-    Parent: 0
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0.002, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.03, 0.002, 0.03]
-    StaticMeshComponent:
-      AssetID: 16102727838158965090
-      MaterialTable:
-        0: 6658235089502020210
-      Visible: true
-  - Entity: 6706635258560106936
-    Domain: Client
-    TagComponent:
-      Tag: HudPickTime
-    Parent: 0
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [16, 16, 1]
-    TextComponent:
-      TextString: Manual
-      FontHandle: 15916378497832049985
-      Color: [1, 1, 1, 1]
-      LineSpacing: 0
-      Kerning: 0
-      MaxWidth: 10
-      ScreenSpace: true
-      DropShadow: false
-      ShadowDistance: 2
-      ShadowColor: [0, 0, 0, 0.75]
   - Entity: 6739932443237291449
     Domain: Client
     TagComponent:
@@ -1141,21 +847,6 @@ Entities:
       Contype: 1
       Conaffinity: 1
       Condim: -1
-  - Entity: 6960767089050731386
-    Domain: Client
-    TagComponent:
-      Tag: geom_9
-    Parent: 7700112233445566778
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [1, 0.52, 0]
-      Rotation: [-1.5708, 0, 0]
-      Scale: [1, 1, 1]
-    MujocoGeomComponent:
-      ID: 9
   - Entity: 7004567898520840787
     Domain: Client
     TagComponent:
@@ -1233,48 +924,6 @@ Entities:
       Contype: 1
       Conaffinity: 1
       Condim: -1
-  - Entity: 7391899378196828493
-    Domain: Client
-    TagComponent:
-      Tag: thrust1
-    Parent: 7700112233445566778
-    Children:
-      []
-    TransformComponent:
-      Position: [0.86, 0.55, 0.18]
-      Rotation: [-1.5708, 0, 0]
-      Scale: [1, 1, 1]
-    MujocoSiteComponent:
-      ID: 0
-  - Entity: 7409961345726181783
-    Domain: Client
-    TagComponent:
-      Tag: CenterDot
-    Parent: 0
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0.002, 0]
-      Rotation: [0, 0, 0]
-      Scale: [0.03, 0.002, 0.03]
-    StaticMeshComponent:
-      AssetID: 16102727838158965090
-      MaterialTable:
-        0: 12908204590787040828
-      Visible: true
-  - Entity: 7499538344652358896
-    Domain: Client
-    TagComponent:
-      Tag: Moving_Jaw
-    Parent: 7700112233445566778
-    Children:
-      []
-    TransformComponent:
-      Position: [0.527229, 0.423601, 1.19209e-07]
-      Rotation: [7.39098e-06, -6.19888e-06, -1.57081]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 8
   - Entity: 7688800538663923338
     Domain: Client
     TagComponent:
@@ -1316,74 +965,26 @@ Entities:
   - Entity: 7700112233445566778
     Domain: Client
     TagComponent:
-      Tag: Dronstein
+      Tag: World
     Parent: 0
     Children:
-      - Handle: 11942385757976946130
-      - Handle: 2628477173460188871
-      - Handle: 10892850024893457733
-      - Handle: 1293906443204992953
-      - Handle: 8180631812647079554
-      - Handle: 10316759420983325365
-      - Handle: 10263320536685914250
-      - Handle: 7499538344652358896
-      - Handle: 7391899378196828493
-      - Handle: 17231258961538200835
-      - Handle: 1606482729596044648
-      - Handle: 5622593848370521613
-      - Handle: 9780543589086383231
-      - Handle: 1727890940780189663
-      - Handle: 6960767089050731386
-      - Handle: 1643102014596316627
-      - Handle: 4143880066616063889
-      - Handle: 12642350721738557370
-      - Handle: 1892745408070437724
-      - Handle: 12266380472941636621
-      - Handle: 13762944032500234798
-      - Handle: 14089005846723813106
-      - Handle: 8974822692467021951
-      - Handle: 4744146637183244673
-      - Handle: 1280380803168527019
-      - Handle: 2957686256262325711
-      - Handle: 13917975551005028301
-      - Handle: 899892446410628203
       - Handle: 14339033916604750231
     TransformComponent:
       Position: [0, 0, 0]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     ScriptComponent:
-      ScriptID: 4272566980
-      ScriptName: Dronstein.DroneTeleop
+      ScriptID: 3186088707
+      ScriptName: Dronstein.X500View
       Fields:
-        - ID: 1312441785
-          Name: ArmSpeed
-          Type: Float
-          Value: 1
-        - ID: 3567393753
-          Name: PreciseScale
-          Type: Float
-          Value: 0.25
-        - ID: 3323187219
-          Name: MinHeight
-          Type: Float
-          Value: 0.2
-        - ID: 2380475451
+        - ID: 151196758
           Name: OrbitSpeed
           Type: Float
           Value: 0.005
-        - ID: 132042253
-          Name: GripperViewDistance
-          Type: Float
-          Value: 1
-        - ID: 3756933792
+        - ID: 4019031495
           Name: ZoomSpeed
           Type: Float
           Value: 1.5
-        - ID: 3700130581
-          Name: SelectedBallMaterial
-          Type: Material
-          Value: 2185301101015856168
     MujocoSceneComponent:
       MujocoScene: 2871429880033931469
   - Entity: 7742062062987136463
@@ -1484,19 +1085,6 @@ Entities:
       Contype: 1
       Conaffinity: 1
       Condim: -1
-  - Entity: 8180631812647079554
-    Domain: Client
-    TagComponent:
-      Tag: Lower_Arm
-    Parent: 7700112233445566778
-    Children:
-      []
-    TransformComponent:
-      Position: [0.74663, 0.449, 2.98023e-08]
-      Rotation: [-3.14159, 1.5708, 0]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 5
   - Entity: 8709777897174296560
     Domain: Client
     TagComponent:
@@ -1535,26 +1123,6 @@ Entities:
       Contype: 1
       Conaffinity: 1
       Condim: -1
-  - Entity: 8974822692467021951
-    Domain: Client
-    TagComponent:
-      Tag: geom_20
-    Parent: 7700112233445566778
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.623163, 0.4438, -0.000282317]
-      Rotation: [1.54588, 1.90735e-06, -1.5708]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 20
   - Entity: 9115307968006775001
     Domain: Client
     TagComponent:
@@ -1735,45 +1303,6 @@ Entities:
       FrictionLoss: 0
       SpringRef: 0
       JointId: -1
-  - Entity: 9780543589086383231
-    Domain: Client
-    TagComponent:
-      Tag: grasp_site
-    Parent: 7700112233445566778
-    Children:
-      []
-    TransformComponent:
-      Position: [0.448629, 0.443802, 0]
-      Rotation: [-3.14159, 6.19888e-06, 1.57079]
-      Scale: [1, 1, 1]
-    MujocoSiteComponent:
-      ID: 4
-  - Entity: 10263320536685914250
-    Domain: Client
-    TagComponent:
-      Tag: Fixed_Jaw
-    Parent: 7700112233445566778
-    Children:
-      []
-    TransformComponent:
-      Position: [0.551629, 0.443801, 2.98023e-08]
-      Rotation: [-3.14159, 6.19888e-06, 1.57079]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 7
-  - Entity: 10316759420983325365
-    Domain: Client
-    TagComponent:
-      Tag: Wrist_Pitch_Roll
-    Parent: 7700112233445566778
-    Children:
-      []
-    TransformComponent:
-      Position: [0.61173, 0.4438, 2.98023e-08]
-      Rotation: [1.57081, 1.5708, 0]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 6
   - Entity: 10341303050608521097
     Domain: Client
     TagComponent:
@@ -1812,57 +1341,6 @@ Entities:
       Contype: 1
       Conaffinity: 1
       Condim: -1
-  - Entity: 10830408277942220070
-    Domain: Client
-    TagComponent:
-      Tag: Tuning
-    Parent: 0
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    ScriptComponent:
-      ScriptID: 922608686
-      ScriptName: Dronstein.Tuning
-      Fields:
-        - ID: 503767480
-          Name: ShowReach
-          Type: Bool
-          Value: true
-        - ID: 354509072
-          Name: SpeedMode
-          Type: Int
-          Value: 2
-        - ID: 2160224974
-          Name: TopSpeed
-          Type: Float
-          Value: 0
-        - ID: 3085311765
-          Name: Speed
-          Type: Float
-          Value: 0
-        - ID: 2404956662
-          Name: GraspReach
-          Type: Float
-          Value: 0.65
-        - ID: 2948441558
-          Name: GraspAngle
-          Type: Float
-          Value: 45
-        - ID: 896224755
-          Name: Ball
-          Type: Int
-          Value: 9
-        - ID: 2239084412
-          Name: AutoMode
-          Type: Int
-          Value: 0
-        - ID: 972566898
-          Name: AutoOn
-          Type: Bool
-          Value: false
   - Entity: 10883897787002097870
     Domain: Client
     TagComponent:
@@ -1885,19 +1363,6 @@ Entities:
       Contype: 1
       Conaffinity: 1
       Condim: -1
-  - Entity: 10892850024893457733
-    Domain: Client
-    TagComponent:
-      Tag: Rotation_Pitch
-    Parent: 7700112233445566778
-    Children:
-      []
-    TransformComponent:
-      Position: [0.8898, 0.5235, 0]
-      Rotation: [-3.14159, 1.5708, 0]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 3
   - Entity: 11265511589165017837
     Domain: Client
     TagComponent:
@@ -1936,19 +1401,6 @@ Entities:
       Contype: 1
       Conaffinity: 1
       Condim: -1
-  - Entity: 11942385757976946130
-    Domain: Client
-    TagComponent:
-      Tag: x2
-    Parent: 7700112233445566778
-    Children:
-      []
-    TransformComponent:
-      Position: [1, 0.5, 2.98023e-08]
-      Rotation: [-1.5708, 0, 0]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 1
   - Entity: 12174914177517664916
     Domain: Client
     TagComponent:
@@ -1971,68 +1423,6 @@ Entities:
       Contype: 1
       Conaffinity: 1
       Condim: -1
-  - Entity: 12266380472941636621
-    Domain: Client
-    TagComponent:
-      Tag: geom_16
-    Parent: 7700112233445566778
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.800874, 0.420448, 0.000118643]
-      Rotation: [1.56286, -0.00317073, 1.58705]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 16
-  - Entity: 12636400378701213717
-    Domain: Client
-    TagComponent:
-      Tag: HudTask
-    Parent: 0
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [28, 28, 1]
-    TextComponent:
-      TextString: Manual
-      FontHandle: 15916378497832049985
-      Color: [1, 1, 1, 1]
-      LineSpacing: 0
-      Kerning: 0
-      MaxWidth: 10
-      ScreenSpace: true
-      DropShadow: false
-      ShadowDistance: 2
-      ShadowColor: [0, 0, 0, 0.75]
-  - Entity: 12642350721738557370
-    Domain: Client
-    TagComponent:
-      Tag: geom_13
-    Parent: 7700112233445566778
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.861819, 0.475106, 9.71258e-05]
-      Rotation: [-1.65331, 1.51798, -0.445183]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 13
   - Entity: 12910596875482974431
     Domain: Client
     TagComponent:
@@ -2204,66 +1594,6 @@ Entities:
       FrictionLoss: 0
       SpringRef: 0
       JointId: -1
-  - Entity: 13762944032500234798
-    Domain: Client
-    TagComponent:
-      Tag: geom_17
-    Parent: 7700112233445566778
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.74663, 0.437566, -0.000282377]
-      Rotation: [1.54585, 2.02656e-05, -3.14151]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 17
-  - Entity: 13917975551005028301
-    Domain: Client
-    TagComponent:
-      Tag: geom_26
-    Parent: 7700112233445566778
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.527229, 0.435035, -0.000217587]
-      Rotation: [-1.54589, 1.43051e-06, -1.19209e-05]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 26
-  - Entity: 14089005846723813106
-    Domain: Client
-    TagComponent:
-      Tag: geom_19
-    Parent: 7700112233445566778
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.682177, 0.448337, 0.00334299]
-      Rotation: [1.70497, -0.00697875, -1.55829]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 19
   - Entity: 14339033916604750231
     Domain: Client
     TagComponent:
@@ -2276,7 +1606,7 @@ Entities:
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
-      ID: 9
+      ID: 1
   - Entity: 14716781457493885884
     Domain: Client
     TagComponent:
@@ -2299,28 +1629,6 @@ Entities:
       Contype: 1
       Conaffinity: 1
       Condim: -1
-  - Entity: 14892106263772152344
-    Domain: Client
-    TagComponent:
-      Tag: HudPickLast
-    Parent: 0
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [16, 16, 1]
-    TextComponent:
-      TextString: Manual
-      FontHandle: 15916378497832049985
-      Color: [1, 1, 1, 1]
-      LineSpacing: 0
-      Kerning: 0
-      MaxWidth: 10
-      ScreenSpace: true
-      DropShadow: false
-      ShadowDistance: 2
-      ShadowColor: [0, 0, 0, 0.75]
   - Entity: 15517991742549953451
     Domain: Client
     TagComponent:
@@ -2435,28 +1743,6 @@ Entities:
       FrictionLoss: 0
       SpringRef: 0
       JointId: -1
-  - Entity: 15828775378323927743
-    Domain: Client
-    TagComponent:
-      Tag: HudSpeed
-    Parent: 0
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [28, 28, 1]
-    TextComponent:
-      TextString: M
-      FontHandle: 15916378497832049985
-      Color: [1, 1, 1, 1]
-      LineSpacing: 0
-      Kerning: 0
-      MaxWidth: 10
-      ScreenSpace: true
-      DropShadow: false
-      ShadowDistance: 2
-      ShadowColor: [0, 0, 0, 0.75]
   - Entity: 16033505588855615432
     Domain: Client
     TagComponent:
@@ -2671,19 +1957,6 @@ Entities:
       FrictionLoss: 0
       SpringRef: 0
       JointId: -1
-  - Entity: 17231258961538200835
-    Domain: Client
-    TagComponent:
-      Tag: thrust2
-    Parent: 7700112233445566778
-    Children:
-      []
-    TransformComponent:
-      Position: [0.86, 0.55, -0.18]
-      Rotation: [-1.5708, 0, 0]
-      Scale: [1, 1, 1]
-    MujocoSiteComponent:
-      ID: 1
   - Entity: 17276475515001353056
     Domain: Client
     TagComponent:
@@ -2738,50 +2011,6 @@ Entities:
       MaterialTable:
         0: 2116205926439990434
       Visible: true
-  - Entity: 17334527609164016768
-    Domain: Client
-    TagComponent:
-      Tag: HudBalls
-    Parent: 0
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [16, 16, 1]
-    TextComponent:
-      TextString: 0/25
-      FontHandle: 15916378497832049985
-      Color: [1, 1, 1, 1]
-      LineSpacing: 0
-      Kerning: 0
-      MaxWidth: 10
-      ScreenSpace: true
-      DropShadow: false
-      ShadowDistance: 2
-      ShadowColor: [0, 0, 0, 0.75]
-  - Entity: 17344206304150135598
-    Domain: Client
-    TagComponent:
-      Tag: HudTaskLabel
-    Parent: 0
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [21, 21, 1]
-    TextComponent:
-      TextString: TASK
-      FontHandle: 15916378497832049985
-      Color: [0.9, 0.93, 0.97, 1]
-      LineSpacing: 0
-      Kerning: 0.12
-      MaxWidth: 10
-      ScreenSpace: true
-      DropShadow: false
-      ShadowDistance: 2
-      ShadowColor: [0, 0, 0, 0.75]
   - Entity: 17849749303881500182
     Domain: Client
     TagComponent:
@@ -2838,10 +2067,6 @@ Entities:
       ScriptID: 3152592738
       ScriptName: Dronstein.X500Flight
       Fields:
-        - ID: 3230847861
-          Name: Piloted
-          Type: Bool
-          Value: false
         - ID: 4160428385
           Name: Loiter
           Type: Bool

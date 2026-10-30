@@ -1,51 +1,29 @@
-# Xbox controller bindings for DroneTeleop. Read when Play starts: edit, save, press Play again.
-# Everything here is on the controller. Fixed keys: Y next test-square waypoint, C camera on drone/gripper/selected ball, Q/E zoom, F start/stop autonomous action, right mouse drag orbits.
+# Xbox controller bindings for the Holybro X500 V2 (X500Flight, X500View). Read when Play starts: edit, save, press Play again.
+# Fixed keys: R resets the scene, Q/E zoom, right mouse drag orbits the camera.
 #
 # Numbers are axes (as Lucky reports this Xbox controller): 0 left stick X, 1 left stick Y, 2 right stick X,
 #   3 right stick Y, 4 left trigger, 5 right trigger. Triggers rest at -1.
 #   A minus flips the direction (pushing a stick up or left reads negative), e.g. -1.
-#   Where an action is on/off (up, down, turn, gripper), an axis counts when pushed past halfway.
-# Names are buttons: A B X Y LeftBumper RightBumper Start Guide LeftJoystick RightJoystick DPadUp DPadDown DPadLeft DPadRight
-# bN is raw button number N. This controller (the newer Xbox Wireless Controller, with the Share button, over Bluetooth)
-#   doesn't match Lucky's names, so every button here is raw:
-#   b0 A (and Share), b1 B, b3 X, b4 Y, b6 LB, b7 RB, b10 View, b11 Menu; the D-pad comes after the buttons: b15 up, b16 right, b17 down, b18 left.
-# If something is on the wrong stick or button, set log_axes = true: the log then prints every axis and
-# the buttons held (raw numbers and names), once a second, in /tmp/LuckyEngine/Logs/APP.log.
+#   Where an action is on/off (up, down, turn, zoom), an axis counts when pushed past halfway.
+# bN is raw button number N. This controller (the newer Xbox Wireless Controller, with the Share button, over Bluetooth):
+#   b0 A (and Share), b1 B, b3 X, b4 Y, b6 LB, b7 RB, b10 View, b11 Menu, b14 right stick click;
+#   the D-pad comes after the buttons: b15 up, b16 right, b17 down, b18 left.
 
-# Drone
+# Flight
 forward_back = -1            # left stick up/down (analog)
 left_right   = -0            # left stick left/right (analog)
-up           = 5             # right trigger
-down         = 4             # left trigger
+up           = 4             # left trigger: climb
+down         = 5             # right trigger: descend
 turn_left    = b6            # LB
 turn_right   = b7            # RB
-precise      = b11           # Menu button: quarter speed on/off
-speed        = b0            # Share (middle) button: slow -> medium -> fast; this controller reports Share as b0, same as A
 deadzone     = 0.15          # stick values below this count as 0
 
-# Arm
-arm_turn        = -2         # right stick left/right: shoulder_pan (analog)
-arm_joint       = -3         # right stick up/down: the selected joint (analog)
-select_shoulder = b3         # X: shoulder_lift on the right stick up/down
-select_elbow    = b4         # Y: elbow_flex
-select_wrist    = b1         # B: wrist_flex
-roll_left       = b18        # D-pad left: wrist_roll
-roll_right      = b16        # D-pad right
-gripper_open    = b15        # D-pad up
-gripper_close   = b17        # D-pad down
-deploy          = b10        # View button: deploy / stow the arm
-
-# Camera: the right stick and D-pad move it while the X500 is flown (V), and for Dronstein after camera_toggle.
-# A can't be the toggle: this controller reports A as b0, the same as Share (speed, and the X500's Loiter/Manual).
-camera_toggle   = b14        # right stick click: Dronstein's right stick and D-pad switch between the arm and the camera
-camera_yaw      = 2          # right stick left/right: orbit around
-camera_pitch    = -3         # right stick up/down: orbit up/down
-zoom_in         = b15        # D-pad up
-zoom_out        = b17        # D-pad down
-
-# Holybro X500 (read by X500Flight only; Dronstein ignores the controller while V gives it to the X500)
 x500_arm         = b4        # Y: arm / disarm, on the ground
 x500_mode        = b1        # B: Loiter <-> Manual (also takes RTL back)
 x500_takeoff_rtl = b0        # Share: takeoff on the ground, return home in the air (press again to take it back). A is b0 too
 
-log_axes = false
+# Camera
+camera_yaw   = 2             # right stick left/right: orbit around
+camera_pitch = -3            # right stick up/down: orbit up/down
+zoom_in      = b15           # D-pad up
+zoom_out     = b17           # D-pad down
