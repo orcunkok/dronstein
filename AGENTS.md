@@ -24,6 +24,7 @@
 - Use `create_entity` + `add_component` instead of `create_game_object` (which writes a junk `<Name>_Material.hmaterial`).
 - A movable object made of several colliders (e.g. `TrashCan`): put a free `MujocoJoint` **and a collider** on an unscaled parent, then parent the pieces under it; they become one rigid body. A joint on a parent with no collider is ignored (stays world/static).
 - Xbox controller in Lucky (checked in its log): A and Share both arrive as raw button 0, so they can't be bound to different actions; B = 1, X = 3, Y = 4, View = 10, Menu = 11. Don't promise a separate Share binding.
+- The X500's and the claw's MuJoCo geometry is generated (`Assets/Robots/X500V2/x500v2.mjcf` by `tools/x500v2/build_x500v2.py`, the claw's parts from `tools/claw/claw_physics.py`): change those, not the file, and keep the claw's height (`CLAW_POS`) equal to the scene's Claw entity Translation. Its frame is the Pod model turned half a turn, like the scene's `HolybroX500V2`. In MJCF, hinge ranges are in degrees. `GetActuator` doesn't return the claw's position servos: drive them with `GetActuatorIndex` + `SetCtrlByIndex`, and read hinge angles from `GetFullQpos` (`GetJointPosition` returned nothing useful).
 - A loaded material is cached: editing its `.hmaterial` won't reload it. Write it once under a new name before first load.
 
 ## Keep it KISS

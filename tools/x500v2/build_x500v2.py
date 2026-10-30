@@ -20,8 +20,13 @@ Under the frame the dual rails carry Holybro's platform board at the front (the 
 puck) and the battery mounting board under the centre, with the battery strapped under it (Holybro's X500 V2
 assembly guide).
 
-Frame: Pod/Lucky, Y up, +X forward (front arms at +X), sides along Z, metres. The MJCF body frame is the same frame
-turned to MuJoCo's Z up: x forward, y left, z up. Origin is the frame centre, half way between the two plates.
+Frame: Pod/Lucky, Y up, +X toward the payload board, GPS and claw, sides along Z, metres. The scene turns the model
+half a turn about the vertical (the HolybroX500V2 entity, Rotation 90 0 180), so those face the tail. The MJCF body
+frame is the Pod frame turned that way and to MuJoCo's Z up: x forward (Pod -X), y left (Pod Z), z up (Pod Y). Origin
+is the frame centre, half way between the two plates.
+
+The Hiwonder claw (tools/claw) hangs under the payload board: its look is the scene's Claw entity, its physics is
+built in here from the same numbers (CLAW_POS below, claw_physics.py).
 
 Sources:
 - Holybro X500 V2 spec: 500 mm wheelbase, 144x144x2 mm plates 28 mm apart,
@@ -39,9 +44,17 @@ from pathlib import Path
 
 from pod_authoring import Literal, McpSession
 
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "claw"))
+from claw_physics import claw_mjcf  # noqa: E402
+
 ENDPOINT = "http://127.0.0.1:19331/mcp"
 BODY = "x500v2"
 SPAWN = (-5.0, 0.0, 0.2423)   # MuJoCo world: resting on the ground (no drop: it twists landing), clear of the tennis balls
+# The claw's origin (its pivots) in the Pod frame: the scene's Claw entity Translation, with Rotation 0 90 0 (the
+# fingers open across the drone). x is the payload board's centre. y is as low as the closed fingertips clear the ground
+# (the pivots 0.1123 m above it when landed; lower and they lift the X500 off its skids), found by landing the X500 on a
+# tennis ball, closing the claw and lifting: the ball is held at every height from -0.14 to -0.115.
+CLAW_POS = (0.1015, -0.13, 0.0)
 
 
 def mat(r, g, b, metal, rough):
@@ -138,7 +151,7 @@ def quat_xyzw(r):
 
 
 IDENTITY = [[1.0, 0.0, 0.0], [0.0, 1.0, 0.0], [0.0, 0.0, 1.0]]
-TO_MJ = [[1.0, 0.0, 0.0], [0.0, 0.0, -1.0], [0.0, 1.0, 0.0]]   # Pod (x, y, z) -> MJCF body (x, -z, y)
+TO_MJ = [[-1.0, 0.0, 0.0], [0.0, 0.0, 1.0], [0.0, 1.0, 0.0]]   # Pod (x, y, z) -> MJCF body (-x, z, y): the model is turned half a turn
 
 
 def to_mj(p):
@@ -362,15 +375,21 @@ def mjcf(colliders):
     """The X500's MuJoCo body and the six motors X500Flight.cs sets: force along world x/y/z (N) and torque about
     the body's x/y/z (N m). Collision geoms are invisible: the procedural mesh is the look."""
     # fluidcoef 0 turns MuJoCo's own air drag (dronstein.xml sets density) off: X500Flight.cs owns the X500's drag.
-    geoms = "\n".join(f"      {g[:-2]} group=\"3\" rgba=\"0 0 0 0\" fluidshape=\"ellipsoid\" fluidcoef=\"0 0 0 0 0\"/>"
-                       for g in colliders)
+    def collider(g, indent):
+        return f"{indent}{g[:-2]} group=\"3\" rgba=\"0 0 0 0\" fluidshape=\"ellipsoid\" fluidcoef=\"0 0 0 0 0\"/>"
+
+    claw_geoms, claw_fingers, claw_servos = claw_mjcf(CLAW_POS, to_mj, BODY)
+    geoms = "\n".join(collider(g, "      ") for g in colliders + claw_geoms)
+    fingers = "".join(f"\n      {tag}\n        {joint}\n" + "\n".join(collider(g, "        ") for g in parts) +
+                      "\n      </body>" for tag, joint, parts in claw_fingers)
     axes = ("fx", "1 0 0 0 0 0"), ("fy", "0 1 0 0 0 0"), ("fz", "0 0 1 0 0 0"), \
            ("tx", "0 0 0 1 0 0"), ("ty", "0 0 0 0 1 0"), ("tz", "0 0 0 0 0 1")
     motors = "\n".join(f'    <motor name="{BODY}_{n}" joint="{BODY}_free" gear="{g}" ctrllimited="false"/>' for n, g in axes)
+    servos = "".join(f"\n    {s}" for s in claw_servos)
     return (f"<!-- Holybro X500 V2 physics, written by tools/x500v2/build_x500v2.py: edit that, not this. -->\n"
             f"<mujoco>\n  <worldbody>\n    <body name=\"{BODY}\" pos=\"{fmt(SPAWN)}\">\n"
-            f"      <freejoint name=\"{BODY}_free\"/>\n{geoms}\n    </body>\n  </worldbody>\n"
-            f"  <actuator>\n{motors}\n  </actuator>\n</mujoco>\n")
+            f"      <freejoint name=\"{BODY}_free\"/>\n{geoms}{fingers}\n    </body>\n  </worldbody>\n"
+            f"  <actuator>\n{motors}{servos}\n  </actuator>\n</mujoco>\n")
 
 
 def main():

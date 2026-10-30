@@ -23,7 +23,7 @@
   </default>
   <include file="../X500V2/x500v2.mjcf"/>
   <worldbody>
-    <body name="TennisBall_01" pos="3.2375 -1.585 0.0335">
+    <body name="TennisBall_01" pos="-5.1015 0 0.0335">
       <freejoint/>
       <inertial pos="0 0 0" mass="0.058" diaginertia="4.34e-5 4.34e-5 4.34e-5"/>
       <geom class="tennis_ball"/>

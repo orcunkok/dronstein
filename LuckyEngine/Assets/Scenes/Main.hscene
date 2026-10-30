@@ -243,7 +243,7 @@ Entities:
       - Handle: 12157374869143816941
       - Handle: 18435202741007044140
     TransformComponent:
-      Position: [0.1015, -0.0692, 0]
+      Position: [0.1015, -0.13, 0]
       Rotation: [0, 1.5708, 0]
       Scale: [1, 1, 1]
     ScriptComponent:
@@ -1548,7 +1548,7 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [-0.012, 0, 0]
+      Position: [-0.0128, 0, 0]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     PodComponent:
@@ -1778,7 +1778,7 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [-6.1465, 0.438591, -0.900949]
+      Position: [-6.1465, 0.43849, -0.900949]
       Rotation: [-0.133881, 4.04635, 0]
       Scale: [1, 1, 1]
     CameraComponent:
@@ -2220,7 +2220,7 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [0.012, 0, 0]
+      Position: [0.0128, 0, 0]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     PodComponent:

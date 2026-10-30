@@ -55,11 +55,16 @@ Top right: **CAMERA** (X500 V2, Follow or Gripper), and **MODE** (Loiter, Manual
 - Checkered ground: each tile is 1 m.
 - Tennis balls and a trash can: props you can push around with the drone or drag with the mouse (Force Tool).
 - Blue dots: a test square of waypoints, flown with keyboard Y (calibration).
+- A tennis ball waits under the claw (the claw starts open): land, close the claw (O, or A then the right stick), take off with Menu, and the ball comes with you.
+
+## The claw
+The Hiwonder claw under the payload board is physical, in the same MuJoCo body as the drone: two hinged fingers, each pushed shut by a servo with a torque limit (1.5 N m), so it collides with the ground, the balls and everything else, and a ball stops the fingers and is squeezed. What you see follows the physics. Its parts are made by `tools/x500v2/build_x500v2.py` (with `tools/claw/claw_physics.py`, from the same numbers as the claw's look, `tools/claw/claw_shape.py`) into `Assets/Robots/X500V2/x500v2.mjcf`: change the claw's height (`CLAW_POS`) there and in the scene's Claw entity. The closed fingertips are as low as the claw can hang without lifting the X500 off its skids.
 
 ## Tuning it to the real drone
 Everything about it is in `LuckyEngine/X500.param`: the drone (`SIM_*`: thrust, motor lag, yaw, drag), the motors (`MOT_*`) and the autopilot's gains (ArduPilot's X500v2 frame file) and limits. Change `SIM_*` to match logs of the real drone. `tools/x500v2/build_x500v2.py` builds its look and its physics.
 
 ## Latest changes
+- **The claw grips:** a physical claw (fingers, servos, collisions) under the payload board, lowered so a landed X500 can close it on a tennis ball and lift it. The X500's own physics file is now turned half a turn, to match its model (payload board, GPS and claw at the tail).
 - **Y calibration is back:** in the air, keyboard Y flies the X500 around the blue test square, one corner per press (Calib n/4, yellow).
 - **X500 only:** the Skydio X2 with its SO-100 arm, its autonomous picking and the Tuning panel are gone. The controller always flies the X500; LT climbs and RT descends.
 - **X500 arming, takeoff and RTL:** Y arms / disarms, Menu takes off (0.5 m) or returns home (RTL), B switches Loiter / Manual; the screen shows Armed / Disarmed next to MODE, and the props spin.
