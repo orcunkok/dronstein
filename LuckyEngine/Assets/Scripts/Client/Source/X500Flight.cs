@@ -182,9 +182,10 @@ namespace Dronstein
 				string[] f = raw.Split('#')[0].Split('=');
 				if (f.Length != 2) continue;
 				string name = f[0].Trim(), value = f[1].Trim();
-				if (name == "deadzone") float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out m_Deadzone);
+				if (name == "deadzone") { if (float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out float dz)) m_Deadzone = dz; }
 				else if (int.TryParse(value.TrimStart('-'), out int axis)) m_Bindings[name] = (axis, value.StartsWith('-') ? -1f : 1f, -1);
 				else if (value.StartsWith('b') && int.TryParse(value[1..], out int button)) m_Bindings[name] = (-1, 1f, button);
+				else Log.Info($"X500Flight: '{value}' for {name} is not an axis or a bN button, ignored");
 			}
 		}
 
@@ -279,7 +280,7 @@ namespace Dronstein
 			if (Pressed("x500_arm") && grounded)  // Y: arm / disarm, on the ground only
 			{
 				Armed = !Armed;
-				(m_HomeX, m_HomeY) = (x, y);
+				if (Armed) (m_HomeX, m_HomeY) = (x, y);
 				Log.Info($"X500Flight: {(Armed ? "armed" : "disarmed")}");
 			}
 			if (Pressed("x500_mode"))  // B: Loiter <-> Manual, and takes RTL / takeoff back
@@ -313,6 +314,7 @@ namespace Dronstein
 				(m_PosX, m_PosY, m_VelX, m_VelY) = (x, y, 0f, 0f);
 				Array.Clear(m_I);
 				Array.Clear(m_D);
+				Array.Clear(m_DErr);
 				for (int i = 0; i < 4; i++) m_Cmd[i] = Armed ? m_SpinMin : 0f;  // armed: idle (no thrust yet)
 				return;
 			}
