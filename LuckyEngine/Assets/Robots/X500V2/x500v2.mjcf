@@ -78,11 +78,11 @@
       <geom name="x500v2_end_cap_right_0" type="cylinder" size="0.0055" fromto="-0.112 -0.1326 -0.2322 -0.1268 -0.1326 -0.2322" density="1100" group="3" rgba="0 0 0 0" fluidshape="ellipsoid" fluidcoef="0 0 0 0 0"/>
       <geom name="x500v2_foam_right_1" type="cylinder" size="0.01" fromto="0.112 -0.1326 -0.2322 0.022 -0.1326 -0.2322" density="250" group="3" rgba="0 0 0 0" fluidshape="ellipsoid" fluidcoef="0 0 0 0 0"/>
       <geom name="x500v2_end_cap_right_1" type="cylinder" size="0.0055" fromto="0.112 -0.1326 -0.2322 0.1268 -0.1326 -0.2322" density="1100" group="3" rgba="0 0 0 0" fluidshape="ellipsoid" fluidcoef="0 0 0 0 0"/>
-      <geom name="x500v2_claw_back_plate" type="box" size="0.0285 0.001 0.025" pos="-0.1015 0 -0.1076" quat="-0.5 -0.5 0.5 0.5" density="2700" group="3" rgba="0 0 0 0" fluidshape="ellipsoid" fluidcoef="0 0 0 0 0"/>
-      <geom name="x500v2_claw_flange_0" type="box" size="0.0285 0.01675 0.001" pos="-0.0775 0 -0.12535" quat="-0.5 -0.5 0.5 0.5" density="2700" group="3" rgba="0 0 0 0" fluidshape="ellipsoid" fluidcoef="0 0 0 0 0"/>
-      <geom name="x500v2_claw_flange_1" type="box" size="0.0285 0.01675 0.001" pos="-0.1255 0 -0.12535" quat="-0.5 -0.5 0.5 0.5" density="2700" group="3" rgba="0 0 0 0" fluidshape="ellipsoid" fluidcoef="0 0 0 0 0"/>
-      <geom name="x500v2_claw_servo" type="box" size="0.02725 0.01 0.02025" pos="-0.1015 0 -0.1225" quat="-0.5 -0.5 0.5 0.5" density="1500" group="3" rgba="0 0 0 0" fluidshape="ellipsoid" fluidcoef="0 0 0 0 0"/>
-      <body name="x500v2_claw_l" pos="-0.1015 0.0128 -0.13" quat="0.807475 0.589901 0 0">
+      <geom name="x500v2_claw_back_plate" type="box" size="0.0285 0.001 0.025" pos="-0.1015 0 -0.1049" quat="-0.5 -0.5 0.5 0.5" density="2700" group="3" rgba="0 0 0 0" fluidshape="ellipsoid" fluidcoef="0 0 0 0 0"/>
+      <geom name="x500v2_claw_flange_0" type="box" size="0.0285 0.01675 0.001" pos="-0.0775 0 -0.12265" quat="-0.5 -0.5 0.5 0.5" density="2700" group="3" rgba="0 0 0 0" fluidshape="ellipsoid" fluidcoef="0 0 0 0 0"/>
+      <geom name="x500v2_claw_flange_1" type="box" size="0.0285 0.01675 0.001" pos="-0.1255 0 -0.12265" quat="-0.5 -0.5 0.5 0.5" density="2700" group="3" rgba="0 0 0 0" fluidshape="ellipsoid" fluidcoef="0 0 0 0 0"/>
+      <geom name="x500v2_claw_servo" type="box" size="0.02725 0.01 0.02025" pos="-0.1015 0 -0.1198" quat="-0.5 -0.5 0.5 0.5" density="1500" group="3" rgba="0 0 0 0" fluidshape="ellipsoid" fluidcoef="0 0 0 0 0"/>
+      <body name="x500v2_claw_l" pos="-0.1015 0.0128 -0.1273" quat="0.807475 0.589901 0 0">
         <joint name="x500v2_claw_l_hinge" type="hinge" axis="1 0 0" range="-72.3 0" damping="0.002" armature="0.0001"/>
         <geom name="x500v2_claw_l_plate_0" type="box" size="0.001 0.006 0.00350334" pos="0.029 -2.22463e-05 -0.00300326" quat="0 0 0.999993 -0.00370363" density="2700" group="3" rgba="0 0 0 0" fluidshape="ellipsoid" fluidcoef="0 0 0 0 0"/>
         <geom name="x500v2_claw_l_plate_1" type="box" size="0.001 0.00606667 0.00350426" pos="0.029 -0.000141737 -0.0090092" quat="0 0 0.999869 -0.0161865" density="2700" group="3" rgba="0 0 0 0" fluidshape="ellipsoid" fluidcoef="0 0 0 0 0"/>
@@ -159,7 +159,7 @@
         <geom name="x500v2_claw_l_tip_72" type="cylinder" size="0.0053" fromto="0.03 -0.0073 -0.1077 0.028 -0.0073 -0.1077" density="2700" group="3" rgba="0 0 0 0" fluidshape="ellipsoid" fluidcoef="0 0 0 0 0"/>
         <geom name="x500v2_claw_l_tip_73" type="cylinder" size="0.0053" fromto="-0.028 -0.0073 -0.1077 -0.03 -0.0073 -0.1077" density="2700" group="3" rgba="0 0 0 0" fluidshape="ellipsoid" fluidcoef="0 0 0 0 0"/>
       </body>
-      <body name="x500v2_claw_r" pos="-0.1015 -0.0128 -0.13" quat="0.807475 -0.589901 0 0">
+      <body name="x500v2_claw_r" pos="-0.1015 -0.0128 -0.1273" quat="0.807475 -0.589901 0 0">
         <joint name="x500v2_claw_r_hinge" type="hinge" axis="-1 0 0" range="-72.3 0" damping="0.002" armature="0.0001"/>
         <geom name="x500v2_claw_r_plate_0" type="box" size="0.001 0.006 0.00350334" pos="0.029 2.22463e-05 -0.00300326" quat="0 0 0.999993 0.00370363" density="2700" group="3" rgba="0 0 0 0" fluidshape="ellipsoid" fluidcoef="0 0 0 0 0"/>
         <geom name="x500v2_claw_r_plate_1" type="box" size="0.001 0.00606667 0.00350426" pos="0.029 0.000141737 -0.0090092" quat="0 0 0.999869 0.0161865" density="2700" group="3" rgba="0 0 0 0" fluidshape="ellipsoid" fluidcoef="0 0 0 0 0"/>

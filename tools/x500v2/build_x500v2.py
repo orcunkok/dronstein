@@ -51,10 +51,10 @@ ENDPOINT = "http://127.0.0.1:19331/mcp"
 BODY = "x500v2"
 SPAWN = (-5.0, 0.0, 0.2423)   # MuJoCo world: resting on the ground (no drop: it twists landing), clear of the tennis balls
 # The claw's origin (its pivots) in the Pod frame: the scene's Claw entity Translation, with Rotation 0 90 0 (the
-# fingers open across the drone). x is the payload board's centre. y is as low as the closed fingertips clear the ground
-# (the pivots 0.1123 m above it when landed; lower and they lift the X500 off its skids), found by landing the X500 on a
-# tennis ball, closing the claw and lifting: the ball is held at every height from -0.14 to -0.115.
-CLAW_POS = (0.1015, -0.13, 0.0)
+# fingers open across the drone). x is the payload board's centre. y puts the closed fingertips (113 mm below the
+# pivots) 2 mm above the ground when landed (the pivots 0.115 m above it; lower and they lift the X500 off its skids).
+# A tennis ball is held at every height from -0.14 to -0.115.
+CLAW_POS = (0.1015, -0.1273, 0.0)
 
 
 def mat(r, g, b, metal, rough):

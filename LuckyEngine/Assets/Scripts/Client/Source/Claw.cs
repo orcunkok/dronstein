@@ -5,7 +5,7 @@ namespace Dronstein
 {
 	/// <summary>
 	/// The Hiwonder wave-edge claw (tools/claw): O (or the Open and Close buttons, or the gripper stick, X500View) opens or
-	/// closes it. It is physical: two hinged fingers in the X500's MuJoCo body (x500v2.mjcf, made by
+	/// closes it, and R (the scene reset) opens it again. It is physical: two hinged fingers in the X500's MuJoCo body (x500v2.mjcf, made by
 	/// tools/x500v2/build_x500v2.py with tools/claw/claw_physics.py), each pushed to the target by a servo with a torque
 	/// limit, so a ball stops the fingers and is squeezed with that torque. The fingers drawn here follow the physics.
 	/// Attach to the Claw entity; its children tagged ClawFingerL and ClawFingerR are the fingers, mirror images of
@@ -29,6 +29,7 @@ namespace Dronstein
 		uint m_ServoL, m_ServoR, m_QposL, m_QposR;  // the servos' actuator numbers and the joints' places in the position array
 		float[] m_Q = Array.Empty<float>();
 		float m_Angle, m_Target;  // degrees open, the servos' target and where it is going: 0 closed; starts fully open
+		double m_LastTime = -1;  // the simulation clock at the last update: it goes backwards when the scene is reset (R)
 		bool m_KeyO;
 
 		[Button("Open")]
@@ -69,6 +70,9 @@ namespace Dronstein
 		protected override void OnUpdate(float dt)
 		{
 			if (m_Mj == null || !FindServos()) return;
+			double now = m_Mj.MujocoTime;
+			if (now < m_LastTime) m_Angle = m_Target = OpenAngle;  // the scene was reset: the physics' fingers are open again
+			m_LastTime = now;
 			bool o = Input.IsKeyDown(KeyCode.O);
 			if (o && !m_KeyO) m_Target = m_Target > 0f ? 0f : OpenAngle;  // O: fully open <-> fully closed
 			m_KeyO = o;

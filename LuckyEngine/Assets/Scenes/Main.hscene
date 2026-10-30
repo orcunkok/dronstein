@@ -243,7 +243,7 @@ Entities:
       - Handle: 12157374869143816941
       - Handle: 18435202741007044140
     TransformComponent:
-      Position: [0.1015, -0.13, 0]
+      Position: [0.1015, -0.1273, 0]
       Rotation: [0, 1.5708, 0]
       Scale: [1, 1, 1]
     ScriptComponent:
@@ -270,7 +270,7 @@ Entities:
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
-      ID: 6
+      ID: 8
   - Entity: 344505556118670621
     Domain: Client
     TagComponent:
@@ -283,7 +283,7 @@ Entities:
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
-      ID: 3
+      ID: 5
   - Entity: 351442425693542831
     Domain: Client
     TagComponent:
@@ -414,7 +414,7 @@ Entities:
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
-      ID: 5
+      ID: 7
   - Entity: 756123043266677426
     Domain: Client
     TagComponent:
@@ -423,9 +423,9 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [-5.125, 0.004, 0]
+      Position: [-5.125, -0.0001, 0]
       Rotation: [0, 0, 0]
-      Scale: [0.05, 0.002, 0.4]
+      Scale: [0.05, 0.0001, 0.4]
     StaticMeshComponent:
       AssetID: 4512471431298144687
       MaterialTable:
@@ -491,7 +491,7 @@ Entities:
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
-      ID: 12
+      ID: 14
   - Entity: 1223973736405521014
     Domain: Client
     TagComponent:
@@ -532,7 +532,7 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [0, 0, 0]
+      Position: [0, -0.0004, 0]
       Rotation: [0, 0, 0]
       Scale: [29.601, 0.986701, 29.601]
     StaticMeshComponent:
@@ -574,7 +574,7 @@ Entities:
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
-      ID: 13
+      ID: 15
   - Entity: 1980241222855773941
     Domain: Client
     TagComponent:
@@ -653,9 +653,9 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [-5, 0.007, 0]
+      Position: [-5, 0.0001, 0]
       Rotation: [0, 0, 0]
-      Scale: [0.03, 0.002, 0.03]
+      Scale: [0.03, 0.0001, 0.03]
     StaticMeshComponent:
       AssetID: 16102727838158965090
       MaterialTable:
@@ -737,7 +737,7 @@ Entities:
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
-      ID: 17
+      ID: 19
   - Entity: 4349336411905971544
     Domain: Client
     TagComponent:
@@ -750,7 +750,7 @@ Entities:
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
-      ID: 24
+      ID: 26
   - Entity: 4385618058133689853
     Domain: Client
     TagComponent:
@@ -767,6 +767,19 @@ Entities:
       PodGraph: 2996374436668055911
       MaterialTable:
         0: 0
+  - Entity: 4656342592927566935
+    Domain: Client
+    TagComponent:
+      Tag: x500v2_claw_r
+    Parent: 7700112233445566778
+    Children:
+      []
+    TransformComponent:
+      Position: [-5.1015, 0.1123, 0.0128]
+      Rotation: [-2.83267, 0, 0]
+      Scale: [1, 1, 1]
+    MujocoBodyComponent:
+      ID: 3
   - Entity: 4950325791438092324
     Domain: Client
     TagComponent:
@@ -875,7 +888,7 @@ Entities:
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
-      ID: 16
+      ID: 18
   - Entity: 5375270654777870840
     Domain: Client
     TagComponent:
@@ -948,9 +961,9 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [-4.875, 0.004, 0]
+      Position: [-4.875, -0.0001, 0]
       Rotation: [0, 0, 0]
-      Scale: [0.05, 0.002, 0.4]
+      Scale: [0.05, 0.0001, 0.4]
     StaticMeshComponent:
       AssetID: 4512471431298144687
       MaterialTable:
@@ -986,7 +999,7 @@ Entities:
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
-      ID: 7
+      ID: 9
   - Entity: 6859745199138401194
     Domain: Client
     TagComponent:
@@ -999,7 +1012,7 @@ Entities:
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
-      ID: 11
+      ID: 13
   - Entity: 6887470786088073126
     Domain: Client
     TagComponent:
@@ -1127,7 +1140,7 @@ Entities:
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
-      ID: 4
+      ID: 6
   - Entity: 7700112233445566778
     Domain: Client
     TagComponent:
@@ -1160,6 +1173,8 @@ Entities:
       - Handle: 4349336411905971544
       - Handle: 13196638502951336172
       - Handle: 15517991742549953451
+      - Handle: 16813932120371159861
+      - Handle: 4656342592927566935
     TransformComponent:
       Position: [0, 0, 0]
       Rotation: [0, 0, 0]
@@ -1228,7 +1243,7 @@ Entities:
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
-      ID: 9
+      ID: 11
   - Entity: 8170836057042241114
     Domain: Client
     TagComponent:
@@ -1415,7 +1430,7 @@ Entities:
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
-      ID: 19
+      ID: 21
   - Entity: 9365238450782605957
     Domain: Client
     TagComponent:
@@ -1428,7 +1443,7 @@ Entities:
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
-      ID: 18
+      ID: 20
   - Entity: 9746366683398954405
     Domain: Client
     TagComponent:
@@ -1441,7 +1456,7 @@ Entities:
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
-      ID: 23
+      ID: 25
   - Entity: 10341303050608521097
     Domain: Client
     TagComponent:
@@ -1605,11 +1620,11 @@ Entities:
     Children:
       - Handle: 8742514861359412280
     TransformComponent:
-      Position: [3.2375, 0.0335, 1.585]
+      Position: [-5.1015, 0.0335, 0]
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
-      ID: 2
+      ID: 4
   - Entity: 13196638502951336172
     Domain: Client
     TagComponent:
@@ -1622,7 +1637,7 @@ Entities:
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
-      ID: 25
+      ID: 27
   - Entity: 13219196278226597274
     Domain: Client
     TagComponent:
@@ -1635,7 +1650,7 @@ Entities:
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
-      ID: 10
+      ID: 12
   - Entity: 13632217528594285167
     Domain: Client
     TagComponent:
@@ -1648,7 +1663,7 @@ Entities:
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
-      ID: 14
+      ID: 16
   - Entity: 14339033916604750231
     Domain: Client
     TagComponent:
@@ -1696,7 +1711,7 @@ Entities:
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
-      ID: 26
+      ID: 28
   - Entity: 15748087159218340944
     Domain: Client
     TagComponent:
@@ -1747,7 +1762,7 @@ Entities:
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
-      ID: 22
+      ID: 24
   - Entity: 16033505588855615432
     Domain: Client
     TagComponent:
@@ -1878,6 +1893,19 @@ Entities:
       PodGraph: 14389522373660214116
       MaterialTable:
         0: 0
+  - Entity: 16813932120371159861
+    Domain: Client
+    TagComponent:
+      Tag: x500v2_claw_l
+    Parent: 7700112233445566778
+    Children:
+      []
+    TransformComponent:
+      Position: [-5.1015, 0.1123, -0.0128]
+      Rotation: [-0.308923, 0, 0]
+      Scale: [1, 1, 1]
+    MujocoBodyComponent:
+      ID: 2
   - Entity: 16934321559144847468
     Domain: Client
     TagComponent:
@@ -1936,7 +1964,7 @@ Entities:
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
-      ID: 8
+      ID: 10
   - Entity: 17181758653328439947
     Domain: Client
     TagComponent:
@@ -1945,9 +1973,9 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [-5, 0.002, 0]
+      Position: [-5, -0.0003, 0]
       Rotation: [0, 0, 0]
-      Scale: [0.8, 0.002, 0.8]
+      Scale: [0.8, 0.0001, 0.8]
     StaticMeshComponent:
       AssetID: 16102727838158965090
       MaterialTable:
@@ -1965,7 +1993,7 @@ Entities:
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
-      ID: 20
+      ID: 22
   - Entity: 17334347121404989582
     Domain: Client
     TagComponent:
@@ -1990,9 +2018,9 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [-5, 0.004, 0]
+      Position: [-5, -0.0001, 0]
       Rotation: [0, 0, 0]
-      Scale: [0.2, 0.002, 0.05]
+      Scale: [0.2, 0.0001, 0.05]
     StaticMeshComponent:
       AssetID: 4512471431298144687
       MaterialTable:
@@ -2010,7 +2038,7 @@ Entities:
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
-      ID: 21
+      ID: 23
   - Entity: 18058982992389060768
     Domain: Client
     TagComponent:
@@ -2043,96 +2071,6 @@ Entities:
       PodGraph: 472466418818970438
       MaterialTable:
         0: 0
-        1: 0
-        2: 0
-        3: 0
-        4: 0
-        5: 0
-        6: 0
-        7: 0
-        8: 0
-        9: 0
-        10: 0
-        11: 0
-        12: 0
-        13: 0
-        14: 0
-        15: 0
-        16: 0
-        17: 0
-        18: 0
-        19: 0
-        20: 0
-        21: 0
-        22: 0
-        23: 0
-        24: 0
-        25: 0
-        26: 0
-        27: 0
-        28: 0
-        29: 0
-        30: 0
-        31: 0
-        32: 0
-        33: 0
-        34: 0
-        35: 0
-        36: 0
-        37: 0
-        38: 0
-        39: 0
-        40: 0
-        41: 0
-        42: 0
-        43: 0
-        44: 0
-        45: 0
-        46: 0
-        47: 0
-        48: 0
-        49: 0
-        50: 0
-        51: 0
-        52: 0
-        53: 0
-        54: 0
-        55: 0
-        56: 0
-        57: 0
-        58: 0
-        59: 0
-        60: 0
-        61: 0
-        62: 0
-        63: 0
-        64: 0
-        65: 0
-        66: 0
-        67: 0
-        68: 0
-        69: 0
-        70: 0
-        71: 0
-        72: 0
-        73: 0
-        74: 0
-        75: 0
-        76: 0
-        77: 0
-        78: 0
-        79: 0
-        80: 0
-        81: 0
-        82: 0
-        83: 0
-        84: 0
-        85: 0
-        86: 0
-        87: 0
-        88: 0
-        89: 0
-        90: 0
   - Entity: 18127450234244442317
     Domain: Client
     TagComponent:
@@ -2145,7 +2083,7 @@ Entities:
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
-      ID: 15
+      ID: 17
   - Entity: 18301639991373565343
     Domain: Client
     TagComponent:
