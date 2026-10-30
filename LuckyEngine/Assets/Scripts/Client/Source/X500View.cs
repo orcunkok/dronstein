@@ -116,7 +116,7 @@ namespace Dronstein
 			m_HudCamera.GetComponent<TextComponent>()!.Text = CameraNames[m_View];
 		}
 
-		Vector3 Target() => m_View == 2 ? m_Claw!.Translation + ClawCenter : X500Position();
+		Vector3 Target() => m_View == 2 ? m_Claw!.Transform.WorldTranslation + ClawCenter : X500Position();
 
 		// Behind the X500: TailBack behind and TailUp above it, turning with its heading only (no pitch or roll), looking FollowTilt down.
 		void FollowCamera()

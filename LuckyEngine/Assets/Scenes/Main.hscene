@@ -237,14 +237,14 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: Claw
-    Parent: 0
+    Parent: 18058982992389060768
     Children:
       - Handle: 4385618058133689853
       - Handle: 12157374869143816941
       - Handle: 18435202741007044140
     TransformComponent:
-      Position: [-4, 0.15, 0]
-      Rotation: [0, 0, 0]
+      Position: [0.1015, -0.0692, 0]
+      Rotation: [0, 1.5708, 0]
       Scale: [1, 1, 1]
     ScriptComponent:
       ScriptID: 552679916
@@ -271,22 +271,6 @@ Entities:
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 6
-  - Entity: 868196408185819179
-    Domain: Client
-    TagComponent:
-      Tag: TennisBall_05_Visual
-    Parent: 245167270397148752
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [1.5708, 0, 0]
-      Scale: [0.067, 0.067, 0.067]
-    StaticMeshComponent:
-      AssetID: 9346834634786424791
-      MaterialTable:
-        0: 5906284485229172943
-      Visible: true
   - Entity: 344505556118670621
     Domain: Client
     TagComponent:
@@ -300,22 +284,6 @@ Entities:
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 3
-  - Entity: 3641603982383516983
-    Domain: Client
-    TagComponent:
-      Tag: TennisBall_02_Visual
-    Parent: 344505556118670621
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [1.5708, 0, 0]
-      Scale: [0.067, 0.067, 0.067]
-    StaticMeshComponent:
-      AssetID: 9346834634786424791
-      MaterialTable:
-        0: 5906284485229172943
-      Visible: true
   - Entity: 351442425693542831
     Domain: Client
     TagComponent:
@@ -354,6 +322,38 @@ Entities:
       Contype: 1
       Conaffinity: 1
       Condim: -1
+  - Entity: 445363681616962640
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_03_Visual
+    Parent: 7688800538663923338
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
+      Scale: [0.067, 0.067, 0.067]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 5906284485229172943
+      Visible: true
+  - Entity: 457380681191578132
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_20_Visual
+    Parent: 17849749303881500182
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
+      Scale: [0.067, 0.067, 0.067]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 5906284485229172943
+      Visible: true
   - Entity: 530186216706219260
     Domain: Client
     TagComponent:
@@ -370,6 +370,38 @@ Entities:
       MaterialTable:
         0: 2116205926439990434
       Visible: true
+  - Entity: 545198181100374566
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_13_Visual
+    Parent: 13632217528594285167
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
+      Scale: [0.067, 0.067, 0.067]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 5906284485229172943
+      Visible: true
+  - Entity: 570576685538020777
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_18_Visual
+    Parent: 9226193199443051660
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
+      Scale: [0.067, 0.067, 0.067]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 5906284485229172943
+      Visible: true
   - Entity: 602807608784138521
     Domain: Client
     TagComponent:
@@ -383,22 +415,6 @@ Entities:
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 5
-  - Entity: 7574918311415852851
-    Domain: Client
-    TagComponent:
-      Tag: TennisBall_04_Visual
-    Parent: 602807608784138521
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [1.5708, 0, 0]
-      Scale: [0.067, 0.067, 0.067]
-    StaticMeshComponent:
-      AssetID: 9346834634786424791
-      MaterialTable:
-        0: 5906284485229172943
-      Visible: true
   - Entity: 756123043266677426
     Domain: Client
     TagComponent:
@@ -414,6 +430,38 @@ Entities:
       AssetID: 4512471431298144687
       MaterialTable:
         0: 361373083978553111
+      Visible: true
+  - Entity: 792723338049442008
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_09_Visual
+    Parent: 13219196278226597274
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
+      Scale: [0.067, 0.067, 0.067]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 5906284485229172943
+      Visible: true
+  - Entity: 868196408185819179
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_05_Visual
+    Parent: 245167270397148752
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
+      Scale: [0.067, 0.067, 0.067]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 5906284485229172943
       Visible: true
   - Entity: 944847631712787786
     Domain: Client
@@ -439,27 +487,11 @@ Entities:
     Children:
       - Handle: 2219724388333390735
     TransformComponent:
-      Position: [-1.0925, 0.0335, 4.2975]
+      Position: [-1.0925, 0.0335002, 4.2975]
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 12
-  - Entity: 2219724388333390735
-    Domain: Client
-    TagComponent:
-      Tag: TennisBall_11_Visual
-    Parent: 1134009517207024497
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [1.5708, 0, 0]
-      Scale: [0.067, 0.067, 0.067]
-    StaticMeshComponent:
-      AssetID: 9346834634786424791
-      MaterialTable:
-        0: 5906284485229172943
-      Visible: true
   - Entity: 1223973736405521014
     Domain: Client
     TagComponent:
@@ -475,6 +507,22 @@ Entities:
       AssetID: 4512471431298144687
       MaterialTable:
         0: 10640983446431700429
+      Visible: true
+  - Entity: 1228320887535867595
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_23_Visual
+    Parent: 4349336411905971544
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
+      Scale: [0.067, 0.067, 0.067]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 5906284485229172943
       Visible: true
   - Entity: 1291263967692813110
     Domain: Client
@@ -527,11 +575,43 @@ Entities:
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 13
-  - Entity: 5082513832886728665
+  - Entity: 1980241222855773941
     Domain: Client
     TagComponent:
-      Tag: TennisBall_12_Visual
-    Parent: 1979815025508288610
+      Tag: TennisBall_08_Visual
+    Parent: 7877977864254300973
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
+      Scale: [0.067, 0.067, 0.067]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 5906284485229172943
+      Visible: true
+  - Entity: 2039119943687723724
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_21_Visual
+    Parent: 15816677538361509217
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
+      Scale: [0.067, 0.067, 0.067]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 5906284485229172943
+      Visible: true
+  - Entity: 2219724388333390735
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_11_Visual
+    Parent: 1134009517207024497
     Children:
       []
     TransformComponent:
@@ -597,6 +677,54 @@ Entities:
       MaterialTable:
         0: 10640983446431700429
       Visible: true
+  - Entity: 3641603982383516983
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_02_Visual
+    Parent: 344505556118670621
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
+      Scale: [0.067, 0.067, 0.067]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 5906284485229172943
+      Visible: true
+  - Entity: 3856957380441106266
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_10_Visual
+    Parent: 6859745199138401194
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
+      Scale: [0.067, 0.067, 0.067]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 5906284485229172943
+      Visible: true
+  - Entity: 3865875329656804758
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_24_Visual
+    Parent: 13196638502951336172
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
+      Scale: [0.067, 0.067, 0.067]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 5906284485229172943
+      Visible: true
   - Entity: 4022421985475234552
     Domain: Client
     TagComponent:
@@ -605,27 +733,11 @@ Entities:
     Children:
       - Handle: 5816497446257569881
     TransformComponent:
-      Position: [2.945, 0.0335, 1.2275]
+      Position: [2.945, 0.0334998, 1.2275]
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 17
-  - Entity: 5816497446257569881
-    Domain: Client
-    TagComponent:
-      Tag: TennisBall_16_Visual
-    Parent: 4022421985475234552
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [1.5708, 0, 0]
-      Scale: [0.067, 0.067, 0.067]
-    StaticMeshComponent:
-      AssetID: 9346834634786424791
-      MaterialTable:
-        0: 5906284485229172943
-      Visible: true
   - Entity: 4349336411905971544
     Domain: Client
     TagComponent:
@@ -634,27 +746,11 @@ Entities:
     Children:
       - Handle: 1228320887535867595
     TransformComponent:
-      Position: [3.6275, 0.0335, 3.325]
+      Position: [3.6275, 0.0334997, 3.325]
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 24
-  - Entity: 1228320887535867595
-    Domain: Client
-    TagComponent:
-      Tag: TennisBall_23_Visual
-    Parent: 4349336411905971544
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [1.5708, 0, 0]
-      Scale: [0.067, 0.067, 0.067]
-    StaticMeshComponent:
-      AssetID: 9346834634786424791
-      MaterialTable:
-        0: 5906284485229172943
-      Visible: true
   - Entity: 4385618058133689853
     Domain: Client
     TagComponent:
@@ -703,6 +799,70 @@ Entities:
       PodGraph: 14389522373660214116
       MaterialTable:
         0: 0
+  - Entity: 4986947095633979044
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_25_Visual
+    Parent: 15517991742549953451
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
+      Scale: [0.067, 0.067, 0.067]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 5906284485229172943
+      Visible: true
+  - Entity: 5082513832886728665
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_12_Visual
+    Parent: 1979815025508288610
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
+      Scale: [0.067, 0.067, 0.067]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 5906284485229172943
+      Visible: true
+  - Entity: 5134327459162675120
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_22_Visual
+    Parent: 9746366683398954405
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
+      Scale: [0.067, 0.067, 0.067]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 5906284485229172943
+      Visible: true
+  - Entity: 5215389816265151663
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_14_Visual
+    Parent: 18127450234244442317
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
+      Scale: [0.067, 0.067, 0.067]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 5906284485229172943
+      Visible: true
   - Entity: 5216942334575228420
     Domain: Client
     TagComponent:
@@ -711,16 +871,64 @@ Entities:
     Children:
       - Handle: 8738681121152269347
     TransformComponent:
-      Position: [-2.4725, 0.0335, 2.555]
+      Position: [-2.4725, 0.0334997, 2.555]
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 16
-  - Entity: 8738681121152269347
+  - Entity: 5375270654777870840
     Domain: Client
     TagComponent:
-      Tag: TennisBall_15_Visual
-    Parent: 5216942334575228420
+      Tag: TennisBall_06_Visual
+    Parent: 6808467485959760917
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
+      Scale: [0.067, 0.067, 0.067]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 5906284485229172943
+      Visible: true
+  - Entity: 5377197318101497525
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_17_Visual
+    Parent: 9365238450782605957
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
+      Scale: [0.067, 0.067, 0.067]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 5906284485229172943
+      Visible: true
+  - Entity: 5400666402170143951
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_19_Visual
+    Parent: 17276475515001353056
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
+      Scale: [0.067, 0.067, 0.067]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 5906284485229172943
+      Visible: true
+  - Entity: 5816497446257569881
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_16_Visual
+    Parent: 4022421985475234552
     Children:
       []
     TransformComponent:
@@ -779,22 +987,6 @@ Entities:
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 7
-  - Entity: 5375270654777870840
-    Domain: Client
-    TagComponent:
-      Tag: TennisBall_06_Visual
-    Parent: 6808467485959760917
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [1.5708, 0, 0]
-      Scale: [0.067, 0.067, 0.067]
-    StaticMeshComponent:
-      AssetID: 9346834634786424791
-      MaterialTable:
-        0: 5906284485229172943
-      Visible: true
   - Entity: 6859745199138401194
     Domain: Client
     TagComponent:
@@ -803,27 +995,11 @@ Entities:
     Children:
       - Handle: 3856957380441106266
     TransformComponent:
-      Position: [4.6975, 0.0335, 1.415]
+      Position: [4.6975, 0.0334998, 1.415]
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 11
-  - Entity: 3856957380441106266
-    Domain: Client
-    TagComponent:
-      Tag: TennisBall_10_Visual
-    Parent: 6859745199138401194
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [1.5708, 0, 0]
-      Scale: [0.067, 0.067, 0.067]
-    StaticMeshComponent:
-      AssetID: 9346834634786424791
-      MaterialTable:
-        0: 5906284485229172943
-      Visible: true
   - Entity: 6887470786088073126
     Domain: Client
     TagComponent:
@@ -923,6 +1099,22 @@ Entities:
       Contype: 1
       Conaffinity: 1
       Condim: -1
+  - Entity: 7574918311415852851
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_04_Visual
+    Parent: 602807608784138521
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
+      Scale: [0.067, 0.067, 0.067]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 5906284485229172943
+      Visible: true
   - Entity: 7688800538663923338
     Domain: Client
     TagComponent:
@@ -936,22 +1128,6 @@ Entities:
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 4
-  - Entity: 445363681616962640
-    Domain: Client
-    TagComponent:
-      Tag: TennisBall_03_Visual
-    Parent: 7688800538663923338
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [1.5708, 0, 0]
-      Scale: [0.067, 0.067, 0.067]
-    StaticMeshComponent:
-      AssetID: 9346834634786424791
-      MaterialTable:
-        0: 5906284485229172943
-      Visible: true
   - Entity: 7700112233445566778
     Domain: Client
     TagComponent:
@@ -1053,22 +1229,6 @@ Entities:
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 9
-  - Entity: 1980241222855773941
-    Domain: Client
-    TagComponent:
-      Tag: TennisBall_08_Visual
-    Parent: 7877977864254300973
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [1.5708, 0, 0]
-      Scale: [0.067, 0.067, 0.067]
-    StaticMeshComponent:
-      AssetID: 9346834634786424791
-      MaterialTable:
-        0: 5906284485229172943
-      Visible: true
   - Entity: 8170836057042241114
     Domain: Client
     TagComponent:
@@ -1091,6 +1251,22 @@ Entities:
       Contype: 1
       Conaffinity: 1
       Condim: -1
+  - Entity: 8390539026135319669
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_07_Visual
+    Parent: 17168540220499114429
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
+      Scale: [0.067, 0.067, 0.067]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 5906284485229172943
+      Visible: true
   - Entity: 8709777897174296560
     Domain: Client
     TagComponent:
@@ -1106,6 +1282,38 @@ Entities:
       AssetID: 16102727838158965090
       MaterialTable:
         0: 2116205926439990434
+      Visible: true
+  - Entity: 8738681121152269347
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_15_Visual
+    Parent: 5216942334575228420
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
+      Scale: [0.067, 0.067, 0.067]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 5906284485229172943
+      Visible: true
+  - Entity: 8742514861359412280
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_01_Visual
+    Parent: 13129489785444233558
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
+      Scale: [0.067, 0.067, 0.067]
+    StaticMeshComponent:
+      AssetID: 9346834634786424791
+      MaterialTable:
+        0: 5906284485229172943
       Visible: true
   - Entity: 8778222048644347155
     Domain: Client
@@ -1208,22 +1416,6 @@ Entities:
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 19
-  - Entity: 570576685538020777
-    Domain: Client
-    TagComponent:
-      Tag: TennisBall_18_Visual
-    Parent: 9226193199443051660
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [1.5708, 0, 0]
-      Scale: [0.067, 0.067, 0.067]
-    StaticMeshComponent:
-      AssetID: 9346834634786424791
-      MaterialTable:
-        0: 5906284485229172943
-      Visible: true
   - Entity: 9365238450782605957
     Domain: Client
     TagComponent:
@@ -1237,22 +1429,6 @@ Entities:
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 18
-  - Entity: 5377197318101497525
-    Domain: Client
-    TagComponent:
-      Tag: TennisBall_17_Visual
-    Parent: 9365238450782605957
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [1.5708, 0, 0]
-      Scale: [0.067, 0.067, 0.067]
-    StaticMeshComponent:
-      AssetID: 9346834634786424791
-      MaterialTable:
-        0: 5906284485229172943
-      Visible: true
   - Entity: 9746366683398954405
     Domain: Client
     TagComponent:
@@ -1261,27 +1437,11 @@ Entities:
     Children:
       - Handle: 5134327459162675120
     TransformComponent:
-      Position: [-0.925, 0.0335, 3.8075]
+      Position: [-0.925, 0.0334997, 3.8075]
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 23
-  - Entity: 5134327459162675120
-    Domain: Client
-    TagComponent:
-      Tag: TennisBall_22_Visual
-    Parent: 9746366683398954405
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [1.5708, 0, 0]
-      Scale: [0.067, 0.067, 0.067]
-    StaticMeshComponent:
-      AssetID: 9346834634786424791
-      MaterialTable:
-        0: 5906284485229172943
-      Visible: true
   - Entity: 10341303050608521097
     Domain: Client
     TagComponent:
@@ -1450,22 +1610,6 @@ Entities:
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 2
-  - Entity: 8742514861359412280
-    Domain: Client
-    TagComponent:
-      Tag: TennisBall_01_Visual
-    Parent: 13129489785444233558
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [1.5708, 0, 0]
-      Scale: [0.067, 0.067, 0.067]
-    StaticMeshComponent:
-      AssetID: 9346834634786424791
-      MaterialTable:
-        0: 5906284485229172943
-      Visible: true
   - Entity: 13196638502951336172
     Domain: Client
     TagComponent:
@@ -1474,27 +1618,11 @@ Entities:
     Children:
       - Handle: 3865875329656804758
     TransformComponent:
-      Position: [0.12, 0.0335, -2.67]
+      Position: [0.12, 0.0335002, -2.67]
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 25
-  - Entity: 3865875329656804758
-    Domain: Client
-    TagComponent:
-      Tag: TennisBall_24_Visual
-    Parent: 13196638502951336172
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [1.5708, 0, 0]
-      Scale: [0.067, 0.067, 0.067]
-    StaticMeshComponent:
-      AssetID: 9346834634786424791
-      MaterialTable:
-        0: 5906284485229172943
-      Visible: true
   - Entity: 13219196278226597274
     Domain: Client
     TagComponent:
@@ -1508,22 +1636,6 @@ Entities:
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 10
-  - Entity: 792723338049442008
-    Domain: Client
-    TagComponent:
-      Tag: TennisBall_09_Visual
-    Parent: 13219196278226597274
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [1.5708, 0, 0]
-      Scale: [0.067, 0.067, 0.067]
-    StaticMeshComponent:
-      AssetID: 9346834634786424791
-      MaterialTable:
-        0: 5906284485229172943
-      Visible: true
   - Entity: 13632217528594285167
     Domain: Client
     TagComponent:
@@ -1532,27 +1644,11 @@ Entities:
     Children:
       - Handle: 545198181100374566
     TransformComponent:
-      Position: [0.9025, 0.0335, -2.045]
+      Position: [0.9025, 0.0335002, -2.045]
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 14
-  - Entity: 545198181100374566
-    Domain: Client
-    TagComponent:
-      Tag: TennisBall_13_Visual
-    Parent: 13632217528594285167
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [1.5708, 0, 0]
-      Scale: [0.067, 0.067, 0.067]
-    StaticMeshComponent:
-      AssetID: 9346834634786424791
-      MaterialTable:
-        0: 5906284485229172943
-      Visible: true
   - Entity: 14339033916604750231
     Domain: Client
     TagComponent:
@@ -1596,27 +1692,11 @@ Entities:
     Children:
       - Handle: 4986947095633979044
     TransformComponent:
-      Position: [1.34, 0.0335, 1.865]
+      Position: [1.34, 0.0334998, 1.865]
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 26
-  - Entity: 4986947095633979044
-    Domain: Client
-    TagComponent:
-      Tag: TennisBall_25_Visual
-    Parent: 15517991742549953451
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [1.5708, 0, 0]
-      Scale: [0.067, 0.067, 0.067]
-    StaticMeshComponent:
-      AssetID: 9346834634786424791
-      MaterialTable:
-        0: 5906284485229172943
-      Visible: true
   - Entity: 15748087159218340944
     Domain: Client
     TagComponent:
@@ -1668,22 +1748,6 @@ Entities:
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 22
-  - Entity: 2039119943687723724
-    Domain: Client
-    TagComponent:
-      Tag: TennisBall_21_Visual
-    Parent: 15816677538361509217
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [1.5708, 0, 0]
-      Scale: [0.067, 0.067, 0.067]
-    StaticMeshComponent:
-      AssetID: 9346834634786424791
-      MaterialTable:
-        0: 5906284485229172943
-      Visible: true
   - Entity: 16033505588855615432
     Domain: Client
     TagComponent:
@@ -1868,27 +1932,11 @@ Entities:
     Children:
       - Handle: 8390539026135319669
     TransformComponent:
-      Position: [0.25, 0.0335, 1.475]
+      Position: [0.25, 0.0334998, 1.475]
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 8
-  - Entity: 8390539026135319669
-    Domain: Client
-    TagComponent:
-      Tag: TennisBall_07_Visual
-    Parent: 17168540220499114429
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [1.5708, 0, 0]
-      Scale: [0.067, 0.067, 0.067]
-    StaticMeshComponent:
-      AssetID: 9346834634786424791
-      MaterialTable:
-        0: 5906284485229172943
-      Visible: true
   - Entity: 17181758653328439947
     Domain: Client
     TagComponent:
@@ -1913,27 +1961,11 @@ Entities:
     Children:
       - Handle: 5400666402170143951
     TransformComponent:
-      Position: [-0.865, 0.0335, 2.6775]
+      Position: [-0.865, 0.0334997, 2.6775]
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 20
-  - Entity: 5400666402170143951
-    Domain: Client
-    TagComponent:
-      Tag: TennisBall_19_Visual
-    Parent: 17276475515001353056
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [1.5708, 0, 0]
-      Scale: [0.067, 0.067, 0.067]
-    StaticMeshComponent:
-      AssetID: 9346834634786424791
-      MaterialTable:
-        0: 5906284485229172943
-      Visible: true
   - Entity: 17334347121404989582
     Domain: Client
     TagComponent:
@@ -1974,27 +2006,11 @@ Entities:
     Children:
       - Handle: 457380681191578132
     TransformComponent:
-      Position: [-1.315, 0.0335, -3.965]
+      Position: [-1.315, 0.0335002, -3.965]
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 21
-  - Entity: 457380681191578132
-    Domain: Client
-    TagComponent:
-      Tag: TennisBall_20_Visual
-    Parent: 17849749303881500182
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [1.5708, 0, 0]
-      Scale: [0.067, 0.067, 0.067]
-    StaticMeshComponent:
-      AssetID: 9346834634786424791
-      MaterialTable:
-        0: 5906284485229172943
-      Visible: true
   - Entity: 18058982992389060768
     Domain: Client
     TagComponent:
@@ -2005,6 +2021,7 @@ Entities:
       - Handle: 7853346001960992735
       - Handle: 4967737373694624147
       - Handle: 7095842094467470985
+      - Handle: 81215081681058999
     TransformComponent:
       Position: [0, 0, 0]
       Rotation: [1.5708, 0, 0]
@@ -2034,27 +2051,11 @@ Entities:
     Children:
       - Handle: 5215389816265151663
     TransformComponent:
-      Position: [-1.5025, 0.0335, -0.845]
+      Position: [-1.5025, 0.0335001, -0.845]
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 15
-  - Entity: 5215389816265151663
-    Domain: Client
-    TagComponent:
-      Tag: TennisBall_14_Visual
-    Parent: 18127450234244442317
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [1.5708, 0, 0]
-      Scale: [0.067, 0.067, 0.067]
-    StaticMeshComponent:
-      AssetID: 9346834634786424791
-      MaterialTable:
-        0: 5906284485229172943
-      Visible: true
   - Entity: 18301639991373565343
     Domain: Client
     TagComponent:
