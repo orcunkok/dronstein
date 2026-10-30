@@ -13,7 +13,8 @@ namespace Dronstein
 	/// - Manual (ArduPilot's AltHold): the stick sets the lean (up to ANGLE_MAX); let go and it levels but coasts.
 	/// Both hold the altitude. It starts disarmed: x500_arm (Y) arms and disarms it on the ground. x500_takeoff_rtl (Share)
 	/// takes off to TKOFF_ALT on the ground, and in the air returns home (where it was armed): up to RTL_ALT, over, down at
-	/// LAND_SPEED, then it disarms. Share again, B or any stick or trigger takes RTL back.
+	/// LAND_SPEED, then it disarms. Share again, B or any stick or trigger takes RTL back. In the air keyboard Y flies the next
+	/// corner of the test square (calibration, the blue dots), holding the altitude, until B, Share or the sticks take over.
 	/// The camera, the HUD and R (reset) are X500View's.
 	///
 	/// Two halves, both set by X500.param in the project folder:
@@ -34,9 +35,13 @@ namespace Dronstein
 		public static bool Loiter = true;
 		/// Armed (motors spin, it can fly) or disarmed; Y switches it on the ground. The HUD shows it.
 		public static bool Armed;
-		/// What MODE shows on the HUD: Takeoff or RTL while those run, Loiter or Manual otherwise.
-		public static string ModeName => s_Rtl ? "RTL" : s_Takeoff ? "Takeoff" : Loiter ? "Loiter" : "Manual";
+		/// What MODE shows on the HUD: Takeoff, RTL or Calib n/4 while those run, Loiter or Manual otherwise.
+		public static string ModeName => s_Rtl ? "RTL" : s_Takeoff ? "Takeoff" : Calibrating ? $"Calib {s_Calib + 1}/4" : Loiter ? "Loiter" : "Manual";
+		/// Flying keyboard Y's test square; the HUD shows it in yellow.
+		public static bool Calibrating => s_Calib >= 0;
 		static bool s_Rtl, s_Takeoff;  // Share's takeoff and return home, until done or taken back
+		static int s_Calib = -1;       // the test square's corner being flown to, -1 = none
+		static readonly float[,] Waypoints = { { 10, 10 }, { 10, -10 }, { -10, -10 }, { -10, 10 } };  // (x, y), MuJoCo frame: the blue dots
 
 		const float G = 9.81f, Rho = 1.225f;
 
@@ -80,6 +85,7 @@ namespace Dronstein
 		// Reused every frame instead of allocated: body rates, rate targets and rate PID outputs (roll, pitch, yaw), the mix.
 		readonly float[] m_W = new float[3], m_RateT = new float[3], m_Out = new float[3], m_Rp = new float[4];
 		readonly float[,] m_R = new float[3, 3];       // world <- body rotation, from BodyRotation
+		bool m_KeyY;                                   // keyboard Y down last frame
 
 		// Props: entities tagged X500Prop1..4 (children of this entity, motor order), spun about their local +Y.
 		readonly Entity?[] m_Props = new Entity?[4];
@@ -96,6 +102,7 @@ namespace Dronstein
 			LoadBindings();
 			Loiter = true;
 			Armed = s_Rtl = s_Takeoff = false;
+			s_Calib = -1;
 			for (int i = 0; i < 4; i++) m_Props[i] = FindEntityByTag($"X500Prop{i + 1}");  // optional: no tag, no spin
 			Entity? scene = FindEntityByTag("World");
 			if (scene == null)
@@ -208,6 +215,7 @@ namespace Dronstein
 				m_LastTime = now;
 				m_AltMin = float.NaN;
 				Armed = s_Rtl = s_Takeoff = false;
+				s_Calib = -1;
 				StopMotors();
 				return;
 			}
@@ -283,10 +291,20 @@ namespace Dronstein
 				if (Armed) (m_HomeX, m_HomeY) = (x, y);
 				Log.Info($"X500Flight: {(Armed ? "armed" : "disarmed")}");
 			}
-			if (Pressed("x500_mode"))  // B: Loiter <-> Manual, and takes RTL / takeoff back
+			bool keyY = Input.IsKeyDown(KeyCode.Y);
+			if (keyY && !m_KeyY && Armed && !grounded)  // keyboard Y, in the air: the next corner of the test square
+			{
+				s_Calib = (s_Calib + 1) % 4;
+				s_Rtl = s_Takeoff = false;
+				(m_PosX, m_PosY, m_VelX, m_VelY) = (x, y, vx, vy);
+				Log.Info($"X500Flight: going to waypoint {s_Calib} ({Waypoints[s_Calib, 0]}, {Waypoints[s_Calib, 1]})");
+			}
+			m_KeyY = keyY;
+			if (Pressed("x500_mode"))  // B: Loiter <-> Manual, and takes RTL / takeoff / calibration back
 			{
 				Loiter = !Loiter;
 				s_Rtl = s_Takeoff = false;
+				s_Calib = -1;
 				(m_PosX, m_PosY, m_VelX, m_VelY) = (x, y, vx, vy);  // Loiter starts from where it is, at the speed it has
 			}
 			if (Pressed("x500_takeoff_rtl") && Armed)  // Share: takeoff on the ground, return home (or take it back) in the air
@@ -296,11 +314,16 @@ namespace Dronstein
 				{
 					s_Rtl = !s_Rtl;
 					s_Takeoff = false;
+					s_Calib = -1;
 					(m_PosX, m_PosY, m_VelX, m_VelY) = (x, y, vx, vy);
 				}
 				Log.Info($"X500Flight: {ModeName}");
 			}
-			if (pitch != 0f || roll != 0f || climb != 0f || turn != 0f) s_Rtl = s_Takeoff = false;  // the pilot takes over
+			if (pitch != 0f || roll != 0f || climb != 0f || turn != 0f)  // the pilot takes over
+			{
+				s_Rtl = s_Takeoff = false;
+				s_Calib = -1;
+			}
 			if (!Armed) climb = 0f;
 
 			// Disarmed, or on the ground and not climbing (and at the start): no thrust, every target follows the drone.
@@ -321,6 +344,7 @@ namespace Dronstein
 
 			// Takeoff: up to TKOFF_ALT above the ground, holding its spot. RTL, from where its target is: up to RTL_ALT
 			// (unless higher), over home at RTL_SPEED braking at LOIT_ACC_MAX, then down at LAND_SPEED (it disarms on landing).
+			// Calibration: over the corner the same way, at its altitude, and holds there.
 			float wantSpeed = m_LoitSpeed, wantDx = 0f, wantDy = 0f;  // auto: the speed to fly and its direction (world)
 			if (s_Takeoff)
 			{
@@ -339,7 +363,18 @@ namespace Dronstein
 					(wantDx, wantDy) = (hx / dist, hy / dist);
 				}
 			}
-			bool auto = s_Takeoff || s_Rtl;
+			else if (Calibrating)
+			{
+				float cx = Waypoints[s_Calib, 0], cy = Waypoints[s_Calib, 1];
+				float hx = cx - m_PosX, hy = cy - m_PosY, dist = MathF.Sqrt(hx * hx + hy * hy);
+				if (dist < 0.05f) (m_PosX, m_PosY) = (cx, cy);  // there: hold
+				else
+				{
+					wantSpeed = MathF.Min(m_RtlSpeed, MathF.Sqrt(2f * m_LoitAcc * dist));
+					(wantDx, wantDy) = (hx / dist, hy / dist);
+				}
+			}
+			bool auto = s_Takeoff || s_Rtl || Calibrating;
 
 			float maxAngle = m_AngleMax, tc = m_InputTc;
 			float rollIn = roll * maxAngle, pitchIn = pitch * maxAngle;  // Manual: the stick is the lean

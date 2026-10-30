@@ -37,6 +37,7 @@ namespace Dronstein
 		// (measured on screen) plus a gap left of the label.
 		const float HudArmedDx = 55f, HudDisarmedDx = 73f;
 		static readonly Vector4 Green = new(0.30f, 0.80f, 0.52f, 1f), Red = new(0.94f, 0.33f, 0.36f, 1f);  // Armed, Disarmed
+		static readonly Vector4 Yellow = new(1f, 0.847f, 0f, 1f);  // MODE while calibrating (#FFD800)
 
 		MujocoSceneComponent m_Mj = null!;
 		X500Flight? m_Flight;  // the X500's controller reading (camera sticks); null: mouse and keys only
@@ -53,6 +54,7 @@ namespace Dronstein
 		(uint, uint) m_HudSize;
 		float m_PixelScale = 1f;  // rendered pixels per Application.Width unit, see PixelScale
 		string m_HudShown = "";  // the mode and arming last written, so the texts change only when they do
+		Vector4 m_HudModeColor;  // MODE's colour set in the scene, used when not yellow
 
 		protected override void OnCreate()
 		{
@@ -72,6 +74,7 @@ namespace Dronstein
 			m_OrbitYaw = MathF.Atan2(offset.X, offset.Z);
 			m_OrbitPitch = MathF.Asin(Math.Clamp(offset.Y / m_Distance, -1f, 1f));
 			m_HudCamera.GetComponent<TextComponent>()!.Text = "X500 V2";
+			m_HudModeColor = m_HudMode.GetComponent<TextComponent>()!.Color;
 		}
 
 		// The entity with this tag; logs and sets m_Missing when there is none.
@@ -189,7 +192,9 @@ namespace Dronstein
 			string shown = X500Flight.ModeName + (X500Flight.Armed ? "+" : "-");
 			if (shown == m_HudShown) return;
 			m_HudShown = shown;
-			m_HudMode.GetComponent<TextComponent>()!.Text = X500Flight.ModeName;
+			var mode = m_HudMode.GetComponent<TextComponent>()!;
+			mode.Text = X500Flight.ModeName;
+			mode.Color = X500Flight.Calibrating ? Yellow : m_HudModeColor;
 			if (m_HudArm == null) return;
 			var arm = m_HudArm.GetComponent<TextComponent>()!;
 			arm.Text = X500Flight.Armed ? "Armed" : "Disarmed";

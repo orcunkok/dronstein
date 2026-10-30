@@ -31,6 +31,7 @@ To change buttons, edit `LuckyEngine/ControllerBindings.txt`, save it, and press
 | O | Gripper fully open / fully closed |
 | Right mouse drag | Rotate the camera |
 | R | Reset the scene: the X500, the balls and the trash can go back to where they started |
+| Y | In the air: fly to the next corner of the test square (calibration) |
 
 ## Flying
 B switches between two modes, shown on the screen as MODE:
@@ -44,18 +45,21 @@ Both hold the altitude.
 
 It starts **disarmed**. Y arms it (props idle). **RTL** climbs to 3 m, flies back over the spot where it was armed, comes down at 0.5 m/s and disarms when it lands; B or any stick or trigger takes it back. The props spin with their motors' thrust.
 
+**Calibration:** in the air, each press of keyboard Y flies it to the next blue dot of the 20 m test square ((10, 10), (10, -10), (-10, -10), (-10, 10)) at its altitude, where it holds. MODE shows **Calib 1/4** in yellow. B, Share or any stick or trigger takes it back.
+
 ## On screen
-Top right: **CAMERA** (X500 V2, Follow or Gripper), and **MODE** (Loiter, Manual, Takeoff or RTL) with **Armed** (green) or **Disarmed** (red) left of it.
+Top right: **CAMERA** (X500 V2, Follow or Gripper), and **MODE** (Loiter, Manual, Takeoff, RTL or Calib n/4 in yellow) with **Armed** (green) or **Disarmed** (red) left of it.
 
 ## On the ground
 - Checkered ground: each tile is 1 m.
 - Golf balls and a trash can: props you can push around with the drone or drag with the mouse (Force Tool).
-- Blue dots: a test square of waypoints.
+- Blue dots: a test square of waypoints, flown with keyboard Y (calibration).
 
 ## Tuning it to the real drone
 Everything about it is in `LuckyEngine/X500.param`: the drone (`SIM_*`: thrust, motor lag, yaw, drag), the motors (`MOT_*`) and the autopilot's gains (ArduPilot's X500v2 frame file) and limits. Change `SIM_*` to match logs of the real drone. `tools/x500v2/build_x500v2.py` builds its look and its physics.
 
 ## Latest changes
+- **Y calibration is back:** in the air, keyboard Y flies the X500 around the blue test square, one corner per press (Calib n/4, yellow).
 - **X500 only:** the Skydio X2 with its SO-100 arm, its autonomous picking and the Tuning panel are gone. The controller always flies the X500; LT climbs and RT descends.
 - **X500 arming, takeoff and RTL:** Y arms / disarms, Share takes off (0.5 m) or returns home (RTL), B switches Loiter / Manual; the screen shows Armed / Disarmed next to MODE, and the props spin.
 - **X500 Loiter mode:** let go and it stops. Yawing doesn't bob it up and down, it idles on the ground, and its drag is set only by `X500.param`.
