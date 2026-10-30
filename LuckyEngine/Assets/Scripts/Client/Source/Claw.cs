@@ -21,7 +21,7 @@ namespace Dronstein
 		public float Speed = 180f;
 
 		Entity? m_Left, m_Right;
-		float m_Angle, m_Target;  // degrees open: 0 closed
+		float m_Angle, m_Target;  // degrees open: 0 closed; starts fully open
 		bool m_KeyO;
 
 		[Button("Open")]
@@ -30,10 +30,14 @@ namespace Dronstein
 		[Button("Close")]
 		void Close() => m_Target = 0f;
 
+		// The gripper stick (X500View): stick > 0 opens, < 0 closes, at Speed at full stick.
+		public void Drive(float stick, float dt) => m_Target = Math.Clamp(m_Target + stick * Speed * dt, 0f, OpenAngle);
+
 		protected override void OnCreate()
 		{
 			m_Left = FindEntityByTag("ClawFingerL");
 			m_Right = FindEntityByTag("ClawFingerR");
+			m_Angle = m_Target = OpenAngle;
 			if (m_Left == null || m_Right == null)
 				Log.Error("Claw: needs children tagged ClawFingerL and ClawFingerR");
 		}

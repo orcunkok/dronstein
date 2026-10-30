@@ -15,9 +15,10 @@ A Holybro X500 V2 with a 4S battery (1.36 kg) flies like a stock ArduPilot setup
 | LT / RT | Climb / descend (2.5 m/s) |
 | LB / RB | Turn left / right |
 | Y | Arm / disarm, on the ground only |
-| B | Switch Loiter / Manual (also takes RTL back) |
-| Share | Take off to 0.5 m on the ground; in the air, return home (RTL). Press again to take RTL back. (A is the same button as Share on this controller.) |
-| Right stick | Orbit the camera |
+| B | Switch Loiter / Manual (does nothing during takeoff and RTL) |
+| Menu | Take off to 0.5 m on the ground; in the air, return home (RTL). Press again to take RTL back. |
+| A or Share | Switch the right stick's left / right between orbiting the camera and driving the gripper. (Lucky reports Share as the same button as A, so they can't have different jobs.) |
+| Right stick | Left / right: orbit the camera, or after A, right opens and left closes the gripper. Up / down: tilt the camera |
 | D-pad up / down | Zoom in / out |
 | X | Next camera: orbit the X500, follow it (behind its tail), orbit the gripper |
 
@@ -45,7 +46,7 @@ Both hold the altitude.
 
 It starts **disarmed**. Y arms it (props idle). **RTL** climbs to 3 m, flies back over the spot where it was armed, comes down at 0.5 m/s and disarms when it lands; B or any stick or trigger takes it back. The props spin with their motors' thrust.
 
-**Calibration:** in the air, each press of keyboard Y flies it to the next blue dot of the 20 m test square ((10, 10), (10, -10), (-10, -10), (-10, 10)) at its altitude, where it holds. MODE shows **Calib 1/4** in yellow. B, Share or any stick or trigger takes it back.
+**Calibration:** in the air, each press of keyboard Y flies it to the next blue dot of the 20 m test square ((10, 10), (10, -10), (-10, -10), (-10, 10)) at its altitude, where it holds. MODE shows **Calib 1/4** in yellow. B, Menu or any stick or trigger takes it back.
 
 ## On screen
 Top right: **CAMERA** (X500 V2, Follow or Gripper), and **MODE** (Loiter, Manual, Takeoff, RTL or Calib n/4 in yellow) with **Armed** (green) or **Disarmed** (red) left of it.
@@ -61,7 +62,7 @@ Everything about it is in `LuckyEngine/X500.param`: the drone (`SIM_*`: thrust, 
 ## Latest changes
 - **Y calibration is back:** in the air, keyboard Y flies the X500 around the blue test square, one corner per press (Calib n/4, yellow).
 - **X500 only:** the Skydio X2 with its SO-100 arm, its autonomous picking and the Tuning panel are gone. The controller always flies the X500; LT climbs and RT descends.
-- **X500 arming, takeoff and RTL:** Y arms / disarms, Share takes off (0.5 m) or returns home (RTL), B switches Loiter / Manual; the screen shows Armed / Disarmed next to MODE, and the props spin.
+- **X500 arming, takeoff and RTL:** Y arms / disarms, Menu takes off (0.5 m) or returns home (RTL), B switches Loiter / Manual; the screen shows Armed / Disarmed next to MODE, and the props spin.
 - **X500 Loiter mode:** let go and it stops. Yawing doesn't bob it up and down, it idles on the ground, and its drag is set only by `X500.param`.
 - **Holybro X500 V2 flies:** physics and gains are in `LuckyEngine/X500.param`.
 - **Trash can can be moved:** a free, light (~1.1 kg) aluminium can.

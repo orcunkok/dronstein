@@ -14,7 +14,8 @@ namespace Dronstein
 	/// Camera: drag with the right mouse button or move the right stick (camera_yaw / camera_pitch) to orbit; Q/E or
 	/// D-pad down/up (zoom_out / zoom_in) to zoom. C or camera_view (X) steps through the cameras: orbit the X500, follow
 	/// it (behind its tail, level), orbit the gripper (the entity tagged Claw, if there is one), and back. Each orbit keeps
-	/// its own zoom.
+	/// its own zoom. stick_gripper (A) switches the right stick's left / right (camera_yaw) between orbiting the
+	/// camera and closing / opening the gripper.
 	/// Attach to the entity tagged World (its MuJoCo scene holds the X500).
 	/// </summary>
 	public class X500View : Entity
@@ -43,6 +44,8 @@ namespace Dronstein
 		uint m_Body;
 		Entity m_Camera = null!, m_HudCameraLabel = null!, m_HudCamera = null!, m_HudModeLabel = null!, m_HudMode = null!;
 		Entity? m_HudArm, m_Claw;  // optional
+		Claw? m_ClawScript;        // m_Claw's script, for the stick that drives it
+		bool m_StickGripper;       // the right stick's left / right drives the gripper instead of orbiting the camera
 		bool m_Missing;  // a tagged entity wasn't found: the script does nothing
 		// Orbit camera: the camera sits on a sphere around the X500 and looks at its center.
 		float m_OrbitYaw, m_OrbitPitch, m_Distance;
@@ -102,6 +105,8 @@ namespace Dronstein
 			m_Flight ??= FindEntityByTag("HolybroX500V2")?.As<X500Flight>();  // here, not in OnCreate: its script may start later
 			if ((c && !m_KeyC) | (m_Flight?.Pressed("camera_view") ?? false)) NextView();  // | : Pressed runs every frame
 			m_KeyC = c;
+			bool stick = m_Flight?.Pressed("stick_gripper") ?? false;
+			if (stick && m_Claw != null) m_StickGripper = !m_StickGripper;  // A: the right stick's left / right, camera <-> gripper
 			if (m_View == 1) FollowCamera();
 			else OrbitCamera(MathF.Min(dt, 0.05f));
 			UpdateHud();
@@ -147,7 +152,13 @@ namespace Dronstein
 			float zoom = (Input.IsKeyDown(KeyCode.E) ? 1f : 0f) - (Input.IsKeyDown(KeyCode.Q) ? 1f : 0f);
 			if (m_Flight != null)
 			{
-				m_OrbitYaw -= m_Flight.Axis("camera_yaw") * CameraStickSpeed * dt;
+				float side = m_Flight.Axis("camera_yaw");
+				if (m_StickGripper)  // this stick is the gripper's now: right opens it, left closes it
+				{
+					m_ClawScript ??= m_Claw?.As<Claw>();  // here, not in OnCreate: its script may start later
+					m_ClawScript?.Drive(-side, dt);
+				}
+				else m_OrbitYaw -= side * CameraStickSpeed * dt;
 				m_OrbitPitch += m_Flight.Axis("camera_pitch") * CameraStickSpeed * dt;
 				zoom += (m_Flight.Held("zoom_out") ? 1f : 0f) - (m_Flight.Held("zoom_in") ? 1f : 0f);
 			}

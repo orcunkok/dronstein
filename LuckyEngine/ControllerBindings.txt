@@ -6,7 +6,8 @@
 #   A minus flips the direction (pushing a stick up or left reads negative), e.g. -1.
 #   Where an action is on/off (up, down, turn, zoom), an axis counts when pushed past halfway.
 # bN is raw button number N. This controller (the newer Xbox Wireless Controller, with the Share button, over Bluetooth):
-#   b0 A (and Share), b1 B, b3 X, b4 Y, b6 LB, b7 RB, b10 View, b11 Menu, b14 right stick click;
+#   b0 A, b1 B, b3 X, b4 Y, b6 LB, b7 RB, b10 View, b11 Menu, b14 right stick click;
+#   Share also arrives as b0 (checked in Lucky's log): Lucky can't tell it from A, so they always do the same thing.
 #   the D-pad comes after the buttons: b15 up, b16 right, b17 down, b18 left.
 
 # Flight
@@ -19,12 +20,13 @@ turn_right   = b7            # RB
 deadzone     = 0.15          # stick values below this count as 0
 
 x500_arm         = b4        # Y: arm / disarm, on the ground
-x500_mode        = b1        # B: Loiter <-> Manual (also takes RTL back)
-x500_takeoff_rtl = b0        # Share: takeoff on the ground, return home in the air (press again to take it back). A is b0 too
+x500_mode        = b1        # B: Loiter <-> Manual (ignored during RTL and takeoff, those are Menu's)
+x500_takeoff_rtl = b11       # Menu: takeoff on the ground, return home in the air (press again to take it back)
 
 # Camera
-camera_yaw   = 2             # right stick left/right: orbit around
+camera_yaw   = -2            # right stick left/right: orbit around (after A: right opens, left closes the gripper)
 camera_pitch = -3            # right stick up/down: orbit up/down
 zoom_in      = b15           # D-pad up
 zoom_out     = b17           # D-pad down
 camera_view  = b3            # X: next camera: X500 orbit -> follow (behind its tail) -> gripper (C on the keyboard)
+stick_gripper = b0           # A: the right stick's left / right drives the camera or the gripper (press to switch; X still picks the camera)

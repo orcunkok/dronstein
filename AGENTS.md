@@ -2,7 +2,7 @@
 
 ## Git
 - Never run git on the user's checkout or remote: no add, commit, branch, push, stash or merge. The user handles git.
-- Agents may work in their own worktrees under `.claude/worktrees/` (ignored by git). Commit there if needed, but never push, and get the changes into the user's checkout as plain file edits.
+- Never commit, anywhere, not even in a worktree. Worktrees under `.claude/worktrees/` are scratch copies, fully isolated from the user's repo and remote: edit files there, copy them into the user's checkout as plain files, and remove the worktree when done (no commits, no branches left behind).
 
 ## Lucky Engine
 - Work through the Lucky MCP (`lucky`, http://127.0.0.1:19331/mcp) from the start. Don't hand-edit Lucky's own files (`AssetRegistry.hzr`, `.hmaterial` handles, `.hscene`) or invent asset handles. If no tool fits, stop and ask.
@@ -23,6 +23,7 @@
 - Tiled floor: use a Plane (`GroundSurface`), not a Cube (bad top-face UVs). `Ground` is collider only.
 - Use `create_entity` + `add_component` instead of `create_game_object` (which writes a junk `<Name>_Material.hmaterial`).
 - A movable object made of several colliders (e.g. `TrashCan`): put a free `MujocoJoint` **and a collider** on an unscaled parent, then parent the pieces under it; they become one rigid body. A joint on a parent with no collider is ignored (stays world/static).
+- Xbox controller in Lucky (checked in its log): A and Share both arrive as raw button 0, so they can't be bound to different actions; B = 1, X = 3, Y = 4, View = 10, Menu = 11. Don't promise a separate Share binding.
 - A loaded material is cached: editing its `.hmaterial` won't reload it. Write it once under a new name before first load.
 
 ## Keep it KISS
@@ -34,3 +35,7 @@
 
 ## Where to make changes
 - When you are done, make the changes in the user's main checkout (`~/dev/dronstein`), not only in a worktree. The user runs the editor from there, so worktree-only changes never reach it.
+
+## Done means visible
+- Never say a change is done from file edits or "scene saved" alone. Exit Play, build, enter Play, take `capture_viewport_screenshot` and check the change is visible in it (compare with a screenshot from before the change when it is visual). If you can't see it, it isn't done: say so.
+- Rotating the physics body `x500v2` turns the model with it, so the nose (body +x = model +x, the GPS and claw side) stays where it was relative to the model. To turn the model relative to the flight direction (and the follow camera), rotate the mesh child `HolybroX500V2` (Rotation `90 0 180` flips it), not the body.

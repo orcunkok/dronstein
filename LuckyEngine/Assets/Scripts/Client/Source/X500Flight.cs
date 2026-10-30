@@ -11,10 +11,10 @@ namespace Dronstein
 	/// and the left stick moves it, in one of two modes (x500_mode, B, switches):
 	/// - Loiter (default, ArduPilot's Loiter): the stick sets a speed (up to LOIT_SPEED); let go and it brakes and holds its spot.
 	/// - Manual (ArduPilot's AltHold): the stick sets the lean (up to ANGLE_MAX); let go and it levels but coasts.
-	/// Both hold the altitude. It starts disarmed: x500_arm (Y) arms and disarms it on the ground. x500_takeoff_rtl (Share)
+	/// Both hold the altitude. It starts disarmed: x500_arm (Y) arms and disarms it on the ground. x500_takeoff_rtl (Menu)
 	/// takes off to TKOFF_ALT on the ground, and in the air returns home (where it was armed): up to RTL_ALT, over, down at
-	/// LAND_SPEED, then it disarms. Share again, B or any stick or trigger takes RTL back. In the air keyboard Y flies the next
-	/// corner of the test square (calibration, the blue dots), holding the altitude, until B, Share or the sticks take over.
+	/// LAND_SPEED, then it disarms. Menu again or any stick or trigger takes RTL back (B does not touch RTL or takeoff). In the air keyboard Y flies the next
+	/// corner of the test square (calibration, the blue dots), holding the altitude, until B, Menu or the sticks take over.
 	/// The camera, the HUD and R (reset) are X500View's.
 	///
 	/// Two halves, both set by X500.param in the project folder:
@@ -39,7 +39,7 @@ namespace Dronstein
 		public static string ModeName => s_Rtl ? "RTL" : s_Takeoff ? "Takeoff" : Calibrating ? $"Calib {s_Calib + 1}/4" : Loiter ? "Loiter" : "Manual";
 		/// Flying keyboard Y's test square; the HUD shows it in yellow.
 		public static bool Calibrating => s_Calib >= 0;
-		static bool s_Rtl, s_Takeoff;  // Share's takeoff and return home, until done or taken back
+		static bool s_Rtl, s_Takeoff;  // Menu's takeoff and return home, until done or taken back
 		static int s_Calib = -1;       // the test square's corner being flown to, -1 = none
 		static readonly float[,] Waypoints = { { 10, 10 }, { 10, -10 }, { -10, -10 }, { -10, 10 } };  // (x, y), MuJoCo frame: the blue dots
 
@@ -303,14 +303,13 @@ namespace Dronstein
 				Log.Info($"X500Flight: going to waypoint {s_Calib} ({Waypoints[s_Calib, 0]}, {Waypoints[s_Calib, 1]})");
 			}
 			m_KeyY = keyY;
-			if (Pressed("x500_mode"))  // B: Loiter <-> Manual, and takes RTL / takeoff / calibration back
+			if (Pressed("x500_mode") && !s_Rtl && !s_Takeoff)  // B: Loiter <-> Manual, and takes calibration back; RTL and takeoff are Menu's
 			{
 				Loiter = !Loiter;
-				s_Rtl = s_Takeoff = false;
 				s_Calib = -1;
 				(m_PosX, m_PosY, m_VelX, m_VelY) = (x, y, vx, vy);  // Loiter starts from where it is, at the speed it has
 			}
-			if (Pressed("x500_takeoff_rtl") && Armed)  // Share: takeoff on the ground, return home (or take it back) in the air
+			if (Pressed("x500_takeoff_rtl") && Armed)  // Menu: takeoff on the ground, return home (or take it back) in the air
 			{
 				if (grounded) s_Takeoff = true;
 				else
