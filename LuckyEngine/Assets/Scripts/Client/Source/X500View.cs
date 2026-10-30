@@ -1,4 +1,8 @@
 using System;
+using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Text.Json;
 using Hazel;
 
 namespace Dronstein
@@ -16,15 +20,14 @@ namespace Dronstein
 		public float ZoomSpeed = 1.5f;     // m/s while Q, E or the D-pad is held
 
 		const float CameraStickSpeed = 2f;  // rad/s at full right stick
-		// HUD, in pixels: the labels' x from the right edge, the first baseline from the top, the row height, the values' x after the labels.
-		const float HudRight = 291f, HudTop = 49f, HudRow = 44f, HudValueX = 115f;
-		const float HudModeLabelDx = 33f;  // right-aligns MODE with CAMERA (text has no alignment; widths measured on screen: 96, 62 px)
-		// Armed / Disarmed ends just left of the MODE label: text has no alignment, so each word starts its own width (at
-		// scale 16, estimated) plus a gap left of the label.
-		const float HudArmedDx = 66f, HudDisarmedDx = 88f;
-		// Rendered pixels per Application.Width unit: the monitor scale (Hyprland, 1.6) times Lucky's editor UI scale
-		// (UiScale in ~/.config/LuckyEngine/LuckyEditor/EditorApplicationSettings.yaml, 0.75). Change it if either changes.
-		const float HudPixelScale = 1.6f * 0.75f;
+		// HUD layout in Application.Width/Height units (scaled to rendered pixels by PixelScale): the labels' x from the
+		// right edge, the first baseline from the top, the row height, the values' x after the labels, the text sizes.
+		const float HudRight = 242.5f, HudTop = 41f, HudRow = 36.5f, HudValueX = 96f;
+		const float HudLabelSize = 17.5f, HudValueSize = 23.3f, HudArmSize = 13.3f;
+		const float HudModeLabelDx = 27.5f;  // right-aligns MODE with CAMERA (text has no alignment; widths measured on screen)
+		// Armed / Disarmed ends just left of the MODE label: text has no alignment, so each word starts its own width
+		// (measured on screen) plus a gap left of the label.
+		const float HudArmedDx = 55f, HudDisarmedDx = 73f;
 		static readonly Vector4 Green = new(0.30f, 0.80f, 0.52f, 1f), Red = new(0.94f, 0.33f, 0.36f, 1f);  // Armed, Disarmed
 
 		MujocoSceneComponent m_Mj = null!;
@@ -38,6 +41,7 @@ namespace Dronstein
 		Vector2 m_LastMouse;
 		bool m_KeyR;
 		(uint, uint) m_HudSize;
+		float m_PixelScale = 1f;  // rendered pixels per Application.Width unit, see PixelScale
 		string m_HudShown = "";  // the mode and arming last written, so the texts change only when they do
 
 		protected override void OnCreate()
@@ -118,21 +122,23 @@ namespace Dronstein
 		}
 
 		// Top right of the screen: CAMERA, MODE (X500Flight.ModeName) and Armed / Disarmed left of MODE.
-		// Screen-space text is placed in rendered pixels from the bottom left. Application.Width/Height are smaller than that
-		// by HudPixelScale, which scripts can't read, so it is a constant.
+		// Screen-space text is placed and sized in rendered pixels from the bottom left; Application.Width/Height are
+		// smaller than that by PixelScale. Laid out again whenever the view's size changes (a resize or another monitor).
 		void UpdateHud()
 		{
-			(uint Width, uint Height) size = ((uint)MathF.Round(Application.Width * HudPixelScale), (uint)MathF.Round(Application.Height * HudPixelScale));
+			(uint Width, uint Height) size = (Application.Width, Application.Height);
 			if (size != m_HudSize)
 			{
 				m_HudSize = size;
-				float x = size.Width - HudRight, y = size.Height - HudTop;
-				m_HudCameraLabel.Translation = new Vector3(x, y, 0f);
-				m_HudCamera.Translation = new Vector3(x + HudValueX, y, 0f);
-				m_HudModeLabel.Translation = new Vector3(x + HudModeLabelDx, y - HudRow, 0f);
-				m_HudMode.Translation = new Vector3(x + HudValueX, y - HudRow, 0f);
+				float s = m_PixelScale = PixelScale(), x = (size.Width - HudRight) * s, y = (size.Height - HudTop) * s;
+				Place(m_HudCameraLabel, x, y, HudLabelSize * s);
+				Place(m_HudCamera, x + HudValueX * s, y, HudValueSize * s);
+				Place(m_HudModeLabel, x + HudModeLabelDx * s, y - HudRow * s, HudLabelSize * s);
+				Place(m_HudMode, x + HudValueX * s, y - HudRow * s, HudValueSize * s);
+				if (m_HudArm != null) m_HudArm.Scale = new Vector3(HudArmSize * s, HudArmSize * s, 1f);
 			}
-			if (m_HudArm != null) m_HudArm.Translation = m_HudModeLabel.Translation - new Vector3(X500Flight.Armed ? HudArmedDx : HudDisarmedDx, 0f, 0f);
+			if (m_HudArm != null)
+				m_HudArm.Translation = m_HudModeLabel.Translation - new Vector3((X500Flight.Armed ? HudArmedDx : HudDisarmedDx) * m_PixelScale, 0f, 0f);
 			string shown = X500Flight.ModeName + (X500Flight.Armed ? "+" : "-");
 			if (shown == m_HudShown) return;
 			m_HudShown = shown;
@@ -141,6 +147,58 @@ namespace Dronstein
 			var arm = m_HudArm.GetComponent<TextComponent>()!;
 			arm.Text = X500Flight.Armed ? "Armed" : "Disarmed";
 			arm.Color = X500Flight.Armed ? Green : Red;
+		}
+
+		static void Place(Entity text, float x, float y, float size)
+		{
+			text.Translation = new Vector3(x, y, 0f);
+			text.Scale = new Vector3(size, size, 1f);
+		}
+
+		// Rendered pixels per Application.Width unit: Lucky's UI scale times the scale of the monitor its window is on.
+		// Scripts can't read either from Lucky, so: UiScale from Lucky's editor settings, the monitor's scale from
+		// Hyprland (hyprctl). Either missing counts as 1 (no scaling).
+		static float PixelScale() => UiScale() * MonitorScale();
+
+		static float UiScale()
+		{
+			try
+			{
+				string path = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+					"LuckyEngine", "LuckyEditor", "EditorApplicationSettings.yaml");
+				foreach (string line in File.ReadLines(path))
+				{
+					string t = line.Trim();
+					if (t.StartsWith("UiScale:") && float.TryParse(t[8..], NumberStyles.Float, CultureInfo.InvariantCulture, out float v) && v > 0f)
+						return v;
+				}
+			}
+			catch (Exception) { }  // no settings file: Lucky's default
+			return 1f;
+		}
+
+		static float MonitorScale()
+		{
+			try
+			{
+				using JsonDocument clients = JsonDocument.Parse(Hyprctl("clients -j"));
+				int pid = Environment.ProcessId, monitor = -1;
+				foreach (JsonElement c in clients.RootElement.EnumerateArray())
+					if (c.GetProperty("pid").GetInt32() == pid) { monitor = c.GetProperty("monitor").GetInt32(); break; }
+				using JsonDocument monitors = JsonDocument.Parse(Hyprctl("monitors -j"));
+				foreach (JsonElement m in monitors.RootElement.EnumerateArray())
+					if (m.GetProperty("id").GetInt32() == monitor) return m.GetProperty("scale").GetSingle();
+			}
+			catch (Exception) { }  // not Hyprland
+			return 1f;
+		}
+
+		static string Hyprctl(string args)
+		{
+			using var p = Process.Start(new ProcessStartInfo("hyprctl", args) { RedirectStandardOutput = true, UseShellExecute = false })!;
+			string output = p.StandardOutput.ReadToEnd();
+			p.WaitForExit(1000);
+			return output;
 		}
 	}
 }
