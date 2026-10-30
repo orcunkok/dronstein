@@ -48,7 +48,14 @@ namespace Dronstein
 		float[] m_Q = null!, m_V = null!;
 		float m_Mass;
 		bool m_Off;
-		readonly Dictionary<string, float> P = new();
+
+		// X500.param, read once when Play starts (angles and rates already in radians).
+		float m_ThstMax, m_ThstExpo, m_MotTau, m_YawCoef, m_DragCda, m_DragLin, m_ArmLen, m_SpinMin, m_SpinMax;
+		float m_AngleMax, m_InputTc, m_AccYawMax, m_YawRateMax, m_RatImax, m_RatFltd;
+		readonly float[] m_AngP = new float[3], m_RatP = new float[3], m_RatI = new float[3], m_RatD = new float[3];  // roll, pitch, yaw
+		float m_PosZP, m_VelZP, m_SpdUp, m_SpdDn, m_AccZ;
+		float m_LoitSpeed, m_LoitAcc, m_PosXyP, m_VelXyP, m_TkoffAlt, m_RtlAlt, m_RtlSpeed, m_LandSpeed;
+
 		int m_Pad = -1;
 		float m_PadScan;
 		// ControllerBindings.txt: an axis (Axis >= 0, Sign flips it) or a raw button bN.
@@ -70,6 +77,9 @@ namespace Dronstein
 		float m_Thr;
 		float m_HomeX, m_HomeY;                        // where it was armed: RTL flies back here
 		readonly HashSet<string> m_ButtonsDown = new();  // buttons down last frame, for Pressed
+		// Reused every frame instead of allocated: body rates, rate targets and rate PID outputs (roll, pitch, yaw), the mix.
+		readonly float[] m_W = new float[3], m_RateT = new float[3], m_Out = new float[3], m_Rp = new float[4];
+		readonly float[,] m_R = new float[3, 3];       // world <- body rotation, from BodyRotation
 
 		// Props: entities tagged X500Prop1..4 (children of this entity, motor order), spun about their local +Y.
 		readonly Entity?[] m_Props = new Entity?[4];
@@ -78,7 +88,11 @@ namespace Dronstein
 
 		protected override void OnCreate()
 		{
-			LoadParams();
+			if (!LoadParams())
+			{
+				m_Off = true;
+				return;
+			}
 			LoadBindings();
 			Loiter = true;
 			Armed = s_Rtl = s_Takeoff = false;
@@ -104,7 +118,7 @@ namespace Dronstein
 			StopMotors();
 			m_Q = new float[m_Mj.ModelNq];
 			m_V = new float[m_Mj.ModelNv];
-			Log.Info($"X500Flight: start, {m_Mass:F3} kg, hover throttle {Hover:F3}, params {P.Count}");
+			Log.Info($"X500Flight: start, {m_Mass:F3} kg, hover throttle {Hover:F3}");
 		}
 
 		// No thrust, and ctrl zeroed: until it is written, Lucky's initial ctrl (the joint's own qpos) would push the X500.
@@ -114,16 +128,48 @@ namespace Dronstein
 			foreach (MujocoActuator a in m_Wrench) a.Value = 0;
 		}
 
-		float Hover => m_Mass * G / (4f * P["SIM_THST_MAX"]);
+		float Hover => m_Mass * G / (4f * m_ThstMax);
 
-		void LoadParams()
+		// X500.param into the fields; false (logged, the script stays off) when the file or a parameter is missing.
+		bool LoadParams()
 		{
 			string path = Path.GetFullPath(Path.Combine(Application.DataDirectoryPath!, "..", "X500.param"));
+			if (!File.Exists(path))
+			{
+				Log.Error($"X500Flight: no {path}; off");
+				return false;
+			}
+			var p = new Dictionary<string, float>();
 			foreach (string raw in File.ReadAllLines(path))
 			{
 				string[] f = raw.Split('#')[0].Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
-				if (f.Length == 2 && float.TryParse(f[1], NumberStyles.Float, CultureInfo.InvariantCulture, out float v)) P[f[0]] = v;
+				if (f.Length == 2 && float.TryParse(f[1], NumberStyles.Float, CultureInfo.InvariantCulture, out float v)) p[f[0]] = v;
 			}
+			var missing = new List<string>();
+			float Get(string name)
+			{
+				if (p.TryGetValue(name, out float v)) return v;
+				missing.Add(name);
+				return 0f;
+			}
+			const float Deg = MathF.PI / 180f;
+			(m_ThstMax, m_ThstExpo, m_MotTau, m_YawCoef) = (Get("SIM_THST_MAX"), Get("SIM_THST_EXPO"), Get("SIM_MOT_TAU"), Get("SIM_YAW_COEF"));
+			(m_DragCda, m_DragLin, m_ArmLen) = (Get("SIM_DRAG_CDA"), Get("SIM_DRAG_LIN"), Get("SIM_ARM_LEN"));
+			(m_SpinMin, m_SpinMax) = (Get("MOT_SPIN_MIN"), Get("MOT_SPIN_MAX"));
+			(m_AngleMax, m_InputTc, m_AccYawMax) = (Get("ANGLE_MAX") * Deg, Get("ATC_INPUT_TC"), Get("ATC_ACC_Y_MAX") * Deg);
+			string[] axis = { "RLL", "PIT", "YAW" };
+			for (int k = 0; k < 3; k++)
+			{
+				m_AngP[k] = Get($"ATC_ANG_{axis[k]}_P");
+				(m_RatP[k], m_RatI[k], m_RatD[k]) = (Get($"ATC_RAT_{axis[k]}_P"), Get($"ATC_RAT_{axis[k]}_I"), Get($"ATC_RAT_{axis[k]}_D"));
+			}
+			(m_RatImax, m_RatFltd) = (Get("ATC_RAT_IMAX"), Get("ATC_RAT_FLTD"));
+			(m_PosZP, m_VelZP, m_SpdUp, m_SpdDn, m_AccZ) = (Get("PSC_D_POS_P"), Get("PSC_D_VEL_P"), Get("PILOT_SPD_UP"), Get("PILOT_SPD_DN"), Get("PILOT_ACC_Z"));
+			m_YawRateMax = Get("PILOT_Y_RATE") * Deg;
+			(m_LoitSpeed, m_LoitAcc, m_PosXyP, m_VelXyP) = (Get("LOIT_SPEED"), Get("LOIT_ACC_MAX"), Get("PSC_NE_POS_P"), Get("PSC_NE_VEL_P"));
+			(m_TkoffAlt, m_RtlAlt, m_RtlSpeed, m_LandSpeed) = (Get("TKOFF_ALT"), Get("RTL_ALT"), Get("RTL_SPEED"), Get("LAND_SPEED"));
+			if (missing.Count > 0) Log.Error($"X500Flight: {path} lacks {string.Join(", ", missing)}; off");
+			return missing.Count == 0;
 		}
 
 		// The names it reads: forward_back, left_right, up, down, turn_left, turn_right, x500_*, camera_*, zoom_*, deadzone.
@@ -187,19 +233,16 @@ namespace Dronstein
 			r[2, 0] = 2 * (x * z - w * y); r[2, 1] = 2 * (y * z + w * x); r[2, 2] = 1 - 2 * (x * x + y * y);
 		}
 
-		readonly float[,] m_R = new float[3, 3];
-
 		// ESC commands -> thrust (with the motors' lag) -> force and torque on the body, plus drag.
 		void Motors(float dt)
 		{
-			float spinMin = P["MOT_SPIN_MIN"], spinMax = P["MOT_SPIN_MAX"], e = P["SIM_THST_EXPO"], tmax = P["SIM_THST_MAX"];
-			float lag = 1f - MathF.Exp(-dt / P["SIM_MOT_TAU"]);
-			float arm = P["SIM_ARM_LEN"] * 0.70710678f, kq = P["SIM_YAW_COEF"];
+			float e = m_ThstExpo, lag = 1f - MathF.Exp(-dt / m_MotTau);
+			float arm = m_ArmLen * 0.70710678f, kq = m_YawCoef;
 			float total = 0f, tx = 0f, ty = 0f, tz = 0f;
 			for (int i = 0; i < 4; i++)
 			{
-				float u = Math.Clamp((m_Cmd[i] - spinMin) / (spinMax - spinMin), 0f, 1f);
-				m_Thrust[i] += (tmax * ((1f - e) * u + e * u * u) - m_Thrust[i]) * lag;
+				float u = Math.Clamp((m_Cmd[i] - m_SpinMin) / (m_SpinMax - m_SpinMin), 0f, 1f);
+				m_Thrust[i] += (m_ThstMax * ((1f - e) * u + e * u * u) - m_Thrust[i]) * lag;
 				float t = m_Thrust[i];
 				total += t;
 				tx += MotorY[i] * arm * t;      // r x F with F along +z: (y F, -x F, 0)
@@ -209,7 +252,7 @@ namespace Dronstein
 			BodyRotation(m_R);
 			float vx = m_V[m_Qvel], vy = m_V[m_Qvel + 1], vz = m_V[m_Qvel + 2];
 			float speed = MathF.Sqrt(vx * vx + vy * vy + vz * vz);
-			float drag = 0.5f * Rho * P["SIM_DRAG_CDA"] * speed + P["SIM_DRAG_LIN"];
+			float drag = 0.5f * Rho * m_DragCda * speed + m_DragLin;
 			for (int k = 0; k < 3; k++)
 				m_Wrench[k].Value = m_R[k, 2] * total - drag * m_V[m_Qvel + k];
 			m_Wrench[3].Value = tx;  // free joint torques are in the body frame (FLU)
@@ -222,14 +265,14 @@ namespace Dronstein
 		void Control(float dt)
 		{
 			float pitch = Axis("forward_back"), roll = -Axis("left_right");  // left_right is positive to the left
-			float climb = (Held("up") ? P["PILOT_SPD_UP"] : 0f) - (Held("down") ? P["PILOT_SPD_DN"] : 0f);
+			float climb = (Held("up") ? m_SpdUp : 0f) - (Held("down") ? m_SpdDn : 0f);
 			float turn = (Held("turn_left") ? 1f : 0f) - (Held("turn_right") ? 1f : 0f);
 			BodyRotation(m_R);
 			float phi = MathF.Atan2(m_R[2, 1], m_R[2, 2]), theta = -MathF.Asin(Math.Clamp(m_R[2, 0], -1f, 1f));
 			float psi = MathF.Atan2(m_R[1, 0], m_R[0, 0]);
 			float x = m_Q[m_Qpos], y = m_Q[m_Qpos + 1], alt = m_Q[m_Qpos + 2];
 			float vx = m_V[m_Qvel], vy = m_V[m_Qvel + 1], vz = m_V[m_Qvel + 2];
-			float[] w = { m_V[m_Qvel + 3], m_V[m_Qvel + 4], m_V[m_Qvel + 5] };  // body rates (FLU)
+			(m_W[0], m_W[1], m_W[2]) = (m_V[m_Qvel + 3], m_V[m_Qvel + 4], m_V[m_Qvel + 5]);  // body rates (FLU)
 
 			// The target only creeps to the floor (the descent slows near it), hence the 1 cm.
 			bool grounded = float.IsNaN(m_AltMin) || (m_AltT <= m_AltMin + 0.01f && alt < m_AltMin + 0.05f);
@@ -270,33 +313,33 @@ namespace Dronstein
 				(m_PosX, m_PosY, m_VelX, m_VelY) = (x, y, 0f, 0f);
 				Array.Clear(m_I);
 				Array.Clear(m_D);
-				for (int i = 0; i < 4; i++) m_Cmd[i] = Armed ? P["MOT_SPIN_MIN"] : 0f;  // armed: idle (no thrust yet)
+				for (int i = 0; i < 4; i++) m_Cmd[i] = Armed ? m_SpinMin : 0f;  // armed: idle (no thrust yet)
 				return;
 			}
 
 			// Takeoff: up to TKOFF_ALT above the ground, holding its spot. RTL, from where its target is: up to RTL_ALT
 			// (unless higher), over home at RTL_SPEED braking at LOIT_ACC_MAX, then down at LAND_SPEED (it disarms on landing).
-			float wantSpeed = P["LOIT_SPEED"], wantDx = 0f, wantDy = 0f;  // auto: the speed to fly and its direction (world)
+			float wantSpeed = m_LoitSpeed, wantDx = 0f, wantDy = 0f;  // auto: the speed to fly and its direction (world)
 			if (s_Takeoff)
 			{
-				float top = m_AltMin + P["TKOFF_ALT"];
-				climb = Math.Clamp(2f * (top - m_AltT), 0f, P["PILOT_SPD_UP"]);
+				float top = m_AltMin + m_TkoffAlt;
+				climb = Math.Clamp(2f * (top - m_AltT), 0f, m_SpdUp);
 				if (m_AltT >= top - 0.01f) s_Takeoff = false;
 			}
 			else if (s_Rtl)
 			{
-				float hx = m_HomeX - m_PosX, hy = m_HomeY - m_PosY, dist = MathF.Sqrt(hx * hx + hy * hy), top = m_AltMin + P["RTL_ALT"];
-				if (dist < 0.05f) { (m_PosX, m_PosY) = (m_HomeX, m_HomeY); climb = -P["LAND_SPEED"]; }  // over home: land
-				else if (alt < top - 0.3f) climb = Math.Clamp(2f * (top - m_AltT), 0f, P["PILOT_SPD_UP"]);  // too low: climb first
+				float hx = m_HomeX - m_PosX, hy = m_HomeY - m_PosY, dist = MathF.Sqrt(hx * hx + hy * hy), top = m_AltMin + m_RtlAlt;
+				if (dist < 0.05f) { (m_PosX, m_PosY) = (m_HomeX, m_HomeY); climb = -m_LandSpeed; }  // over home: land
+				else if (alt < top - 0.3f) climb = Math.Clamp(2f * (top - m_AltT), 0f, m_SpdUp);  // too low: climb first
 				else
 				{
-					wantSpeed = MathF.Min(P["RTL_SPEED"], MathF.Sqrt(2f * P["LOIT_ACC_MAX"] * dist));  // fast enough to stop at home
+					wantSpeed = MathF.Min(m_RtlSpeed, MathF.Sqrt(2f * m_LoitAcc * dist));  // fast enough to stop at home
 					(wantDx, wantDy) = (hx / dist, hy / dist);
 				}
 			}
 			bool auto = s_Takeoff || s_Rtl;
 
-			float maxAngle = P["ANGLE_MAX"] * MathF.PI / 180f, tc = P["ATC_INPUT_TC"];
+			float maxAngle = m_AngleMax, tc = m_InputTc;
 			float rollIn = roll * maxAngle, pitchIn = pitch * maxAngle;  // Manual: the stick is the lean
 			if (Loiter || auto)
 			{
@@ -304,12 +347,12 @@ namespace Dronstein
 				// letting go brakes at that rate. The target position follows it, and holds when it stops.
 				float c = MathF.Cos(psi), s = MathF.Sin(psi), speed = wantSpeed;
 				float wantX = (c * pitch + s * roll + wantDx) * speed, wantY = (s * pitch - c * roll + wantDy) * speed;  // roll is positive to the right
-				float dvx = wantX - m_VelX, dvy = wantY - m_VelY, dv = MathF.Sqrt(dvx * dvx + dvy * dvy), step = P["LOIT_ACC_MAX"] * dt;
+				float dvx = wantX - m_VelX, dvy = wantY - m_VelY, dv = MathF.Sqrt(dvx * dvx + dvy * dvy), step = m_LoitAcc * dt;
 				if (dv > step) { dvx *= step / dv; dvy *= step / dv; }
 				m_VelX += dvx; m_VelY += dvy;
 				m_PosX += m_VelX * dt; m_PosY += m_VelY * dt;
 				// Position -> velocity -> acceleration (plus the target's own), capped at what ANGLE_MAX can give.
-				float posP = P["PSC_NE_POS_P"], velP = P["PSC_NE_VEL_P"];
+				float posP = m_PosXyP, velP = m_VelXyP;
 				float ax = velP * (m_VelX + posP * (m_PosX - x) - vx) + dvx / dt, ay = velP * (m_VelY + posP * (m_PosY - y) - vy) + dvy / dt;
 				float a = MathF.Sqrt(ax * ax + ay * ay), aMax = G * MathF.Tan(maxAngle);
 				if (a > aMax) { ax *= aMax / a; ay *= aMax / a; }
@@ -322,43 +365,41 @@ namespace Dronstein
 			float rollRate = (rollIn - m_RollT) / tc, pitchRate = (pitchIn - m_PitchT) / tc;
 			m_RollT += rollRate * dt;
 			m_PitchT += pitchRate * dt;
-			float yawStep = P["ATC_ACC_Y_MAX"] * MathF.PI / 180f * dt;
-			m_YawRateT += Math.Clamp(turn * P["PILOT_Y_RATE"] * MathF.PI / 180f - m_YawRateT, -yawStep, yawStep);
+			float yawStep = m_AccYawMax * dt;
+			m_YawRateT += Math.Clamp(turn * m_YawRateMax - m_YawRateT, -yawStep, yawStep);
 			m_YawT += m_YawRateT * dt;
 
 			// Angle P plus the targets' own rates (feedforward) -> Euler rates -> body rates.
-			float dPhi = P["ATC_ANG_RLL_P"] * (m_RollT - phi) + rollRate;
-			float dTheta = P["ATC_ANG_PIT_P"] * (m_PitchT - theta) + pitchRate;
-			float dPsi = P["ATC_ANG_YAW_P"] * MathF.IEEERemainder(m_YawT - psi, 2f * MathF.PI) + m_YawRateT;
+			float dPhi = m_AngP[0] * (m_RollT - phi) + rollRate;
+			float dTheta = m_AngP[1] * (m_PitchT - theta) + pitchRate;
+			float dPsi = m_AngP[2] * MathF.IEEERemainder(m_YawT - psi, 2f * MathF.PI) + m_YawRateT;
 			float sp = MathF.Sin(phi), cp = MathF.Cos(phi), st = MathF.Sin(theta), ct = MathF.Cos(theta);
-			float[] rateT = { dPhi - st * dPsi, cp * dTheta + sp * ct * dPsi, -sp * dTheta + cp * ct * dPsi };
+			(m_RateT[0], m_RateT[1], m_RateT[2]) = (dPhi - st * dPsi, cp * dTheta + sp * ct * dPsi, -sp * dTheta + cp * ct * dPsi);
 
 			// Rate PIDs, outputs in ArduPilot's normalised units.
-			string[] axis = { "RLL", "PIT", "YAW" };
-			float[] o = new float[3];
-			float dAlpha = dt / (dt + 1f / (2f * MathF.PI * P["ATC_RAT_FLTD"])), imax = P["ATC_RAT_IMAX"];
+			float dAlpha = dt / (dt + 1f / (2f * MathF.PI * m_RatFltd));
 			for (int k = 0; k < 3; k++)
 			{
-				float err = rateT[k] - w[k];
+				float err = m_RateT[k] - m_W[k];
 				m_D[k] += ((err - m_DErr[k]) / dt - m_D[k]) * dAlpha;
 				m_DErr[k] = err;
-				m_I[k] = Math.Clamp(m_I[k] + P[$"ATC_RAT_{axis[k]}_I"] * err * dt, -imax, imax);
-				o[k] = P[$"ATC_RAT_{axis[k]}_P"] * err + m_I[k] + P[$"ATC_RAT_{axis[k]}_D"] * m_D[k];
+				m_I[k] = Math.Clamp(m_I[k] + m_RatI[k] * err * dt, -m_RatImax, m_RatImax);
+				m_Out[k] = m_RatP[k] * err + m_I[k] + m_RatD[k] * m_D[k];
 			}
 
 			// Altitude: climb rate -> altitude target -> velocity -> acceleration -> throttle (hover feedforward, tilt boost).
 			climb = MathF.Max(climb, -2f * (m_AltT - m_AltMin));  // set it down gently: descent slows over the last metre
-			m_ClimbT +=Math.Clamp(climb - m_ClimbT, -P["PILOT_ACC_Z"] * dt, P["PILOT_ACC_Z"] * dt);
+			m_ClimbT += Math.Clamp(climb - m_ClimbT, -m_AccZ * dt, m_AccZ * dt);
 			m_AltT += m_ClimbT * dt;
 			if (m_AltT < m_AltMin)  // on the ground: holding the triggers down can't bury the target
 			{
 				m_AltT = m_AltMin;
 				m_ClimbT = MathF.Max(m_ClimbT, 0f);
 			}
-			float acc = P["PSC_D_VEL_P"] * (m_ClimbT + P["PSC_D_POS_P"] * (m_AltT - alt) - vz);
+			float acc = m_VelZP * (m_ClimbT + m_PosZP * (m_AltT - alt) - vz);
 			m_Thr = Math.Clamp(Hover * (1f + acc / G) / MathF.Max(cp * ct, 0.5f), 0f, 1f);
 
-			Mix(o[0], o[1], o[2]);
+			Mix(m_Out[0], m_Out[1], m_Out[2]);
 		}
 
 		// Quad X mix: thrust fraction per motor, roll and pitch first (throttle shifted to fit them), then yaw in whatever
@@ -366,7 +407,7 @@ namespace Dronstein
 		// commands, as ArduPilot's motor library does.
 		void Mix(float roll, float pitch, float yaw)
 		{
-			float[] rp = new float[4];
+			float[] rp = m_Rp;
 			float lo = 0f, hi = 0f;
 			for (int i = 0; i < 4; i++)
 			{
@@ -383,12 +424,12 @@ namespace Dronstein
 			}
 			yawMax = MathF.Max(yawMax, 0f);
 			yaw = Math.Clamp(yaw, -yawMax, yawMax);
-			float e = P["SIM_THST_EXPO"], spinMin = P["MOT_SPIN_MIN"], spinMax = P["MOT_SPIN_MAX"];
+			float e = m_ThstExpo;
 			for (int i = 0; i < 4; i++)
 			{
 				float t = Math.Clamp(rp[i] - 0.5f * Spin[i] * yaw, 0f, 1f);  // CW motors speed up to yaw left
 				float u = (-(1f - e) + MathF.Sqrt((1f - e) * (1f - e) + 4f * e * t)) / (2f * e);  // inverse thrust curve
-				m_Cmd[i] = spinMin + (spinMax - spinMin) * u;
+				m_Cmd[i] = m_SpinMin + (m_SpinMax - m_SpinMin) * u;
 			}
 		}
 
@@ -429,7 +470,7 @@ namespace Dronstein
 			for (int i = 0; i < 4; i++)
 			{
 				if (m_Props[i] is not Entity prop) continue;
-				float w = Armed ? MathF.Max(PropSpinIdle, PropSpinMax * MathF.Sqrt(m_Thrust[i] / P["SIM_THST_MAX"])) : 0f;
+				float w = Armed ? MathF.Max(PropSpinIdle, PropSpinMax * MathF.Sqrt(m_Thrust[i] / m_ThstMax)) : 0f;
 				m_PropAngle[i] = MathF.IEEERemainder(m_PropAngle[i] + Spin[i] * w * dt, 2f * MathF.PI);
 				prop.Rotation = new Vector3(0f, m_PropAngle[i], 0f);
 			}
