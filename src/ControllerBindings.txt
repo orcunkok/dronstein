@@ -1,0 +1,20 @@
+# Xbox controller for flying (src/gamepad.py). Read when dronstein.py starts: edit, save, start it again.
+# The camera's buttons are Lucky's: LuckyEngine/ControllerBindings.txt.
+#
+# Names are SDL's game-controller names, the same for any Xbox pad:
+#   axes: leftx lefty rightx righty lefttrigger righttrigger (a minus flips one; sticks read -1 up / left);
+#   buttons: a b x y back (View) start (Menu) guide leftshoulder rightshoulder leftstick rightstick dpup dpdown dpleft dpright.
+# Where an action is on/off (climb, descend, turn, the buttons), an axis counts when pushed past halfway.
+
+roll        = leftx          # left stick left/right
+pitch       = lefty          # left stick up/down: up flies forward (low PWM, as ArduPilot's RC2)
+climb       = lefttrigger    # LT
+descend     = righttrigger   # RT
+yaw_left    = leftshoulder   # LB
+yaw_right   = rightshoulder  # RB
+deadzone    = 0.15           # stick values below this count as 0
+
+arm         = y              # Y: arm / disarm (the FC allows it on the ground only)
+mode        = b              # B: LOITER <-> ALT_HOLD; from RTL or GUIDED: LOITER
+takeoff_rtl = start          # Menu: take off when landed, RTL in the air, LOITER again during RTL
+gripper     = a              # A: grab / release
