@@ -12,9 +12,9 @@ namespace Dronstein
 	/// </summary>
 	public class Claw : Entity
 	{
-		[Tooltip("Each finger's swing from closed to fully open; 59 deg puts the tips 230 mm apart (the listed max opening).")]
+		[Tooltip("Each finger's swing from closed to fully open; 72.3 deg is the open pose measured on the Hiwonder drawing.")]
 		[Units("deg")] [Slider(0f, 90f)]
-		public float OpenAngle = 59f;
+		public float OpenAngle = 72.3f;
 
 		[Tooltip("How fast the fingers swing.")]
 		[Units("deg/s")] [Slider(10f, 720f)]

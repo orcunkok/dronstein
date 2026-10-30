@@ -253,7 +253,7 @@ Entities:
         - ID: 3845397343
           Name: OpenAngle
           Type: Float
-          Value: 59
+          Value: 72.3
         - ID: 1144764563
           Name: Speed
           Type: Float
@@ -699,7 +699,7 @@ Entities:
       Scale: [1, 1, 1]
     PodComponent:
       Kind: 0
-      PodGraph: 14570699731383293133
+      PodGraph: 2996374436668055911
       MaterialTable:
         0: 0
   - Entity: 4950325791438092324
@@ -1455,9 +1455,22 @@ Entities:
       Scale: [1, 1, 1]
     PodComponent:
       Kind: 0
-      PodGraph: 17478564798814957216
+      PodGraph: 2681935931737735909
       MaterialTable:
         0: 0
+        1: 0
+        2: 0
+        3: 0
+        4: 0
+        5: 0
+        6: 0
+        7: 0
+        8: 0
+        9: 0
+        10: 0
+        11: 0
+        12: 0
+        13: 0
   - Entity: 12174914177517664916
     Domain: Client
     TagComponent:
@@ -2254,9 +2267,21 @@ Entities:
       Scale: [1, 1, 1]
     PodComponent:
       Kind: 0
-      PodGraph: 1271349667627160951
+      PodGraph: 5371859036461348989
       MaterialTable:
         0: 0
+        1: 0
+        2: 0
+        3: 0
+        4: 0
+        5: 0
+        6: 0
+        7: 0
+        8: 0
+        9: 0
+        10: 0
+        11: 0
+        12: 0
 SceneAudio:
   MasterReverb:
     Pre-delay: 0

@@ -5,11 +5,13 @@ Run with the editor open (Edit mode):
 
 Writes into <out>:
 - claw_bracket.hpodgraph: the U-shaped holder the fingers hang from: its back plate (the mounting face) and two
-  flanges that carry the two pivot pins. The servo (inside the U) is not modelled.
+  flanges that carry the two pivot pins, and a plain box for the servo inside the U.
 - claw_finger_l.hpodgraph, claw_finger_r.hpodgraph: the left and right fingers, pivot at the origin: four stacked
-  3 mm plates, two inside the holder's flanges and two outside them (the top one carries the gear, above the
-  holder), whose inner edge is an S-shaped wave and whose tip ends in a plain round,
-  brass standoffs between them (a silver screw head at each end) and the gear on the top plate. The right finger is the left one mirrored in x (built
+  2 mm plates, two inside the holder's flanges and two outside them. Each is a band along the traced CENTERLINE with
+  the drawing's stepped inner edge and a round tip. The two outer plates reach the pivot (round hub); the two inner
+  ones are a short ladder that starts at the first pillar, held to the outer two by the brass standoffs (a silver
+  screw head at each end). The sector gear is a separate plate outside the top one. The right finger is the left one
+  mirrored in x (built
   mirrored: a mirrored entity, scale X -1, shows its plates inside out). Each plate is its real outline: Lucky's
   CurveFromAnchors takes at most 8 points, so the outline is cut into strips and fans of up to 8 points that
   FillCurve fills one by one.
@@ -20,9 +22,9 @@ Frame: Pod/Lucky, Y up, metres. The claw hangs fingers down: pivots on the X axi
 the four plates of a finger stacked along Z.
 
 Sources:
-- Amazon B0CMLRGXP4 / Hiwonder SKU 21070010: max opening 230 mm, ~145 x 62 x 61 mm closed, 191 g with its LDX-335MG
-  servo, hard aluminium. Everything else (plate band, curve, pivot spacing, teeth) is scaled from the product photo:
-  re-measure the real claw and fix the constants below.
+- Amazon B0CMLRGXP4 / Hiwonder SKU 21070010: max opening 230 mm, 136 x 57 x 60 mm, 191 g with its LDX-335MG servo,
+  hard aluminium. The finger outline, screw and standoff positions, plate spacing, bracket and open angle are
+  measured from the Hiwonder dimension drawing (closed view 3.72 px/mm; left pivot at the left hub's nut).
 """
 
 from __future__ import annotations
@@ -37,25 +39,46 @@ from pod_authoring import Literal, McpSession  # noqa: E402
 
 ENDPOINT = "http://127.0.0.1:19331/mcp"
 BRASS = mat(0.75, 0.52, 0.18, 1.0, 0.3)
+SERVO = mat(0.07, 0.07, 0.075, 0.2, 0.5)   # a shade lighter than the black plates
 D_ALU = 2700.0
 
 # ---------------------------------------------------------------- dimensions (m)
-PIVOT_X = 0.012           # pivots 24 mm apart; their gears mesh
-TIP = (0.007, -0.125)     # closed fingertip centreline, from the left pivot: the two tips meet edge to edge at x=0
-SAGITTA = 0.025           # how far the finger curve bulges outward from the pivot-to-tip line
-BAND = 0.011              # plate width across the curve, outer edge to the wave's crests
-PLATE_T = 0.003           # plate thickness
-FLANGE_Z, FLANGE_T = 0.0215, 0.0025   # the holder's two flanges (centres) and their thickness
-LAYER_Z = (-0.0265, -0.0085, 0.0085, 0.0265)   # finger plates: the outer two just outside the flanges
-WAVE = (0.009, 0.0022)    # inner-edge wave: wavelength and depth (crest to trough)
-WAVE_START = 0.014        # the wave starts this far along the curve from the pivot (the hub is plain)
+PIVOT_X = 0.0128          # pivots 25.6 mm apart; their gears mesh
+# The finger's centreline in the left finger's frame (+x inward, -y toward the tip), from the pivot up the neck and
+# out along the curve to the tip screw: the outer edge of the drawing offset inward by half the band.
+CENTERLINE = (
+    (0.0, 0.0), (0.0001, -0.0135), (0.0002, -0.0162), (-0.0008, -0.0218), (-0.0038, -0.0262), (-0.006, -0.0293),
+    (-0.008, -0.0322), (-0.0098, -0.0353), (-0.0113, -0.0381), (-0.0126, -0.0411), (-0.0137, -0.0438),
+    (-0.0146, -0.0467), (-0.0154, -0.0497), (-0.0159, -0.0526), (-0.0163, -0.0554), (-0.0165, -0.0585),
+    (-0.0167, -0.0614), (-0.0166, -0.0641), (-0.0164, -0.0671), (-0.0159, -0.07), (-0.0154, -0.073),
+    (-0.0147, -0.076), (-0.0139, -0.0789), (-0.0129, -0.0817), (-0.0117, -0.0845), (-0.0102, -0.0874),
+    (-0.0084, -0.0903), (-0.0064, -0.0932), (-0.0041, -0.0962), (-0.0014, -0.0992), (0.0056, -0.1062),
+)
+HALF_OUT = 0.006          # outer edge to the centreline
+PATH_STEP = 0.00075       # the centreline is sampled every 0.75 mm along its length (157 points)
+# Centreline to the inner edge at each sample, in 0.1 mm: 6 mm up the plain neck, then the drawing's stepped teeth
+# (4 to 6.2 mm), measured along the band's normal.
+HALF_IN = (
+    60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 60, 63, 63, 63, 63, 63, 60, 60, 59, 59, 62, 61, 63, 64, 63, 61,
+    60, 56, 54, 49, 50, 50, 55, 61, 62, 56, 45, 40, 42, 46, 52, 57, 56, 52, 45, 41, 40, 42, 46, 53, 57, 55, 49, 45,
+    43, 40, 44, 53, 58, 58, 53, 49, 43, 42, 44, 49, 54, 59, 61, 54, 47, 43, 41, 45, 49, 55, 59, 57, 52, 47, 42, 43,
+    46, 55, 58, 61, 56, 50, 44, 41, 43, 48, 53, 58, 60, 53, 47, 42, 41, 43, 49, 55, 58, 56, 52, 45, 43, 44, 47, 52,
+    57, 58, 55, 50, 44, 41, 44, 47, 50, 57, 58, 51, 47, 40, 40, 41, 47, 53, 56, 54, 49, 41, 39, 40, 43, 47, 51, 54,
+    50, 43, 39, 39, 39, 40, 48, 54, 50, 47, 40, 40, 44, 51, 59, 62, 62,
+)
+TIP_CAP = ((0.0073, -0.1077), 0.0053)    # the round fingertip: centre and radius, offset from the tip screw
+PLATE_T = 0.002           # plate thickness
+FLANGE_Z, FLANGE_T = 0.024, 0.002     # the holder's two flanges (centres) and their thickness: 50 mm apart outside
+LAYER_Z = (-0.029, -0.0098, 0.0098, 0.029)   # finger plates: the outer two just outside the flanges, 60 mm overall
 STANDOFF_R = 0.0028       # brass hex standoffs between the plates
+SERVO_BOX = ((0.0545, 0.020, 0.0405), (0.0, 0.0075, 0.0))   # the LDX-335MG's body inside the holder: size, centre
 SCREW_HEAD = (0.00275, 0.0016)     # M3 button head screwed into each standoff end: radius, height
-STANDOFFS = (0.4, 0.72, 0.97)      # where they sit along the curve (0 pivot, 1 tip)
-HUB_R = 0.009             # plate round the pivot
-GEAR_R, GEAR_TEETH = 0.013, 12     # outside radius; 2 mm teeth, so the two gears mesh across the 24 mm pivots
-OPEN_DEG = 59.0           # each finger's swing from closed to fully open: tips 230 mm apart (Claw.cs uses it)
-SAMPLES_PER_WAVE = 8      # outline points per wavelength along the curve
+STANDOFFS = ((-0.0043, -0.0253), (-0.0172, -0.0616), (0.0056, -0.1062))   # the three screws, on the centreline
+HUB_R = 0.0102            # plate round the pivot
+INNER_START = 29          # the two inner plates start at this sample (21.8 mm along the band): they only reach the first pillar
+GEAR_TEETH, GEAR_ROOT, GEAR_TIP = 16, 0.0113, 0.0134   # sector gear on the top plate (the two gears mesh)
+GEAR_SECTOR = (-20.0, 110.0)       # degrees, in the left finger's frame: the gear's teeth span the lower inner side
+OPEN_DEG = 72.3           # each finger's swing from closed to fully open, measured on the drawing (Claw.cs uses it)
 
 
 def rot_z(a):
@@ -63,21 +86,21 @@ def rot_z(a):
     return [[c, -s, 0.0], [s, c, 0.0], [0.0, 0.0, 1.0]]
 
 
-def finger_curve():
-    """The finger's centreline: a circular arc from the pivot (0, 0) to TIP bulging outward (-x). Returns the arc's
-    centre, radius and start/end angles."""
-    tx, ty = TIP
-    chord = math.hypot(tx, ty)
-    radius = (chord * chord / 4 + SAGITTA * SAGITTA) / (2 * SAGITTA)
-    nx, ny = ty / chord, -tx / chord           # chord normal pointing inward (+x side)
-    if nx < 0:
-        nx, ny = -nx, -ny
-    cx, cy = tx / 2 + nx * (radius - SAGITTA), ty / 2 + ny * (radius - SAGITTA)
-    a0 = math.atan2(-cy, -cx)
-    a1 = math.atan2(ty - cy, tx - cx)
-    if a1 < a0:
-        a1 += 2 * math.pi
-    return (cx, cy), radius, a0, a1
+def finger_path(step):
+    """CENTERLINE resampled every step metres along its length. Returns the points and the length."""
+    seg = [math.dist(a, b) for a, b in zip(CENTERLINE, CENTERLINE[1:])]
+    total = sum(seg)
+    n = max(1, round(total / step))
+    points, k, done = [], 0, 0.0
+    for i in range(n + 1):
+        s = total * i / n
+        while k < len(seg) - 1 and done + seg[k] < s:
+            done += seg[k]
+            k += 1
+        t = min(1.0, (s - done) / seg[k])
+        (ax, ay), (bx, by) = CENTERLINE[k], CENTERLINE[k + 1]
+        points.append((ax + (bx - ax) * t, ay + (by - ay) * t))
+    return points, total
 
 
 def outline(edit, name, pieces, edges, side):
@@ -127,46 +150,67 @@ def fan(cx, cy, radius_at, n):
     return [[(cx, cy), *rim[i:i + 7]] for i in range(0, n, 6)], rim
 
 
-def plate_outline():
-    """One finger plate: the curved band with the S-wave inner edge, the round hub at the pivot and the round tip.
-    Returns its fill pieces and its edges."""
-    (cx, cy), radius, a0, a1 = finger_curve()
-    length = radius * (a1 - a0)
-    n = int(length / WAVE[0] * SAMPLES_PER_WAVE)
+def plate_outline(start=0):
+    """One finger plate: the band along the centreline with the stepped inner edge and the round tip. From the pivot
+    (start 0) it has the round hub; the inner plates start at sample start instead, with a round end there. Returns its
+    fill pieces and its edges."""
+    path, length = finger_path(PATH_STEP)
+    n = len(path) - 1
     outer, inner = [], []
-    for i in range(n + 1):
-        a = a0 + (a1 - a0) * i / n
-        s = length * i / n
-        trough = 0.5 - 0.5 * math.cos(2 * math.pi * (s - WAVE_START) / WAVE[0]) if s > WAVE_START else 0.0
-        r_in = radius - BAND / 2 + WAVE[1] * trough   # crests at the band edge, troughs cut WAVE[1] into it
-        outer.append((cx + (radius + BAND / 2) * math.cos(a), cy + (radius + BAND / 2) * math.sin(a)))
-        inner.append((cx + r_in * math.cos(a), cy + r_in * math.sin(a)))
-    pieces = [outer[i:i + 4] + inner[i:i + 4][::-1] for i in range(0, n, 3)]
-    hub, hub_rim = fan(0.0, 0.0, lambda a: HUB_R, 24)
-    tx, ty = cx + radius * math.cos(a1), cy + radius * math.sin(a1)
-    tip, tip_rim = fan(tx, ty, lambda a: BAND / 2, 36)
-    return pieces + hub + tip, [outer, inner, hub_rim, tip_rim]
+    for i, (x, y) in enumerate(path):
+        (ax, ay), (bx, by) = path[max(0, i - 2)], path[min(n, i + 2)]
+        t = math.hypot(bx - ax, by - ay)
+        tx, ty = (bx - ax) / t, (by - ay) / t      # the outward normal is (ty, -tx)
+        half_in = HALF_IN[i] * 1e-4
+        outer.append((x + ty * HALF_OUT, y - tx * HALF_OUT))
+        inner.append((x - ty * half_in, y + tx * half_in))
+    pieces = [outer[i:i + 4] + inner[i:i + 4][::-1] for i in range(start, n, 3)]
+    hub, hub_rim = fan(*path[start], lambda a: HUB_R if start == 0 else HALF_OUT, 24)
+    (tx, ty), tip_r = TIP_CAP
+    tip, tip_rim = fan(tx, ty, lambda a: tip_r, 36)
+    # The band's two end corners lie outside the tip circle: a triangle from each to the circle (the outer one to the
+    # tangent point, so the outer edge runs on into the tip) closes the outline.
+    ex, ey = outer[-1]
+    d = math.hypot(tx - ex, ty - ey)
+    base, half = math.atan2(ty - ey, tx - ex), math.asin(tip_r / d)
+    tangent = min(((ex + math.sqrt(d * d - tip_r * tip_r) * math.cos(base + h),
+                    ey + math.sqrt(d * d - tip_r * tip_r) * math.sin(base + h)) for h in (-half, half)),
+                  key=lambda p: p[1])
+    ix, iy = inner[-1]
+    a = math.atan2(iy - ty, ix - tx)
+    inner_end = (tx + tip_r * math.cos(a), ty + tip_r * math.sin(a))
+    corners = [[(ex, ey), tangent, (tx, ty)], [(ix, iy), inner_end, (tx, ty)]]
+    return pieces + hub + tip + corners, [outer[start:], inner[start:], hub_rim, tip_rim, [(ex, ey), tangent],
+                                          [inner_end, (ix, iy)]]
 
 
 def gear_outline(side):
-    """The finger's spur gear on the top plate: GEAR_TEETH square-ish teeth 2 mm deep. The right gear is turned half
-    a tooth so its teeth sit in the left gear's gaps."""
+    """The finger's sector gear on the top plate: GEAR_TEETH square-ish teeth over GEAR_SECTOR, the hub round elsewhere.
+    The right gear is turned half a tooth so its teeth sit in the left gear's gaps."""
     n = GEAR_TEETH * 4
     shift = 0 if side > 0 else 2
-    pieces, rim = fan(0.0, 0.0, lambda a: GEAR_R if (int(round(a / (2 * math.pi) * n)) + shift) % 4 < 2
-                      else GEAR_R - 0.002, n)
+
+    def radius(a):
+        deg = math.degrees(a) % 360.0
+        if deg > 180.0:
+            deg -= 360.0
+        if not GEAR_SECTOR[0] <= deg <= GEAR_SECTOR[1]:
+            return HUB_R
+        return GEAR_TIP if (int(round(a / (2 * math.pi) * n)) + shift) % 4 < 2 else GEAR_ROOT
+
+    pieces, rim = fan(0.0, 0.0, radius, n)
     return pieces, [rim]
 
 
 def build_finger(edit, side):
     b = Builder(edit)
-    plate = outline(edit, "plate", *plate_outline(), side)
+    outer_plate = outline(edit, "plate", *plate_outline(), side)
+    inner_plate = outline(edit, "inner plate", *plate_outline(INNER_START), side)
     for k, z in enumerate(LAYER_Z):
-        b._place(plate, f"plate_{k}", IDENTITY, (0.0, 0.0, z - PLATE_T / 2), ALU_BLACK)
-    (cx, cy), radius, a0, a1 = finger_curve()
-    for j, f in enumerate(STANDOFFS):
-        a = a0 + (a1 - a0) * f
-        x, y = side * (cx + radius * math.cos(a)), cy + radius * math.sin(a)
+        b._place(inner_plate if k in (1, 2) else outer_plate, f"plate_{k}", IDENTITY, (0.0, 0.0, z - PLATE_T / 2),
+                 ALU_BLACK)
+    for j, (sx, sy) in enumerate(STANDOFFS):
+        x, y = side * sx, sy
         b.tube(f"standoff_{j}", (x, y, LAYER_Z[0]), (x, y, LAYER_Z[-1]), STANDOFF_R, BRASS, 8500.0, sides=6,
                collide=False)
         r, h = SCREW_HEAD
@@ -180,7 +224,7 @@ def build_finger(edit, side):
 
 def build_bracket(edit):
     b = Builder(edit)
-    top, bottom, width = 0.016, -0.014, 0.056
+    top, bottom, width = 0.0214, -0.0121, 0.057
     # The U: the back plate (mounting face, M3 holes not modelled) across the top, and the two flanges hanging from it
     # either side of the inner finger plates, with the pivot pins through them and out to the outer plates.
     reach = FLANGE_Z + FLANGE_T / 2
@@ -191,6 +235,7 @@ def build_bracket(edit):
               collide=False, bevel=0.0006)
         b.tube(f"pivot_{s}", (s * PIVOT_X, 0, LAYER_Z[0] - PLATE_T), (s * PIVOT_X, 0, LAYER_Z[-1] + 2 * PLATE_T + 0.003),
                0.0025, METAL, 7800.0, sides=16, collide=False)
+    b.box("servo", SERVO_BOX[0], SERVO_BOX[1], SERVO, 1500.0, collide=False, bevel=0.001)
     edit.output(b.join(), "Geometry")
     return b
 
@@ -206,8 +251,7 @@ def main():
         with graph.edit() as edit:
             b = build(edit)
         print(f"saved {graph.save(out / f'{name}.hpodgraph')} ({len(b.meshes)} meshes)")
-    (cx, cy), radius, a0, a1 = finger_curve()
-    print(f"finger arc r={radius:.4f} centre=({cx:.4f}, {cy:.4f}) {math.degrees(a1 - a0):.1f} deg; open {OPEN_DEG} deg")
+    print(f"finger length {finger_path(PATH_STEP)[1]:.4f} m; open {OPEN_DEG} deg")
 
 
 if __name__ == "__main__":

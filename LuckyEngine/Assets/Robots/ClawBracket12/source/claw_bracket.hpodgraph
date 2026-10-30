@@ -1,0 +1,41 @@
+nodes:
+  - id: 1
+    type: MeshCube
+    name: back_plate
+    inputs:
+      SizeX: {kind: Float, value: 0.057}
+      SizeY: {kind: Float, value: 0.00200000009}
+      SizeZ: {kind: Float, value: 0.0500000007}
+  - {id: 2, type: BevelEdge, name: back_plate edges, inputs: {Offset: {kind: Float, value: 0.00079999998}, Segments: {kind: Int32, value: 2}}}
+  - {id: 3, type: Transform, name: back_plate pose, inputs: {Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [0, 0.0223999992, 0]}}}
+  - {id: 4, type: SetMaterial, name: back_plate material, inputs: {Material: {kind: Material, value: [0.0250000004, 0.0250000004, 0.0280000009, 1, 0.600000024, 0.449999988]}, Name: {kind: String, value: back_plate}}}
+  - {id: 5, type: SetMeshName, name: back_plate, inputs: {Name: {kind: String, value: back_plate}}}
+  - {id: 6, type: MeshCube, name: flange_-1, inputs: {SizeX: {kind: Float, value: 0.057}, SizeY: {kind: Float, value: 0.0335000008}, SizeZ: {kind: Float, value: 0.00200000009}}}
+  - {id: 7, type: BevelEdge, name: flange_-1 edges, inputs: {Offset: {kind: Float, value: 0.000600000028}, Segments: {kind: Int32, value: 2}}}
+  - {id: 8, type: Transform, name: flange_-1 pose, inputs: {Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [0, 0.00465000002, -0.0240000002]}}}
+  - {id: 9, type: SetMaterial, name: flange_-1 material, inputs: {Material: {kind: Material, value: [0.0250000004, 0.0250000004, 0.0280000009, 1, 0.600000024, 0.449999988]}, Name: {kind: String, value: flange_-1}}}
+  - {id: 10, type: SetMeshName, name: flange_-1, inputs: {Name: {kind: String, value: flange_-1}}}
+  - {id: 11, type: MeshCylinder, name: pivot_-1, inputs: {Sides: {kind: Int32, value: 16}, Radius: {kind: Float, value: 0.00249999994}, Height: {kind: Float, value: 0.0670000017}, CapFill: {kind: Menu, value: 2188cbc6abca857b}}}
+  - {id: 12, type: BevelEdge, name: pivot_-1 rims, inputs: {Offset: {kind: Float, value: 0.000375000003}, Segments: {kind: Int32, value: 2}, AngleThreshold: {kind: Float, value: 0.600000024}}}
+  - {id: 13, type: Transform, name: pivot_-1 pose, inputs: {Rotation: {kind: Float3, value: [1.57079637, 0, 0]}, Translation: {kind: Float3, value: [-0.0127999997, 0, 0.00249999994]}}}
+  - {id: 14, type: SetMaterial, name: pivot_-1 material, inputs: {Material: {kind: Material, value: [0.620000005, 0.620000005, 0.639999986, 1, 1, 0.25]}, Name: {kind: String, value: pivot_-1}}}
+  - {id: 15, type: SetMeshName, name: pivot_-1, inputs: {Name: {kind: String, value: pivot_-1}}}
+  - {id: 16, type: MeshCube, name: flange_1, inputs: {SizeX: {kind: Float, value: 0.057}, SizeY: {kind: Float, value: 0.0335000008}, SizeZ: {kind: Float, value: 0.00200000009}}}
+  - {id: 17, type: BevelEdge, name: flange_1 edges, inputs: {Offset: {kind: Float, value: 0.000600000028}, Segments: {kind: Int32, value: 2}}}
+  - {id: 18, type: Transform, name: flange_1 pose, inputs: {Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [0, 0.00465000002, 0.0240000002]}}}
+  - {id: 19, type: SetMaterial, name: flange_1 material, inputs: {Material: {kind: Material, value: [0.0250000004, 0.0250000004, 0.0280000009, 1, 0.600000024, 0.449999988]}, Name: {kind: String, value: flange_1}}}
+  - {id: 20, type: SetMeshName, name: flange_1, inputs: {Name: {kind: String, value: flange_1}}}
+  - {id: 21, type: MeshCylinder, name: pivot_1, inputs: {Sides: {kind: Int32, value: 16}, Radius: {kind: Float, value: 0.00249999994}, Height: {kind: Float, value: 0.0670000017}, CapFill: {kind: Menu, value: 2188cbc6abca857b}}}
+  - {id: 22, type: BevelEdge, name: pivot_1 rims, inputs: {Offset: {kind: Float, value: 0.000375000003}, Segments: {kind: Int32, value: 2}, AngleThreshold: {kind: Float, value: 0.600000024}}}
+  - {id: 23, type: Transform, name: pivot_1 pose, inputs: {Rotation: {kind: Float3, value: [1.57079637, 0, 0]}, Translation: {kind: Float3, value: [0.0127999997, 0, 0.00249999994]}}}
+  - {id: 24, type: SetMaterial, name: pivot_1 material, inputs: {Material: {kind: Material, value: [0.620000005, 0.620000005, 0.639999986, 1, 1, 0.25]}, Name: {kind: String, value: pivot_1}}}
+  - {id: 25, type: SetMeshName, name: pivot_1, inputs: {Name: {kind: String, value: pivot_1}}}
+  - {id: 26, type: JoinGeometry, name: assemble}
+  - {id: 27, type: JoinGeometry, name: assemble}
+  - {id: 28, type: JoinGeometry, name: assemble}
+  - {id: 29, type: JoinGeometry, name: assemble}
+links: [{from: {node: 1, pin: Geometry}, to: {node: 2, pin: Geometry}}, {from: {node: 2, pin: Geometry}, to: {node: 3, pin: Geometry}}, {from: {node: 3, pin: Geometry}, to: {node: 4, pin: Geometry}}, {from: {node: 4, pin: Geometry}, to: {node: 5, pin: Geometry}}, {from: {node: 6, pin: Geometry}, to: {node: 7, pin: Geometry}}, {from: {node: 7, pin: Geometry}, to: {node: 8, pin: Geometry}}, {from: {node: 8, pin: Geometry}, to: {node: 9, pin: Geometry}}, {from: {node: 9, pin: Geometry}, to: {node: 10, pin: Geometry}}, {from: {node: 11, pin: Geometry}, to: {node: 12, pin: Geometry}}, {from: {node: 12, pin: Geometry}, to: {node: 13, pin: Geometry}}, {from: {node: 13, pin: Geometry}, to: {node: 14, pin: Geometry}}, {from: {node: 14, pin: Geometry}, to: {node: 15, pin: Geometry}}, {from: {node: 16, pin: Geometry}, to: {node: 17, pin: Geometry}}, {from: {node: 17, pin: Geometry}, to: {node: 18, pin: Geometry}}, {from: {node: 18, pin: Geometry}, to: {node: 19, pin: Geometry}}, {from: {node: 19, pin: Geometry}, to: {node: 20, pin: Geometry}}, {from: {node: 21, pin: Geometry}, to: {node: 22, pin: Geometry}}, {from: {node: 22, pin: Geometry}, to: {node: 23, pin: Geometry}}, {from: {node: 23, pin: Geometry}, to: {node: 24, pin: Geometry}}, {from: {node: 24, pin: Geometry}, to: {node: 25, pin: Geometry}}, {from: {node: 5, pin: Geometry}, to: {node: 26, pin: A}}, {from: {node: 10, pin: Geometry}, to: {node: 26, pin: B}}, {from: {node: 26, pin: Geometry}, to: {node: 27, pin: A}}, {from: {node: 15, pin: Geometry}, to: {node: 27, pin: B}}, {from: {node: 27, pin: Geometry}, to: {node: 28, pin: A}}, {from: {node: 20, pin: Geometry}, to: {node: 28, pin: B}}, {from: {node: 28, pin: Geometry}, to: {node: 29, pin: A}}, {from: {node: 25, pin: Geometry}, to: {node: 29, pin: B}}]
+outputs:
+  Geometry:
+    node: 29
+    pin: Geometry
