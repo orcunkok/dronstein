@@ -1506,19 +1506,6 @@ Entities:
       PodGraph: 2681935931737735909
       MaterialTable:
         0: 0
-        1: 0
-        2: 0
-        3: 0
-        4: 0
-        5: 0
-        6: 0
-        7: 0
-        8: 0
-        9: 0
-        10: 0
-        11: 0
-        12: 0
-        13: 0
   - Entity: 12174914177517664916
     Domain: Client
     TagComponent:
@@ -1891,8 +1878,8 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [0.767247, 0.828951, -1.87054]
-      Rotation: [-0.096477, 1.88443, 0]
+      Position: [-6.1465, 0.438591, -0.900949]
+      Rotation: [-0.133881, 4.04635, 0]
       Scale: [1, 1, 1]
     CameraComponent:
       Camera:
@@ -2350,18 +2337,6 @@ Entities:
       PodGraph: 5371859036461348989
       MaterialTable:
         0: 0
-        1: 0
-        2: 0
-        3: 0
-        4: 0
-        5: 0
-        6: 0
-        7: 0
-        8: 0
-        9: 0
-        10: 0
-        11: 0
-        12: 0
 SceneAudio:
   MasterReverb:
     Pre-delay: 0

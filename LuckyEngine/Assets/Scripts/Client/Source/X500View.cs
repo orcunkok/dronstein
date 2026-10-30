@@ -13,7 +13,7 @@ namespace Dronstein
 	/// Armed / Disarmed) and R, which puts everything back as when Play started (X500, golf balls, trash can).
 	/// Camera: drag with the right mouse button or move the right stick (camera_yaw / camera_pitch) to orbit; Q/E or
 	/// D-pad down/up (zoom_out / zoom_in) to zoom. C or camera_view (X) steps through the cameras: orbit the X500, follow
-	/// it (glued behind its tail), orbit the gripper (the entity tagged Claw, if there is one), and back. Each orbit keeps
+	/// it (behind its tail, level), orbit the gripper (the entity tagged Claw, if there is one), and back. Each orbit keeps
 	/// its own zoom.
 	/// Attach to the entity tagged World (its MuJoCo scene holds the X500).
 	/// </summary>
@@ -24,9 +24,8 @@ namespace Dronstein
 
 		const float CameraStickSpeed = 2f;  // rad/s at full right stick
 		static readonly Vector3 ClawCenter = new(0f, -0.06f, 0f);  // the gripper camera looks here, between the fingers
-		const float TailBack = 1.2f, TailUp = 0.35f;  // follow camera: m behind the X500's center and above it, in its frame
-		// MuJoCo world -> Lucky world (-90 deg about x), and the camera's frame (looks down -z, y up) -> the X500's FLU.
-		static readonly Quaternion MjToLucky = new(-0.70710678f, 0f, 0f, 0.70710678f), CameraToFlu = new(0.5f, -0.5f, -0.5f, 0.5f);
+		const float TailBack = 1.2f, TailUp = 0.35f;  // follow camera: m behind the X500's center and above it
+		const float FollowTilt = 15f * MathF.PI / 180f;  // follow camera: looks this far down (rad)
 		static readonly string[] CameraNames = { "X500 V2", "Follow", "Gripper" };  // the HUD's CAMERA, per m_View
 		// HUD layout in Application.Width/Height units (scaled to rendered pixels by PixelScale): the labels' x from the
 		// right edge, the first baseline from the top, the row height, the values' x after the labels, the text sizes.
@@ -119,25 +118,14 @@ namespace Dronstein
 
 		Vector3 Target() => m_View == 2 ? m_Claw!.Translation + ClawCenter : X500Position();
 
-		// Glued to the X500: TailBack behind and TailUp above it, turning, pitching and rolling with it.
+		// Behind the X500: TailBack behind and TailUp above it, turning with its heading only (no pitch or roll), looking FollowTilt down.
 		void FollowCamera()
 		{
 			m_Mj.GetBodyPoseMj(m_Body, out Vector3 _, out Quaternion q, out Vector3 _, out Vector3 _);
-			Quaternion rot = Mul(Mul(MjToLucky, q), CameraToFlu);
-			m_Camera.RotationQuat = rot;
-			m_Camera.Translation = X500Position() + Rotate(rot, new Vector3(0f, TailUp, TailBack));
-		}
-
-		static Quaternion Mul(Quaternion a, Quaternion b) => new(
-			a.W * b.X + a.X * b.W + a.Y * b.Z - a.Z * b.Y,
-			a.W * b.Y - a.X * b.Z + a.Y * b.W + a.Z * b.X,
-			a.W * b.Z + a.X * b.Y - a.Y * b.X + a.Z * b.W,
-			a.W * b.W - a.X * b.X - a.Y * b.Y - a.Z * b.Z);
-
-		static Vector3 Rotate(Quaternion q, Vector3 v)
-		{
-			Vector3 t = Vector3.Cross(q.XYZ, v) * 2f;
-			return v + t * q.W + Vector3.Cross(q.XYZ, t);
+			float heading = MathF.Atan2(2f * (q.W * q.Z + q.X * q.Y), 1f - 2f * (q.Y * q.Y + q.Z * q.Z));  // its nose, about MuJoCo z
+			float yaw = heading - MathF.PI / 2f;  // the camera's yaw about Lucky y, looking along the nose
+			m_Camera.Rotation = new Vector3(-FollowTilt, yaw, 0f);
+			m_Camera.Translation = X500Position() + new Vector3(TailBack * MathF.Sin(yaw), TailUp, TailBack * MathF.Cos(yaw));
 		}
 
 		// The X500's position in Lucky's frame (MuJoCo (x, y, z) is Lucky (x, -z, y)).
