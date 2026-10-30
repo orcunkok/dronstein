@@ -1,8 +1,152 @@
 <!-- The scene's MuJoCo world: the Holybro X500 V2 (physics in ../X500V2/x500v2.mjcf, written by
-     tools/x500v2/build_x500v2.py; X500Flight.cs flies it). The tennis balls, the trash can and the ground are Lucky
-     collider entities that join this world. Air density/viscosity give the balls and the can their drag; the X500's
-     geoms turn it off (X500.param sets its drag). -->
+     tools/x500v2/build_x500v2.py; X500Flight.cs flies it). The trash can and the ground are Lucky collider entities
+     that join this world. Air density/viscosity give the can its drag; the X500's geoms turn it off (X500.param sets
+     its drag).
+     The tennis balls are bodies here (their visuals are the scene's TennisBall_NN entities, which follow the bodies
+     by body ID, 2 to 26 in this order). Lucky runs this world at a 0.002 s step. Each ball is a real tennis ball:
+       mass 58 g, radius 33.5 mm, hollow (shell inertia 2/3 m r^2);
+       bounce: solref 0.04 0.1 gives a rebound of about 0.45 to 0.6 of the drop height on a hard floor (a real ball:
+         0.53 to 0.58 from 2.54 m) with a smooth 12 ms squash; unstable below dampratio 0.05;
+       squeeze: solimp 0.83 sets the force against compression (1.0, 1.8, 3.6, 7.1 mm total at 10, 20, 40, 80 N;
+         a real ball: 0.8, 1.6, 3.3, 6.5 mm);
+       friction 0.65 sliding (felt on a hard court), 0.005 torsional, 0.0015 rolling (rolling resistance about 0.033);
+       air: drag coefficient 0.55 (blunt_drag 0.275 is half of it in MuJoCo's convention; terminal speed about 22
+         m/s), Magnus lift of a spinning ball (magnus_lift 0.72: it carries a fixed offset of 0.5, so the net lift is
+         the ball's CL about 0.6 x spin ratio, topspin dips), slow spin decay (angular_drag 0.2, about 11% a second).
+     priority 100 makes the ball's contact settings win against the ground and anything else it touches. -->
 <mujoco model="dronstein">
   <option timestep="0.005" density="1.225" viscosity="1.8e-5" cone="elliptic" impratio="10"/>
+  <default>
+    <default class="tennis_ball">
+      <geom type="sphere" size="0.0335" condim="6" priority="100" solref="0.04 0.1" solimp="0.83 0.83 0.01" friction="0.65 0.005 0.0015" fluidshape="ellipsoid" fluidcoef="0.275 0 0.2 0 0.72" group="3" rgba="0 0 0 0"/>
+    </default>
+  </default>
   <include file="../X500V2/x500v2.mjcf"/>
+  <worldbody>
+    <body name="TennisBall_01" pos="3.2375 -1.585 0.0335">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="0.058" diaginertia="4.34e-5 4.34e-5 4.34e-5"/>
+      <geom class="tennis_ball"/>
+    </body>
+    <body name="TennisBall_02" pos="-2.09 -2.35 0.0335">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="0.058" diaginertia="4.34e-5 4.34e-5 4.34e-5"/>
+      <geom class="tennis_ball"/>
+    </body>
+    <body name="TennisBall_03" pos="-1.23 0.0575 0.0335">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="0.058" diaginertia="4.34e-5 4.34e-5 4.34e-5"/>
+      <geom class="tennis_ball"/>
+    </body>
+    <body name="TennisBall_04" pos="-1.0525 -0.465 0.0335">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="0.058" diaginertia="4.34e-5 4.34e-5 4.34e-5"/>
+      <geom class="tennis_ball"/>
+    </body>
+    <body name="TennisBall_05" pos="1.0775 -0.69 0.0335">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="0.058" diaginertia="4.34e-5 4.34e-5 4.34e-5"/>
+      <geom class="tennis_ball"/>
+    </body>
+    <body name="TennisBall_06" pos="1.2525 2.39 0.0335">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="0.058" diaginertia="4.34e-5 4.34e-5 4.34e-5"/>
+      <geom class="tennis_ball"/>
+    </body>
+    <body name="TennisBall_07" pos="0.25 -1.475 0.0335">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="0.058" diaginertia="4.34e-5 4.34e-5 4.34e-5"/>
+      <geom class="tennis_ball"/>
+    </body>
+    <body name="TennisBall_08" pos="3.3225 1.1325 0.0335">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="0.058" diaginertia="4.34e-5 4.34e-5 4.34e-5"/>
+      <geom class="tennis_ball"/>
+    </body>
+    <body name="TennisBall_09" pos="-2.635 -2 0.0335">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="0.058" diaginertia="4.34e-5 4.34e-5 4.34e-5"/>
+      <geom class="tennis_ball"/>
+    </body>
+    <body name="TennisBall_10" pos="4.6975 -1.415 0.0335">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="0.058" diaginertia="4.34e-5 4.34e-5 4.34e-5"/>
+      <geom class="tennis_ball"/>
+    </body>
+    <body name="TennisBall_11" pos="-1.0925 -4.2975 0.0335">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="0.058" diaginertia="4.34e-5 4.34e-5 4.34e-5"/>
+      <geom class="tennis_ball"/>
+    </body>
+    <body name="TennisBall_12" pos="1.165 -1.0625 0.0335">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="0.058" diaginertia="4.34e-5 4.34e-5 4.34e-5"/>
+      <geom class="tennis_ball"/>
+    </body>
+    <body name="TennisBall_13" pos="0.9025 2.045 0.0335">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="0.058" diaginertia="4.34e-5 4.34e-5 4.34e-5"/>
+      <geom class="tennis_ball"/>
+    </body>
+    <body name="TennisBall_14" pos="-1.5025 0.845 0.0335">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="0.058" diaginertia="4.34e-5 4.34e-5 4.34e-5"/>
+      <geom class="tennis_ball"/>
+    </body>
+    <body name="TennisBall_15" pos="-2.4725 -2.555 0.0335">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="0.058" diaginertia="4.34e-5 4.34e-5 4.34e-5"/>
+      <geom class="tennis_ball"/>
+    </body>
+    <body name="TennisBall_16" pos="2.945 -1.2275 0.0335">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="0.058" diaginertia="4.34e-5 4.34e-5 4.34e-5"/>
+      <geom class="tennis_ball"/>
+    </body>
+    <body name="TennisBall_17" pos="-3.3425 -1.635 0.0335">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="0.058" diaginertia="4.34e-5 4.34e-5 4.34e-5"/>
+      <geom class="tennis_ball"/>
+    </body>
+    <body name="TennisBall_18" pos="-1.9375 1.155 0.0335">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="0.058" diaginertia="4.34e-5 4.34e-5 4.34e-5"/>
+      <geom class="tennis_ball"/>
+    </body>
+    <body name="TennisBall_19" pos="-0.865 -2.6775 0.0335">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="0.058" diaginertia="4.34e-5 4.34e-5 4.34e-5"/>
+      <geom class="tennis_ball"/>
+    </body>
+    <body name="TennisBall_20" pos="-1.315 3.965 0.0335">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="0.058" diaginertia="4.34e-5 4.34e-5 4.34e-5"/>
+      <geom class="tennis_ball"/>
+    </body>
+    <body name="TennisBall_21" pos="2.195 2.19 0.0335">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="0.058" diaginertia="4.34e-5 4.34e-5 4.34e-5"/>
+      <geom class="tennis_ball"/>
+    </body>
+    <body name="TennisBall_22" pos="-0.925 -3.8075 0.0335">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="0.058" diaginertia="4.34e-5 4.34e-5 4.34e-5"/>
+      <geom class="tennis_ball"/>
+    </body>
+    <body name="TennisBall_23" pos="3.6275 -3.325 0.0335">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="0.058" diaginertia="4.34e-5 4.34e-5 4.34e-5"/>
+      <geom class="tennis_ball"/>
+    </body>
+    <body name="TennisBall_24" pos="0.12 2.67 0.0335">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="0.058" diaginertia="4.34e-5 4.34e-5 4.34e-5"/>
+      <geom class="tennis_ball"/>
+    </body>
+    <body name="TennisBall_25" pos="1.34 -1.865 0.0335">
+      <freejoint/>
+      <inertial pos="0 0 0" mass="0.058" diaginertia="4.34e-5 4.34e-5 4.34e-5"/>
+      <geom class="tennis_ball"/>
+    </body>
+  </worldbody>
 </mujoco>

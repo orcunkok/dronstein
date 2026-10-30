@@ -262,78 +262,60 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: TennisBall_05
-    Parent: 0
+    Parent: 7700112233445566778
+    Children:
+      - Handle: 868196408185819179
+    TransformComponent:
+      Position: [1.0775, 0.0335, 0.69]
+      Rotation: [-1.5708, 0, 0]
+      Scale: [1, 1, 1]
+    MujocoBodyComponent:
+      ID: 6
+  - Entity: 868196408185819179
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_05_Visual
+    Parent: 245167270397148752
     Children:
       []
     TransformComponent:
-      Position: [1.0775, 0.0335, 0.69]
-      Rotation: [0, 0, 0]
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
       Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
         0: 5906284485229172943
       Visible: true
-    MujocoSphereColliderComponent:
-      Density: 368
-      Radius: 0.5
-      Friction: [1, 0.1, 0.01]
-      Contype: 1
-      Conaffinity: 1
-      Condim: -1
-    MujocoJointComponent:
-      Type: "\x00"
-      Position: [0, 0, 0]
-      Axis: [0, 1, 0]
-      Limited: false
-      LimitMin: -3.14159
-      LimitMax: 3.14159
-      LimitSolref: [0.02, 1]
-      LimitSolimp: [0.9, 0.95, 0.001]
-      Stiffness: 0
-      Damping: 0.001
-      Armature: 0
-      FrictionLoss: 0
-      SpringRef: 0
-      JointId: -1
   - Entity: 344505556118670621
     Domain: Client
     TagComponent:
       Tag: TennisBall_02
-    Parent: 0
+    Parent: 7700112233445566778
+    Children:
+      - Handle: 3641603982383516983
+    TransformComponent:
+      Position: [-2.09, 0.0335, 2.35]
+      Rotation: [-1.5708, 0, 0]
+      Scale: [1, 1, 1]
+    MujocoBodyComponent:
+      ID: 3
+  - Entity: 3641603982383516983
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_02_Visual
+    Parent: 344505556118670621
     Children:
       []
     TransformComponent:
-      Position: [-2.09, 0.0335, 2.35]
-      Rotation: [0, 0, 0]
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
       Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
         0: 5906284485229172943
       Visible: true
-    MujocoSphereColliderComponent:
-      Density: 368
-      Radius: 0.5
-      Friction: [1, 0.1, 0.01]
-      Contype: 1
-      Conaffinity: 1
-      Condim: -1
-    MujocoJointComponent:
-      Type: "\x00"
-      Position: [0, 0, 0]
-      Axis: [0, 1, 0]
-      Limited: false
-      LimitMin: -3.14159
-      LimitMax: 3.14159
-      LimitSolref: [0.02, 1]
-      LimitSolimp: [0.9, 0.95, 0.001]
-      Stiffness: 0
-      Damping: 0.001
-      Armature: 0
-      FrictionLoss: 0
-      SpringRef: 0
-      JointId: -1
   - Entity: 351442425693542831
     Domain: Client
     TagComponent:
@@ -392,40 +374,31 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: TennisBall_04
-    Parent: 0
+    Parent: 7700112233445566778
+    Children:
+      - Handle: 7574918311415852851
+    TransformComponent:
+      Position: [-1.0525, 0.0335, 0.465]
+      Rotation: [-1.5708, 0, 0]
+      Scale: [1, 1, 1]
+    MujocoBodyComponent:
+      ID: 5
+  - Entity: 7574918311415852851
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_04_Visual
+    Parent: 602807608784138521
     Children:
       []
     TransformComponent:
-      Position: [-1.0525, 0.0335, 0.465]
-      Rotation: [0, 0, 0]
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
       Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
         0: 5906284485229172943
       Visible: true
-    MujocoSphereColliderComponent:
-      Density: 368
-      Radius: 0.5
-      Friction: [1, 0.1, 0.01]
-      Contype: 1
-      Conaffinity: 1
-      Condim: -1
-    MujocoJointComponent:
-      Type: "\x00"
-      Position: [0, 0, 0]
-      Axis: [0, 1, 0]
-      Limited: false
-      LimitMin: -3.14159
-      LimitMax: 3.14159
-      LimitSolref: [0.02, 1]
-      LimitSolimp: [0.9, 0.95, 0.001]
-      Stiffness: 0
-      Damping: 0.001
-      Armature: 0
-      FrictionLoss: 0
-      SpringRef: 0
-      JointId: -1
   - Entity: 756123043266677426
     Domain: Client
     TagComponent:
@@ -462,40 +435,31 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: TennisBall_11
-    Parent: 0
+    Parent: 7700112233445566778
+    Children:
+      - Handle: 2219724388333390735
+    TransformComponent:
+      Position: [-1.0925, 0.0335, 4.2975]
+      Rotation: [-1.5708, 0, 0]
+      Scale: [1, 1, 1]
+    MujocoBodyComponent:
+      ID: 12
+  - Entity: 2219724388333390735
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_11_Visual
+    Parent: 1134009517207024497
     Children:
       []
     TransformComponent:
-      Position: [-1.0925, 0.0335, 4.2975]
-      Rotation: [0, 0, 0]
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
       Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
         0: 5906284485229172943
       Visible: true
-    MujocoSphereColliderComponent:
-      Density: 368
-      Radius: 0.5
-      Friction: [1, 0.1, 0.01]
-      Contype: 1
-      Conaffinity: 1
-      Condim: -1
-    MujocoJointComponent:
-      Type: "\x00"
-      Position: [0, 0, 0]
-      Axis: [0, 1, 0]
-      Limited: false
-      LimitMin: -3.14159
-      LimitMax: 3.14159
-      LimitSolref: [0.02, 1]
-      LimitSolimp: [0.9, 0.95, 0.001]
-      Stiffness: 0
-      Damping: 0.001
-      Armature: 0
-      FrictionLoss: 0
-      SpringRef: 0
-      JointId: -1
   - Entity: 1223973736405521014
     Domain: Client
     TagComponent:
@@ -554,40 +518,31 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: TennisBall_12
-    Parent: 0
+    Parent: 7700112233445566778
+    Children:
+      - Handle: 5082513832886728665
+    TransformComponent:
+      Position: [1.165, 0.0335, 1.0625]
+      Rotation: [-1.5708, 0, 0]
+      Scale: [1, 1, 1]
+    MujocoBodyComponent:
+      ID: 13
+  - Entity: 5082513832886728665
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_12_Visual
+    Parent: 1979815025508288610
     Children:
       []
     TransformComponent:
-      Position: [1.165, 0.0335, 1.0625]
-      Rotation: [0, 0, 0]
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
       Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
         0: 5906284485229172943
       Visible: true
-    MujocoSphereColliderComponent:
-      Density: 368
-      Radius: 0.5
-      Friction: [1, 0.1, 0.01]
-      Contype: 1
-      Conaffinity: 1
-      Condim: -1
-    MujocoJointComponent:
-      Type: "\x00"
-      Position: [0, 0, 0]
-      Axis: [0, 1, 0]
-      Limited: false
-      LimitMin: -3.14159
-      LimitMax: 3.14159
-      LimitSolref: [0.02, 1]
-      LimitSolimp: [0.9, 0.95, 0.001]
-      Stiffness: 0
-      Damping: 0.001
-      Armature: 0
-      FrictionLoss: 0
-      SpringRef: 0
-      JointId: -1
   - Entity: 3431107646684660533
     Domain: Client
     TagComponent:
@@ -646,78 +601,60 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: TennisBall_16
-    Parent: 0
+    Parent: 7700112233445566778
+    Children:
+      - Handle: 5816497446257569881
+    TransformComponent:
+      Position: [2.945, 0.0335, 1.2275]
+      Rotation: [-1.5708, 0, 0]
+      Scale: [1, 1, 1]
+    MujocoBodyComponent:
+      ID: 17
+  - Entity: 5816497446257569881
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_16_Visual
+    Parent: 4022421985475234552
     Children:
       []
     TransformComponent:
-      Position: [2.945, 0.0335, 1.2275]
-      Rotation: [0, 0, 0]
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
       Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
         0: 5906284485229172943
       Visible: true
-    MujocoSphereColliderComponent:
-      Density: 368
-      Radius: 0.5
-      Friction: [1, 0.1, 0.01]
-      Contype: 1
-      Conaffinity: 1
-      Condim: -1
-    MujocoJointComponent:
-      Type: "\x00"
-      Position: [0, 0, 0]
-      Axis: [0, 1, 0]
-      Limited: false
-      LimitMin: -3.14159
-      LimitMax: 3.14159
-      LimitSolref: [0.02, 1]
-      LimitSolimp: [0.9, 0.95, 0.001]
-      Stiffness: 0
-      Damping: 0.001
-      Armature: 0
-      FrictionLoss: 0
-      SpringRef: 0
-      JointId: -1
   - Entity: 4349336411905971544
     Domain: Client
     TagComponent:
       Tag: TennisBall_23
-    Parent: 0
+    Parent: 7700112233445566778
+    Children:
+      - Handle: 1228320887535867595
+    TransformComponent:
+      Position: [3.6275, 0.0335, 3.325]
+      Rotation: [-1.5708, 0, 0]
+      Scale: [1, 1, 1]
+    MujocoBodyComponent:
+      ID: 24
+  - Entity: 1228320887535867595
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_23_Visual
+    Parent: 4349336411905971544
     Children:
       []
     TransformComponent:
-      Position: [3.6275, 0.0335, 3.325]
-      Rotation: [0, 0, 0]
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
       Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
         0: 5906284485229172943
       Visible: true
-    MujocoSphereColliderComponent:
-      Density: 368
-      Radius: 0.5
-      Friction: [1, 0.1, 0.01]
-      Contype: 1
-      Conaffinity: 1
-      Condim: -1
-    MujocoJointComponent:
-      Type: "\x00"
-      Position: [0, 0, 0]
-      Axis: [0, 1, 0]
-      Limited: false
-      LimitMin: -3.14159
-      LimitMax: 3.14159
-      LimitSolref: [0.02, 1]
-      LimitSolimp: [0.9, 0.95, 0.001]
-      Stiffness: 0
-      Damping: 0.001
-      Armature: 0
-      FrictionLoss: 0
-      SpringRef: 0
-      JointId: -1
   - Entity: 4385618058133689853
     Domain: Client
     TagComponent:
@@ -770,40 +707,31 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: TennisBall_15
-    Parent: 0
+    Parent: 7700112233445566778
+    Children:
+      - Handle: 8738681121152269347
+    TransformComponent:
+      Position: [-2.4725, 0.0335, 2.555]
+      Rotation: [-1.5708, 0, 0]
+      Scale: [1, 1, 1]
+    MujocoBodyComponent:
+      ID: 16
+  - Entity: 8738681121152269347
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_15_Visual
+    Parent: 5216942334575228420
     Children:
       []
     TransformComponent:
-      Position: [-2.4725, 0.0335, 2.555]
-      Rotation: [0, 0, 0]
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
       Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
         0: 5906284485229172943
       Visible: true
-    MujocoSphereColliderComponent:
-      Density: 368
-      Radius: 0.5
-      Friction: [1, 0.1, 0.01]
-      Contype: 1
-      Conaffinity: 1
-      Condim: -1
-    MujocoJointComponent:
-      Type: "\x00"
-      Position: [0, 0, 0]
-      Axis: [0, 1, 0]
-      Limited: false
-      LimitMin: -3.14159
-      LimitMax: 3.14159
-      LimitSolref: [0.02, 1]
-      LimitSolimp: [0.9, 0.95, 0.001]
-      Stiffness: 0
-      Damping: 0.001
-      Armature: 0
-      FrictionLoss: 0
-      SpringRef: 0
-      JointId: -1
   - Entity: 6718577171622032375
     Domain: Client
     TagComponent:
@@ -842,78 +770,60 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: TennisBall_06
-    Parent: 0
+    Parent: 7700112233445566778
+    Children:
+      - Handle: 5375270654777870840
+    TransformComponent:
+      Position: [1.2525, 0.0335, -2.39]
+      Rotation: [-1.5708, 0, 0]
+      Scale: [1, 1, 1]
+    MujocoBodyComponent:
+      ID: 7
+  - Entity: 5375270654777870840
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_06_Visual
+    Parent: 6808467485959760917
     Children:
       []
     TransformComponent:
-      Position: [1.2525, 0.0335, -2.39]
-      Rotation: [0, 0, 0]
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
       Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
         0: 5906284485229172943
       Visible: true
-    MujocoSphereColliderComponent:
-      Density: 368
-      Radius: 0.5
-      Friction: [1, 0.1, 0.01]
-      Contype: 1
-      Conaffinity: 1
-      Condim: -1
-    MujocoJointComponent:
-      Type: "\x00"
-      Position: [0, 0, 0]
-      Axis: [0, 1, 0]
-      Limited: false
-      LimitMin: -3.14159
-      LimitMax: 3.14159
-      LimitSolref: [0.02, 1]
-      LimitSolimp: [0.9, 0.95, 0.001]
-      Stiffness: 0
-      Damping: 0.001
-      Armature: 0
-      FrictionLoss: 0
-      SpringRef: 0
-      JointId: -1
   - Entity: 6859745199138401194
     Domain: Client
     TagComponent:
       Tag: TennisBall_10
-    Parent: 0
+    Parent: 7700112233445566778
+    Children:
+      - Handle: 3856957380441106266
+    TransformComponent:
+      Position: [4.6975, 0.0335, 1.415]
+      Rotation: [-1.5708, 0, 0]
+      Scale: [1, 1, 1]
+    MujocoBodyComponent:
+      ID: 11
+  - Entity: 3856957380441106266
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_10_Visual
+    Parent: 6859745199138401194
     Children:
       []
     TransformComponent:
-      Position: [4.6975, 0.0335, 1.415]
-      Rotation: [0, 0, 0]
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
       Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
         0: 5906284485229172943
       Visible: true
-    MujocoSphereColliderComponent:
-      Density: 368
-      Radius: 0.5
-      Friction: [1, 0.1, 0.01]
-      Contype: 1
-      Conaffinity: 1
-      Condim: -1
-    MujocoJointComponent:
-      Type: "\x00"
-      Position: [0, 0, 0]
-      Axis: [0, 1, 0]
-      Limited: false
-      LimitMin: -3.14159
-      LimitMax: 3.14159
-      LimitSolref: [0.02, 1]
-      LimitSolimp: [0.9, 0.95, 0.001]
-      Stiffness: 0
-      Damping: 0.001
-      Armature: 0
-      FrictionLoss: 0
-      SpringRef: 0
-      JointId: -1
   - Entity: 6887470786088073126
     Domain: Client
     TagComponent:
@@ -1017,40 +927,31 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: TennisBall_03
-    Parent: 0
+    Parent: 7700112233445566778
+    Children:
+      - Handle: 445363681616962640
+    TransformComponent:
+      Position: [-1.23, 0.0335, -0.0575]
+      Rotation: [-1.5708, 0, 0]
+      Scale: [1, 1, 1]
+    MujocoBodyComponent:
+      ID: 4
+  - Entity: 445363681616962640
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_03_Visual
+    Parent: 7688800538663923338
     Children:
       []
     TransformComponent:
-      Position: [-1.23, 0.0335, -0.0575]
-      Rotation: [0, 0, 0]
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
       Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
         0: 5906284485229172943
       Visible: true
-    MujocoSphereColliderComponent:
-      Density: 368
-      Radius: 0.5
-      Friction: [1, 0.1, 0.01]
-      Contype: 1
-      Conaffinity: 1
-      Condim: -1
-    MujocoJointComponent:
-      Type: "\x00"
-      Position: [0, 0, 0]
-      Axis: [0, 1, 0]
-      Limited: false
-      LimitMin: -3.14159
-      LimitMax: 3.14159
-      LimitSolref: [0.02, 1]
-      LimitSolimp: [0.9, 0.95, 0.001]
-      Stiffness: 0
-      Damping: 0.001
-      Armature: 0
-      FrictionLoss: 0
-      SpringRef: 0
-      JointId: -1
   - Entity: 7700112233445566778
     Domain: Client
     TagComponent:
@@ -1058,6 +959,31 @@ Entities:
     Parent: 0
     Children:
       - Handle: 14339033916604750231
+      - Handle: 13129489785444233558
+      - Handle: 344505556118670621
+      - Handle: 7688800538663923338
+      - Handle: 602807608784138521
+      - Handle: 245167270397148752
+      - Handle: 6808467485959760917
+      - Handle: 17168540220499114429
+      - Handle: 7877977864254300973
+      - Handle: 13219196278226597274
+      - Handle: 6859745199138401194
+      - Handle: 1134009517207024497
+      - Handle: 1979815025508288610
+      - Handle: 13632217528594285167
+      - Handle: 18127450234244442317
+      - Handle: 5216942334575228420
+      - Handle: 4022421985475234552
+      - Handle: 9365238450782605957
+      - Handle: 9226193199443051660
+      - Handle: 17276475515001353056
+      - Handle: 17849749303881500182
+      - Handle: 15816677538361509217
+      - Handle: 9746366683398954405
+      - Handle: 4349336411905971544
+      - Handle: 13196638502951336172
+      - Handle: 15517991742549953451
     TransformComponent:
       Position: [0, 0, 0]
       Rotation: [0, 0, 0]
@@ -1118,40 +1044,31 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: TennisBall_08
-    Parent: 0
+    Parent: 7700112233445566778
+    Children:
+      - Handle: 1980241222855773941
+    TransformComponent:
+      Position: [3.3225, 0.0335, -1.1325]
+      Rotation: [-1.5708, 0, 0]
+      Scale: [1, 1, 1]
+    MujocoBodyComponent:
+      ID: 9
+  - Entity: 1980241222855773941
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_08_Visual
+    Parent: 7877977864254300973
     Children:
       []
     TransformComponent:
-      Position: [3.3225, 0.0335, -1.1325]
-      Rotation: [0, 0, 0]
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
       Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
         0: 5906284485229172943
       Visible: true
-    MujocoSphereColliderComponent:
-      Density: 368
-      Radius: 0.5
-      Friction: [1, 0.1, 0.01]
-      Contype: 1
-      Conaffinity: 1
-      Condim: -1
-    MujocoJointComponent:
-      Type: "\x00"
-      Position: [0, 0, 0]
-      Axis: [0, 1, 0]
-      Limited: false
-      LimitMin: -3.14159
-      LimitMax: 3.14159
-      LimitSolref: [0.02, 1]
-      LimitSolimp: [0.9, 0.95, 0.001]
-      Stiffness: 0
-      Damping: 0.001
-      Armature: 0
-      FrictionLoss: 0
-      SpringRef: 0
-      JointId: -1
   - Entity: 8170836057042241114
     Domain: Client
     TagComponent:
@@ -1282,116 +1199,89 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: TennisBall_18
-    Parent: 0
+    Parent: 7700112233445566778
+    Children:
+      - Handle: 570576685538020777
+    TransformComponent:
+      Position: [-1.9375, 0.0335, -1.155]
+      Rotation: [-1.5708, 0, 0]
+      Scale: [1, 1, 1]
+    MujocoBodyComponent:
+      ID: 19
+  - Entity: 570576685538020777
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_18_Visual
+    Parent: 9226193199443051660
     Children:
       []
     TransformComponent:
-      Position: [-1.9375, 0.0335, -1.155]
-      Rotation: [0, 0, 0]
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
       Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
         0: 5906284485229172943
       Visible: true
-    MujocoSphereColliderComponent:
-      Density: 368
-      Radius: 0.5
-      Friction: [1, 0.1, 0.01]
-      Contype: 1
-      Conaffinity: 1
-      Condim: -1
-    MujocoJointComponent:
-      Type: "\x00"
-      Position: [0, 0, 0]
-      Axis: [0, 1, 0]
-      Limited: false
-      LimitMin: -3.14159
-      LimitMax: 3.14159
-      LimitSolref: [0.02, 1]
-      LimitSolimp: [0.9, 0.95, 0.001]
-      Stiffness: 0
-      Damping: 0.001
-      Armature: 0
-      FrictionLoss: 0
-      SpringRef: 0
-      JointId: -1
   - Entity: 9365238450782605957
     Domain: Client
     TagComponent:
       Tag: TennisBall_17
-    Parent: 0
+    Parent: 7700112233445566778
+    Children:
+      - Handle: 5377197318101497525
+    TransformComponent:
+      Position: [-3.3425, 0.0335, 1.635]
+      Rotation: [-1.5708, 0, 0]
+      Scale: [1, 1, 1]
+    MujocoBodyComponent:
+      ID: 18
+  - Entity: 5377197318101497525
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_17_Visual
+    Parent: 9365238450782605957
     Children:
       []
     TransformComponent:
-      Position: [-3.3425, 0.0335, 1.635]
-      Rotation: [0, 0, 0]
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
       Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
         0: 5906284485229172943
       Visible: true
-    MujocoSphereColliderComponent:
-      Density: 368
-      Radius: 0.5
-      Friction: [1, 0.1, 0.01]
-      Contype: 1
-      Conaffinity: 1
-      Condim: -1
-    MujocoJointComponent:
-      Type: "\x00"
-      Position: [0, 0, 0]
-      Axis: [0, 1, 0]
-      Limited: false
-      LimitMin: -3.14159
-      LimitMax: 3.14159
-      LimitSolref: [0.02, 1]
-      LimitSolimp: [0.9, 0.95, 0.001]
-      Stiffness: 0
-      Damping: 0.001
-      Armature: 0
-      FrictionLoss: 0
-      SpringRef: 0
-      JointId: -1
   - Entity: 9746366683398954405
     Domain: Client
     TagComponent:
       Tag: TennisBall_22
-    Parent: 0
+    Parent: 7700112233445566778
+    Children:
+      - Handle: 5134327459162675120
+    TransformComponent:
+      Position: [-0.925, 0.0335, 3.8075]
+      Rotation: [-1.5708, 0, 0]
+      Scale: [1, 1, 1]
+    MujocoBodyComponent:
+      ID: 23
+  - Entity: 5134327459162675120
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_22_Visual
+    Parent: 9746366683398954405
     Children:
       []
     TransformComponent:
-      Position: [-0.925, 0.0335, 3.8075]
-      Rotation: [0, 0, 0]
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
       Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
         0: 5906284485229172943
       Visible: true
-    MujocoSphereColliderComponent:
-      Density: 368
-      Radius: 0.5
-      Friction: [1, 0.1, 0.01]
-      Contype: 1
-      Conaffinity: 1
-      Condim: -1
-    MujocoJointComponent:
-      Type: "\x00"
-      Position: [0, 0, 0]
-      Axis: [0, 1, 0]
-      Limited: false
-      LimitMin: -3.14159
-      LimitMax: 3.14159
-      LimitSolref: [0.02, 1]
-      LimitSolimp: [0.9, 0.95, 0.001]
-      Stiffness: 0
-      Damping: 0.001
-      Armature: 0
-      FrictionLoss: 0
-      SpringRef: 0
-      JointId: -1
   - Entity: 10341303050608521097
     Domain: Client
     TagComponent:
@@ -1551,154 +1441,118 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: TennisBall_01
-    Parent: 0
+    Parent: 7700112233445566778
+    Children:
+      - Handle: 8742514861359412280
+    TransformComponent:
+      Position: [3.2375, 0.0335, 1.585]
+      Rotation: [-1.5708, 0, 0]
+      Scale: [1, 1, 1]
+    MujocoBodyComponent:
+      ID: 2
+  - Entity: 8742514861359412280
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_01_Visual
+    Parent: 13129489785444233558
     Children:
       []
     TransformComponent:
-      Position: [3.2375, 0.0335, 1.585]
-      Rotation: [0, 0, 0]
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
       Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
         0: 5906284485229172943
       Visible: true
-    MujocoSphereColliderComponent:
-      Density: 368
-      Radius: 0.5
-      Friction: [1, 0.1, 0.01]
-      Contype: 1
-      Conaffinity: 1
-      Condim: -1
-    MujocoJointComponent:
-      Type: "\x00"
-      Position: [0, 0, 0]
-      Axis: [0, 1, 0]
-      Limited: false
-      LimitMin: -3.14159
-      LimitMax: 3.14159
-      LimitSolref: [0.02, 1]
-      LimitSolimp: [0.9, 0.95, 0.001]
-      Stiffness: 0
-      Damping: 0.001
-      Armature: 0
-      FrictionLoss: 0
-      SpringRef: 0
-      JointId: -1
   - Entity: 13196638502951336172
     Domain: Client
     TagComponent:
       Tag: TennisBall_24
-    Parent: 0
+    Parent: 7700112233445566778
+    Children:
+      - Handle: 3865875329656804758
+    TransformComponent:
+      Position: [0.12, 0.0335, -2.67]
+      Rotation: [-1.5708, 0, 0]
+      Scale: [1, 1, 1]
+    MujocoBodyComponent:
+      ID: 25
+  - Entity: 3865875329656804758
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_24_Visual
+    Parent: 13196638502951336172
     Children:
       []
     TransformComponent:
-      Position: [0.12, 0.0335, -2.67]
-      Rotation: [0, 0, 0]
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
       Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
         0: 5906284485229172943
       Visible: true
-    MujocoSphereColliderComponent:
-      Density: 368
-      Radius: 0.5
-      Friction: [1, 0.1, 0.01]
-      Contype: 1
-      Conaffinity: 1
-      Condim: -1
-    MujocoJointComponent:
-      Type: "\x00"
-      Position: [0, 0, 0]
-      Axis: [0, 1, 0]
-      Limited: false
-      LimitMin: -3.14159
-      LimitMax: 3.14159
-      LimitSolref: [0.02, 1]
-      LimitSolimp: [0.9, 0.95, 0.001]
-      Stiffness: 0
-      Damping: 0.001
-      Armature: 0
-      FrictionLoss: 0
-      SpringRef: 0
-      JointId: -1
   - Entity: 13219196278226597274
     Domain: Client
     TagComponent:
       Tag: TennisBall_09
-    Parent: 0
+    Parent: 7700112233445566778
+    Children:
+      - Handle: 792723338049442008
+    TransformComponent:
+      Position: [-2.635, 0.0335, 2]
+      Rotation: [-1.5708, 0, 0]
+      Scale: [1, 1, 1]
+    MujocoBodyComponent:
+      ID: 10
+  - Entity: 792723338049442008
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_09_Visual
+    Parent: 13219196278226597274
     Children:
       []
     TransformComponent:
-      Position: [-2.635, 0.0335, 2]
-      Rotation: [0, 0, 0]
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
       Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
         0: 5906284485229172943
       Visible: true
-    MujocoSphereColliderComponent:
-      Density: 368
-      Radius: 0.5
-      Friction: [1, 0.1, 0.01]
-      Contype: 1
-      Conaffinity: 1
-      Condim: -1
-    MujocoJointComponent:
-      Type: "\x00"
-      Position: [0, 0, 0]
-      Axis: [0, 1, 0]
-      Limited: false
-      LimitMin: -3.14159
-      LimitMax: 3.14159
-      LimitSolref: [0.02, 1]
-      LimitSolimp: [0.9, 0.95, 0.001]
-      Stiffness: 0
-      Damping: 0.001
-      Armature: 0
-      FrictionLoss: 0
-      SpringRef: 0
-      JointId: -1
   - Entity: 13632217528594285167
     Domain: Client
     TagComponent:
       Tag: TennisBall_13
-    Parent: 0
+    Parent: 7700112233445566778
+    Children:
+      - Handle: 545198181100374566
+    TransformComponent:
+      Position: [0.9025, 0.0335, -2.045]
+      Rotation: [-1.5708, 0, 0]
+      Scale: [1, 1, 1]
+    MujocoBodyComponent:
+      ID: 14
+  - Entity: 545198181100374566
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_13_Visual
+    Parent: 13632217528594285167
     Children:
       []
     TransformComponent:
-      Position: [0.9025, 0.0335, -2.045]
-      Rotation: [0, 0, 0]
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
       Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
         0: 5906284485229172943
       Visible: true
-    MujocoSphereColliderComponent:
-      Density: 368
-      Radius: 0.5
-      Friction: [1, 0.1, 0.01]
-      Contype: 1
-      Conaffinity: 1
-      Condim: -1
-    MujocoJointComponent:
-      Type: "\x00"
-      Position: [0, 0, 0]
-      Axis: [0, 1, 0]
-      Limited: false
-      LimitMin: -3.14159
-      LimitMax: 3.14159
-      LimitSolref: [0.02, 1]
-      LimitSolimp: [0.9, 0.95, 0.001]
-      Stiffness: 0
-      Damping: 0.001
-      Armature: 0
-      FrictionLoss: 0
-      SpringRef: 0
-      JointId: -1
   - Entity: 14339033916604750231
     Domain: Client
     TagComponent:
@@ -1738,40 +1592,31 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: TennisBall_25
-    Parent: 0
+    Parent: 7700112233445566778
+    Children:
+      - Handle: 4986947095633979044
+    TransformComponent:
+      Position: [1.34, 0.0335, 1.865]
+      Rotation: [-1.5708, 0, 0]
+      Scale: [1, 1, 1]
+    MujocoBodyComponent:
+      ID: 26
+  - Entity: 4986947095633979044
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_25_Visual
+    Parent: 15517991742549953451
     Children:
       []
     TransformComponent:
-      Position: [1.34, 0.0335, 1.865]
-      Rotation: [0, 0, 0]
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
       Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
         0: 5906284485229172943
       Visible: true
-    MujocoSphereColliderComponent:
-      Density: 368
-      Radius: 0.5
-      Friction: [1, 0.1, 0.01]
-      Contype: 1
-      Conaffinity: 1
-      Condim: -1
-    MujocoJointComponent:
-      Type: "\x00"
-      Position: [0, 0, 0]
-      Axis: [0, 1, 0]
-      Limited: false
-      LimitMin: -3.14159
-      LimitMax: 3.14159
-      LimitSolref: [0.02, 1]
-      LimitSolimp: [0.9, 0.95, 0.001]
-      Stiffness: 0
-      Damping: 0.001
-      Armature: 0
-      FrictionLoss: 0
-      SpringRef: 0
-      JointId: -1
   - Entity: 15748087159218340944
     Domain: Client
     TagComponent:
@@ -1814,40 +1659,31 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: TennisBall_21
-    Parent: 0
+    Parent: 7700112233445566778
+    Children:
+      - Handle: 2039119943687723724
+    TransformComponent:
+      Position: [2.195, 0.0335, -2.19]
+      Rotation: [-1.5708, 0, 0]
+      Scale: [1, 1, 1]
+    MujocoBodyComponent:
+      ID: 22
+  - Entity: 2039119943687723724
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_21_Visual
+    Parent: 15816677538361509217
     Children:
       []
     TransformComponent:
-      Position: [2.195, 0.0335, -2.19]
-      Rotation: [0, 0, 0]
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
       Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
         0: 5906284485229172943
       Visible: true
-    MujocoSphereColliderComponent:
-      Density: 368
-      Radius: 0.5
-      Friction: [1, 0.1, 0.01]
-      Contype: 1
-      Conaffinity: 1
-      Condim: -1
-    MujocoJointComponent:
-      Type: "\x00"
-      Position: [0, 0, 0]
-      Axis: [0, 1, 0]
-      Limited: false
-      LimitMin: -3.14159
-      LimitMax: 3.14159
-      LimitSolref: [0.02, 1]
-      LimitSolimp: [0.9, 0.95, 0.001]
-      Stiffness: 0
-      Damping: 0.001
-      Armature: 0
-      FrictionLoss: 0
-      SpringRef: 0
-      JointId: -1
   - Entity: 16033505588855615432
     Domain: Client
     TagComponent:
@@ -2028,40 +1864,31 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: TennisBall_07
-    Parent: 0
+    Parent: 7700112233445566778
+    Children:
+      - Handle: 8390539026135319669
+    TransformComponent:
+      Position: [0.25, 0.0335, 1.475]
+      Rotation: [-1.5708, 0, 0]
+      Scale: [1, 1, 1]
+    MujocoBodyComponent:
+      ID: 8
+  - Entity: 8390539026135319669
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_07_Visual
+    Parent: 17168540220499114429
     Children:
       []
     TransformComponent:
-      Position: [0.25, 0.0335, 1.475]
-      Rotation: [0, 0, 0]
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
       Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
         0: 5906284485229172943
       Visible: true
-    MujocoSphereColliderComponent:
-      Density: 368
-      Radius: 0.5
-      Friction: [1, 0.1, 0.01]
-      Contype: 1
-      Conaffinity: 1
-      Condim: -1
-    MujocoJointComponent:
-      Type: "\x00"
-      Position: [0, 0, 0]
-      Axis: [0, 1, 0]
-      Limited: false
-      LimitMin: -3.14159
-      LimitMax: 3.14159
-      LimitSolref: [0.02, 1]
-      LimitSolimp: [0.9, 0.95, 0.001]
-      Stiffness: 0
-      Damping: 0.001
-      Armature: 0
-      FrictionLoss: 0
-      SpringRef: 0
-      JointId: -1
   - Entity: 17181758653328439947
     Domain: Client
     TagComponent:
@@ -2082,40 +1909,31 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: TennisBall_19
-    Parent: 0
+    Parent: 7700112233445566778
+    Children:
+      - Handle: 5400666402170143951
+    TransformComponent:
+      Position: [-0.865, 0.0335, 2.6775]
+      Rotation: [-1.5708, 0, 0]
+      Scale: [1, 1, 1]
+    MujocoBodyComponent:
+      ID: 20
+  - Entity: 5400666402170143951
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_19_Visual
+    Parent: 17276475515001353056
     Children:
       []
     TransformComponent:
-      Position: [-0.865, 0.0335, 2.6775]
-      Rotation: [0, 0, 0]
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
       Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
         0: 5906284485229172943
       Visible: true
-    MujocoSphereColliderComponent:
-      Density: 368
-      Radius: 0.5
-      Friction: [1, 0.1, 0.01]
-      Contype: 1
-      Conaffinity: 1
-      Condim: -1
-    MujocoJointComponent:
-      Type: "\x00"
-      Position: [0, 0, 0]
-      Axis: [0, 1, 0]
-      Limited: false
-      LimitMin: -3.14159
-      LimitMax: 3.14159
-      LimitSolref: [0.02, 1]
-      LimitSolimp: [0.9, 0.95, 0.001]
-      Stiffness: 0
-      Damping: 0.001
-      Armature: 0
-      FrictionLoss: 0
-      SpringRef: 0
-      JointId: -1
   - Entity: 17334347121404989582
     Domain: Client
     TagComponent:
@@ -2152,40 +1970,31 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: TennisBall_20
-    Parent: 0
+    Parent: 7700112233445566778
+    Children:
+      - Handle: 457380681191578132
+    TransformComponent:
+      Position: [-1.315, 0.0335, -3.965]
+      Rotation: [-1.5708, 0, 0]
+      Scale: [1, 1, 1]
+    MujocoBodyComponent:
+      ID: 21
+  - Entity: 457380681191578132
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_20_Visual
+    Parent: 17849749303881500182
     Children:
       []
     TransformComponent:
-      Position: [-1.315, 0.0335, -3.965]
-      Rotation: [0, 0, 0]
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
       Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
         0: 5906284485229172943
       Visible: true
-    MujocoSphereColliderComponent:
-      Density: 368
-      Radius: 0.5
-      Friction: [1, 0.1, 0.01]
-      Contype: 1
-      Conaffinity: 1
-      Condim: -1
-    MujocoJointComponent:
-      Type: "\x00"
-      Position: [0, 0, 0]
-      Axis: [0, 1, 0]
-      Limited: false
-      LimitMin: -3.14159
-      LimitMax: 3.14159
-      LimitSolref: [0.02, 1]
-      LimitSolimp: [0.9, 0.95, 0.001]
-      Stiffness: 0
-      Damping: 0.001
-      Armature: 0
-      FrictionLoss: 0
-      SpringRef: 0
-      JointId: -1
   - Entity: 18058982992389060768
     Domain: Client
     TagComponent:
@@ -2221,40 +2030,31 @@ Entities:
     Domain: Client
     TagComponent:
       Tag: TennisBall_14
-    Parent: 0
+    Parent: 7700112233445566778
+    Children:
+      - Handle: 5215389816265151663
+    TransformComponent:
+      Position: [-1.5025, 0.0335, -0.845]
+      Rotation: [-1.5708, 0, 0]
+      Scale: [1, 1, 1]
+    MujocoBodyComponent:
+      ID: 15
+  - Entity: 5215389816265151663
+    Domain: Client
+    TagComponent:
+      Tag: TennisBall_14_Visual
+    Parent: 18127450234244442317
     Children:
       []
     TransformComponent:
-      Position: [-1.5025, 0.0335, -0.845]
-      Rotation: [0, 0, 0]
+      Position: [0, 0, 0]
+      Rotation: [1.5708, 0, 0]
       Scale: [0.067, 0.067, 0.067]
     StaticMeshComponent:
       AssetID: 9346834634786424791
       MaterialTable:
         0: 5906284485229172943
       Visible: true
-    MujocoSphereColliderComponent:
-      Density: 368
-      Radius: 0.5
-      Friction: [1, 0.1, 0.01]
-      Contype: 1
-      Conaffinity: 1
-      Condim: -1
-    MujocoJointComponent:
-      Type: "\x00"
-      Position: [0, 0, 0]
-      Axis: [0, 1, 0]
-      Limited: false
-      LimitMin: -3.14159
-      LimitMax: 3.14159
-      LimitSolref: [0.02, 1]
-      LimitSolimp: [0.9, 0.95, 0.001]
-      Stiffness: 0
-      Damping: 0.001
-      Armature: 0
-      FrictionLoss: 0
-      SpringRef: 0
-      JointId: -1
   - Entity: 18301639991373565343
     Domain: Client
     TagComponent:
