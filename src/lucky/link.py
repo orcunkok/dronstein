@@ -26,6 +26,7 @@ class LuckyLink:
                 state.armed, state.mode, state.landed = m["armed"], m["mode"], m["landed"]
                 state.pos, state.vel, state.att = tuple(m["pos"]), tuple(m["vel"]), tuple(m["att"])
                 state.gripper, state.ack = m["gripper"], m["ack"]
+                state.balls = m["balls"]
                 self.last = time.monotonic()
         except BlockingIOError:
             pass

@@ -29,6 +29,7 @@ class State:
     att: tuple = (0.0, 0.0, 0.0)  # rad: roll, pitch, yaw
     gripper: bool = False         # grabbed (closed)
     ack: int = 0                  # the seq of the last command the FC has taken
+    balls: list = field(default_factory=list)  # the tennis balls' [north, east] m, from Lucky's sim
 
     def request(self, cmd, value):
         self.cmd, self.value, self.seq = cmd, float(value), self.seq + 1

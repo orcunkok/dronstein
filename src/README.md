@@ -18,13 +18,18 @@ src/dronstein.py --ardu   # fly through ArduPilot (not ready yet)
 It shows one status line: the mode, armed or not, height and position. Ctrl+C stops it.
 Plug the Xbox controller in at any time.
 
+**F** (in the terminal running `dronstein.py`) switches the autonomy on: it picks up a random tennis ball. The status
+line shows AUTO while it runs. Press F again to take the sticks back. The autonomy ends by itself once the claw has closed
+on the ball, and the controller takes over again.
+
 ## What's in here
 | File | What it does |
 |---|---|
-| `dronstein.py` | Starts everything. |
+| `dronstein.py` | Starts everything. F runs the autonomy. |
+| `autonomy.py` | The autonomy (F): picks up a random tennis ball in Lucky, flies over it, lands with the claw on it and closes the claw. The debug ball at the helipad (`TennisBall_01`) is not in the list. |
 | `gamepad.py` | Reads the Xbox controller. |
 | `ControllerBindings.txt` | Which button does what. Edit it and start again. |
-| `state.py` | Everything the ground station and the drone tell each other: sticks, commands (arm, mode, takeoff, gripper), and where the drone is. |
+| `state.py` | Everything the ground station and the drone tell each other: sticks, commands (arm, mode, takeoff, gripper), where the drone is, and the balls. |
 | `lucky/link.py` | Talks to Lucky. |
 | `ardu_link.py` | Will talk to ArduPilot (the real drone). Not built yet. |
 
