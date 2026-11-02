@@ -28,10 +28,9 @@ on the ball, and the controller takes over again.
 | `dronstein.py` | Starts everything. F runs the autonomy. |
 | `autonomy.py` | The autonomy (F): picks up a random tennis ball in Lucky, flies over it, lands with the claw on it and closes the claw. The debug ball at the helipad (`TennisBall_01`) is not in the list. |
 | `gamepad.py` | Reads the Xbox controller. |
-| `ControllerBindings.txt` | Which button does what. Edit it and start again. |
 | `state.py` | Everything the ground station and the drone tell each other: sticks, commands (arm, mode, takeoff, gripper), where the drone is, and the balls. |
-| `lucky/link.py` | Talks to Lucky. |
-| `ardu_link.py` | Will talk to ArduPilot (the real drone). Not built yet. |
+| `link/luckyLink.py` | Talks to Lucky. |
+| `link/arduLink.py` | Will talk to ArduPilot (the real drone). Not built yet. |
 
 ## How it talks to the drone
 The drone's own controller decides what to do (take off, return home, land). This program only sends the sticks and

@@ -1,8 +1,7 @@
-"""The Xbox controller as the ground station's sticks and buttons (ControllerBindings.txt): it sets the state's RC
+"""The Xbox controller as the ground station's sticks and buttons (the bindings below): it sets the state's RC
 channels and asks the FC for arm, mode, takeoff and gripper, like a GCS. No controller: the sticks rest centred."""
 import os
 import time
-from pathlib import Path
 
 os.environ.setdefault("SDL_JOYSTICK_ALLOW_BACKGROUND_EVENTS", "1")  # no window here: read the pad anyway
 os.environ.setdefault("SDL_NO_SIGNAL_HANDLERS", "1")  # leave Ctrl+C to Python
@@ -13,6 +12,22 @@ from pygame._sdl2 import controller
 from state import ALT_HOLD, LOITER, RTL
 
 TAKEOFF_ALT = 0.5  # m, X's takeoff
+
+# The flying bindings: action -> (sign, SDL name). Names are SDL's, the same for any Xbox pad; a sign of -1 flips an axis.
+# Where an action is on/off (climb, descend, turn, the buttons), an axis counts when pushed past halfway.
+BIND = {
+    "roll": (1, "leftx"),            # left stick left/right
+    "pitch": (1, "lefty"),           # left stick up/down: up flies forward (low PWM, as ArduPilot's RC2)
+    "climb": (1, "righttrigger"),    # RT
+    "descend": (1, "lefttrigger"),   # LT
+    "yaw_left": (1, "leftshoulder"),   # LB
+    "yaw_right": (1, "rightshoulder"),  # RB
+    "arm": (1, "start"),             # Menu: arm / disarm (the FC allows it on the ground only)
+    "mode": (1, "b"),                # B: LOITER <-> ALT_HOLD; from RTL or GUIDED: LOITER
+    "takeoff_rtl": (1, "x"),         # X: take off when landed, RTL in the air, LOITER again during RTL
+    "gripper": (1, "a"),             # A: grab / release
+}
+DEADZONE = 0.15  # stick values below this count as 0
 
 AXES = {n: getattr(pygame, f"CONTROLLER_AXIS_{n.upper()}") for n in
         ("leftx", "lefty", "rightx", "righty")} | {
@@ -27,19 +42,8 @@ def pwm(v):
 
 
 class Gamepad:
-    def __init__(self, path=Path(__file__).with_name("ControllerBindings.txt")):
-        self.bind, self.deadzone = {}, 0.15  # action -> (sign, SDL name)
-        for raw in path.read_text().splitlines():
-            f = raw.split("#")[0].split("=")
-            if len(f) != 2:
-                continue
-            name, value = f[0].strip(), f[1].strip()
-            if name == "deadzone":
-                self.deadzone = float(value)
-            elif value.lstrip("-") in AXES or value in BUTTONS:
-                self.bind[name] = (-1 if value.startswith("-") else 1, value.lstrip("-"))
-            else:
-                print(f"gamepad: '{value}' for {name} is not an axis or a button, ignored")
+    def __init__(self):
+        self.bind, self.deadzone = BIND, DEADZONE
         pygame.init()
         controller.init()
         self.pad, self.scan, self.down = None, 0.0, set()

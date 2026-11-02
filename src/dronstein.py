@@ -1,6 +1,7 @@
 #!/usr/bin/env -S sh -c 'exec "$(dirname "$0")/.venv/bin/python" "$0" "$@"'
 """The ground station: flies the X500 with the Xbox controller through one link, to Lucky's sim (default) or to
-ArduPilot (--ardu). F picks up a random tennis ball (autonomy.py); F again gives the sticks back to the controller.
+ArduPilot (--ardu). F (typed here, or pressed in Lucky's window) picks up a random tennis ball (autonomy.py) when armed; F again
+gives the sticks back to the controller.
 Run: ./dronstein.py [--ardu] (it uses src/.venv)"""
 import argparse
 import os
@@ -35,22 +36,29 @@ def main():
     p.add_argument("--ardu", action="store_true", help="talk MAVLink to ArduPilot (not implemented yet)")
     args = p.parse_args()
     if args.ardu:
-        from ardu_link import ArduLink as Link
+        from link.arduLink import ArduLink as Link
     else:
-        from lucky.link import LuckyLink as Link
+        from link.luckyLink import LuckyLink as Link
     link, pad, state = Link(), Gamepad(), State()
     auto = None  # pick_up's steps while F has the autonomy on, else None
+    seen = 0     # Lucky's F count last time; it starts again with each Play, so only a rise is a press
     saved = termios.tcgetattr(sys.stdin)
     tty.setcbreak(sys.stdin)  # one key at a time, no echo; Ctrl+C still stops
     try:
         while True:
-            if key() in ("f", "F"):
+            typed = key() in ("f", "F")
+            pressed = state.pickups > seen
+            seen = state.pickups
+            if (typed or pressed) and (auto is not None or state.armed):  # F starts the pick-up only when armed
                 auto = None if auto else pick_up(state)
             if auto is not None:
-                state.rc = next(auto, None)  # None: the steps are done, so the controller takes over again
-                if state.rc is None:
-                    auto = None
+                state.rc = [1500] * 4  # autonomy flies by setpoints: the sticks rest
+                try:
+                    next(auto)
+                except StopIteration:
+                    auto = None  # the steps are done, so the controller takes over again
             if auto is None:
+                state.setpoint = None  # no autonomy, no setpoint: the FC holds where it is
                 pad.read(state)
             link.step(state)
             if state.connected:

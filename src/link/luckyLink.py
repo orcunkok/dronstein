@@ -26,11 +26,11 @@ class LuckyLink:
                 state.armed, state.mode, state.landed = m["armed"], m["mode"], m["landed"]
                 state.pos, state.vel, state.att = tuple(m["pos"]), tuple(m["vel"]), tuple(m["att"])
                 state.gripper, state.ack = m["gripper"], m["ack"]
-                state.balls = m["balls"]
+                state.balls, state.pickups = m["balls"], m["pickups"]
                 self.last = time.monotonic()
         except BlockingIOError:
             pass
         state.connected = time.monotonic() - self.last < TIMEOUT
         if state.connected:
-            out = {"rc": state.rc, "seq": state.seq, "cmd": state.cmd, "value": state.value}
+            out = {"rc": state.rc, "seq": state.seq, "cmd": state.cmd, "value": state.value, "target": state.setpoint}
             self.sock.sendto(json.dumps(out).encode(), self.fc)

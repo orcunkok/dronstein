@@ -1,5 +1,5 @@
 """The one state the ground station shares with the flight controller, in ArduPilot's terms, whichever link carries it
-(lucky/link.py to Lucky's sim, ardu_link.py to ArduPilot)."""
+(link/luckyLink.py to Lucky's sim, link/arduLink.py to ArduPilot)."""
 import time
 from dataclasses import dataclass, field
 
@@ -30,6 +30,9 @@ class State:
     gripper: bool = False         # grabbed (closed)
     ack: int = 0                  # the seq of the last command the FC has taken
     balls: list = field(default_factory=list)  # the tennis balls' [north, east] m, from Lucky's sim
+    pickups: int = 0              # F presses in Lucky, counted by the sim (it starts again with each Play)
+    # To the FC: the position setpoint, [north, east, down] m and the heading [rad, from north], or None to hold still.
+    setpoint: list | None = None
 
     def request(self, cmd, value):
         self.cmd, self.value, self.seq = cmd, float(value), self.seq + 1

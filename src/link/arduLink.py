@@ -1,4 +1,4 @@
-"""The link to ArduPilot over MAVLink, with the same step(state) as lucky/link.py. Not built yet. Connection: SITL
+"""The link to ArduPilot over MAVLink, with the same step(state) as link/luckyLink.py. Not built yet. Connection: SITL
 udpin:0.0.0.0:14550, the real X500 the Pi's /dev/ttyAMA0 to the Pixhawk's TELEM2. The plan, State field by field:
 
   rc          -> RC_CHANNELS_OVERRIDE, chan1-4
