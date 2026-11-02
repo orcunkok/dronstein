@@ -7,15 +7,16 @@ using Hazel;
 namespace Dronstein
 {
 	/// <summary>
-	/// Flies the Holybro X500 V2 with the controller (ControllerBindings.txt): LT climbs and RT descends, the bumpers turn,
-	/// and the left stick moves it, in one of two modes (x500_mode, B, switches):
-	/// - Loiter (default, ArduPilot's Loiter): the stick sets a speed (up to LOIT_SPEED); let go and it brakes and holds its spot.
-	/// - Manual (ArduPilot's AltHold): the stick sets the lean (up to ANGLE_MAX); let go and it levels but coasts.
-	/// Both hold the altitude. It starts disarmed: x500_arm (Y) arms and disarms it on the ground. x500_takeoff_rtl (Menu)
-	/// takes off to TKOFF_ALT on the ground, and in the air returns home (where it was armed): up to RTL_ALT, over, down at
-	/// LAND_SPEED, then it disarms. Menu again or any stick or trigger takes RTL back (B does not touch RTL or takeoff). In the air keyboard Y flies the next
-	/// corner of the test square (calibration, the blue dots), holding the altitude, until B, Menu or the sticks take over.
-	/// The camera, the HUD and R (reset) are X500View's.
+	/// The X500's flight controller in the sim, standing in for ArduPilot. The ground station (src/dronstein.py) flies it
+	/// over GcsLink, as a GCS flies ArduPilot: RC sticks (roll, pitch, throttle = climb rate, yaw) and commands
+	/// (arm, mode, takeoff, gripper). It decides what a command does, in one of these modes (ArduPilot's numbers):
+	/// - LOITER (5, default): the stick sets a speed (up to LOIT_SPEED); let go and it brakes and holds its spot.
+	/// - ALT_HOLD (2, "Manual"): the stick sets the lean (up to ANGLE_MAX); let go and it levels but coasts.
+	/// - GUIDED (4): takeoff (on the ground and armed) to the commanded height, or keyboard Y's calibration square.
+	/// - RTL (6, in the air): home (where it was armed): up to RTL_ALT, over, down at LAND_SPEED, then it disarms.
+	/// All hold the altitude. It starts disarmed and arms or disarms on the ground only. A LOITER or ALT_HOLD command, or
+	/// any stick, takes GUIDED and RTL back. In the air keyboard Y flies the next corner of the test square (the blue dots).
+	/// The camera, the HUD and R (reset) are X500View's; the controller's camera bindings are read here for it.
 	///
 	/// Two halves, both set by X500.param in the project folder:
 	/// - Motors(): the drone. Each motor's ESC command (0..1, as ArduPilot outputs it) becomes thrust through spin min/max,
@@ -37,6 +38,8 @@ namespace Dronstein
 		public static bool Armed;
 		/// What MODE shows on the HUD: Takeoff, RTL or Calib n/4 while those run, Loiter or Manual otherwise.
 		public static string ModeName => s_Rtl ? "RTL" : s_Takeoff ? "Takeoff" : Calibrating ? $"Calib {s_Calib + 1}/4" : Loiter ? "Loiter" : "Manual";
+		/// The mode as ArduPilot numbers it, for the GCS.
+		public static int Mode => s_Rtl ? 6 : s_Takeoff || Calibrating ? 4 : Loiter ? 5 : 2;
 		/// Flying keyboard Y's test square; the HUD shows it in yellow.
 		public static bool Calibrating => s_Calib >= 0;
 		static bool s_Rtl, s_Takeoff;  // Menu's takeoff and return home, until done or taken back
@@ -59,7 +62,12 @@ namespace Dronstein
 		float m_AngleMax, m_InputTc, m_AccYawMax, m_YawRateMax, m_RatImax, m_RatFltd;
 		readonly float[] m_AngP = new float[3], m_RatP = new float[3], m_RatI = new float[3], m_RatD = new float[3];  // roll, pitch, yaw
 		float m_PosZP, m_VelZP, m_SpdUp, m_SpdDn, m_AccZ;
-		float m_LoitSpeed, m_LoitAcc, m_PosXyP, m_VelXyP, m_TkoffAlt, m_RtlAlt, m_RtlSpeed, m_LandSpeed;
+		float m_LoitSpeed, m_LoitAcc, m_PosXyP, m_VelXyP, m_RtlAlt, m_RtlSpeed, m_LandSpeed;
+		float m_TkoffAlt;  // the takeoff command's height
+
+		GcsLink m_Gcs = null!;
+		Claw? m_Claw;  // the gripper, driven by the GCS's gripper command
+		readonly float[] m_Pos = new float[3], m_Vel = new float[3], m_Att = new float[3];  // NED and roll, pitch, yaw, to the GCS
 
 		int m_Pad = -1;
 		float m_PadScan;
@@ -101,6 +109,7 @@ namespace Dronstein
 				return;
 			}
 			LoadBindings();
+			m_Gcs = new GcsLink();
 			Loiter = true;
 			Armed = s_Rtl = s_Takeoff = false;
 			s_Calib = -1;
@@ -129,6 +138,8 @@ namespace Dronstein
 			m_V = new float[m_Mj.ModelNv];
 			Log.Info($"X500Flight: start, {m_Mass:F3} kg, hover throttle {Hover:F3}");
 		}
+
+		protected override void OnDestroy() => m_Gcs?.Dispose();
 
 		// No thrust, and ctrl zeroed: until it is written, Lucky's initial ctrl (the joint's own qpos) would push the X500.
 		void StopMotors()
@@ -176,12 +187,12 @@ namespace Dronstein
 			(m_PosZP, m_VelZP, m_SpdUp, m_SpdDn, m_AccZ) = (Get("PSC_D_POS_P"), Get("PSC_D_VEL_P"), Get("PILOT_SPD_UP"), Get("PILOT_SPD_DN"), Get("PILOT_ACC_Z"));
 			m_YawRateMax = Get("PILOT_Y_RATE") * Deg;
 			(m_LoitSpeed, m_LoitAcc, m_PosXyP, m_VelXyP) = (Get("LOIT_SPEED"), Get("LOIT_ACC_MAX"), Get("PSC_NE_POS_P"), Get("PSC_NE_VEL_P"));
-			(m_TkoffAlt, m_RtlAlt, m_RtlSpeed, m_LandSpeed) = (Get("TKOFF_ALT"), Get("RTL_ALT"), Get("RTL_SPEED"), Get("LAND_SPEED"));
+			(m_RtlAlt, m_RtlSpeed, m_LandSpeed) = (Get("RTL_ALT"), Get("RTL_SPEED"), Get("LAND_SPEED"));
 			if (missing.Count > 0) Log.Error($"X500Flight: {path} lacks {string.Join(", ", missing)}; off");
 			return missing.Count == 0;
 		}
 
-		// The names it reads: forward_back, left_right, up, down, turn_left, turn_right, x500_*, camera_*, zoom_*, deadzone.
+		// The names X500View reads: camera_*, zoom_*, deadzone. Flying is the GCS's (src/ControllerBindings.txt).
 		void LoadBindings()
 		{
 			string path = Path.GetFullPath(Path.Combine(Application.DataDirectoryPath!, "..", "ControllerBindings.txt"));
@@ -229,6 +240,7 @@ namespace Dronstein
 			m_Mj.GetFullQvel(m_V);
 			Control(dt);
 			Motors(dt);
+			SendState();
 			SpinProps(dt);
 			CenterDot();
 			Status(dt);
@@ -276,9 +288,10 @@ namespace Dronstein
 
 		void Control(float dt)
 		{
-			float pitch = Axis("forward_back"), roll = -Axis("left_right");  // left_right is positive to the left
-			float climb = (Held("up") ? m_SpdUp : 0f) - (Held("down") ? m_SpdDn : 0f);
-			float turn = (Held("turn_left") ? 1f : 0f) - (Held("turn_right") ? 1f : 0f);
+			// The GCS's sticks, ArduPilot's way: RC1 roll right, RC2 pitch (forward is low), RC3 climb, RC4 yaw right.
+			var cmd = m_Gcs.Receive();
+			float roll = m_Gcs.Stick(0), pitch = -m_Gcs.Stick(1), throttle = m_Gcs.Stick(2), turn = -m_Gcs.Stick(3);
+			float climb = throttle * (throttle > 0f ? m_SpdUp : m_SpdDn);
 			BodyRotation(m_R);
 			float phi = MathF.Atan2(m_R[2, 1], m_R[2, 2]), theta = -MathF.Asin(Math.Clamp(m_R[2, 0], -1f, 1f));
 			float psi = MathF.Atan2(m_R[1, 0], m_R[0, 0]);
@@ -288,7 +301,7 @@ namespace Dronstein
 
 			// The target only creeps to the floor (the descent slows near it), hence the 1 cm.
 			bool grounded = float.IsNaN(m_AltMin) || (m_AltT <= m_AltMin + 0.01f && alt < m_AltMin + 0.05f);
-			if (Pressed("x500_arm") && grounded)  // Y: arm / disarm, on the ground only
+			if (cmd?.Cmd == "arm" && grounded && (cmd.Value.Value != 0f) != Armed)  // arm / disarm, on the ground only
 			{
 				Armed = !Armed;
 				if (Armed) (m_HomeX, m_HomeY) = (x, y);
@@ -303,23 +316,26 @@ namespace Dronstein
 				Log.Info($"X500Flight: going to waypoint {s_Calib} ({Waypoints[s_Calib, 0]}, {Waypoints[s_Calib, 1]})");
 			}
 			m_KeyY = keyY;
-			if (Pressed("x500_mode") && !s_Rtl && !s_Takeoff)  // B: Loiter <-> Manual, and takes calibration back; RTL and takeoff are Menu's
+			int mode = cmd?.Cmd == "mode" ? (int)cmd.Value.Value : -1;
+			if (mode == 5 || mode == 2 || (mode == 6 && Armed && !grounded))  // LOITER, ALT_HOLD, or RTL in the air
 			{
-				Loiter = !Loiter;
+				Loiter = mode == 5 || (mode == 6 && Loiter);
+				s_Rtl = mode == 6;
+				s_Takeoff = false;
 				s_Calib = -1;
-				(m_PosX, m_PosY, m_VelX, m_VelY) = (x, y, vx, vy);  // Loiter starts from where it is, at the speed it has
-			}
-			if (Pressed("x500_takeoff_rtl") && Armed)  // Menu: takeoff on the ground, return home (or take it back) in the air
-			{
-				if (grounded) s_Takeoff = true;
-				else
-				{
-					s_Rtl = !s_Rtl;
-					s_Takeoff = false;
-					s_Calib = -1;
-					(m_PosX, m_PosY, m_VelX, m_VelY) = (x, y, vx, vy);
-				}
+				(m_PosX, m_PosY, m_VelX, m_VelY) = (x, y, vx, vy);  // it starts from where it is, at the speed it has
 				Log.Info($"X500Flight: {ModeName}");
+			}
+			if (cmd?.Cmd == "takeoff" && Armed && grounded)
+			{
+				m_TkoffAlt = cmd.Value.Value;
+				s_Takeoff = true;
+				Log.Info($"X500Flight: takeoff to {m_TkoffAlt:F2} m");
+			}
+			if (cmd?.Cmd == "gripper")
+			{
+				if (cmd.Value.Value != 0f) m_Claw?.Close();
+				else m_Claw?.Open();
 			}
 			if (pitch != 0f || roll != 0f || climb != 0f || turn != 0f)  // the pilot takes over
 			{
@@ -344,7 +360,7 @@ namespace Dronstein
 				return;
 			}
 
-			// Takeoff: up to TKOFF_ALT above the ground, holding its spot. RTL, from where its target is: up to RTL_ALT
+			// Takeoff: up to the commanded height above the ground, holding its spot. RTL, from where its target is: up to RTL_ALT
 			// (unless higher), over home at RTL_SPEED braking at LOIT_ACC_MAX, then down at LAND_SPEED (it disarms on landing).
 			// Calibration: over the corner the same way, at its altitude, and holds there.
 			float wantSpeed = m_LoitSpeed, wantDx = 0f, wantDy = 0f;  // auto: the speed to fly and its direction (world)
@@ -439,6 +455,24 @@ namespace Dronstein
 			m_Thr = Math.Clamp(Hover * (1f + acc / G) / MathF.Max(cp * ct, 0.5f), 0f, 1f);
 
 			Mix(m_Out[0], m_Out[1], m_Out[2]);
+		}
+
+		// To the GCS, ArduPilot's frames: position and velocity NED (north = MuJoCo x, east = -y, down = -z), roll, pitch
+		// and yaw FRD (the body's FLU Euler angles with pitch and yaw flipped).
+		void SendState()
+		{
+			for (int k = 0; k < 3; k++)
+			{
+				float sign = k == 0 ? 1f : -1f;
+				m_Pos[k] = sign * m_Q[m_Qpos + k];
+				m_Vel[k] = sign * m_V[m_Qvel + k];
+			}
+			m_Att[0] = MathF.Atan2(m_R[2, 1], m_R[2, 2]);
+			m_Att[1] = MathF.Asin(Math.Clamp(m_R[2, 0], -1f, 1f));
+			m_Att[2] = -MathF.Atan2(m_R[1, 0], m_R[0, 0]);
+			m_Claw ??= FindEntityByTag("Claw")?.As<Claw>();  // here, not in OnCreate: its script may start later
+			bool landed = float.IsNaN(m_AltMin) || m_Q[m_Qpos + 2] < m_AltMin + 0.05f;
+			m_Gcs.Send(Armed, Mode, landed, m_Pos, m_Vel, m_Att, m_Claw?.Closed ?? false);
 		}
 
 		// Quad X mix: thrust fraction per motor, roll and pitch first (throttle shifted to fit them), then yaw in whatever

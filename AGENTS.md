@@ -27,8 +27,8 @@
 - The X500's and the claw's MuJoCo geometry is generated (`Assets/Robots/X500V2/x500v2.mjcf` by `tools/x500v2/build_x500v2.py`, the claw's parts from `tools/claw/claw_physics.py`): change those, not the file, and keep the claw's height (`CLAW_POS`) equal to the scene's Claw entity Translation. Its frame is the Pod model turned half a turn, like the scene's `HolybroX500V2`. In MJCF, hinge ranges are in degrees. `GetActuator` doesn't return the claw's position servos: drive them with `GetActuatorIndex` + `SetCtrlByIndex`, and read hinge angles from `GetFullQpos` (`GetJointPosition` returned nothing useful).
 - A loaded material is cached: editing its `.hmaterial` won't reload it. Write it once under a new name before first load.
 
-## Keep it KISS
-- Don't add a state or phase where a return value does the job: a helper that returns true/false (or a result) is enough. Fewest states, smallest change that does what was asked, no extra modes or options.
+## Keep it KISS and YAGNI
+- Don't add a state or phase where a return value does the job: a helper that returns true/false (or a result) is enough. Fewest states, smallest change that does what was asked, no extra modes or options, features.
 - Don't leave code or docs behind for removed states; delete them with the state.
 
 ## Talking to the user

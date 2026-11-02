@@ -4,8 +4,8 @@ using Hazel;
 namespace Dronstein
 {
 	/// <summary>
-	/// The Hiwonder wave-edge claw (tools/claw): O (or the Open and Close buttons, or the gripper stick, X500View) opens or
-	/// closes it, and R (the scene reset) opens it again. It is physical: two hinged fingers in the X500's MuJoCo body (x500v2.mjcf, made by
+	/// The Hiwonder wave-edge claw (tools/claw): O (or the Open and Close buttons, or the GCS's gripper command, X500Flight)
+	/// opens or closes it, and R (the scene reset) opens it again. It is physical: two hinged fingers in the X500's MuJoCo body (x500v2.mjcf, made by
 	/// tools/x500v2/build_x500v2.py with tools/claw/claw_physics.py), each pushed to the target by a servo with a torque
 	/// limit, so a ball stops the fingers and is squeezed with that torque. The fingers drawn here follow the physics.
 	/// Attach to the Claw entity; its children tagged ClawFingerL and ClawFingerR are the fingers, mirror images of
@@ -33,13 +33,13 @@ namespace Dronstein
 		bool m_KeyO;
 
 		[Button("Open")]
-		void Open() => m_Target = OpenAngle;
+		public void Open() => m_Target = OpenAngle;
 
 		[Button("Close")]
-		void Close() => m_Target = 0f;
+		public void Close() => m_Target = 0f;
 
-		// The gripper stick (X500View): stick > 0 opens, < 0 closes, at Speed at full stick.
-		public void Drive(float stick, float dt) => m_Target = Math.Clamp(m_Target + stick * Speed * dt, 0f, OpenAngle);
+		/// Closing or closed (the servos' target is shut), as ArduPilot reports a gripper grabbed.
+		public bool Closed => m_Target == 0f;
 
 		protected override void OnCreate()
 		{
