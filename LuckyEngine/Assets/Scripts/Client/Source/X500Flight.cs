@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Globalization;
-using System.IO;
 using Hazel;
 
 namespace Dronstein
@@ -11,14 +9,14 @@ namespace Dronstein
 	/// over GcsLink, as a GCS flies ArduPilot: RC sticks (roll, pitch, throttle = climb rate, yaw) and commands
 	/// (arm, mode, takeoff, gripper). It decides what a command does, in one of these modes (ArduPilot's numbers):
 	/// - LOITER (5, default): the stick sets a speed (up to LOIT_SPEED); let go and it brakes and holds its spot.
-	/// - ALT_HOLD (2, "Manual"): the stick sets the lean (up to ANGLE_MAX); let go and it levels but coasts.
+	/// - ALT_HOLD (2): the stick sets the lean (up to ANGLE_MAX); let go and it levels but coasts.
 	/// - GUIDED (4): takeoff (on the ground and armed) to the commanded height, or keyboard Y's calibration square.
 	/// - RTL (6, in the air): home (where it was armed): up to RTL_ALT, over, down at LAND_SPEED, then it disarms.
 	/// All hold the altitude. It starts disarmed and arms or disarms on the ground only. A LOITER or ALT_HOLD command, or
 	/// any stick, takes GUIDED and RTL back. In the air keyboard Y flies the next corner of the test square (the blue dots).
 	/// The camera, the HUD and R (reset) are X500View's; the controller's camera bindings are read here for it.
 	///
-	/// Two halves, both set by X500.param in the project folder:
+	/// Two halves, both tuned by the constants at the top of this class (ArduPilot's parameter names):
 	/// - Motors(): the drone. Each motor's ESC command (0..1, as ArduPilot outputs it) becomes thrust through spin min/max,
 	///   the thrust expo, max thrust and a time constant; with rotor yaw torque and drag they push the X500's MuJoCo body
 	///   through six motors on its free joint. Tune SIM_* against the real drone's logs.
@@ -32,21 +30,22 @@ namespace Dronstein
 	/// </summary>
 	public class X500Flight : Entity
 	{
-		/// Loiter (true) or Manual; B switches it.
+		/// LOITER (true) or ALT_HOLD; the GCS's mode command switches it.
 		public static bool Loiter = true;
-		/// Armed (motors spin, it can fly) or disarmed; Y switches it on the ground. The HUD shows it.
+		/// Armed (motors spin, it can fly) or disarmed; the GCS's arm command switches it on the ground. The HUD shows it.
 		public static bool Armed;
-		/// What MODE shows on the HUD: Takeoff, RTL or Calib n/4 while those run, Loiter or Manual otherwise.
-		public static string ModeName => s_Rtl ? "RTL" : s_Takeoff ? "Takeoff" : Calibrating ? $"Calib {s_Calib + 1}/4" : Loiter ? "Loiter" : "Manual";
 		/// The mode as ArduPilot numbers it, for the GCS.
 		public static int Mode => s_Rtl ? 6 : s_Takeoff || Calibrating ? 4 : Loiter ? 5 : 2;
+		/// What MODE shows on the HUD: ArduPilot's name for Mode, as the GCS shows it.
+		public static string ModeName => Mode switch { 6 => "RTL", 4 => "GUIDED", 5 => "LOITER", _ => "ALT_HOLD" };
 		/// Flying keyboard Y's test square; the HUD shows it in yellow.
 		public static bool Calibrating => s_Calib >= 0;
-		static bool s_Rtl, s_Takeoff;  // Menu's takeoff and return home, until done or taken back
+		static bool s_Rtl, s_Takeoff;  // the GCS's takeoff and return home, until done or taken back
 		static int s_Calib = -1;       // the test square's corner being flown to, -1 = none
 		static readonly float[,] Waypoints = { { 10, 10 }, { 10, -10 }, { -10, -10 }, { -10, 10 } };  // (x, y), MuJoCo frame: the blue dots
 
-		const float G = 9.81f, Rho = 1.225f;
+		const float G = 9.81f, Rho = 1.225f, Deg = MathF.PI / 180f;
+		const float LandTime = 1f, LandVel = 0.2f;  // ArduPilot's land detector: still this long (s), slower than this (m/s)
 
 		MujocoSceneComponent m_Mj = null!;
 		uint m_Qpos, m_Qvel;  // the free joint's places in qpos and qvel
@@ -57,23 +56,48 @@ namespace Dronstein
 		float m_Mass;
 		bool m_Off;
 
-		// X500.param, read once when Play starts (angles and rates already in radians).
-		float m_ThstMax, m_ThstExpo, m_MotTau, m_YawCoef, m_DragCda, m_DragLin, m_ArmLen, m_SpinMin, m_SpinMax;
-		float m_AngleMax, m_InputTc, m_AccYawMax, m_YawRateMax, m_RatImax, m_RatFltd;
-		readonly float[] m_AngP = new float[3], m_RatP = new float[3], m_RatI = new float[3], m_RatD = new float[3];  // roll, pitch, yaw
-		float m_PosZP, m_VelZP, m_SpdUp, m_SpdDn, m_AccZ;
-		float m_LoitSpeed, m_LoitAcc, m_PosXyP, m_VelXyP, m_RtlAlt, m_RtlSpeed, m_LandSpeed;
+		// The tuning, in ArduPilot's names (the parameter names are in the comments). Angles and rates in radians here.
+		// The drone itself (SIM_*): change these to close the sim2real gap with logs of the real one.
+		float m_ThstMax = 11.3f;      // N per motor at full command (2216 KV920 + 1045 on 4S: ~1.15 kgf)
+		float m_ThstExpo = 0.65f;     // thrust curve: thrust = (1-e)*u + e*u^2 of the command above spin min
+		float m_MotTau = 0.05f;       // s, motor/prop time constant
+		float m_YawCoef = 0.016f;     // m, rotor drag torque per newton of thrust (yaw authority)
+		float m_DragCda = 0.04f;      // m^2, body drag area (Cd*A): sets top speed at full lean
+		float m_DragLin = 0.48f;      // N per m/s, rotor drag (blade flapping/induced drag): 0.35/s at 1.36 kg, an estimate
+		                              // inside ArduPilot's EK3_DRAG_MCOEF range (0.1-1.0); set it from the real drone's logs
+		float m_ArmLen = 0.25f;       // m, centre to motor (500 mm wheelbase)
+		// Motors (MOT_*): the ESC command fraction, as ArduPilot outputs it. MOT_THST_HOVER is the autopilot's hover
+		// feedforward (the X500v2 frame file); the physics' own hover comes from the mass.
+		float m_SpinMin = 0.09f, m_SpinMax = 0.95f, m_ThrHover = 0.2905434f;
+		// Attitude (ANGLE_MAX, ATC_*), from the X500v2 frame file.
+		float m_AngleMax = 30f * Deg, m_InputTc = 0.15f, m_AccYawMax = 359.55f * Deg, m_RatImax = 0.5f, m_RatFltd = 21f;
+		readonly float[] m_AngP = { 26.35878f, 21.2236f, 8.53887f };  // ATC_ANG_{RLL,PIT,YAW}_P: roll, pitch, yaw
+		readonly float[] m_RatP = { 0.1255951f, 0.1466683f, 1.204564f }, m_RatI = { 0.1255951f, 0.1466683f, 0.1204564f };
+		readonly float[] m_RatD = { 0.004905871f, 0.005201788f, 0.02224096f };
+		// Altitude hold (PSC_D_*, PILOT_*) and loiter / RTL (LOIT_*, PSC_NE_*, RTL_*, LAND_SPEED).
+		float m_PosZP = 1f, m_VelZP = 5f, m_SpdUp = 2.5f, m_SpdDn = 2.5f, m_AccZ = 2.5f, m_YawRateMax = 90f * Deg;
+		float m_LoitSpeed = 5f, m_LoitAcc = 2.5f, m_PosXyP = 1f, m_VelXyP = 2f, m_RtlAlt = 3f, m_RtlSpeed = 5f, m_LandSpeed = 0.5f;
 		float m_TkoffAlt;  // the takeoff command's height
 
 		GcsLink m_Gcs = null!;
 		Claw? m_Claw;  // the gripper, driven by the GCS's gripper command
 		readonly float[] m_Pos = new float[3], m_Vel = new float[3], m_Att = new float[3];  // NED and roll, pitch, yaw, to the GCS
+		uint[] m_BallBodies = Array.Empty<uint>();  // the tennis balls' MuJoCo bodies (TennisBall_*), found in OnCreate; SendState reports them
+		const string DebugBall = "TennisBall_01";  // the helipad's ball, for debugging: not a pick-up ball (delete it with the debug)
 
 		int m_Pad = -1;
 		float m_PadScan;
-		// ControllerBindings.txt: an axis (Axis >= 0, Sign flips it) or a raw button bN.
-		readonly Dictionary<string, (int Axis, float Sign, int Raw)> m_Bindings = new();
-		float m_Deadzone = 0.1f;
+		// The camera's controller bindings (the Xbox pad as Lucky reports it): an axis (Axis >= 0, Sign flips it) or a raw
+		// button (Raw). Axes: 0 left stick X, 1 left stick Y, 2 right stick X, 3 right stick Y, 4 left trigger, 5 right trigger.
+		readonly Dictionary<string, (int Axis, float Sign, int Raw)> m_Bindings = new()
+		{
+			["camera_yaw"] = (2, -1f, -1),    // right stick left/right: orbit around
+			["camera_pitch"] = (3, -1f, -1),  // right stick up/down: orbit up/down
+			["zoom_in"] = (-1, 1f, 15),       // D-pad up
+			["zoom_out"] = (-1, 1f, 17),      // D-pad down
+			["camera_view"] = (-1, 1f, 10),   // View: next camera
+		};
+		const float Deadzone = 0.15f;  // stick values below this count as 0
 
 		// Motors in FLU (x forward, y left), ArduPilot quad X order: 1 front-right CCW, 2 back-left CCW, 3 front-left CW, 4 back-right CW.
 		static readonly float[] MotorX = { 1, -1, 1, -1 }, MotorY = { -1, 1, 1, -1 }, Spin = { 1, 1, -1, -1 };  // Spin +1 = CCW from above
@@ -85,6 +109,8 @@ namespace Dronstein
 		float m_RollT, m_PitchT, m_YawT, m_YawRateT;  // shaped targets (rad, rad/s)
 		float m_AltT, m_ClimbT;                        // altitude target and its climb rate
 		float m_AltMin = float.NaN;                    // resting height: the altitude target never goes below it
+		float m_LandT;                                 // seconds the land test has held
+		bool Landed => !Armed || m_LandT >= LandTime;  // disarmed, or still on the ground for LandTime
 		float m_PosX, m_PosY, m_VelX, m_VelY;          // Loiter's target position and velocity (world x/y)
 		readonly float[] m_I = new float[3], m_DErr = new float[3], m_D = new float[3];
 		float m_Thr;
@@ -94,6 +120,8 @@ namespace Dronstein
 		readonly float[] m_W = new float[3], m_RateT = new float[3], m_Out = new float[3], m_Rp = new float[4];
 		readonly float[,] m_R = new float[3, 3];       // world <- body rotation, from BodyRotation
 		bool m_KeyY;                                   // keyboard Y down last frame
+		bool m_KeyF;                                   // keyboard F down last frame
+		int m_PickUps;                                 // F presses here, to the GCS: each one starts or stops its pick-up
 
 		// Props: entities tagged X500Prop1..4 (children of this entity, motor order), spun about their local +Y.
 		readonly Entity?[] m_Props = new Entity?[4];
@@ -103,12 +131,6 @@ namespace Dronstein
 
 		protected override void OnCreate()
 		{
-			if (!LoadParams())
-			{
-				m_Off = true;
-				return;
-			}
-			LoadBindings();
 			m_Gcs = new GcsLink();
 			Loiter = true;
 			Armed = s_Rtl = s_Takeoff = false;
@@ -128,6 +150,13 @@ namespace Dronstein
 			m_Qpos = m_Mj.GetJointQposAdr(joint);
 			m_Qvel = m_Mj.GetJointQvelAdr(joint);
 			m_Mass = m_Mj.GetBodyMass(m_Mj.GetBodyID("x500v2"));
+			var balls = new List<uint>();
+			for (uint i = 0; i < m_Mj.ModelNbody; i++)
+			{
+				string name = m_Mj.GetBodyNameByIndex(i);
+				if (name.StartsWith("TennisBall_", StringComparison.Ordinal) && name != DebugBall) balls.Add(i);
+			}
+			m_BallBodies = balls.ToArray();
 			for (int k = 0; k < 6; k++)
 			{
 				m_Wrench[k] = m_Mj.GetActuator(WrenchNames[k])!;
@@ -136,7 +165,7 @@ namespace Dronstein
 			StopMotors();
 			m_Q = new float[m_Mj.ModelNq];
 			m_V = new float[m_Mj.ModelNv];
-			Log.Info($"X500Flight: start, {m_Mass:F3} kg, hover throttle {Hover:F3}");
+			Log.Info($"X500Flight: start, {m_Mass:F3} kg, hover throttle {Hover:F3}, {m_BallBodies.Length} balls");
 		}
 
 		protected override void OnDestroy() => m_Gcs?.Dispose();
@@ -149,65 +178,6 @@ namespace Dronstein
 		}
 
 		float Hover => m_Mass * G / (4f * m_ThstMax);
-
-		// X500.param into the fields; false (logged, the script stays off) when the file or a parameter is missing.
-		bool LoadParams()
-		{
-			string path = Path.GetFullPath(Path.Combine(Application.DataDirectoryPath!, "..", "X500.param"));
-			if (!File.Exists(path))
-			{
-				Log.Error($"X500Flight: no {path}; off");
-				return false;
-			}
-			var p = new Dictionary<string, float>();
-			foreach (string raw in File.ReadAllLines(path))
-			{
-				string[] f = raw.Split('#')[0].Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries);
-				if (f.Length == 2 && float.TryParse(f[1], NumberStyles.Float, CultureInfo.InvariantCulture, out float v)) p[f[0]] = v;
-			}
-			var missing = new List<string>();
-			float Get(string name)
-			{
-				if (p.TryGetValue(name, out float v)) return v;
-				missing.Add(name);
-				return 0f;
-			}
-			const float Deg = MathF.PI / 180f;
-			(m_ThstMax, m_ThstExpo, m_MotTau, m_YawCoef) = (Get("SIM_THST_MAX"), Get("SIM_THST_EXPO"), Get("SIM_MOT_TAU"), Get("SIM_YAW_COEF"));
-			(m_DragCda, m_DragLin, m_ArmLen) = (Get("SIM_DRAG_CDA"), Get("SIM_DRAG_LIN"), Get("SIM_ARM_LEN"));
-			(m_SpinMin, m_SpinMax) = (Get("MOT_SPIN_MIN"), Get("MOT_SPIN_MAX"));
-			(m_AngleMax, m_InputTc, m_AccYawMax) = (Get("ANGLE_MAX") * Deg, Get("ATC_INPUT_TC"), Get("ATC_ACC_Y_MAX") * Deg);
-			string[] axis = { "RLL", "PIT", "YAW" };
-			for (int k = 0; k < 3; k++)
-			{
-				m_AngP[k] = Get($"ATC_ANG_{axis[k]}_P");
-				(m_RatP[k], m_RatI[k], m_RatD[k]) = (Get($"ATC_RAT_{axis[k]}_P"), Get($"ATC_RAT_{axis[k]}_I"), Get($"ATC_RAT_{axis[k]}_D"));
-			}
-			(m_RatImax, m_RatFltd) = (Get("ATC_RAT_IMAX"), Get("ATC_RAT_FLTD"));
-			(m_PosZP, m_VelZP, m_SpdUp, m_SpdDn, m_AccZ) = (Get("PSC_D_POS_P"), Get("PSC_D_VEL_P"), Get("PILOT_SPD_UP"), Get("PILOT_SPD_DN"), Get("PILOT_ACC_Z"));
-			m_YawRateMax = Get("PILOT_Y_RATE") * Deg;
-			(m_LoitSpeed, m_LoitAcc, m_PosXyP, m_VelXyP) = (Get("LOIT_SPEED"), Get("LOIT_ACC_MAX"), Get("PSC_NE_POS_P"), Get("PSC_NE_VEL_P"));
-			(m_RtlAlt, m_RtlSpeed, m_LandSpeed) = (Get("RTL_ALT"), Get("RTL_SPEED"), Get("LAND_SPEED"));
-			if (missing.Count > 0) Log.Error($"X500Flight: {path} lacks {string.Join(", ", missing)}; off");
-			return missing.Count == 0;
-		}
-
-		// The names X500View reads: camera_*, zoom_*, deadzone. Flying is the GCS's (src/ControllerBindings.txt).
-		void LoadBindings()
-		{
-			string path = Path.GetFullPath(Path.Combine(Application.DataDirectoryPath!, "..", "ControllerBindings.txt"));
-			if (!File.Exists(path)) return;
-			foreach (string raw in File.ReadAllLines(path))
-			{
-				string[] f = raw.Split('#')[0].Split('=');
-				if (f.Length != 2) continue;
-				string name = f[0].Trim(), value = f[1].Trim();
-				if (name == "deadzone") { if (float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out float dz)) m_Deadzone = dz; }
-				else if (int.TryParse(value.TrimStart('-'), out int axis)) m_Bindings[name] = (axis, value.StartsWith('-') ? -1f : 1f, -1);
-				else if (value.StartsWith('b') && int.TryParse(value[1..], out int button)) m_Bindings[name] = (-1, 1f, button);
-				else Log.Info($"X500Flight: '{value}' for {name} is not an axis or a bN button, ignored");
-			}
-		}
 
 		protected override void OnUpdate(float frameDt)
 		{
@@ -299,12 +269,14 @@ namespace Dronstein
 			float vx = m_V[m_Qvel], vy = m_V[m_Qvel + 1], vz = m_V[m_Qvel + 2];
 			(m_W[0], m_W[1], m_W[2]) = (m_V[m_Qvel + 3], m_V[m_Qvel + 4], m_V[m_Qvel + 5]);  // body rates (FLU)
 
-			// The target only creeps to the floor (the descent slows near it), hence the 1 cm.
-			bool grounded = float.IsNaN(m_AltMin) || (m_AltT <= m_AltMin + 0.01f && alt < m_AltMin + 0.05f);
+			// ArduPilot's land detector, from the autopilot's own altitude target, not the sim's ground truth: the target is on
+			// the floor (it only creeps there, hence the 1 cm) and the drone isn't moving up or down, for LandTime.
+			m_LandT = m_AltT <= m_AltMin + 0.01f && MathF.Abs(vz) < LandVel ? m_LandT + dt : 0f;
+			bool grounded = Landed;
 			if (cmd?.Cmd == "arm" && grounded && (cmd.Value.Value != 0f) != Armed)  // arm / disarm, on the ground only
 			{
 				Armed = !Armed;
-				if (Armed) (m_HomeX, m_HomeY) = (x, y);
+				if (Armed) (m_HomeX, m_HomeY, m_LandT) = (x, y, LandTime);  // landed until it moves: no spool-up on the ground
 				Log.Info($"X500Flight: {(Armed ? "armed" : "disarmed")}");
 			}
 			bool keyY = Input.IsKeyDown(KeyCode.Y);
@@ -316,6 +288,9 @@ namespace Dronstein
 				Log.Info($"X500Flight: going to waypoint {s_Calib} ({Waypoints[s_Calib, 0]}, {Waypoints[s_Calib, 1]})");
 			}
 			m_KeyY = keyY;
+			bool keyF = Input.IsKeyDown(KeyCode.F);
+			if (keyF && !m_KeyF) m_PickUps++;
+			m_KeyF = keyF;
 			int mode = cmd?.Cmd == "mode" ? (int)cmd.Value.Value : -1;
 			if (mode == 5 || mode == 2 || (mode == 6 && Armed && !grounded))  // LOITER, ALT_HOLD, or RTL in the air
 			{
@@ -392,7 +367,21 @@ namespace Dronstein
 					(wantDx, wantDy) = (hx / dist, hy / dist);
 				}
 			}
-			bool auto = s_Takeoff || s_Rtl || Calibrating;
+			else if (m_Gcs.Setpoint is float[] goal)  // the GCS's position setpoint (ArduPilot's GUIDED): fly there and hold it
+			{
+				float tx = goal[0], ty = -goal[1];  // NED -> MuJoCo: north = x, east = -y
+				float hx = tx - m_PosX, hy = ty - m_PosY, dist = MathF.Sqrt(hx * hx + hy * hy);
+				if (dist < 0.05f) (m_PosX, m_PosY) = (tx, ty);  // there: hold
+				else
+				{
+					wantSpeed = MathF.Min(m_RtlSpeed, MathF.Sqrt(2f * m_LoitAcc * dist));
+					(wantDx, wantDy) = (hx / dist, hy / dist);
+				}
+				m_YawT = -goal[3];  // the NED heading (clockwise from north) as the FLU yaw the controller holds
+				float top = m_AltMin - goal[2];  // down -> the altitude above where it started
+				climb = Math.Clamp(2f * (top - m_AltT), -m_LandSpeed, m_SpdUp);  // down no faster than LAND_SPEED
+			}
+			bool auto = s_Takeoff || s_Rtl || Calibrating || m_Gcs.Setpoint != null;
 
 			float maxAngle = m_AngleMax, tc = m_InputTc;
 			float rollIn = roll * maxAngle, pitchIn = pitch * maxAngle;  // Manual: the stick is the lean
@@ -452,13 +441,14 @@ namespace Dronstein
 				m_ClimbT = MathF.Max(m_ClimbT, 0f);
 			}
 			float acc = m_VelZP * (m_ClimbT + m_PosZP * (m_AltT - alt) - vz);
-			m_Thr = Math.Clamp(Hover * (1f + acc / G) / MathF.Max(cp * ct, 0.5f), 0f, 1f);
+			m_Thr = Math.Clamp(m_ThrHover * (1f + acc / G) / MathF.Max(cp * ct, 0.5f), 0f, 1f);
 
 			Mix(m_Out[0], m_Out[1], m_Out[2]);
 		}
 
 		// To the GCS, ArduPilot's frames: position and velocity NED (north = MuJoCo x, east = -y, down = -z), roll, pitch
-		// and yaw FRD (the body's FLU Euler angles with pitch and yaw flipped).
+		// and yaw FRD (the body's FLU Euler angles with pitch and yaw flipped). Down is from where it rests on the ground
+		// (m_AltMin), as ArduPilot's altitude is from where it started, so landed reads 0, not the body's height.
 		void SendState()
 		{
 			for (int k = 0; k < 3; k++)
@@ -467,12 +457,18 @@ namespace Dronstein
 				m_Pos[k] = sign * m_Q[m_Qpos + k];
 				m_Vel[k] = sign * m_V[m_Qvel + k];
 			}
+			if (!float.IsNaN(m_AltMin)) m_Pos[2] += m_AltMin;
 			m_Att[0] = MathF.Atan2(m_R[2, 1], m_R[2, 2]);
 			m_Att[1] = MathF.Asin(Math.Clamp(m_R[2, 0], -1f, 1f));
 			m_Att[2] = -MathF.Atan2(m_R[1, 0], m_R[0, 0]);
 			m_Claw ??= FindEntityByTag("Claw")?.As<Claw>();  // here, not in OnCreate: its script may start later
-			bool landed = float.IsNaN(m_AltMin) || m_Q[m_Qpos + 2] < m_AltMin + 0.05f;
-			m_Gcs.Send(Armed, Mode, landed, m_Pos, m_Vel, m_Att, m_Claw?.Closed ?? false);
+			var balls = new float[m_BallBodies.Length][];
+			for (int i = 0; i < balls.Length; i++)
+			{
+				m_Mj.GetBodyPoseMj(m_BallBodies[i], out Vector3 p, out _, out _, out _);
+				balls[i] = new[] { p.X, -p.Y };  // MuJoCo x = north, -y = east
+			}
+			m_Gcs.Send(Armed, Mode, Landed, m_Pos, m_Vel, m_Att, m_Claw?.Closed ?? false, balls, m_PickUps);
 		}
 
 		// Quad X mix: thrust fraction per motor, roll and pitch first (throttle shifted to fit them), then yaw in whatever
@@ -519,7 +515,7 @@ namespace Dronstein
 		public float Axis(string name)
 		{
 			float v = Bound(name, out var b) && b.Axis >= 0 ? Input.GetControllerAxis(m_Pad, b.Axis) * b.Sign : 0f;
-			return MathF.Abs(v) < m_Deadzone ? 0f : Math.Clamp(v, -1f, 1f);
+			return MathF.Abs(v) < Deadzone ? 0f : Math.Clamp(v, -1f, 1f);
 		}
 
 		// A button down, or an axis (a trigger) pushed past halfway.

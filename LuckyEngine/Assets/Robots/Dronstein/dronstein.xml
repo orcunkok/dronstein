@@ -1,6 +1,6 @@
 <!-- The scene's MuJoCo world: the Holybro X500 V2 (physics in ../X500V2/x500v2.mjcf, written by
      tools/x500v2/build_x500v2.py; X500Flight.cs flies it). The trash can and the ground are Lucky collider entities
-     that join this world. Air density/viscosity give the can its drag; the X500's geoms turn it off (X500.param sets
+     that join this world. Air density/viscosity give the can its drag; the X500's geoms turn it off (X500Flight.cs sets
      its drag).
      The tennis balls are bodies here (their visuals are the scene's TennisBall_NN entities, which follow the bodies
      by body ID, 2 to 26 in this order). Lucky runs this world at a 0.002 s step. Each ball is a real tennis ball:

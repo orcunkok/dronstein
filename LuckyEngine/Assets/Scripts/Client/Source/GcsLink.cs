@@ -9,12 +9,13 @@ using Hazel;
 namespace Dronstein
 {
 	/// <summary>
-	/// The flight controller's end of the link to the ground station (src/lucky/link.py), the way ArduPilot SITL talks to
+	/// The flight controller's end of the link to the ground station (src/link/luckyLink.py), the way ArduPilot SITL talks to
 	/// a GCS: every frame it sends its state as one JSON line to 127.0.0.1:14550, whether or not anyone listens, and takes
 	/// the GCS's sticks and commands from whatever comes back. So either side can start first, and they find each other.
 	/// GCS -> FC: {"rc": [roll, pitch, throttle, yaw], "seq": n, "cmd": "arm", "value": 1}, rc in PWM (1500 centred,
 	/// pitch forward is low, as ArduPilot's RC1-4). A command runs once, when its seq is new; "ack" sends the seq back.
 	/// No GCS packet for a second: the sticks read centred.
+	/// FC -> GCS also has "balls": the tennis balls' [north, east] in metres, from Lucky's sim.
 	/// </summary>
 	public class GcsLink : IDisposable
 	{
@@ -28,8 +29,12 @@ namespace Dronstein
 		long m_Seq;
 		string m_Cmd = "";
 		float m_Value;
+		float[]? m_Setpoint;  // the GCS's position setpoint: north, east, down (m) and yaw (rad, from north), or none
 
 		public bool Connected => Environment.TickCount64 - m_LastRx < TimeoutMs;
+
+		/// The position setpoint the GCS is flying to, or null: none, or the GCS is gone.
+		public float[]? Setpoint => Connected ? m_Setpoint : null;
 
 		/// RC channel 0..3 (roll, pitch, throttle, yaw) as -1..1, 0 when the GCS is gone.
 		public float Stick(int channel) => Connected ? Math.Clamp((m_Rc[channel] - 1500) / 500f, -1f, 1f) : 0f;
@@ -51,6 +56,13 @@ namespace Dronstein
 					seq = m.GetProperty("seq").GetInt64();
 					m_Cmd = m.GetProperty("cmd").GetString() ?? "";
 					m_Value = m.GetProperty("value").GetSingle();
+					m_Setpoint = null;
+					if (m.TryGetProperty("target", out JsonElement target) && target.ValueKind == JsonValueKind.Array)
+					{
+						m_Setpoint = new float[4];
+						int k = 0;
+						foreach (JsonElement v in target.EnumerateArray()) m_Setpoint[k++] = v.GetSingle();
+					}
 					m_LastRx = Environment.TickCount64;
 				}
 			}
@@ -64,10 +76,10 @@ namespace Dronstein
 			return (m_Cmd, m_Value);
 		}
 
-		/// The FC's state to the GCS (NED, metres, radians), with the last command's seq.
-		public void Send(bool armed, int mode, bool landed, float[] pos, float[] vel, float[] att, bool gripperClosed)
+		/// The FC's state to the GCS (NED, metres, radians), with the last command's seq, and the balls' [north, east].
+		public void Send(bool armed, int mode, bool landed, float[] pos, float[] vel, float[] att, bool gripperClosed, float[][] balls, int pickups)
 		{
-			var state = new { armed, mode, landed, pos, vel, att, gripper = gripperClosed, ack = m_Seq };
+			var state = new { armed, mode, landed, pos, vel, att, gripper = gripperClosed, ack = m_Seq, balls, pickups };
 			byte[] line = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(state));
 			try { m_Udp.Send(line, line.Length, m_Gcs); }
 			catch (SocketException) { }  // nobody listening yet: fine, keep sending

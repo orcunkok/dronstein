@@ -17,9 +17,13 @@ namespace Dronstein
 		[Units("deg")] [Slider(0f, 90f)]
 		public float OpenAngle = 72.3f;
 
-		[Tooltip("How fast the servos' target swings.")]
+		[Tooltip("How fast the servos' target swings when opening.")]
 		[Units("deg/s")] [Slider(10f, 720f)]
 		public float Speed = 180f;
+
+		[Tooltip("How fast the servos' target swings when closing (the test knob for how quick a grab is).")]
+		[Units("deg/s")] [Slider(10f, 720f)]
+		public float CloseSpeed = 180f;
 
 		const float Deg = MathF.PI / 180f;
 
@@ -76,7 +80,7 @@ namespace Dronstein
 			bool o = Input.IsKeyDown(KeyCode.O);
 			if (o && !m_KeyO) m_Target = m_Target > 0f ? 0f : OpenAngle;  // O: fully open <-> fully closed
 			m_KeyO = o;
-			float step = Speed * dt;
+			float step = (m_Target < m_Angle ? CloseSpeed : Speed) * dt;
 			m_Angle += Math.Clamp(m_Target - m_Angle, -step, step);
 			// The joints' zero is fully open and they turn negative to close, so the servos' target is the angle short of open.
 			m_Mj.SetCtrlByIndex(m_ServoL, (m_Angle - OpenAngle) * Deg);

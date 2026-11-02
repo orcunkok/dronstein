@@ -775,7 +775,7 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [-5.1015, 0.1123, 0.0128]
+      Position: [-5.1015, 0.115, 0.0128]
       Rotation: [-2.83267, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
@@ -1901,7 +1901,7 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [-5.1015, 0.1123, -0.0128]
+      Position: [-5.1015, 0.115, -0.0128]
       Rotation: [-0.308923, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
