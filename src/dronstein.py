@@ -2,6 +2,7 @@
 """The ground station: flies the X500 with the Xbox controller through one link, to Lucky's sim (default) or to
 ArduPilot (--ardu). Run: ./dronstein.py [--ardu] (it uses src/.venv)"""
 import argparse
+import shutil
 import time
 
 from gamepad import Gamepad
@@ -22,12 +23,12 @@ def main():
         link.step(state)
         if state.connected:
             n, e, d = state.pos
-            line = (f"{MODE_NAMES.get(state.mode, state.mode)} {'armed' if state.armed else 'disarmed'} "
-                    f"{'landed' if state.landed else 'flying'} alt {-d:.2f} m  N {n:.2f} E {e:.2f}  "
-                    f"gripper {'closed' if state.gripper else 'open'}")
+            line = (f"{'ARMED' if state.armed else 'DISARMED'} {MODE_NAMES.get(state.mode, state.mode)}  "
+                    f"alt {-d:.2f} m  N {n:.2f} m  E {e:.2f} m  gripper {'CLOSED' if state.gripper else 'OPEN'}")
         else:
             line = "waiting for the flight controller..."
-        print(f"\r{line:<90}", end="", flush=True)
+        width = shutil.get_terminal_size().columns - 1  # wider would wrap, and \r only goes back to the last row
+        print(f"\r{line[:width]:<{width}}", end="", flush=True)
         time.sleep(0.02)
 
 

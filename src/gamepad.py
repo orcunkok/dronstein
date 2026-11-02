@@ -12,7 +12,7 @@ from pygame._sdl2 import controller
 
 from state import ALT_HOLD, LOITER, RTL
 
-TAKEOFF_ALT = 0.5  # m, Menu's takeoff
+TAKEOFF_ALT = 0.5  # m, X's takeoff
 
 AXES = {n: getattr(pygame, f"CONTROLLER_AXIS_{n.upper()}") for n in
         ("leftx", "lefty", "rightx", "righty")} | {
