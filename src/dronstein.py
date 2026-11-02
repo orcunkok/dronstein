@@ -2,11 +2,17 @@
 """The ground station: flies the X500 with the Xbox controller through one link, to Lucky's sim (default) or to
 ArduPilot (--ardu). Run: ./dronstein.py [--ardu] (it uses src/.venv)"""
 import argparse
+import re
 import shutil
 import time
 
 from gamepad import Gamepad
 from state import MODE_NAMES, State
+
+# ANSI colours for the status line's words, as the HUD shows them: armed green, disarmed red.
+GREEN, RED, ORANGE, RESET = "\033[32m", "\033[31m", "\033[38;5;208m", "\033[0m"
+COLORS = {"ARMED": GREEN, "DISARMED": RED, "CLOSED": RED, "OPEN": GREEN, **{m: ORANGE for m in MODE_NAMES.values()}}
+WORDS = re.compile(r"\b(" + "|".join(COLORS) + r")\b")
 
 
 def main():
@@ -28,7 +34,8 @@ def main():
         else:
             line = "waiting for the flight controller..."
         width = shutil.get_terminal_size().columns - 1  # wider would wrap, and \r only goes back to the last row
-        print(f"\r{line[:width]:<{width}}", end="", flush=True)
+        line = WORDS.sub(lambda m: COLORS[m[1]] + m[1] + RESET, f"{line[:width]:<{width}}")  # colour after fitting it
+        print(f"\r{line}", end="", flush=True)
         time.sleep(0.02)
 
 
