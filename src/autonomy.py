@@ -46,9 +46,11 @@ def pick_up(state):
         yield from until(state, lambda: -state.pos[2] > TAKEOFF_ALT - 0.2)
     ball = random.choice(state.balls)
     yaw = state.att[2]  # keep the heading it has now
-    # The drone's centre goes this far behind the claw's spot, so the claw is over the ball.
-    n, e = ball[0] - CLAW_BACK * math.cos(yaw), ball[1] - CLAW_BACK * math.sin(yaw)
-    navigate(state, n, e, 0.0, yaw)  # the FC flies there and lands on the ball
+    # The claw is this far behind the drone's centre, so the centre goes this far in front of the ball: the claw is over it.
+    n, e = ball[0] + CLAW_BACK * math.cos(yaw), ball[1] + CLAW_BACK * math.sin(yaw)
+    navigate(state, n, e, state.pos[2], yaw)  # over the ball, at this height
+    yield from until(state, lambda: math.hypot(state.pos[0] - n, state.pos[1] - e) < 0.02)
+    navigate(state, n, e, 0.0, yaw)  # then down onto it
     yield from until(state, lambda: state.landed)
     yield from held(lambda: state.landed, LAND_HOLD)
     yield from command(state, "gripper", 1)

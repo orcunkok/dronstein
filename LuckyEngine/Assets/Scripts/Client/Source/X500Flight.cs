@@ -66,9 +66,8 @@ namespace Dronstein
 		float m_DragLin = 0.48f;      // N per m/s, rotor drag (blade flapping/induced drag): 0.35/s at 1.36 kg, an estimate
 		                              // inside ArduPilot's EK3_DRAG_MCOEF range (0.1-1.0); set it from the real drone's logs
 		float m_ArmLen = 0.25f;       // m, centre to motor (500 mm wheelbase)
-		// Motors (MOT_*): the ESC command fraction, as ArduPilot outputs it. MOT_THST_HOVER is the autopilot's hover
-		// feedforward (the X500v2 frame file); the physics' own hover comes from the mass.
-		float m_SpinMin = 0.09f, m_SpinMax = 0.95f, m_ThrHover = 0.2905434f;
+		// Motors (MOT_*): the ESC command fraction, as ArduPilot outputs it.
+		float m_SpinMin = 0.09f, m_SpinMax = 0.95f;
 		// Attitude (ANGLE_MAX, ATC_*), from the X500v2 frame file.
 		float m_AngleMax = 30f * Deg, m_InputTc = 0.15f, m_AccYawMax = 359.55f * Deg, m_RatImax = 0.5f, m_RatFltd = 21f;
 		readonly float[] m_AngP = { 26.35878f, 21.2236f, 8.53887f };  // ATC_ANG_{RLL,PIT,YAW}_P: roll, pitch, yaw
@@ -260,6 +259,12 @@ namespace Dronstein
 		{
 			// The GCS's sticks, ArduPilot's way: RC1 roll right, RC2 pitch (forward is low), RC3 climb, RC4 yaw right.
 			var cmd = m_Gcs.Receive();
+			if (cmd?.Cmd == "reset")  // the GCS's reset: the same as R, the scene back to its start (the next frame sees it)
+			{
+				m_Mj.ResetToInitialState(false);
+				Log.Info("X500Flight: reset from the GCS");
+				return;
+			}
 			float roll = m_Gcs.Stick(0), pitch = -m_Gcs.Stick(1), throttle = m_Gcs.Stick(2), turn = -m_Gcs.Stick(3);
 			float climb = throttle * (throttle > 0f ? m_SpdUp : m_SpdDn);
 			BodyRotation(m_R);
@@ -441,7 +446,7 @@ namespace Dronstein
 				m_ClimbT = MathF.Max(m_ClimbT, 0f);
 			}
 			float acc = m_VelZP * (m_ClimbT + m_PosZP * (m_AltT - alt) - vz);
-			m_Thr = Math.Clamp(m_ThrHover * (1f + acc / G) / MathF.Max(cp * ct, 0.5f), 0f, 1f);
+			m_Thr = Math.Clamp(Hover * (1f + acc / G) / MathF.Max(cp * ct, 0.5f), 0f, 1f);
 
 			Mix(m_Out[0], m_Out[1], m_Out[2]);
 		}
