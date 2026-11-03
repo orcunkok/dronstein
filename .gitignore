@@ -221,6 +221,3 @@ __marimo__/
 
 # Agent worktrees
 .claude/worktrees/
-
-# Lucky editor regenerates this on every open
-LuckyEngine/Assets/AssetRegistry.hzr

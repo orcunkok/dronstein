@@ -1,6 +1,7 @@
-#!/usr/bin/env -S sh -c 'exec "$(dirname "$0")/.venv/bin/python" "$0" "$@"'
-"""The ground station: flies the X500 with the Xbox controller through one link, to Lucky's sim (default) or to
-ArduPilot (--ardu). F (typed here, or pressed in Lucky's window) picks up a random tennis ball (autonomy.py) when armed; F again
+#!/bin/sh
+"exec" "${0%/*}/.venv/bin/python" "$0" "$@"  # sh runs src/.venv's Python on this file; to Python it's only a string
+__doc__ = """The ground station: flies the X500 with the Xbox controller through one link, to Lucky's sim (default) or to
+ArduPilot (--ardu). F (typed here, or pressed in Lucky's window) picks up a random tennis ball (autonomy.py), arming first if needed; F again
 gives the sticks back to the controller.
 Run: ./dronstein.py [--ardu] (it uses src/.venv)"""
 import argparse
@@ -49,7 +50,7 @@ def main():
             typed = key() in ("f", "F")
             pressed = state.pickups > seen
             seen = state.pickups
-            if (typed or pressed) and (auto is not None or state.armed):  # F starts the pick-up only when armed
+            if typed or pressed:
                 auto = None if auto else mission(state)
             if auto is not None:
                 state.rc = [1500] * 4  # autonomy flies by setpoints: the sticks rest

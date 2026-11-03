@@ -1,6 +1,6 @@
 """Autonomy: picks up a random tennis ball in Lucky (pick_up), flies it to the bin and lets it go (to_bin), then returns
 home (RTL). It sets the position setpoints (navigation.py): onto the ball, over the bin. Once it has been landed for
-LAND_HOLD the claw closes. dronstein.py runs it as a mode (F key, armed only). Each step is a
+LAND_HOLD the claw closes. dronstein.py runs it as a mode (F key). Each step is a
 generator: it ticks once per frame, so the steps read straight through."""
 import math
 import random
@@ -41,9 +41,11 @@ def held(landed, seconds):
 
 
 def pick_up(state):
-    """The autonomy: ticks every frame, and ends once the claw has closed on a ball. It starts armed (dronstein.py only
-    starts it then): on the ground it takes off, then flies over a random ball and lands on it."""
+    """The autonomy: ticks every frame, and ends once the claw has closed on a ball. On the ground it arms (if it isn't)
+    and takes off, then flies over a random ball and lands on it."""
     yield from until(state, lambda: state.connected and state.balls)
+    if not state.armed:
+        yield from command(state, "arm", 1)
     yield from command(state, "mode", LOITER)
     if state.landed:
         yield from command(state, "takeoff", TAKEOFF_ALT)

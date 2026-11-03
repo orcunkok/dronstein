@@ -1,0 +1,187 @@
+Assets:
+  - Handle: 159802164504776701
+    FilePath: Robots/ClawBracket13/source/claw_bracket.hpodgraph
+    Type: PodGraph
+  - Handle: 171705682957297527
+    FilePath: Robots/ClawFingerR10/source/claw_finger_r.hpodgraph
+    Type: PodGraph
+  - Handle: 203066059061262358
+    FilePath: Materials/TennisBall_Material2.hmaterial
+    Type: Material
+  - Handle: 361373083978553111
+    FilePath: Materials/LandingPad_H_Cream_Material.hmaterial
+    Type: Material
+  - Handle: 472466418818970438
+    FilePath: Robots/X500V2/source/x500v2.hpodgraph
+    Type: PodGraph
+  - Handle: 1146483085521617306
+    FilePath: Robots/ClawFingerL11/source/claw_finger_l.hpodgraph
+    Type: PodGraph
+  - Handle: 1167326038045968203
+    FilePath: Robots/ClawFingerR12/source/claw_finger_r.hpodgraph
+    Type: PodGraph
+  - Handle: 1271349667627160951
+    FilePath: Robots/ClawFingerR8/source/claw_finger_r.hpodgraph
+    Type: PodGraph
+  - Handle: 1700460298204588844
+    FilePath: Robots/ClawBracket9/source/claw_bracket.hpodgraph
+    Type: PodGraph
+  - Handle: 2116205926439990434
+    FilePath: Materials/Waypoint_Soft_Material.hmaterial
+    Type: Material
+  - Handle: 2681935931737735909
+    FilePath: Robots/ClawFingerL14/source/claw_finger_l.hpodgraph
+    Type: PodGraph
+  - Handle: 2871429880033931469
+    FilePath: Robots/Dronstein/dronstein.xml
+    Type: MujocoScene
+  - Handle: 2996374436668055911
+    FilePath: Robots/ClawBracket14/source/claw_bracket.hpodgraph
+    Type: PodGraph
+  - Handle: 3008810176146964967
+    FilePath: Scripts/Client/Source/X500View.cs
+    Type: ScriptFile
+  - Handle: 3725164238943517038
+    FilePath: Meshes/Default/Source/Capsule.gltf
+    Type: MeshSource
+  - Handle: 4203287512373935578
+    FilePath: Materials/CenterDot_Red_Material.hmaterial
+    Type: Material
+  - Handle: 4339807503884747651
+    FilePath: Robots/ClawBracket12/source/claw_bracket.hpodgraph
+    Type: PodGraph
+  - Handle: 4512471431298144687
+    FilePath: Meshes/Default/Cube.hsmesh
+    Type: StaticMesh
+  - Handle: 4723399741370758433
+    FilePath: Scripts/Intermediates/Debug/Dronstein.sourcelink.json
+    Type: Motion
+  - Handle: 4942199622351904206
+    FilePath: Scripts/Client/obj/Dronstein.csproj.nuget.dgspec.json
+    Type: Motion
+  - Handle: 5371859036461348989
+    FilePath: Robots/ClawFingerR14/source/claw_finger_r.hpodgraph
+    Type: PodGraph
+  - Handle: 5906284485229172943
+    FilePath: Materials/TennisBall_Felt.hmaterial
+    Type: Material
+  - Handle: 6004925888757710830
+    FilePath: Scripts/Intermediates/Debug/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs
+    Type: ScriptFile
+  - Handle: 7144994396234222597
+    FilePath: Meshes/Default/Source/Sphere.gltf
+    Type: MeshSource
+  - Handle: 7924703489701603992
+    FilePath: Meshes/Default/Source/Octahedron.glb
+    Type: MeshSource
+  - Handle: 7935106140740169735
+    FilePath: Materials/TrashCan_Aluminum.hmaterial
+    Type: Material
+  - Handle: 8055655304240113313
+    FilePath: Fonts/NotoSans-Light.ttf
+    Type: Font
+  - Handle: 8147788432871808966
+    FilePath: Scripts/Binaries/Dronstein.deps.json
+    Type: Motion
+  - Handle: 8256912212406075000
+    FilePath: Robots/ClawBracket10/source/claw_bracket.hpodgraph
+    Type: PodGraph
+  - Handle: 9336840270714000039
+    FilePath: Scripts/Binaries/Dronstein.runtimeconfig.json
+    Type: Motion
+  - Handle: 9346834634786424791
+    FilePath: Meshes/Default/Sphere.hsmesh
+    Type: StaticMesh
+  - Handle: 10640983446431700429
+    FilePath: Materials/Waypoint_X_Material.hmaterial
+    Type: Material
+  - Handle: 11811293436037047550
+    FilePath: Textures/GroundChecker.png
+    Type: Texture
+  - Handle: 11870419681794946745
+    FilePath: Robots/ClawFingerR11/source/claw_finger_r.hpodgraph
+    Type: PodGraph
+  - Handle: 12109544325559146167
+    FilePath: Scripts/Client/Source/Claw.cs
+    Type: ScriptFile
+  - Handle: 12341417819047262223
+    FilePath: Robots/ClawBracket11/source/claw_bracket.hpodgraph
+    Type: PodGraph
+  - Handle: 12869216658696565463
+    FilePath: Textures/TennisBall.png
+    Type: Texture
+  - Handle: 12882093462498960904
+    FilePath: Scenes/Main.hscene
+    Type: Scene
+  - Handle: 13240557168934692918
+    FilePath: Robots/ClawFingerL9/source/claw_finger_l.hpodgraph
+    Type: PodGraph
+  - Handle: 13290137406038238993
+    FilePath: Meshes/Default/Plane.hsmesh
+    Type: StaticMesh
+  - Handle: 13341008224982955814
+    FilePath: Scripts/Client/obj/project.assets.json
+    Type: Motion
+  - Handle: 14010469968504682871
+    FilePath: Robots/ClawFingerL12/source/claw_finger_l.hpodgraph
+    Type: PodGraph
+  - Handle: 14151601812946333791
+    FilePath: Scripts/Client/Source/X500Flight.cs
+    Type: ScriptFile
+  - Handle: 14389522373660214116
+    FilePath: Robots/X500V2Prop/source/x500v2_prop.hpodgraph
+    Type: PodGraph
+  - Handle: 14570699731383293133
+    FilePath: Robots/ClawBracket8/source/claw_bracket.hpodgraph
+    Type: PodGraph
+  - Handle: 14747046436387185966
+    FilePath: Scripts/Client/Source/GcsLink.cs
+    Type: ScriptFile
+  - Handle: 14861723440063490683
+    FilePath: Meshes/Default/Source/Cone.gltf
+    Type: MeshSource
+  - Handle: 15312976335413109328
+    FilePath: Materials/LandingPad_Glow2_Material.hmaterial
+    Type: Material
+  - Handle: 15330364801231050254
+    FilePath: Robots/ClawFingerL10/source/claw_finger_l.hpodgraph
+    Type: PodGraph
+  - Handle: 15420529433532894805
+    FilePath: Scripts/Intermediates/Debug/Dronstein.AssemblyInfo.cs
+    Type: ScriptFile
+  - Handle: 15725964065274453976
+    FilePath: Meshes/Default/Source/Torus.gltf
+    Type: MeshSource
+  - Handle: 15916378497832049985
+    FilePath: Fonts/Goldman-Regular.ttf
+    Type: Font
+  - Handle: 16102727838158965090
+    FilePath: Meshes/Default/Cylinder.hsmesh
+    Type: StaticMesh
+  - Handle: 16441059443757880714
+    FilePath: Robots/ClawFingerR13/source/claw_finger_r.hpodgraph
+    Type: PodGraph
+  - Handle: 16763015685236763184
+    FilePath: Meshes/Default/Source/Cube.gltf
+    Type: MeshSource
+  - Handle: 16991575206243672906
+    FilePath: Materials/Default/GroundMaterial.hmaterial
+    Type: Material
+  - Handle: 17061058600486238403
+    FilePath: Meshes/Default/Source/Cylinder.gltf
+    Type: MeshSource
+  - Handle: 17428363033694079076
+    FilePath: Robots/ClawFingerR9/source/claw_finger_r.hpodgraph
+    Type: PodGraph
+  - Handle: 17478564798814957216
+    FilePath: Robots/ClawFingerL8/source/claw_finger_l.hpodgraph
+    Type: PodGraph
+  - Handle: 17646189633006942707
+    FilePath: Meshes/Default/Source/Plane.gltf
+    Type: MeshSource
+  - Handle: 17848236281465921337
+    FilePath: Materials/GroundTiles.hmaterial
+    Type: Material
+  - Handle: 18411567397128387353
+    FilePath: Robots/ClawFingerL13/source/claw_finger_l.hpodgraph
+    Type: PodGraph
