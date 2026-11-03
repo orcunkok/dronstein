@@ -25,6 +25,10 @@ STRIDE = 8              # samples (0.75 mm each) per collision box along a finge
 SERVO_TORQUE = 1.5      # N m each finger can push with: well under the LDX-335MG's stall, for a firm but safe grip
 SERVO_KP = 6.0          # N m per rad of error
 SERVO_KV = 0.06         # N m s per rad: damps the finger's swing
+# The tennis balls' contact is deliberately bouncy (dampratio 0.1, priority 100 in dronstein.xml), which makes a squeezed
+# ball jitter. A higher priority makes the fingers' contact settings win against the ball's: same stiffness and squeeze,
+# but critically damped.
+FINGER_CONTACT = 'priority="101" solref="0.04 1" solimp="0.83 0.83 0.01"'
 
 
 def fmt(values):
@@ -131,12 +135,12 @@ def claw_mjcf(pos, to_mj, body):
                 parts.append(f'<geom name="{name}_plate_{len(parts)}" type="box" '
                              f'size="{fmt((PLATE_T / 2, half_w, length / 2 + 0.0005))}" '
                              f'pos="{fmt(local((x0 + x1) / 2, (y0 + y1) / 2, z))}" '
-                             f'quat="{fmt(quat_wxyz(ex, ey, ez))}" density="{D_ALU:g}"/>')
+                             f'quat="{fmt(quat_wxyz(ex, ey, ez))}" density="{D_ALU:g}" {FINGER_CONTACT}/>')
         (tx, ty), tip_r = TIP_CAP
         for z in (LAYER_Z[0], LAYER_Z[3]):         # the round fingertip, one disc per outer plate
             parts.append(f'<geom name="{name}_tip_{len(parts)}" type="cylinder" size="{tip_r:g}" '
                          f'fromto="{fmt(local(tx, ty, z - PLATE_T / 2))} {fmt(local(tx, ty, z + PLATE_T / 2))}" '
-                         f'density="{D_ALU:g}"/>')
+                         f'density="{D_ALU:g}" {FINGER_CONTACT}/>')
         bodies.append((f'<body name="{name}" pos="{fmt(pivot)}" quat="{fmt(quat)}">', joint, parts))
         actuators.append(f'<position name="{name}" joint="{name}_hinge" kp="{SERVO_KP:g}" kv="{SERVO_KV:g}" '
                          f'ctrllimited="true" ctrlrange="{-opening:.6g} 0" forcelimited="true" '
