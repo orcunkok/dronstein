@@ -1,15 +1,19 @@
-"""Autonomy: picks up a random tennis ball in Lucky. It sets the position setpoints (navigation.py): onto the ball. Once it
-has been landed for LAND_HOLD the claw closes. dronstein.py runs it as a mode (F key, armed only). Each step is a
+"""Autonomy: picks up a random tennis ball in Lucky (pick_up), flies it to the bin and lets it go (to_bin), then returns
+home (RTL). It sets the position setpoints (navigation.py): onto the ball, over the bin. Once it has been landed for
+LAND_HOLD the claw closes. dronstein.py runs it as a mode (F key, armed only). Each step is a
 generator: it ticks once per frame, so the steps read straight through."""
 import math
 import random
 import time
 
 from navigation import navigate
-from state import LOITER
+from state import LOITER, RTL
 
-TAKEOFF_ALT = 2.0   # m, before it flies to the ball
+TAKEOFF_ALT = 1.0   # m, before it flies to the ball, and to the bin with it
 CLAW_BACK = 0.1015  # m: the claw is this far behind the drone's centre (CLAW_POS in tools/x500v2/build_x500v2.py)
+CLOSE_TIME = 1.0   # s: the claw has been closed this long before it takes off, so it holds the ball
+SETTLE_TIME = 1.0  # s: over the bin and still this long before the claw opens, so the ball drops and isn't thrown
+DROP_TIME = 1.0    # s: the claw has been open this long before it returns home, so the ball has fallen
 LAND_HOLD = 0.2     # s: landed this long, in a row, before the claw closes
 
 
@@ -56,3 +60,27 @@ def pick_up(state):
     yield from command(state, "gripper", 1)
     yield from until(state, lambda: state.gripper)
     state.setpoint = None
+
+
+def to_bin(state):
+    """After pick_up: takes off with the ball, flies over the bin, opens the claw, then returns home (RTL) and lands."""
+    yield from held(lambda: state.gripper, CLOSE_TIME)
+    yield from command(state, "mode", LOITER)
+    if state.landed:
+        yield from command(state, "takeoff", TAKEOFF_ALT)
+        yield from until(state, lambda: -state.pos[2] > TAKEOFF_ALT - 0.2)
+    yaw = state.att[2]
+    bin = state.bin  # the bin can be pushed: read where it is now
+    n, e = bin[0] + CLAW_BACK * math.cos(yaw), bin[1] + CLAW_BACK * math.sin(yaw)
+    navigate(state, n, e, state.pos[2], yaw)
+    yield from held(lambda: math.hypot(state.pos[0] - n, state.pos[1] - e) < 0.1 and math.hypot(*state.vel) < 0.1, SETTLE_TIME)
+    yield from command(state, "gripper", 0)
+    yield from held(lambda: not state.gripper, DROP_TIME)
+    state.setpoint = None
+    yield from command(state, "mode", RTL)
+    yield from until(state, lambda: not state.armed)  # RTL lands and disarms
+
+
+def mission(state):
+    yield from pick_up(state)
+    yield from to_bin(state)

@@ -30,6 +30,7 @@ class State:
     gripper: bool = False         # grabbed (closed)
     ack: int = 0                  # the seq of the last command the FC has taken
     balls: list = field(default_factory=list)  # the tennis balls' [north, east] m, from Lucky's sim
+    bin: list = field(default_factory=lambda: [0.0, 0.0])  # the bin's [north, east] m, from Lucky's sim
     pickups: int = 0              # F presses in Lucky, counted by the sim (it starts again with each Play)
     # To the FC: the position setpoint, [north, east, down] m and the heading [rad, from north], or None to hold still.
     setpoint: list | None = None

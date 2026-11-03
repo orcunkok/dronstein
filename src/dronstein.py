@@ -13,7 +13,7 @@ import termios
 import time
 import tty
 
-from autonomy import pick_up
+from autonomy import mission
 from gamepad import Gamepad
 from state import MODE_NAMES, State
 
@@ -40,7 +40,7 @@ def main():
     else:
         from link.luckyLink import LuckyLink as Link
     link, pad, state = Link(), Gamepad(), State()
-    auto = None  # pick_up's steps while F has the autonomy on, else None
+    auto = None  # mission's steps while F has the autonomy on, else None
     seen = 0     # Lucky's F count last time; it starts again with each Play, so only a rise is a press
     saved = termios.tcgetattr(sys.stdin)
     tty.setcbreak(sys.stdin)  # one key at a time, no echo; Ctrl+C still stops
@@ -50,7 +50,7 @@ def main():
             pressed = state.pickups > seen
             seen = state.pickups
             if (typed or pressed) and (auto is not None or state.armed):  # F starts the pick-up only when armed
-                auto = None if auto else pick_up(state)
+                auto = None if auto else mission(state)
             if auto is not None:
                 state.rc = [1500] * 4  # autonomy flies by setpoints: the sticks rest
                 try:

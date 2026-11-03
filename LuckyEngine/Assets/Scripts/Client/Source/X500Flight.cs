@@ -75,12 +75,13 @@ namespace Dronstein
 		readonly float[] m_RatD = { 0.004905871f, 0.005201788f, 0.02224096f };
 		// Altitude hold (PSC_D_*, PILOT_*) and loiter / RTL (LOIT_*, PSC_NE_*, RTL_*, LAND_SPEED).
 		float m_PosZP = 1f, m_VelZP = 5f, m_SpdUp = 2.5f, m_SpdDn = 2.5f, m_AccZ = 2.5f, m_YawRateMax = 90f * Deg;
-		float m_LoitSpeed = 5f, m_LoitAcc = 2.5f, m_PosXyP = 1f, m_VelXyP = 2f, m_RtlAlt = 3f, m_RtlSpeed = 5f, m_LandSpeed = 0.5f;
+		float m_LoitSpeed = 5f, m_LoitAcc = 2.5f, m_PosXyP = 1f, m_VelXyP = 2f, m_RtlAlt = 1f, m_RtlSpeed = 5f, m_LandSpeed = 0.5f;
 		float m_TkoffAlt;  // the takeoff command's height
 
 		GcsLink m_Gcs = null!;
 		Claw? m_Claw;  // the gripper, driven by the GCS's gripper command
 		readonly float[] m_Pos = new float[3], m_Vel = new float[3], m_Att = new float[3];  // NED and roll, pitch, yaw, to the GCS
+		uint m_BinBody;  // the TrashCan's MuJoCo body, found in OnCreate; SendState reports it
 		uint[] m_BallBodies = Array.Empty<uint>();  // the tennis balls' MuJoCo bodies (TennisBall_*), found in OnCreate; SendState reports them
 		const string DebugBall = "TennisBall_01";  // the helipad's ball, for debugging: not a pick-up ball (delete it with the debug)
 
@@ -156,6 +157,7 @@ namespace Dronstein
 				if (name.StartsWith("TennisBall_", StringComparison.Ordinal) && name != DebugBall) balls.Add(i);
 			}
 			m_BallBodies = balls.ToArray();
+			m_BinBody = m_Mj.GetBodyID("TrashCan");
 			for (int k = 0; k < 6; k++)
 			{
 				m_Wrench[k] = m_Mj.GetActuator(WrenchNames[k])!;
@@ -473,7 +475,8 @@ namespace Dronstein
 				m_Mj.GetBodyPoseMj(m_BallBodies[i], out Vector3 p, out _, out _, out _);
 				balls[i] = new[] { p.X, -p.Y };  // MuJoCo x = north, -y = east
 			}
-			m_Gcs.Send(Armed, Mode, Landed, m_Pos, m_Vel, m_Att, m_Claw?.Closed ?? false, balls, m_PickUps);
+			m_Mj.GetBodyPoseMj(m_BinBody, out Vector3 b, out _, out _, out _);
+			m_Gcs.Send(Armed, Mode, Landed, m_Pos, m_Vel, m_Att, m_Claw?.Closed ?? false, balls, new[] { b.X, -b.Y }, m_PickUps);
 		}
 
 		// Quad X mix: thrust fraction per motor, roll and pitch first (throttle shifted to fit them), then yaw in whatever

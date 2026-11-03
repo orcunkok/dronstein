@@ -76,10 +76,10 @@ namespace Dronstein
 			return (m_Cmd, m_Value);
 		}
 
-		/// The FC's state to the GCS (NED, metres, radians), with the last command's seq, and the balls' [north, east].
-		public void Send(bool armed, int mode, bool landed, float[] pos, float[] vel, float[] att, bool gripperClosed, float[][] balls, int pickups)
+		/// The FC's state to the GCS (NED, metres, radians), with the last command's seq, and the balls' and the bin's [north, east].
+		public void Send(bool armed, int mode, bool landed, float[] pos, float[] vel, float[] att, bool gripperClosed, float[][] balls, float[] bin, int pickups)
 		{
-			var state = new { armed, mode, landed, pos, vel, att, gripper = gripperClosed, ack = m_Seq, balls, pickups };
+			var state = new { armed, mode, landed, pos, vel, att, gripper = gripperClosed, ack = m_Seq, balls, bin, pickups };
 			byte[] line = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(state));
 			try { m_Udp.Send(line, line.Length, m_Gcs); }
 			catch (SocketException) { }  // nobody listening yet: fine, keep sending
