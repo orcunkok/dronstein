@@ -6,8 +6,9 @@ Run with the editor open (Edit mode):
 Writes into <out> four graphs (and the kit assets they use, under <out>/assets):
 - office_shell.hpodgraph: floor, tilt-up walls, gable roof, trusses, purlins, skylights, clerestory windows, the
   black stage curtain on its track, roll-up and exit doors, conduit, panels, heaters, fans, LED high-bays.
-- office_block.hpodgraph: the office box with the mezzanine on top, the open room under the mezzanine (partition,
-  French doors, transoms, blue sofa, pendants), railings, the spiral stair and the grey U stair.
+- office_block.hpodgraph: the restroom box (lower deck) and the mezzanine (upper deck), the alley between them, the
+  room under the mezzanine (partition, French doors, transoms, blue sofa, pendants), railings, the two spiral stairs and
+  the grey U stair.
 - office_kitchen.hpodgraph: the kitchen run on the east wall (two fridges, range, microwave, dishwasher, sink,
   shaker cabinets, pantry, gooseneck lamps).
 - office_desks.hpodgraph: the north-west corner (yellow sofa on the west wall, a small desk, the desk row along the
@@ -57,8 +58,8 @@ CURTAIN_Z = P["curtain"]["z"]
 CURTAIN_X = (P["curtain"]["x0"], P["curtain"]["x1"])
 CURTAIN_TOP = P["curtain"]["top"]
 
-# Office block and mezzanine at the south end, two tiers: the box's roof is the lower deck, the mezzanine west of it
-# the upper deck.
+# Restroom box and mezzanine at the south end, two tiers: the box's roof is the lower deck, the mezzanine west of it
+# (and over the alley south of it) the upper deck.
 BOX = (P["box"]["x0"], P["box"]["x1"], P["box"]["z0"], P["box"]["z1"])
 BOX_DECK = P["box"]["deck"]
 MEZZ = (P["mezzanine"]["front_x"], X1, P["mezzanine"]["z0"], P["mezzanine"]["z1"])
@@ -485,23 +486,17 @@ def u_stair(g):
 def build_block(g):
     bx0, bx1, bz0, bz1 = BOX
     mx0, mx1, mz0, mz1 = MEZZ
-    B, M, Q = P["box"], P["mezzanine"], P["partition"]
-    # The office box; its flat roof is the lower deck, with the tall box and the mid box standing on it.
+    B, M, Q, S, T = P["box"], P["mezzanine"], P["partition"], P["spiral"], P["spiral_upper"]
+    # The restroom box; its flat roof is the lower deck, with the tall box and the mid box standing on it.
     g.span("paint_white", bx0, bx1, 0.0, BOX_DECK - 0.15, bz0, bz1)
     g.span("deck_fascia", bx0 - 0.02, bx1, BOX_DECK - 0.15, BOX_DECK, bz0 - 0.02, bz1)
     for x0, x1, z0, z1, top in (B["tall_box"], B["mid_box"]):
         g.span("paint_white", x0, x1, BOX_DECK, top, z0, z1)
-    # North face, against the kitchen pantry: two doors, the MEN sign on the first. West face, facing the hall: a door
-    # with the first-aid box beside it.
-    for zc in B["north_doors_z"]:
-        if zc != B["open_door_z"]:
-            g.span("paint_white", bx0 - 0.03, bx0, 0.0, 2.13, zc - 0.455, zc + 0.455)
-            g.span("nickel", bx0 - 0.09, bx0 - 0.03, 1.0, 1.03, zc + 0.25, zc + 0.4)
-        g.span("steel_white", bx0 - 0.02, bx0, 2.13, 2.18, zc - 0.5, zc + 0.5)
-    oz = B["open_door_z"]
-    g.span("backsplash", bx0 - 0.01, bx0, 0.0, 2.1, oz - 0.44, oz + 0.44)
-    g.span("paint_white", bx0 - 0.9, bx0, 0.0, 2.13, oz + 0.42, oz + 0.46)
-    zc = B["north_doors_z"][0]
+    # North face, facing the kitchen: the MEN door. West face, facing the hall: a door with the first-aid box beside it.
+    zc = B["men_door_z"]
+    g.span("paint_white", bx0 - 0.03, bx0, 0.0, 2.13, zc - 0.455, zc + 0.455)
+    g.span("nickel", bx0 - 0.09, bx0 - 0.03, 1.0, 1.03, zc + 0.25, zc + 0.4)
+    g.span("steel_white", bx0 - 0.02, bx0, 2.13, 2.18, zc - 0.5, zc + 0.5)
     g.span("sign_blue", bx0 - 0.04, bx0 - 0.03, 1.45, 1.7, zc - 0.12, zc + 0.12)
     xc = B["west_door_x"]
     g.span("paint_white", xc - 0.455, xc + 0.455, 0.0, 2.13, bz0 - 0.03, bz0)
@@ -511,32 +506,41 @@ def build_block(g):
     g.span("red_cross", xc - 1.17, xc - 1.13, 1.55, 1.7, bz0 - 0.09, bz0 - 0.08)
     g.span("red_cross", xc - 1.22, xc - 1.08, 1.61, 1.64, bz0 - 0.09, bz0 - 0.08)
     g.tube("conduit_red", (bx0 - 0.03, 2.6, bz0), (bx0 - 0.03, 2.6, bz1), 0.01)
-    g.tube("conduit_red", (bx0, 2.6, bz0 - 0.03), (mx0, 2.6, bz0 - 0.03), 0.01)
-    # Black baluster railing round the lower deck's open north and west edges.
+    g.tube("conduit_red", (bx0, 2.6, bz0 - 0.03), (bx1, 2.6, bz0 - 0.03), 0.01)
+    # Black baluster railing round the lower deck's open north and west edges, open where the big spiral arrives; south
+    # of the mezzanine front the upper deck's railing takes over.
     north_end = B["mid_box"][2]
     balusters(g, "steel_dark", (bx0 + 0.03, bz0), (bx0 + 0.03, north_end), BOX_DECK, 1.0, 0.13)
-    balusters(g, "steel_dark", (bx0, bz0 + 0.03), (mx0, bz0 + 0.03), BOX_DECK, 1.0, 0.13)
     g.span("steel_dark", bx0 - 0.01, bx0 + 0.07, BOX_DECK + 1.0, BOX_DECK + 1.05, bz0, north_end)
-    g.span("steel_dark", bx0, mx0, BOX_DECK + 1.0, BOX_DECK + 1.05, bz0 - 0.01, bz0 + 0.07)
+    for x0, x1 in ((bx0, S["x"] - 0.45), (S["x"] + 0.45, mx0)):
+        balusters(g, "steel_dark", (x0, bz0 + 0.03), (x1, bz0 + 0.03), BOX_DECK, 1.0, 0.13)
+        g.span("steel_dark", x0, x1, BOX_DECK + 1.0, BOX_DECK + 1.05, bz0 - 0.01, bz0 + 0.07)
 
-    # Mezzanine (upper deck) on its front beam and two white posts, the cable railing along its front.
+    # Upper deck: west of the box from its front to the south wall, and east of that over the alley and the south rooms
+    # up to the east wall; a front beam on two white posts, cable railing along the edges open to the hall and the box
+    # deck (gap where the small spiral arrives).
     t = M["thickness"]
-    g.span("deck_fascia", mx0, mx1, DECK - 0.3, DECK, mz0, mz1)
-    g.span("paint_white", mx0 + 0.02, mx1, DECK - 0.35, DECK - 0.3, mz0, mz1)
+    for x0, z0, z1 in ((mx0, mz0, mz1), (bx1, mz1, Z1)):
+        g.span("deck_fascia", x0, mx1, DECK - 0.3, DECK, z0, z1)
+        g.span("paint_white", x0 + 0.02, mx1, DECK - 0.35, DECK - 0.3, z0, z1)
     g.span("steel_white", mx0, mx0 + 0.25, DECK - t, DECK - 0.3, mz0, mz1)
-    for z in (mz0 + 0.1, mz1 - 0.15):
+    for z in M["posts_z"]:
         g.span("steel_white", mx0, mx0 + 0.2, 0.0, DECK - t, z - 0.1, z + 0.1)
     cable_rail(g, (mx0 + 0.05, mz0 + 0.05), (mx0 + 0.05, mz1))
+    cable_rail(g, (mx0 + 0.05, mz1), (bx1, mz1))
+    cable_rail(g, (bx1 + 0.05, T["z"] + T["radius"] + 0.1), (bx1 + 0.05, Z1))
     slat_rail(g, (P["u_stair"]["platform_x"][1], DECK, mz0), (mx1, DECK, mz0))
-    # Under it: the front wall with the French doors folded open, transoms and the blue sofa; at its east end it turns
-    # south into an open corridor to the box, with a glazed side door standing open and the box's dark doorway.
+
+    # Under it: the front wall with the French doors folded open, transoms and the blue sofa, the room's west wall (the U
+    # stair flush against it) at its west end; east of the box's west face line it goes on as the alley's south wall,
+    # with a glazed side door near the alley's mouth. The alley ends at a dark doorway in the east wall.
     px, top = PARTITION_X, DECK - t
-    (w0, w1), (d0, d1), (c0, c1) = Q["wall_z"], Q["doors_z"], Q["corridor_z"]
-    ce = Q["corridor_end_x"]
-    g.span("paint_white", px, X1, 0.0, top, mz0, mz0 + 0.12)     # the room's west wall, the U stair flush against it
-    g.span("paint_white", px, px + 0.15, 0.0, top, w0, d0)
-    g.span("paint_white", px, px + 0.15, 0.0, top, d1, w1)
-    g.span("paint_white", px, px + 0.15, 2.21, top, d0, d1)
+    (d0, d1), (sz0, sz1) = Q["doors_z"], Q["side_door_z"]
+    g.span("paint_white", px, X1, 0.0, top, mz0, mz0 + 0.12)
+    for z0, z1 in ((mz0, d0), (d1, sz0), (sz1, Z1)):
+        g.span("paint_white", px, px + 0.15, 0.0, top, z0, z1)
+    for z0, z1 in ((d0, d1), (sz0, sz1)):
+        g.span("paint_white", px, px + 0.15, 2.21, top, z0, z1)
     g.span("paint_white", px + 2.0, px + 2.1, 0.0, top, d0 - 0.5, d1 + 0.5)
     leaf = 0.45
     for z0 in (d0, d1 - leaf):
@@ -553,32 +557,18 @@ def build_block(g):
         g.span("panel_grey", px - 0.03, px, ty1, ty1 + 0.03, zc - w / 2 - 0.03, zc + w / 2 + 0.03)
     g.kit("seating/sofa_v2", (px - 0.5, 0.0, Q["sofa_z"]), turn=-math.pi / 2, material=SOFA_BLUE)
     for z in (Q["sofa_z"], (d0 + d1) / 2):
-        g.kit("lighting/pendant_lamp_v2", (mx0 + 0.9, top - 2.4, z))
-    # The corridor's west wall, with the side door (its leaf swung into the corridor) and two transoms over it.
-    (sx0, sx1), (tx0, tx1) = Q["side_door_x"], Q["side_transoms_x"]
-    g.span("paint_white", px, sx0, 0.0, top, c0 - 0.15, c0)
-    g.span("paint_white", sx1, ce, 0.0, top, c0 - 0.15, c0)
-    g.span("paint_white", sx0, sx1, 2.21, top, c0 - 0.15, c0)
-    g.span("glass_light", sx0 + 0.05, sx1 - 0.05, 0.1, 2.05, c0 - 0.08, c0 - 0.07)
-    for x0 in (sx0, sx1 - 0.06):
-        g.span("wood_door", x0, x0 + 0.06, 0.0, 2.21, c0 - 0.17, c0 + 0.02)
-    g.span("wood_door", sx0, sx1, 2.13, 2.21, c0 - 0.17, c0 + 0.02)
-    g.span("wood_door", sx1 - 0.05, sx1, 0.0, 2.05, c0, c0 + (sx1 - sx0) - 0.1)
-    tw = (tx1 - tx0 - 0.1) / 2
-    for x0 in (tx0, tx0 + tw + 0.1):
-        g.span("glass_teal", x0, x0 + tw, ty0, ty1, c0 + 0.0, c0 + 0.01)
-        g.span("panel_grey", x0 - 0.03, x0 + tw + 0.03, ty0 - 0.03, ty0, c0, c0 + 0.03)
-    g.span("backsplash", ce, ce + 0.05, 0.0, top, c0, c1)
-    # The box's dark doorway inside the corridor, open.
-    (dx0, dx1) = Q["dark_door_x"]
-    g.span("backsplash", dx0, dx1, 0.0, 2.13, bz0 - 0.01, bz0)
-    g.span("steel_white", dx0 - 0.05, dx1 + 0.05, 2.13, 2.19, bz0 - 0.02, bz0)
+        g.kit("lighting/pendant_lamp_v2", (px - 0.8, top - 2.4, z))
+    g.span("glass_light", px + 0.07, px + 0.08, 0.1, 2.05, sz0 + 0.05, sz1 - 0.05)
+    for z0 in (sz0, sz1 - 0.06):
+        g.span("wood_door", px - 0.02, px + 0.17, 0.0, 2.21, z0, z0 + 0.06)
+    g.span("wood_door", px - 0.02, px + 0.17, 2.13, 2.21, sz0, sz1)
+    g.span("backsplash", bx1 + 0.3, px - 0.3, 0.0, 2.13, Z1 - 0.01, Z1)
     u_stair(g)
 
-    # Spiral stairs: floor -> lower deck just west of the box, lower deck -> mezzanine on the box's roof.
-    S, T = P["spiral"], P["spiral_upper"]
+    # Spiral stairs: floor -> lower deck just west of the box (top tread east onto the deck), lower deck -> upper deck
+    # by the box deck's south-west corner (top tread south onto the upper deck).
     spiral(g, S["x"], S["z"], S["radius"], 0.0, BOX_DECK, S["treads"], -math.pi / 2)
-    spiral(g, T["x"], T["z"], T["radius"], BOX_DECK, DECK, T["treads"], math.pi / 2)
+    spiral(g, T["x"], T["z"], T["radius"], BOX_DECK, DECK, T["treads"], 0.0)
 
 
 # ---------------------------------------------------------------- kitchen

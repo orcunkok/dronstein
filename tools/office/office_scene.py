@@ -6,7 +6,7 @@ Run with the editor open (Edit mode, scene Main):
 Creates at the root of the scene, or moves if they already exist (found by name):
 - OfficeLight_*: point lights under the LED high-bays (the roof blocks the sun); OfficeFill_*: one fill per bay.
 - OfficeCollider_*: static MujocoBoxCollider entities (size = Transform Scale) for the walls, the ceiling under the
-  trusses, the curtain, the office block, the mezzanine, the spiral and U stairs, the kitchen run, the sofa and the desks,
+  trusses, the curtain, the restroom box, the mezzanine, the spiral and U stairs, the kitchen run, the sofa and the desks,
   so the drone can't fly through them.
 Resizes Ground (the floor collider) to the office floor and removes the old outdoor floor visuals (GroundSurface,
 GroundSlab). Positions are scene coordinates: the graphs' plan mirrored in x (north wall at x = +15).
@@ -47,10 +47,9 @@ COLLIDERS = {
     "UpperBox": span(*P["box"]["tall_box"][:2], BOX_DECK, P["box"]["tall_box"][4], *P["box"]["tall_box"][2:4]),
     "MidBox": span(*P["box"]["mid_box"][:2], BOX_DECK, P["box"]["mid_box"][4], *P["box"]["mid_box"][2:4]),
     "Mezzanine": span(MEZZ[0], MEZZ[1], DECK - P["mezzanine"]["thickness"], DECK + 1.07, MEZZ[2], MEZZ[3]),
-    "Partition": span(PARTITION_X, PARTITION_X + 0.15, 0, DECK - P["mezzanine"]["thickness"], *P["partition"]["wall_z"]),
+    "MezzanineEast": span(BOX[1], X1, DECK - P["mezzanine"]["thickness"], DECK + 1.07, MEZZ[3], Z1),
+    "Partition": span(PARTITION_X, PARTITION_X + 0.15, 0, DECK - P["mezzanine"]["thickness"], MEZZ[2], Z1),
     "RoomWall": span(PARTITION_X, X1, 0, DECK - P["mezzanine"]["thickness"], MEZZ[2], MEZZ[2] + 0.12),
-    "CorridorWall": span(PARTITION_X, P["partition"]["corridor_end_x"], 0, DECK - P["mezzanine"]["thickness"],
-                         P["partition"]["corridor_z"][0] - 0.15, P["partition"]["corridor_z"][0]),
     "Spiral": span(P["spiral"]["x"] - 0.8, P["spiral"]["x"] + 0.8, 0, BOX_DECK + 1.0,
                    P["spiral"]["z"] - 0.8, P["spiral"]["z"] + 0.8),
     "SpiralUpper": span(P["spiral_upper"]["x"] - 0.65, P["spiral_upper"]["x"] + 0.65, BOX_DECK, DECK + 1.0,

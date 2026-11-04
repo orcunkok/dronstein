@@ -54,62 +54,59 @@ window_y = [3.3, 6.6]
 strip_y = [2.8, 3.3]      # strip of small panes under it: IMG_3077, med
 strip_z = [-8.85, -5.05]
 
-# ---- south end: two tiers. The office box (lower tier) sticks out north of the mezzanine (upper tier).
+# ---- south end: two tiers. The office box (lower tier) stands against the east wall; an alley runs east along its
+# south face; the rooms under the mezzanine (upper tier) are south of the alley and west of the box.
+# New photo set lucky_office/mezazine (IMG_3087-3094), see lucky_office/CATALOGUE.md and questions.md.
 
-[box]                 # the closed office box; its flat roof is the lower deck (black baluster railing)
-x0 = 4.5              # north face, against the kitchen pantry: IMG_3067 (west face ~5.5 m to the mezzanine), low
-x1 = 15.0             # runs to the south wall, med
-z0 = 2.4              # west face, facing the hall: 4.6 m wide, IMG_3071/3077, med
+[box]                 # the closed restroom box; its flat roof is the lower deck (black baluster railing)
+x0 = 5.15             # north face, ~0.7 m south of the kitchen pantry's end: IMG_3094, med
+x1 = 10.9             # south face = the alley's north wall; west face 5.75 m long: IMG_3092/3087/3072, med
+z0 = 2.6              # west face, facing the hall: 4.4 m wide, IMG_3071 (MEN door scale), med
 z1 = 7.0              # against the east (kitchen) wall, med
 deck = 3.05           # lower deck top: IMG_3071 MEN door 2.13 m -> 3.09, IMG_3067 -> 3.10, high
-north_doors_z = [4.6, 6.4]   # MEN door (IMG_3071, med) and the door by the pantry (IMG_3055/3056, low)
-open_door_z = 6.4     # the door by the pantry stands open (IMG_3055/3056)
-west_door_x = 7.6     # door beside the first-aid box, on the west face: IMG_3067/3072, low
-tall_box = [5.8, 8.4, 3.0, 7.0, 7.0]   # on the deck, up to the roof: x0, x1, z0, z1, top: IMG_3071/3056, low
-mid_box = [4.6, 5.8, 4.5, 7.0, 5.4]    # lower block in front of it: IMG_3056/3071, low
+men_door_z = 4.15     # the one door on the north face (MEN): IMG_3071/3094, med
+west_door_x = 8.25    # first-aid door on the west face, first-aid box north of it: IMG_3092 (straight on), med
+tall_box = [6.45, 9.05, 3.0, 7.0, 7.0]  # on the deck, up to the roof: x0, x1, z0, z1, top: IMG_3071/3087, low
+mid_box = [5.25, 6.45, 4.5, 7.0, 5.4]   # lower block in front of it: IMG_3071/3087, low
 
-[mezzanine]           # upper tier with the cable railing, west of the box
-front_x = 9.9         # front edge: IMG_3058/3070, about 5 m south of the box's north face, low
-z0 = -4.4             # west end, white post; the room under it has a wall here the U stair sits flush against:
-                      # stair flights side by side (no well) from the 0.9 m door gap, front wall 5.6 m (IMG_3070 5.3 m), med
-z1 = 2.4              # meets the box's west face, med
+[mezzanine]           # upper tier with the cable railing: west of the box and over the alley and the south rooms
+front_x = 9.6         # front edge: ~1.3 m north of the alley, IMG_3092/3091, med-low
+z0 = -3.0             # west end = the room's west wall, the U stair flush against it: IMG_3070/3077/3089, med
+z1 = 2.6              # the box's west face line; east of it the deck runs from the alley (box x1) to the east wall
 deck = 3.85           # upper deck top: 22 risers of 0.175 m and the partition height, med-low
 thickness = 0.5       # grey fascia and white beam: IMG_3069/3070, med
+posts_z = [1.15, -2.7] # white posts at the front, ~4 m apart: the east one by the big spiral, IMG_3070, med
 
-[partition]           # under the mezzanine: a front wall with French doors and transoms, then a corridor to the box
-x = 12.1              # front wall, 2.2 m behind the mezzanine front: IMG_3058/3070, med
-wall_z = [-4.4, 1.2]  # front wall, 5.6 m (IMG_3070 5.3 m, IMG_3077 4.3 m), med
-doors_z = [-0.9, 0.5]           # French doors, 1.4 m frame, 0.7 m from the corridor end, folded open: IMG_3077/3070, med
-transoms_z = [0.75, -0.4, -1.8, -3.2]     # spread along the wall: IMG_3077, med
-transom_w = [0.45, 0.9, 0.9, 0.9]
-transom_y = [2.5, 3.0]          # IMG_3070, med
-sofa_z = -3.3                   # blue sofa against the front wall at its west end, by the post: IMG_3077/3070, med
-corridor_z = [1.2, 2.4]         # open corridor south between the front wall's turn and the box: IMG_3066/3068, med
-corridor_end_x = 14.6           # it runs back to the south rooms (dark), low
-side_door_x = [12.8, 13.6]      # single glazed wood door, open, in the corridor's west wall: IMG_3066/3068, med
-side_transoms_x = [12.5, 13.9]  # two small transoms above it: IMG_3066/3068, med
-dark_door_x = [10.9, 11.8]      # open dark doorway in the box's west face, inside the corridor: IMG_3068, low
+[partition]           # under the mezzanine: the front wall with French doors and transoms, continued east as the alley's south wall
+x = 12.4              # front wall, 2.8 m behind the mezzanine front: IMG_3070 floor line, med-low
+doors_z = [0.05, 1.55]          # French doors, 1.5 m frame, folded open: IMG_3069/3070/3077, med
+transoms_z = [2.05, 0.9, -0.27, -1.43]    # four 0.96 m transoms: IMG_3069/3070, med
+transom_w = [0.96, 0.96, 0.96, 0.96]
+transom_y = [2.5, 3.1]          # IMG_3070, med
+sofa_z = -1.9                   # blue sofa against the front wall at its west end, by the west post: IMG_3070/3089, med
+side_door_z = [2.9, 3.8]        # single glazed wood door in the alley's south wall, near its mouth: IMG_3091/3068, low
+                                # the alley ends with a dark doorway in the east wall: IMG_3092, low
 
-[spiral]              # floor -> box deck, just west of the box at the mezzanine's front corner
-x = 9.1               # at the mezzanine's east front corner, in front of the corridor: IMG_3068/3072, med
-z = 1.6
-radius = 0.8
+[spiral]              # floor -> box deck, west of the box's west face, north of the mezzanine's east post
+x = 9.0               # IMG_3070/3089/3092, med
+z = 1.65
+radius = 0.75
 treads = 16
 
-[spiral_upper]        # small spiral on the box deck -> mezzanine
-x = 10.6              # IMG_3068/3071, exists: high; position low (must stand over the mezzanine, x >= front_x)
-z = 3.0
+[spiral_upper]        # small spiral on the box deck by its south-west corner -> the upper deck south of it
+x = 10.15             # IMG_3087/3071, position low
+z = 3.35
 radius = 0.65
 treads = 5
 
 [u_stair]             # grey dog-leg stair west of the mezzanine; risers of deck / (2 * risers)
-width = 1.1           # stair 3.6 m across: IMG_3077, med
+width = 1.1           # per flight
 risers = 11           # per flight: IMG_3066 count, med
-platform_x = [9.9, 10.9]   # top platform at the mezzanine front, z = upper flight's: IMG_3058/3066, med-low
-upper_z = [-5.5, -4.4]     # upper flight runs south from the platform down to the landing
+platform_x = [9.6, 10.6]   # top platform at the mezzanine front, z = upper flight's: IMG_3070/3089, med-low
+upper_z = [-4.1, -3.0]     # upper flight runs south from the platform down to the landing, flush with the room's west wall
 landing_x = [13.8, 15.0]   # landing against the south wall, half the deck height: IMG_3070, med
-landing_z = [-6.7, -4.4]
-lower_z = [-6.7, -5.6]     # right beside the upper flight (no well), 0.9 m east of the exit door     # lower flight runs back north down to the floor at x = landing_x0 - its length
+landing_z = [-5.2, -3.0]
+lower_z = [-5.2, -4.1]     # right beside the upper flight (no well); both flights run N-S (IMG_3089)
 
 # ---- north-west corner (desk bay), as in the newer photos IMG_3074/3075/3077
 
