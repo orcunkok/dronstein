@@ -9,7 +9,7 @@ Writes into <out> four graphs (and the kit assets they use, under <out>/assets):
 - office_block.hpodgraph: the office box with the mezzanine on top, the open room under the mezzanine (partition,
   French doors, transoms, blue sofa, pendants), railings, the spiral stair and the grey U stair.
 - office_kitchen.hpodgraph: the kitchen run on the east wall (two fridges, range, microwave, dishwasher, sink,
-  shaker cabinets, pantry, gooseneck lamps, clock).
+  shaker cabinets, pantry, gooseneck lamps).
 - office_desks.hpodgraph: the north-west corner (yellow sofa on the west wall, a small desk, the desk row along the
   north wall, the striped rug) and the west wall (a desk by the south-west corner, the grey cases, the robot dogs,
   boxes).
@@ -660,12 +660,11 @@ def build_kitchen(g):
             shaker_door(g, a, a + 0.45, y0, y1, zf)
     g.span("nickel", pa + 0.4, pa + 0.412, 0.9, 1.3, zf - 0.06, zf - 0.03)
     g.span("nickel", pa + 0.488, pa + 0.5, 0.9, 1.3, zf - 0.06, zf - 0.03)
-    # Gooseneck barn lamps and the clock above the run.
+    # Gooseneck barn lamps above the run.
     for lx in (x + 0.7, x + 3.1, x + 5.5):
         g.tube("steel_dark", (lx, 2.95, Z1), (lx, 3.05, Z1 - 0.35), 0.012)
         g.tube("steel_dark", (lx, 3.05, Z1 - 0.35), (lx, 2.92, Z1 - 0.5), 0.012)
         g.tube("steel_dark", (lx, 2.84, Z1 - 0.5), (lx, 2.92, Z1 - 0.5), 0.17)
-    g.kit("wall_decorations/wall_clock", (x + 3.6, 2.75, Z1 - 0.03), turn=math.pi)
 
 
 # ---------------------------------------------------------------- desk bay
