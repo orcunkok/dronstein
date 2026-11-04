@@ -1,0 +1,181 @@
+# Sprint 171 W72 / Section 4.1a of S171_INFINIGEN_100_PERCENT_PLAN.md.
+# Oven v2 — calibration recipe applied to oven. Existing oven.yaml
+# is body + glass door + control strip (3 cubes, 67 lines). v2 adds:
+#
+#   * 4 burner discs on top (mirror-axis once + Z translate).
+#   * Door handle bar (horizontal).
+#   * Bottom kick plate.
+#   * Status display window in the control strip (small cube).
+
+parameters:
+  width:    { kind: Float, default: 0.60 }
+  depth:    { kind: Float, default: 0.55 }
+  height:   { kind: Float, default: 0.65 }
+
+  steel:    { kind: Material, expr: "0.62, 0.62, 0.66, 1.0, 0.85, 0.30" }
+  glass:    { kind: Material, expr: "0.16, 0.18, 0.22, 0.7, 0.0, 0.10" }
+  control:  { kind: Material, expr: "0.20, 0.22, 0.26, 1.0, 0.0, 0.55" }
+  burner:   { kind: Material, expr: "0.08, 0.08, 0.08, 1.0, 0.0, 0.95" }
+  display:  { kind: Material, expr: "0.10, 0.40, 0.10, 1.0, 0.30, 0.30" }
+
+nodes:
+  - id: 1
+    type: MeshCube
+    inputs: { SizeX: { param: width }, SizeY: { param: height }, SizeZ: { param: depth } }
+  - id: 2
+    type: Transform
+    inputs: { Translation: { kind: Float3, value: [0.0, 0.325, 0.0] } }
+  - id: 3
+    type: SetMaterial
+    inputs: { Material: { param: steel } }
+
+  - id: 10
+    type: MeshCube
+    inputs: { SizeX: { kind: Float, value: 0.50 }, SizeY: { kind: Float, value: 0.40 }, SizeZ: { kind: Float, value: 0.012 } }
+  - id: 11
+    type: Transform
+    inputs: { Translation: { kind: Float3, value: [0.0, 0.260, 0.281] } }
+  - id: 12
+    type: SetMaterial
+    inputs: { Material: { param: glass } }
+
+  - id: 20
+    type: MeshCube
+    inputs: { SizeX: { kind: Float, value: 0.55 }, SizeY: { kind: Float, value: 0.06 }, SizeZ: { kind: Float, value: 0.10 } }
+  - id: 21
+    type: Transform
+    inputs: { Translation: { kind: Float3, value: [0.0, 0.620, 0.225] } }
+  - id: 22
+    type: SetMaterial
+    inputs: { Material: { param: control } }
+
+  # ── 4 burner discs on top ──
+  - id: 30
+    type: MeshCylinder
+    inputs:
+      Radius: { kind: Float, value: 0.085 }
+      Height: { kind: Float, value: 0.010 }
+      Sides:  { kind: Int32, value: 24 }
+  - id: 31
+    type: Transform
+    inputs: { Translation: { kind: Float3, value: [-0.15, 0.655, -0.12] } }
+  - id: 32
+    type: MeshCylinder
+    inputs:
+      Radius: { kind: Float, value: 0.085 }
+      Height: { kind: Float, value: 0.010 }
+      Sides:  { kind: Int32, value: 24 }
+  - id: 33
+    type: Transform
+    inputs: { Translation: { kind: Float3, value: [ 0.15, 0.655, -0.12] } }
+  - id: 34
+    type: MeshCylinder
+    inputs:
+      Radius: { kind: Float, value: 0.085 }
+      Height: { kind: Float, value: 0.010 }
+      Sides:  { kind: Int32, value: 24 }
+  - id: 35
+    type: Transform
+    inputs: { Translation: { kind: Float3, value: [-0.15, 0.655, 0.08] } }
+  - id: 36
+    type: MeshCylinder
+    inputs:
+      Radius: { kind: Float, value: 0.085 }
+      Height: { kind: Float, value: 0.010 }
+      Sides:  { kind: Int32, value: 24 }
+  - id: 37
+    type: Transform
+    inputs: { Translation: { kind: Float3, value: [ 0.15, 0.655, 0.08] } }
+  - id: 38
+    type: SetMaterial
+    inputs: { Material: { param: burner } }
+
+  # ── Horizontal door handle ──
+  - id: 40
+    type: MeshCube
+    inputs: { SizeX: { kind: Float, value: 0.40 }, SizeY: { kind: Float, value: 0.020 }, SizeZ: { kind: Float, value: 0.025 } }
+  - id: 41
+    type: Transform
+    inputs: { Translation: { kind: Float3, value: [0.0, 0.480, 0.300] } }
+
+  # ── Kick plate ──
+  - id: 50
+    type: MeshCube
+    inputs: { SizeX: { param: width }, SizeY: { kind: Float, value: 0.06 }, SizeZ: { kind: Float, value: 0.020 } }
+  - id: 51
+    type: Transform
+    inputs: { Translation: { kind: Float3, value: [0.0, 0.030, 0.270] } }
+
+  # ── Display window in the control strip ──
+  - id: 60
+    type: MeshCube
+    inputs: { SizeX: { kind: Float, value: 0.10 }, SizeY: { kind: Float, value: 0.025 }, SizeZ: { kind: Float, value: 0.005 } }
+  - id: 61
+    type: Transform
+    inputs: { Translation: { kind: Float3, value: [-0.18, 0.620, 0.276] } }
+  - id: 62
+    type: SetMaterial
+    inputs: { Material: { param: display } }
+
+  # ── Compose ──
+  - id: 70
+    type: JoinGeometry
+  - id: 71
+    type: JoinGeometry
+  - id: 72
+    type: JoinGeometry
+  - id: 73
+    type: JoinGeometry
+  - id: 74
+    type: JoinGeometry
+  - id: 75
+    type: JoinGeometry
+  - id: 76
+    type: JoinGeometry
+  - id: 77
+    type: JoinGeometry
+  - id: 78
+    type: JoinGeometry
+
+  - id: 99
+    type: Viewer
+
+links:
+  - { from: { node: 1, pin: Geometry }, to: { node: 2, pin: Geometry } }
+  - { from: { node: 2, pin: Geometry }, to: { node: 3, pin: Geometry } }
+  - { from: { node: 10, pin: Geometry }, to: { node: 11, pin: Geometry } }
+  - { from: { node: 11, pin: Geometry }, to: { node: 12, pin: Geometry } }
+  - { from: { node: 20, pin: Geometry }, to: { node: 21, pin: Geometry } }
+  - { from: { node: 21, pin: Geometry }, to: { node: 22, pin: Geometry } }
+  - { from: { node: 30, pin: Geometry }, to: { node: 31, pin: Geometry } }
+  - { from: { node: 32, pin: Geometry }, to: { node: 33, pin: Geometry } }
+  - { from: { node: 34, pin: Geometry }, to: { node: 35, pin: Geometry } }
+  - { from: { node: 36, pin: Geometry }, to: { node: 37, pin: Geometry } }
+  - { from: { node: 40, pin: Geometry }, to: { node: 41, pin: Geometry } }
+  - { from: { node: 50, pin: Geometry }, to: { node: 51, pin: Geometry } }
+  - { from: { node: 60, pin: Geometry }, to: { node: 61, pin: Geometry } }
+  - { from: { node: 61, pin: Geometry }, to: { node: 62, pin: Geometry } }
+
+  - { from: { node: 3,  pin: Geometry }, to: { node: 70, pin: A } }
+  - { from: { node: 12, pin: Geometry }, to: { node: 70, pin: B } }
+  - { from: { node: 70, pin: Geometry }, to: { node: 71, pin: A } }
+  - { from: { node: 22, pin: Geometry }, to: { node: 71, pin: B } }
+  - { from: { node: 71, pin: Geometry }, to: { node: 72, pin: A } }
+  - { from: { node: 31, pin: Geometry }, to: { node: 72, pin: B } }
+  - { from: { node: 72, pin: Geometry }, to: { node: 73, pin: A } }
+  - { from: { node: 33, pin: Geometry }, to: { node: 73, pin: B } }
+  - { from: { node: 73, pin: Geometry }, to: { node: 74, pin: A } }
+  - { from: { node: 35, pin: Geometry }, to: { node: 74, pin: B } }
+  - { from: { node: 74, pin: Geometry }, to: { node: 75, pin: A } }
+  - { from: { node: 37, pin: Geometry }, to: { node: 75, pin: B } }
+  - { from: { node: 75, pin: Geometry }, to: { node: 38, pin: Geometry } }
+  - { from: { node: 38, pin: Geometry }, to: { node: 76, pin: A } }
+  - { from: { node: 41, pin: Geometry }, to: { node: 76, pin: B } }
+  - { from: { node: 76, pin: Geometry }, to: { node: 77, pin: A } }
+  - { from: { node: 51, pin: Geometry }, to: { node: 77, pin: B } }
+  - { from: { node: 77, pin: Geometry }, to: { node: 78, pin: A } }
+  - { from: { node: 62, pin: Geometry }, to: { node: 78, pin: B } }
+  - { from: { node: 78, pin: Geometry }, to: { node: 99, pin: Geometry } }
+
+outputs:
+  Geometry: { node: 78, pin: Geometry }

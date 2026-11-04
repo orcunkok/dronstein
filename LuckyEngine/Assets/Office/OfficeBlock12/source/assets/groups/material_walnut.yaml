@@ -1,0 +1,80 @@
+# Sprint 176 / Plan A — walnut shader graph.
+#
+# Auto-migrated from the pre-Sprint-176 ProceduralMaterial flat-PBR
+# pattern via scripts/migrate_materials_to_shader_graphs.py. Same
+# Geometry-in/Geometry-out shape; consumers see no API change.
+
+inputs:
+  Geometry: { kind: Geometry }
+
+parameters:
+  light:    { kind: ColorFloat, expr: "0.42, 0.27, 0.16, 1" }
+  dark:     { kind: ColorFloat, expr: "0.18, 0.1, 0.05, 1" }
+  fallback: { kind: Material,   expr: "1, 1, 1, 1, 0, 0.55" }
+
+nodes:
+  - id: 1
+    type: GroupInput
+
+  - id: 100
+    type: ShaderTexCoord
+    inputs:
+      Name: { kind: String, value: "tc" }
+
+  - id: 110
+    type: ShaderNoisePerlin
+    inputs:
+      Name:             { kind: String, value: "noise" }
+      VectorFromNode:   { kind: String, value: "tc" }
+      VectorFromOutput: { kind: String, value: "Generated" }
+      Scale:            { kind: Float, value: 32.0 }
+      Detail:           { kind: Float, value: 4.0 }
+      Roughness:        { kind: Float, value: 0.5 }
+
+  - id: 120
+    type: ShaderColorRamp
+    inputs:
+      Name:          { kind: String, value: "ramp" }
+      FacFromNode:   { kind: String, value: "noise" }
+      FacFromOutput: { kind: String, value: "Fac" }
+      Stop0Pos:      { kind: Float, value: 0.0 }
+      Stop0Color:    { param: dark }
+      Stop1Pos:      { kind: Float, value: 1.0 }
+      Stop1Color:    { param: light }
+
+  - id: 130
+    type: ShaderBsdfPrincipled
+    inputs:
+      Name:               { kind: String, value: "bsdf" }
+      BaseColorFromNode:   { kind: String, value: "ramp" }
+      BaseColorFromOutput: { kind: String, value: "Color" }
+      Metallic:           { kind: Float, value: 0.0 }
+      Roughness:          { kind: Float, value: 0.55 }
+
+  - id: 140
+    type: ShaderMaterialOutput
+    inputs:
+      Name:              { kind: String, value: "out" }
+      SurfaceFromNode:   { kind: String, value: "bsdf" }
+      SurfaceFromOutput: { kind: String, value: "BSDF" }
+
+  - id: 200
+    type: SetShaderGraphMaterial
+    inputs:
+      FallbackMaterial: { param: fallback }
+
+  - id: 99
+    type: Viewer
+
+
+links:
+  - { from: { node: 100, pin: Graph }, to: { node: 110, pin: Graph } }
+  - { from: { node: 110, pin: Graph }, to: { node: 120, pin: Graph } }
+  - { from: { node: 120, pin: Graph }, to: { node: 130, pin: Graph } }
+  - { from: { node: 130, pin: Graph }, to: { node: 140, pin: Graph } }
+  - { from: { node: 1, pin: Geometry }, to: { node: 200, pin: Geometry } }
+  - { from: { node: 140, pin: Graph }, to: { node: 200, pin: Graph } }
+  - { from: { node: 200, pin: Geometry }, to: { node: 99, pin: Geometry } }
+
+outputs:
+  Geometry: { node: 200, pin: Geometry }

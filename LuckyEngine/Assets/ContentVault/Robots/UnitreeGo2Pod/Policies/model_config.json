@@ -1,0 +1,44 @@
+{
+  "joint_names": [
+    "FL_hip_joint", "FL_thigh_joint", "FL_calf_joint",
+    "FR_hip_joint", "FR_thigh_joint", "FR_calf_joint",
+    "RL_hip_joint", "RL_thigh_joint", "RL_calf_joint",
+    "RR_hip_joint", "RR_thigh_joint", "RR_calf_joint"
+  ],
+  "default_joint_pos": {
+    "FL_hip_joint": 0.0, "FL_thigh_joint": 0.9, "FL_calf_joint": -1.8,
+    "FR_hip_joint": 0.0, "FR_thigh_joint": 0.9, "FR_calf_joint": -1.8,
+    "RL_hip_joint": 0.0, "RL_thigh_joint": 0.9, "RL_calf_joint": -1.8,
+    "RR_hip_joint": 0.0, "RR_thigh_joint": 0.9, "RR_calf_joint": -1.8
+  },
+  "action_scales": {
+    "FL_hip_joint": 0.372753, "FL_thigh_joint": 0.372753, "FL_calf_joint": 0.317565,
+    "FR_hip_joint": 0.372753, "FR_thigh_joint": 0.372753, "FR_calf_joint": 0.317565,
+    "RL_hip_joint": 0.372753, "RL_thigh_joint": 0.372753, "RL_calf_joint": 0.317565,
+    "RR_hip_joint": 0.372753, "RR_thigh_joint": 0.372753, "RR_calf_joint": 0.317565
+  },
+  "kp": {
+    "FL_hip_joint": 15.8952, "FL_thigh_joint": 15.8952, "FL_calf_joint": 35.7643,
+    "FR_hip_joint": 15.8952, "FR_thigh_joint": 15.8952, "FR_calf_joint": 35.7643,
+    "RL_hip_joint": 15.8952, "RL_thigh_joint": 15.8952, "RL_calf_joint": 35.7643,
+    "RR_hip_joint": 15.8952, "RR_thigh_joint": 15.8952, "RR_calf_joint": 35.7643
+  },
+  "kd": {
+    "FL_hip_joint": 1.0119, "FL_thigh_joint": 1.0119, "FL_calf_joint": 2.2768,
+    "FR_hip_joint": 1.0119, "FR_thigh_joint": 1.0119, "FR_calf_joint": 2.2768,
+    "RL_hip_joint": 1.0119, "RL_thigh_joint": 1.0119, "RL_calf_joint": 2.2768,
+    "RR_hip_joint": 1.0119, "RR_thigh_joint": 1.0119, "RR_calf_joint": 2.2768
+  },
+  "effort": {
+    "FL_hip_joint": 23.7, "FL_thigh_joint": 23.7, "FL_calf_joint": 45.43,
+    "FR_hip_joint": 23.7, "FR_thigh_joint": 23.7, "FR_calf_joint": 45.43,
+    "RL_hip_joint": 23.7, "RL_thigh_joint": 23.7, "RL_calf_joint": 45.43,
+    "RR_hip_joint": 23.7, "RR_thigh_joint": 23.7, "RR_calf_joint": 45.43
+  },
+  "armature": {
+    "FL_hip_joint": 0.004026, "FL_thigh_joint": 0.004026, "FL_calf_joint": 0.009059,
+    "FR_hip_joint": 0.004026, "FR_thigh_joint": 0.004026, "FR_calf_joint": 0.009059,
+    "RL_hip_joint": 0.004026, "RL_thigh_joint": 0.004026, "RL_calf_joint": 0.009059,
+    "RR_hip_joint": 0.004026, "RR_thigh_joint": 0.004026, "RR_calf_joint": 0.009059
+  }
+}

@@ -1,0 +1,152 @@
+nodes:
+  - id: 1
+    type: MeshCube
+    name: unit cube
+    inputs:
+      SizeX: {kind: Float, value: 1}
+      SizeY: {kind: Float, value: 1}
+      SizeZ: {kind: Float, value: 1}
+  - {id: 2, type: MeshCylinder, name: unit cylinder, inputs: {Sides: {kind: Int32, value: 16}, Radius: {kind: Float, value: 1}, Height: {kind: Float, value: 1}, CapFill: {kind: Menu, value: 2188cbc6abca857b}}}
+  - id: 3
+    group: assets/seating/sofa_v2.yaml
+  - {id: 4, type: SetMaterial, name: kit 1 material, inputs: {Material: {kind: Material, value: [0.550000012, 0.379999995, 0.0299999993, 1, 0, 0.800000012]}, Name: {kind: String, value: kit_1}}}
+  - {id: 5, type: Transform, name: kit 1, inputs: {Rotation: {kind: Float3, value: [0, 1.57079637, 0]}, Translation: {kind: Float3, value: [-14.4499998, 0, -11.6000004]}}}
+  - id: 6
+    group: assets/decor/rug_v2.yaml
+    params:
+      depth: {kind: Float, value: 2}
+      width: {kind: Float, value: 3}
+  - {id: 7, type: Transform, name: kit 2, inputs: {Rotation: {kind: Float3, value: [0, 0, 0]}, Translation: {kind: Float3, value: [-10.8000002, 0, -9.60000038]}}}
+  - id: 8
+    group: assets/decor/rug_v2.yaml
+    params:
+      depth: {kind: Float, value: 2}
+      width: {kind: Float, value: 2.5}
+  - {id: 9, type: Transform, name: kit 3, inputs: {Rotation: {kind: Float3, value: [0, 1.57079637, 0]}, Translation: {kind: Float3, value: [-10.3999996, 0, -6.9000001]}}}
+  - {id: 10, type: Transform, name: desk_white 4, inputs: {Scale: {kind: Float3, value: [0.75, 0.0250000004, 1.5]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [-13.1000004, 0.727500021, -9.60000038]}}}
+  - {id: 11, type: Transform, name: desk_frame 5, inputs: {Scale: {kind: Float3, value: [0.0700000003, 0.680000007, 0.0700000003]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [-13.1000004, 0.370000005, -10.1999998]}}}
+  - {id: 12, type: Transform, name: desk_frame 6, inputs: {Scale: {kind: Float3, value: [0.680000007, 0.0399999991, 0.0700000003]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [-13.1000004, 0.0199999996, -10.1999998]}}}
+  - {id: 13, type: Transform, name: desk_frame 7, inputs: {Scale: {kind: Float3, value: [0.0700000003, 0.680000007, 0.0700000003]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [-13.1000004, 0.370000005, -9]}}}
+  - {id: 14, type: Transform, name: desk_frame 8, inputs: {Scale: {kind: Float3, value: [0.680000007, 0.0399999991, 0.0700000003]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [-13.1000004, 0.0199999996, -9]}}}
+  - {id: 15, type: Transform, name: desk_frame 9, inputs: {Scale: {kind: Float3, value: [0.0500000007, 0.0500000007, 1.20000005]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [-13.1000004, 0.680000007, -9.60000038]}}}
+  - id: 16
+    group: assets/seating/office_chair_v2.yaml
+  - {id: 17, type: Transform, name: kit 10, inputs: {Rotation: {kind: Float3, value: [0, -1.57079637, 0]}, Translation: {kind: Float3, value: [-12.1000004, 0, -9.60000038]}}}
+  - {id: 18, type: Transform, name: desk_white 11, inputs: {Scale: {kind: Float3, value: [0.75, 0.0250000004, 1.5]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [-13.1000004, 0.727500021, -8.05000019]}}}
+  - {id: 19, type: Transform, name: desk_frame 12, inputs: {Scale: {kind: Float3, value: [0.0700000003, 0.680000007, 0.0700000003]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [-13.1000004, 0.370000005, -8.64999962]}}}
+  - {id: 20, type: Transform, name: desk_frame 13, inputs: {Scale: {kind: Float3, value: [0.680000007, 0.0399999991, 0.0700000003]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [-13.1000004, 0.0199999996, -8.64999962]}}}
+  - {id: 21, type: Transform, name: desk_frame 14, inputs: {Scale: {kind: Float3, value: [0.0700000003, 0.680000007, 0.0700000003]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [-13.1000004, 0.370000005, -7.44999981]}}}
+  - {id: 22, type: Transform, name: desk_frame 15, inputs: {Scale: {kind: Float3, value: [0.680000007, 0.0399999991, 0.0700000003]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [-13.1000004, 0.0199999996, -7.44999981]}}}
+  - {id: 23, type: Transform, name: desk_frame 16, inputs: {Scale: {kind: Float3, value: [0.0500000007, 0.0500000007, 1.20000005]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [-13.1000004, 0.680000007, -8.05000019]}}}
+  - id: 24
+    group: assets/seating/office_chair_v2.yaml
+  - {id: 25, type: Transform, name: kit 17, inputs: {Rotation: {kind: Float3, value: [0, -1.57079637, 0]}, Translation: {kind: Float3, value: [-12.1000004, 0, -8.05000019]}}}
+  - {id: 26, type: Transform, name: desk_white 18, inputs: {Scale: {kind: Float3, value: [0.75, 0.0250000004, 1.5]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [-13.1000004, 0.727500021, -6.5]}}}
+  - {id: 27, type: Transform, name: desk_frame 19, inputs: {Scale: {kind: Float3, value: [0.0700000003, 0.680000007, 0.0700000003]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [-13.1000004, 0.370000005, -7.0999999]}}}
+  - {id: 28, type: Transform, name: desk_frame 20, inputs: {Scale: {kind: Float3, value: [0.680000007, 0.0399999991, 0.0700000003]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [-13.1000004, 0.0199999996, -7.0999999]}}}
+  - {id: 29, type: Transform, name: desk_frame 21, inputs: {Scale: {kind: Float3, value: [0.0700000003, 0.680000007, 0.0700000003]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [-13.1000004, 0.370000005, -5.9000001]}}}
+  - {id: 30, type: Transform, name: desk_frame 22, inputs: {Scale: {kind: Float3, value: [0.680000007, 0.0399999991, 0.0700000003]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [-13.1000004, 0.0199999996, -5.9000001]}}}
+  - {id: 31, type: Transform, name: desk_frame 23, inputs: {Scale: {kind: Float3, value: [0.0500000007, 0.0500000007, 1.20000005]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [-13.1000004, 0.680000007, -6.5]}}}
+  - id: 32
+    group: assets/seating/office_chair_v2.yaml
+  - {id: 33, type: Transform, name: kit 24, inputs: {Rotation: {kind: Float3, value: [0, -1.57079637, 0]}, Translation: {kind: Float3, value: [-12.1000004, 0, -6.5]}}}
+  - id: 34
+    group: assets/appliances/monitor_v2.yaml
+  - {id: 35, type: Transform, name: kit 25, inputs: {Rotation: {kind: Float3, value: [0, 1.57079637, 0]}, Translation: {kind: Float3, value: [-13.25, 0.74000001, -9.89999962]}}}
+  - id: 36
+    group: assets/appliances/monitor_v2.yaml
+  - {id: 37, type: Transform, name: kit 26, inputs: {Rotation: {kind: Float3, value: [0, 1.57079637, 0]}, Translation: {kind: Float3, value: [-13.25, 0.74000001, -9.30000019]}}}
+  - id: 38
+    group: assets/appliances/monitor_v2.yaml
+  - {id: 39, type: Transform, name: kit 27, inputs: {Rotation: {kind: Float3, value: [0, 1.57079637, 0]}, Translation: {kind: Float3, value: [-13.25, 0.74000001, -8.05000019]}}}
+  - id: 40
+    group: assets/appliances/monitor_v2.yaml
+  - {id: 41, type: Transform, name: kit 28, inputs: {Rotation: {kind: Float3, value: [0, 1.57079637, 0]}, Translation: {kind: Float3, value: [-13.25, 0.74000001, -6.5]}}}
+  - {id: 42, type: Transform, name: pc_black 29, inputs: {Scale: {kind: Float3, value: [0.449999988, 0.449999988, 0.200000003]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [-13.1750002, 0.224999994, -8.5]}}}
+  - {id: 43, type: Transform, name: cardboard 30, inputs: {Scale: {kind: Float3, value: [0.600000024, 0.449999988, 0.600000024]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [-14.5, 0.224999994, -12.3999996]}}}
+  - {id: 44, type: Transform, name: cardboard 31, inputs: {Scale: {kind: Float3, value: [0.5, 0.349999994, 0.449999988]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [-13.8000002, 0.174999997, -12.1999998]}}}
+  - {id: 45, type: Transform, name: cardboard 32, inputs: {Scale: {kind: Float3, value: [0.5, 0.5, 0.5]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [-14, 0.25, -12.5]}}}
+  - {id: 46, type: Transform, name: cardboard 33, inputs: {Scale: {kind: Float3, value: [1.20000005, 0.25, 0.349999994]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [-7.5, 0.125, -10.5]}}}
+  - {id: 47, type: Transform, name: cardboard 34, inputs: {Scale: {kind: Float3, value: [1.20000005, 0.200000003, 0.319999993]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [-11, 0.100000001, 3]}}}
+  - {id: 48, type: Transform, name: desk_white 35, inputs: {Scale: {kind: Float3, value: [1.5, 0.0250000004, 0.75]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [-5.5, 0.727500021, -12.5]}}}
+  - {id: 49, type: Transform, name: desk_frame 36, inputs: {Scale: {kind: Float3, value: [0.0700000003, 0.680000007, 0.0700000003]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [-6.0999999, 0.370000005, -12.5]}}}
+  - {id: 50, type: Transform, name: desk_frame 37, inputs: {Scale: {kind: Float3, value: [0.0700000003, 0.0399999991, 0.680000007]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [-6.0999999, 0.0199999996, -12.5]}}}
+  - {id: 51, type: Transform, name: desk_frame 38, inputs: {Scale: {kind: Float3, value: [0.0700000003, 0.680000007, 0.0700000003]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [-4.9000001, 0.370000005, -12.5]}}}
+  - {id: 52, type: Transform, name: desk_frame 39, inputs: {Scale: {kind: Float3, value: [0.0700000003, 0.0399999991, 0.680000007]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [-4.9000001, 0.0199999996, -12.5]}}}
+  - {id: 53, type: Transform, name: desk_frame 40, inputs: {Scale: {kind: Float3, value: [1.20000005, 0.0500000007, 0.0500000007]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [-5.5, 0.680000007, -12.5]}}}
+  - id: 54
+    group: assets/seating/office_chair_v2.yaml
+  - {id: 55, type: Transform, name: kit 41, inputs: {Rotation: {kind: Float3, value: [0, 3.14159274, 0]}, Translation: {kind: Float3, value: [-5.4000001, 0, -11.8999996]}}}
+  - {id: 56, type: Transform, name: case_grey 42, inputs: {Scale: {kind: Float3, value: [0.449999988, 0.75, 0.319999993]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [1, 0.375, -12.8000002]}}}
+  - {id: 57, type: Transform, name: case_grey 43, inputs: {Scale: {kind: Float3, value: [0.449999988, 0.75, 0.319999993]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [1.5, 0.375, -12.8000002]}}}
+  - {id: 58, type: Transform, name: case_grey 44, inputs: {Scale: {kind: Float3, value: [0.449999988, 0.75, 0.319999993]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [2, 0.375, -12.8000002]}}}
+  - {id: 59, type: Transform, name: case_grey 45, inputs: {Scale: {kind: Float3, value: [0.449999988, 0.75, 0.319999993]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [2.5, 0.375, -12.8000002]}}}
+  - {id: 60, type: Transform, name: case_grey 46, inputs: {Scale: {kind: Float3, value: [0.449999988, 0.75, 0.319999993]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [3, 0.375, -12.8000002]}}}
+  - {id: 61, type: Transform, name: case_grey 47, inputs: {Scale: {kind: Float3, value: [0.449999988, 0.75, 0.319999993]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [3.5, 0.375, -12.8000002]}}}
+  - {id: 62, type: Transform, name: case_grey 48, inputs: {Scale: {kind: Float3, value: [0.449999988, 0.75, 0.319999993]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [4, 0.375, -12.8000002]}}}
+  - {id: 63, type: Transform, name: case_grey 49, inputs: {Scale: {kind: Float3, value: [0.449999988, 0.75, 0.319999993]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [4.5, 0.375, -12.8000002]}}}
+  - {id: 64, type: Transform, name: case_grey 50, inputs: {Scale: {kind: Float3, value: [0.75, 0.25, 0.5]}, Rotation: {kind: Float3, value: [0, -0, 0]}, Translation: {kind: Float3, value: [2.29999995, 0.125, -12]}}}
+  - {id: 65, type: JoinGeometry, name: desk_white join 0}
+  - {id: 66, type: JoinGeometry, name: desk_white join 1}
+  - {id: 67, type: JoinGeometry, name: desk_white join 2}
+  - {id: 68, type: SetMaterial, name: desk_white material, inputs: {Material: {kind: Material, value: [0.850000024, 0.850000024, 0.839999974, 1, 0, 0.400000006]}, Name: {kind: String, value: desk_white}}}
+  - {id: 69, type: SetMeshName, name: desk_white, inputs: {Name: {kind: String, value: desk_white}}}
+  - {id: 70, type: JoinGeometry, name: desk_frame join 0}
+  - {id: 71, type: JoinGeometry, name: desk_frame join 1}
+  - {id: 72, type: JoinGeometry, name: desk_frame join 2}
+  - {id: 73, type: JoinGeometry, name: desk_frame join 3}
+  - {id: 74, type: JoinGeometry, name: desk_frame join 4}
+  - {id: 75, type: JoinGeometry, name: desk_frame join 5}
+  - {id: 76, type: JoinGeometry, name: desk_frame join 6}
+  - {id: 77, type: JoinGeometry, name: desk_frame join 7}
+  - {id: 78, type: JoinGeometry, name: desk_frame join 8}
+  - {id: 79, type: JoinGeometry, name: desk_frame join 9}
+  - {id: 80, type: JoinGeometry, name: desk_frame join 10}
+  - {id: 81, type: JoinGeometry, name: desk_frame join 11}
+  - {id: 82, type: JoinGeometry, name: desk_frame join 12}
+  - {id: 83, type: JoinGeometry, name: desk_frame join 13}
+  - {id: 84, type: JoinGeometry, name: desk_frame join 14}
+  - {id: 85, type: JoinGeometry, name: desk_frame join 15}
+  - {id: 86, type: JoinGeometry, name: desk_frame join 16}
+  - {id: 87, type: JoinGeometry, name: desk_frame join 17}
+  - {id: 88, type: JoinGeometry, name: desk_frame join 18}
+  - {id: 89, type: SetMaterial, name: desk_frame material, inputs: {Material: {kind: Material, value: [0.550000012, 0.560000002, 0.569999993, 1, 0.800000012, 0.349999994]}, Name: {kind: String, value: desk_frame}}}
+  - {id: 90, type: SetMeshName, name: desk_frame, inputs: {Name: {kind: String, value: desk_frame}}}
+  - {id: 91, type: SetMaterial, name: pc_black material, inputs: {Material: {kind: Material, value: [0.0199999996, 0.0199999996, 0.0199999996, 1, 0.200000003, 0.400000006]}, Name: {kind: String, value: pc_black}}}
+  - {id: 92, type: SetMeshName, name: pc_black, inputs: {Name: {kind: String, value: pc_black}}}
+  - {id: 93, type: JoinGeometry, name: cardboard join 0}
+  - {id: 94, type: JoinGeometry, name: cardboard join 1}
+  - {id: 95, type: JoinGeometry, name: cardboard join 2}
+  - {id: 96, type: JoinGeometry, name: cardboard join 3}
+  - {id: 97, type: SetMaterial, name: cardboard material, inputs: {Material: {kind: Material, value: [0.449999988, 0.300000012, 0.150000006, 1, 0, 0.899999976]}, Name: {kind: String, value: cardboard}}}
+  - {id: 98, type: SetMeshName, name: cardboard, inputs: {Name: {kind: String, value: cardboard}}}
+  - {id: 99, type: JoinGeometry, name: case_grey join 0}
+  - {id: 100, type: JoinGeometry, name: case_grey join 1}
+  - {id: 101, type: JoinGeometry, name: case_grey join 2}
+  - {id: 102, type: JoinGeometry, name: case_grey join 3}
+  - {id: 103, type: JoinGeometry, name: case_grey join 4}
+  - {id: 104, type: JoinGeometry, name: case_grey join 5}
+  - {id: 105, type: JoinGeometry, name: case_grey join 6}
+  - {id: 106, type: JoinGeometry, name: case_grey join 7}
+  - {id: 107, type: SetMaterial, name: case_grey material, inputs: {Material: {kind: Material, value: [0.180000007, 0.180000007, 0.189999998, 1, 0, 0.600000024]}, Name: {kind: String, value: case_grey}}}
+  - {id: 108, type: SetMeshName, name: case_grey, inputs: {Name: {kind: String, value: case_grey}}}
+  - {id: 109, type: JoinGeometry, name: assemble 0}
+  - {id: 110, type: JoinGeometry, name: assemble 1}
+  - {id: 111, type: JoinGeometry, name: assemble 2}
+  - {id: 112, type: JoinGeometry, name: assemble 3}
+  - {id: 113, type: JoinGeometry, name: assemble 4}
+  - {id: 114, type: JoinGeometry, name: assemble 5}
+  - {id: 115, type: JoinGeometry, name: assemble 6}
+  - {id: 116, type: JoinGeometry, name: assemble 7}
+  - {id: 117, type: JoinGeometry, name: assemble 8}
+  - {id: 118, type: JoinGeometry, name: assemble 9}
+  - {id: 119, type: JoinGeometry, name: assemble 10}
+  - {id: 120, type: JoinGeometry, name: assemble 11}
+  - {id: 121, type: JoinGeometry, name: assemble 12}
+  - {id: 122, type: JoinGeometry, name: assemble 13}
+  - {id: 123, type: JoinGeometry, name: assemble 14}
+links: [{from: {node: 3, pin: Geometry}, to: {node: 4, pin: Geometry}}, {from: {node: 4, pin: Geometry}, to: {node: 5, pin: Geometry}}, {from: {node: 6, pin: Geometry}, to: {node: 7, pin: Geometry}}, {from: {node: 8, pin: Geometry}, to: {node: 9, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 10, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 11, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 12, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 13, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 14, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 15, pin: Geometry}}, {from: {node: 16, pin: Geometry}, to: {node: 17, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 18, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 19, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 20, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 21, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 22, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 23, pin: Geometry}}, {from: {node: 24, pin: Geometry}, to: {node: 25, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 26, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 27, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 28, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 29, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 30, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 31, pin: Geometry}}, {from: {node: 32, pin: Geometry}, to: {node: 33, pin: Geometry}}, {from: {node: 34, pin: Geometry}, to: {node: 35, pin: Geometry}}, {from: {node: 36, pin: Geometry}, to: {node: 37, pin: Geometry}}, {from: {node: 38, pin: Geometry}, to: {node: 39, pin: Geometry}}, {from: {node: 40, pin: Geometry}, to: {node: 41, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 42, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 43, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 44, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 45, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 46, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 47, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 48, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 49, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 50, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 51, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 52, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 53, pin: Geometry}}, {from: {node: 54, pin: Geometry}, to: {node: 55, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 56, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 57, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 58, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 59, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 60, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 61, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 62, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 63, pin: Geometry}}, {from: {node: 1, pin: Geometry}, to: {node: 64, pin: Geometry}}, {from: {node: 10, pin: Geometry}, to: {node: 65, pin: A}}, {from: {node: 18, pin: Geometry}, to: {node: 65, pin: B}}, {from: {node: 65, pin: Geometry}, to: {node: 66, pin: A}}, {from: {node: 26, pin: Geometry}, to: {node: 66, pin: B}}, {from: {node: 66, pin: Geometry}, to: {node: 67, pin: A}}, {from: {node: 48, pin: Geometry}, to: {node: 67, pin: B}}, {from: {node: 67, pin: Geometry}, to: {node: 68, pin: Geometry}}, {from: {node: 68, pin: Geometry}, to: {node: 69, pin: Geometry}}, {from: {node: 11, pin: Geometry}, to: {node: 70, pin: A}}, {from: {node: 12, pin: Geometry}, to: {node: 70, pin: B}}, {from: {node: 70, pin: Geometry}, to: {node: 71, pin: A}}, {from: {node: 13, pin: Geometry}, to: {node: 71, pin: B}}, {from: {node: 71, pin: Geometry}, to: {node: 72, pin: A}}, {from: {node: 14, pin: Geometry}, to: {node: 72, pin: B}}, {from: {node: 72, pin: Geometry}, to: {node: 73, pin: A}}, {from: {node: 15, pin: Geometry}, to: {node: 73, pin: B}}, {from: {node: 73, pin: Geometry}, to: {node: 74, pin: A}}, {from: {node: 19, pin: Geometry}, to: {node: 74, pin: B}}, {from: {node: 74, pin: Geometry}, to: {node: 75, pin: A}}, {from: {node: 20, pin: Geometry}, to: {node: 75, pin: B}}, {from: {node: 75, pin: Geometry}, to: {node: 76, pin: A}}, {from: {node: 21, pin: Geometry}, to: {node: 76, pin: B}}, {from: {node: 76, pin: Geometry}, to: {node: 77, pin: A}}, {from: {node: 22, pin: Geometry}, to: {node: 77, pin: B}}, {from: {node: 77, pin: Geometry}, to: {node: 78, pin: A}}, {from: {node: 23, pin: Geometry}, to: {node: 78, pin: B}}, {from: {node: 78, pin: Geometry}, to: {node: 79, pin: A}}, {from: {node: 27, pin: Geometry}, to: {node: 79, pin: B}}, {from: {node: 79, pin: Geometry}, to: {node: 80, pin: A}}, {from: {node: 28, pin: Geometry}, to: {node: 80, pin: B}}, {from: {node: 80, pin: Geometry}, to: {node: 81, pin: A}}, {from: {node: 29, pin: Geometry}, to: {node: 81, pin: B}}, {from: {node: 81, pin: Geometry}, to: {node: 82, pin: A}}, {from: {node: 30, pin: Geometry}, to: {node: 82, pin: B}}, {from: {node: 82, pin: Geometry}, to: {node: 83, pin: A}}, {from: {node: 31, pin: Geometry}, to: {node: 83, pin: B}}, {from: {node: 83, pin: Geometry}, to: {node: 84, pin: A}}, {from: {node: 49, pin: Geometry}, to: {node: 84, pin: B}}, {from: {node: 84, pin: Geometry}, to: {node: 85, pin: A}}, {from: {node: 50, pin: Geometry}, to: {node: 85, pin: B}}, {from: {node: 85, pin: Geometry}, to: {node: 86, pin: A}}, {from: {node: 51, pin: Geometry}, to: {node: 86, pin: B}}, {from: {node: 86, pin: Geometry}, to: {node: 87, pin: A}}, {from: {node: 52, pin: Geometry}, to: {node: 87, pin: B}}, {from: {node: 87, pin: Geometry}, to: {node: 88, pin: A}}, {from: {node: 53, pin: Geometry}, to: {node: 88, pin: B}}, {from: {node: 88, pin: Geometry}, to: {node: 89, pin: Geometry}}, {from: {node: 89, pin: Geometry}, to: {node: 90, pin: Geometry}}, {from: {node: 42, pin: Geometry}, to: {node: 91, pin: Geometry}}, {from: {node: 91, pin: Geometry}, to: {node: 92, pin: Geometry}}, {from: {node: 43, pin: Geometry}, to: {node: 93, pin: A}}, {from: {node: 44, pin: Geometry}, to: {node: 93, pin: B}}, {from: {node: 93, pin: Geometry}, to: {node: 94, pin: A}}, {from: {node: 45, pin: Geometry}, to: {node: 94, pin: B}}, {from: {node: 94, pin: Geometry}, to: {node: 95, pin: A}}, {from: {node: 46, pin: Geometry}, to: {node: 95, pin: B}}, {from: {node: 95, pin: Geometry}, to: {node: 96, pin: A}}, {from: {node: 47, pin: Geometry}, to: {node: 96, pin: B}}, {from: {node: 96, pin: Geometry}, to: {node: 97, pin: Geometry}}, {from: {node: 97, pin: Geometry}, to: {node: 98, pin: Geometry}}, {from: {node: 56, pin: Geometry}, to: {node: 99, pin: A}}, {from: {node: 57, pin: Geometry}, to: {node: 99, pin: B}}, {from: {node: 99, pin: Geometry}, to: {node: 100, pin: A}}, {from: {node: 58, pin: Geometry}, to: {node: 100, pin: B}}, {from: {node: 100, pin: Geometry}, to: {node: 101, pin: A}}, {from: {node: 59, pin: Geometry}, to: {node: 101, pin: B}}, {from: {node: 101, pin: Geometry}, to: {node: 102, pin: A}}, {from: {node: 60, pin: Geometry}, to: {node: 102, pin: B}}, {from: {node: 102, pin: Geometry}, to: {node: 103, pin: A}}, {from: {node: 61, pin: Geometry}, to: {node: 103, pin: B}}, {from: {node: 103, pin: Geometry}, to: {node: 104, pin: A}}, {from: {node: 62, pin: Geometry}, to: {node: 104, pin: B}}, {from: {node: 104, pin: Geometry}, to: {node: 105, pin: A}}, {from: {node: 63, pin: Geometry}, to: {node: 105, pin: B}}, {from: {node: 105, pin: Geometry}, to: {node: 106, pin: A}}, {from: {node: 64, pin: Geometry}, to: {node: 106, pin: B}}, {from: {node: 106, pin: Geometry}, to: {node: 107, pin: Geometry}}, {from: {node: 107, pin: Geometry}, to: {node: 108, pin: Geometry}}, {from: {node: 69, pin: Geometry}, to: {node: 109, pin: A}}, {from: {node: 90, pin: Geometry}, to: {node: 109, pin: B}}, {from: {node: 109, pin: Geometry}, to: {node: 110, pin: A}}, {from: {node: 92, pin: Geometry}, to: {node: 110, pin: B}}, {from: {node: 110, pin: Geometry}, to: {node: 111, pin: A}}, {from: {node: 98, pin: Geometry}, to: {node: 111, pin: B}}, {from: {node: 111, pin: Geometry}, to: {node: 112, pin: A}}, {from: {node: 108, pin: Geometry}, to: {node: 112, pin: B}}, {from: {node: 112, pin: Geometry}, to: {node: 113, pin: A}}, {from: {node: 5, pin: Geometry}, to: {node: 113, pin: B}}, {from: {node: 113, pin: Geometry}, to: {node: 114, pin: A}}, {from: {node: 7, pin: Geometry}, to: {node: 114, pin: B}}, {from: {node: 114, pin: Geometry}, to: {node: 115, pin: A}}, {from: {node: 9, pin: Geometry}, to: {node: 115, pin: B}}, {from: {node: 115, pin: Geometry}, to: {node: 116, pin: A}}, {from: {node: 17, pin: Geometry}, to: {node: 116, pin: B}}, {from: {node: 116, pin: Geometry}, to: {node: 117, pin: A}}, {from: {node: 25, pin: Geometry}, to: {node: 117, pin: B}}, {from: {node: 117, pin: Geometry}, to: {node: 118, pin: A}}, {from: {node: 33, pin: Geometry}, to: {node: 118, pin: B}}, {from: {node: 118, pin: Geometry}, to: {node: 119, pin: A}}, {from: {node: 35, pin: Geometry}, to: {node: 119, pin: B}}, {from: {node: 119, pin: Geometry}, to: {node: 120, pin: A}}, {from: {node: 37, pin: Geometry}, to: {node: 120, pin: B}}, {from: {node: 120, pin: Geometry}, to: {node: 121, pin: A}}, {from: {node: 39, pin: Geometry}, to: {node: 121, pin: B}}, {from: {node: 121, pin: Geometry}, to: {node: 122, pin: A}}, {from: {node: 41, pin: Geometry}, to: {node: 122, pin: B}}, {from: {node: 122, pin: Geometry}, to: {node: 123, pin: A}}, {from: {node: 55, pin: Geometry}, to: {node: 123, pin: B}}]
+outputs:
+  Geometry:
+    node: 123
+    pin: Geometry

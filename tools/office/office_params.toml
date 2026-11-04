@@ -1,0 +1,135 @@
+# Main measurements of the Lucky Robots office (535 Minnesota St), read by build_office.py and office_scene.py.
+# Edit a value here, then rebuild (build_office.py, import_office.py). Metres.
+#
+# Plan frame: x runs from the north wall (x0) to the south wall (x1), z from the west wall (z0) to the east wall (z1,
+# the kitchen), y up from the floor. The graphs are mirrored in x when built, so in the Lucky scene the north wall
+# is at +15.
+# Each value says where it comes from: a public record, a photo with a known reference (doors 0.91 x 2.13 m,
+# counters 0.91 m, fridges 0.91 x 1.78 m) and how sure it is. "estimate" means a guess to replace with a real
+# measurement.
+
+[hall]
+# Size: the building fills its lot. Record: 7,586 SF lot (about 75 x 101 ft), 8,235 SF building = lot + about 650 SF
+# of mezzanine and box deck. Inside the 0.3 m walls that is about 22.3 x 30.2 m. The photos agree on the width: the
+# south end summed east to west in IMG_3077 (box, corridor, partition, U stair, exit door, pier, gate) is about
+# 23 m; that is used (3% over the lot record). med
+x0 = -15.0            # north wall; length 30 m (record 30.2), med
+x1 = 15.0             # south wall (main gate wall)
+z0 = -16.0            # west wall; width 23.0 m: IMG_3077 south wall sum, record 22.3 m, med
+z1 = 7.0              # east wall (kitchen)
+wall_height = 7.3     # floor to roof bearing: IMG_3077 7.4 m and IMG_3059 7.3 m vs the exit door, med
+ridge = 9.3           # roof underside at the ridge: photos, low
+wall_thickness = 0.3
+roof_thickness = 0.3
+truss_x = [-11.25, -3.75, 3.75, 11.25]   # 7.5 m bays: photos, low
+
+[curtain]
+z = -4.0              # black stage curtain line: west bay 9 m, east bay 11 m, low
+x0 = -14.0            # 1 m gap at the north wall: IMG_3053, med
+x1 = 0.0
+top = 6.6
+
+[kitchen]
+x0 = -1.6             # north end of the run on the east wall; it ends with the pantry against the box's north
+                      # face (IMG_3071); run length 6.04 m from appliance sizes, med
+
+[gate]                # main roll-up gate on the south wall, always closed
+# IMG_3077 (whole south wall at one depth, 1x lens, exit door 2.13 m = 115 px): opening 6.0 x 4.5 m, med
+z0 = -15.6            # west edge, ~0.4 m from the west corner: IMG_3077, med
+z1 = -9.6             # east edge, 0.85 m (with the pier) from the exit door: IMG_3077, med
+height = 4.5          # opening: IMG_3077, med
+hood_top = 5.1        # top of the roller hood: IMG_3077, med
+shades_y = [5.2, 6.75] # three roller-shade windows above the gate, as wide as it: IMG_3077, med
+
+[exit_door]           # grey steel exit door on the south wall, EXIT sign above, fire panel east of it
+z0 = -8.75            # 1.15 m wide: IMG_3077/3058, med
+z1 = -7.6             # 0.9 m west of the U stair's lower flight, the red fire box between: IMG_3077, med
+height = 2.13
+
+[south_wall]
+pilaster_z = -9.15    # white wall pier between the exit door and the gate: IMG_3077, med
+pilaster_width = 0.55
+window_z = [-8.75, -5.05] # big roller-shaded window, its west edge over the exit door's: IMG_3077, med
+window_y = [3.3, 6.6]
+strip_y = [2.8, 3.3]      # strip of small panes under it: IMG_3077, med
+strip_z = [-8.85, -5.05]
+
+# ---- south end: two tiers. The office box (lower tier) sticks out north of the mezzanine (upper tier).
+
+[box]                 # the closed office box; its flat roof is the lower deck (black baluster railing)
+x0 = 4.5              # north face, against the kitchen pantry: IMG_3067 (west face ~5.5 m to the mezzanine), low
+x1 = 15.0             # runs to the south wall, med
+z0 = 2.4              # west face, facing the hall: 4.6 m wide, IMG_3071/3077, med
+z1 = 7.0              # against the east (kitchen) wall, med
+deck = 3.05           # lower deck top: IMG_3071 MEN door 2.13 m -> 3.09, IMG_3067 -> 3.10, high
+north_doors_z = [4.6, 6.4]   # MEN door (IMG_3071, med) and the door by the pantry (IMG_3055/3056, low)
+open_door_z = 6.4     # the door by the pantry stands open (IMG_3055/3056)
+west_door_x = 7.6     # door beside the first-aid box, on the west face: IMG_3067/3072, low
+tall_box = [5.8, 8.4, 3.0, 7.0, 7.0]   # on the deck, up to the roof: x0, x1, z0, z1, top: IMG_3071/3056, low
+mid_box = [4.6, 5.8, 4.5, 7.0, 5.4]    # lower block in front of it: IMG_3056/3071, low
+
+[mezzanine]           # upper tier with the cable railing, west of the box
+front_x = 9.9         # front edge: IMG_3058/3070, about 5 m south of the box's north face, low
+z0 = -4.4             # west end, white post; the room under it has a wall here the U stair sits flush against:
+                      # stair flights side by side (no well) from the 0.9 m door gap, front wall 5.6 m (IMG_3070 5.3 m), med
+z1 = 2.4              # meets the box's west face, med
+deck = 3.85           # upper deck top: 22 risers of 0.175 m and the partition height, med-low
+thickness = 0.5       # grey fascia and white beam: IMG_3069/3070, med
+
+[partition]           # under the mezzanine: a front wall with French doors and transoms, then a corridor to the box
+x = 12.1              # front wall, 2.2 m behind the mezzanine front: IMG_3058/3070, med
+wall_z = [-4.4, 1.2]  # front wall, 5.6 m (IMG_3070 5.3 m, IMG_3077 4.3 m), med
+doors_z = [-0.9, 0.5]           # French doors, 1.4 m frame, 0.7 m from the corridor end, folded open: IMG_3077/3070, med
+transoms_z = [0.75, -0.4, -1.8, -3.2]     # spread along the wall: IMG_3077, med
+transom_w = [0.45, 0.9, 0.9, 0.9]
+transom_y = [2.5, 3.0]          # IMG_3070, med
+sofa_z = -3.3                   # blue sofa against the front wall at its west end, by the post: IMG_3077/3070, med
+corridor_z = [1.2, 2.4]         # open corridor south between the front wall's turn and the box: IMG_3066/3068, med
+corridor_end_x = 14.6           # it runs back to the south rooms (dark), low
+side_door_x = [12.8, 13.6]      # single glazed wood door, open, in the corridor's west wall: IMG_3066/3068, med
+side_transoms_x = [12.5, 13.9]  # two small transoms above it: IMG_3066/3068, med
+dark_door_x = [10.9, 11.8]      # open dark doorway in the box's west face, inside the corridor: IMG_3068, low
+
+[spiral]              # floor -> box deck, just west of the box at the mezzanine's front corner
+x = 9.1               # at the mezzanine's east front corner, in front of the corridor: IMG_3068/3072, med
+z = 1.6
+radius = 0.8
+treads = 16
+
+[spiral_upper]        # small spiral on the box deck -> mezzanine
+x = 10.6              # IMG_3068/3071, exists: high; position low (must stand over the mezzanine, x >= front_x)
+z = 3.0
+radius = 0.65
+treads = 5
+
+[u_stair]             # grey dog-leg stair west of the mezzanine; risers of deck / (2 * risers)
+width = 1.1           # stair 3.6 m across: IMG_3077, med
+risers = 11           # per flight: IMG_3066 count, med
+platform_x = [9.9, 10.9]   # top platform at the mezzanine front, z = upper flight's: IMG_3058/3066, med-low
+upper_z = [-5.5, -4.4]     # upper flight runs south from the platform down to the landing
+landing_x = [13.8, 15.0]   # landing against the south wall, half the deck height: IMG_3070, med
+landing_z = [-6.7, -4.4]
+lower_z = [-6.7, -5.6]     # right beside the upper flight (no well), 0.9 m east of the exit door     # lower flight runs back north down to the floor at x = landing_x0 - its length
+
+# ---- north-west corner (desk bay), as in the newer photos IMG_3074/3075/3077
+
+[desk_corner]
+# From the user (who sits at the corner desk) and IMG_3074/3075/3077/3078.
+sofa_x = -7.3         # yellow tufted sofa, long side east-west, facing south (back to the corner desk), ~1.5 m
+sofa_z = -14.0        # south of the corner desk and in line with it: IMG_3078 (0.3 s, 2.2 s), IMG_3062/3063/3074, med
+small_desk_x = -9.625 # corner desk, long side east-west, its west end ~0.5 m from the west wall (IMG_3078 0.3 s);
+small_desk_z = -14.75 # its north side 5 m from the north wall, 0.5 m past the white desks' gate-side edge (user);
+                      # user on the north side facing south, med
+bench_z = [-12.6, -11.2]   # grey metal workbench in line with the white desks (same x, same orientation), behind the outer one (user), med
+bench_wall_gap = 3.75
+row_wall_gap = 3.75   # three white desks; their gate-side edge 0.5 m short of the corner desk (user), med
+row_z = [-11.0, -6.5] # three joined 1.5 m desks east of the workbench: user, IMG_3078, med
+displays_z = [-7.6, -7.0]  # two silver studio displays facing east, to the user at the row's east end: IMG_3078, med
+arms_z = [-9.35, -9.05, -8.75, -8.45]   # four folded SO-100 arms on the middle desk (user)
+crane = [-9.6, -6.0]     # the one crane (black pole, yellow block) a little past the row's east end on the gate side (user), med
+rug_x = [-6.9, -4.16]      # big Beni Ourain rug, 9 x 12 ft, long side along z, in front of the sofa (it faces +x) and
+rug_z = [-15.83, -12.17]   # further south than the white desks: IMG_3075/3078, user
+rug2_x = [-9.6, -6.86]     # second Beni Ourain rug further east toward the curtain, stanchion on it: IMG_3078, med
+rug2_z = [-8.6, -4.94]
+bin = [-11.6, -12.6]       # black bin and the flight case at the row's west end, gate side: IMG_3075/3078, med
+case = [-11.9, -12.0]

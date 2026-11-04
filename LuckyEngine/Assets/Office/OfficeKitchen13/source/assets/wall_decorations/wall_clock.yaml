@@ -1,0 +1,250 @@
+# Sprint 36 — wall_decorations/wall_clock: round wall clock with 4 hour markers.
+#
+# Round body (shallow MeshCylinder) rotated so its axis lies along the
+# wall normal (+z), with 4 small cubical hour markers seated on the
+# front face at 12 / 3 / 6 / 9 o'clock positions. Marker positions are
+# derived from `radius` so a single override resizes the whole clock
+# and the markers stay flush with the rim.
+#
+# Override knobs:
+#   --param radius=0.20 --param depth=0.04 --param marker_size=0.022
+
+parameters:
+  radius:        { kind: Float, default: 0.15 }
+  depth:         { kind: Float, default: 0.025 }
+  marker_size:   { kind: Float, default: 0.018 }
+  marker_inset:  { kind: Float, default: 0.018 }
+
+  # Marker placement on the front face: inset from rim by
+  # `marker_inset` plus half the marker so the marker rim sits flush.
+  marker_pos_r:   { kind: Float, expr: "radius - marker_inset - marker_size / 2" }
+  marker_face_z:  { kind: Float, expr: "depth / 2 + marker_size / 2" }
+
+  # Rotate the cylinder 90° around X so its native +y axis becomes +z
+  # (i.e. the disc face points along the wall normal). π/2 ≈ 1.5707963.
+  body_rotation: { kind: Float3, expr: "1.5707963, 0, 0" }
+
+  marker_12_pos: { kind: Float3, expr: "0, marker_pos_r, marker_face_z" }
+  marker_3_pos:  { kind: Float3, expr: "marker_pos_r, 0, marker_face_z" }
+  marker_6_pos:  { kind: Float3, expr: "0, -marker_pos_r, marker_face_z" }
+  marker_9_pos:  { kind: Float3, expr: "-marker_pos_r, 0, marker_face_z" }
+
+  # Sprint 38 — matte-black plastic body.
+  # Sprint 39 — brass markers via AssignMaterialByFace. The join chain
+  # places the 4 markers FIRST (internal faces 0..23, 4 cubes × 6
+  # quads each), so a CompareFieldFloatLess(24) selection picks
+  # exactly the markers. NOTE: thresholds are on *internal* face
+  # count (quads + tris), not the triangulated count in stats.
+  plastic: { kind: Material, expr: "0.10, 0.10, 0.12, 1.0, 0.0,  0.55" }
+  brass:   { kind: Material, expr: "0.86, 0.66, 0.20, 1.0, 0.85, 0.30" }
+
+  # Sprint 62 — subtle Perlin grayscale grain via ProceduralMaterial.
+  # Both brass markers + plastic body get subtle modulation; brass
+  # reads as patina spotting, plastic as textured matte.
+  grain_dark:   { kind: Float3, expr: "0.92, 0.92, 0.92" }
+  grain_bright: { kind: Float3, expr: "1.05, 1.05, 1.05" }
+
+  # Sprint 65 — per-slot Bake targeting: differential PBR. Brass slot
+  # gets a Voronoi-driven roughness map (micro-scratches in cracks,
+  # polished elsewhere); plastic slot stays flat-PBR. Metallic field
+  # left unwired so it falls back to brass.Metallic = 0.85 (high).
+  brass_roughness_min: { kind: Float, default: 0.18 }   # polished brass
+  brass_roughness_max: { kind: Float, default: 0.45 }   # micro-scratch crack
+  bake_resolution:     { kind: Int32, default: 256 }
+
+nodes:
+  # ── Clock body: shallow cylinder, axis rotated to point along +z ──
+  - id: 1
+    type: MeshCylinder
+    name: clock face
+    inputs:
+      Sides:  { kind: Int32, value: 48 }
+      Radius: { param: radius }
+      Height: { param: depth }
+  - id: 2
+    type: Transform
+    inputs: { Rotation: { param: body_rotation } }
+
+  # ── Four hour markers at 12 / 3 / 6 / 9 ──────────────────────────
+  - id: 10
+    type: MeshCube
+    name: marker 12
+    inputs:
+      SizeX: { param: marker_size }
+      SizeY: { param: marker_size }
+      SizeZ: { param: marker_size }
+  - id: 11
+    type: Transform
+    inputs: { Translation: { param: marker_12_pos } }
+
+  - id: 12
+    type: MeshCube
+    name: marker 3
+    inputs:
+      SizeX: { param: marker_size }
+      SizeY: { param: marker_size }
+      SizeZ: { param: marker_size }
+  - id: 13
+    type: Transform
+    inputs: { Translation: { param: marker_3_pos } }
+
+  - id: 14
+    type: MeshCube
+    name: marker 6
+    inputs:
+      SizeX: { param: marker_size }
+      SizeY: { param: marker_size }
+      SizeZ: { param: marker_size }
+  - id: 15
+    type: Transform
+    inputs: { Translation: { param: marker_6_pos } }
+
+  - id: 16
+    type: MeshCube
+    name: marker 9
+    inputs:
+      SizeX: { param: marker_size }
+      SizeY: { param: marker_size }
+      SizeZ: { param: marker_size }
+  - id: 17
+    type: Transform
+    inputs: { Translation: { param: marker_9_pos } }
+
+  # ── Compose: chain joins assembling face + 4 markers → Viewer ────
+  - id: 20
+    type: JoinGeometry
+  - id: 21
+    type: JoinGeometry
+  - id: 22
+    type: JoinGeometry
+  - id: 23
+    type: JoinGeometry
+
+  # ── Materials: plastic base + brass override on the 4 markers ───
+  - id: 24
+    type: SetMaterial
+    inputs: { Material: { param: plastic } }
+  - id: 25
+    type: IndexField
+  - id: 26
+    type: CompareFieldFloatLess
+    name: "Index < 24 (4 marker cubes × 6 quads)"
+    inputs:
+      Threshold: { kind: Float, value: 24.0 }
+  - id: 27
+    type: AssignMaterialByFace
+    inputs: { Material: { param: brass } }
+
+  # Sprint 62 — Perlin grain via ProceduralMaterial. Multiplies BOTH
+  # brass marker primitive AND plastic body primitive uniformly via
+  # COLOR_0 (Sprint 59).
+  - id: 50
+    type: PerlinNoiseFloat
+    name: subtle grain
+    inputs:
+      Scale: { kind: Float, value: 12.0 }
+  - id: 51
+    type: MapRangeField
+    name: -1..1 -> 0..1
+    inputs:
+      FromMin: { kind: Float, value: -1.0 }
+      FromMax: { kind: Float, value:  1.0 }
+      ToMin:   { kind: Float, value:  0.0 }
+      ToMax:   { kind: Float, value:  1.0 }
+      Clamp:   { kind: Bool,  value: true }
+  - id: 52
+    type: ColorRampField
+    name: grayscale grain
+    inputs:
+      ColorA: { param: grain_dark }
+      ColorB: { param: grain_bright }
+  - id: 53
+    type: ProceduralMaterial
+    name: bake grain to COLOR_0
+
+  # Sprint 65 — per-slot Bake targeting. UV map for the brass-only
+  # roughness bake; Z-projection works well for the wall-facing clock.
+  - id: 60
+    type: UVProject
+    name: planar UV
+    inputs:
+      Mode: { kind: Menu, value: Planar }
+      Axis: { kind: Menu, value: Z }
+
+  # Voronoi cell ridges for brass micro-scratches. Same pattern as the
+  # bathtub glaze (Sprint 61) — cells produce sharp edges that read as
+  # tooled-metal scratches at the right scale.
+  - id: 61
+    type: VoronoiNoiseFloat
+    name: brass scratch field
+    inputs:
+      Scale: { kind: Float, value: 60.0 }
+      Mode:  { kind: Menu,  value: F2_F1 }
+  - id: 62
+    type: MapRangeField
+    name: cells -> roughness
+    inputs:
+      FromMin: { kind: Float, value: 0.0 }
+      FromMax: { kind: Float, value: 0.4 }
+      ToMin:   { param: brass_roughness_min }
+      ToMax:   { param: brass_roughness_max }
+      Clamp:   { kind: Bool,  value: true }
+
+  # Bake roughness onto SLOT 1 (brass) only. Plastic slot 0 stays
+  # untouched — it remains flat-PBR with Roughness=0.55.
+  - id: 63
+    type: BakeMetallicRoughnessTexture
+    name: bake brass MR (slot 1)
+    inputs:
+      Resolution:   { param: bake_resolution }
+      MaterialSlot: { kind: Int32, value: 1 }
+
+  - id: 99
+    type: Viewer
+
+links:
+  # Each cube → its Transform.
+  - { from: { node: 1,  pin: Geometry }, to: { node: 2,  pin: Geometry } }
+  - { from: { node: 10, pin: Geometry }, to: { node: 11, pin: Geometry } }
+  - { from: { node: 12, pin: Geometry }, to: { node: 13, pin: Geometry } }
+  - { from: { node: 14, pin: Geometry }, to: { node: 15, pin: Geometry } }
+  - { from: { node: 16, pin: Geometry }, to: { node: 17, pin: Geometry } }
+
+  # Combine — markers FIRST so they occupy internal face indices
+  # 0..23 (4 cubes × 6 quads), which lets a single
+  # CompareFieldFloatLess(24) select them for the per-face material
+  # override:
+  #   marker_12 + marker_3 + marker_6 + marker_9 + body → Viewer.
+  - { from: { node: 11, pin: Geometry }, to: { node: 20, pin: A } }
+  - { from: { node: 13, pin: Geometry }, to: { node: 20, pin: B } }
+  - { from: { node: 20, pin: Geometry }, to: { node: 21, pin: A } }
+  - { from: { node: 15, pin: Geometry }, to: { node: 21, pin: B } }
+  - { from: { node: 21, pin: Geometry }, to: { node: 22, pin: A } }
+  - { from: { node: 17, pin: Geometry }, to: { node: 22, pin: B } }
+  - { from: { node: 22, pin: Geometry }, to: { node: 23, pin: A } }
+  - { from: { node: 2,  pin: Geometry }, to: { node: 23, pin: B } }
+
+  # Plastic base material → brass override on the first 48 faces.
+  - { from: { node: 23, pin: Geometry }, to: { node: 24, pin: Geometry } }
+  - { from: { node: 25, pin: Value },    to: { node: 26, pin: Source } }
+  - { from: { node: 26, pin: Value },    to: { node: 27, pin: Selection } }
+  - { from: { node: 24, pin: Geometry }, to: { node: 27, pin: Geometry } }
+
+  # Sprint 62 — grain field chain → ProceduralMaterial.
+  - { from: { node: 50, pin: Value },    to: { node: 51, pin: Source } }
+  - { from: { node: 51, pin: Value },    to: { node: 52, pin: Factor } }
+  - { from: { node: 27, pin: Geometry }, to: { node: 53, pin: Geometry } }
+  - { from: { node: 52, pin: Value },    to: { node: 53, pin: BaseColor } }
+
+  # Sprint 65 — UV setup + brass-slot-only roughness bake. Voronoi
+  # cell scratches → MapRange [0.18..0.45] → BakeMR(MaterialSlot=1).
+  - { from: { node: 53, pin: Geometry }, to: { node: 60, pin: Geometry } }
+  - { from: { node: 60, pin: Geometry }, to: { node: 63, pin: Geometry } }
+  - { from: { node: 61, pin: Value },    to: { node: 62, pin: Source } }
+  - { from: { node: 62, pin: Value },    to: { node: 63, pin: Roughness } }
+  - { from: { node: 63, pin: Geometry }, to: { node: 99, pin: Geometry } }
+
+# Sprint 169 / Wave 1 — outputs block added so this factory can be
+# referenced as a `group:` from auto_furnished_kitchen_v2 (Stage 3B).
+outputs:
+  Geometry: { node: 63, pin: Geometry }

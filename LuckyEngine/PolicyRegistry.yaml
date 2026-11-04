@@ -1,0 +1,3 @@
+PolicyRegistry:
+  walker: ContentVault/Robots/UnitreeG1ThreeFingersPod/Policies/policy_descriptor.walker.json
+  locomotion: ContentVault/Robots/UnitreeGo2Pod/Policies/policy_descriptor.locomotion.json
