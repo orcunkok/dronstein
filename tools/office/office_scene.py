@@ -17,8 +17,8 @@ from __future__ import annotations
 import json
 import re
 
-from build_office import BOX, BOX_DECK, CURTAIN_TOP, CURTAIN_X, CURTAIN_Z, DECK, H, KITCHEN_X, LIGHT_X, LIGHT_Z, LIGHTS, \
-    MEZZ, P, PARTITION_X, X0, X1, Z0, Z1
+from build_office import BOX, BOX_DECK, CURTAIN_TOP, CURTAIN_X, CURTAIN_Z, DECK, H, KITCHEN_END, KITCHEN_X, LIGHT_X, \
+    LIGHT_Z, LIGHTS, MEZZ, P, PARTITION_X, X0, X1, Z0, Z1
 from pod_authoring import McpSession
 
 ENDPOINT = "http://127.0.0.1:19331/mcp"
@@ -50,7 +50,7 @@ COLLIDERS = {
                    P["spiral"]["z"] - 0.8, P["spiral"]["z"] + 0.8),
     "SpiralUpper": span(P["spiral_upper"]["x"] - 0.65, P["spiral_upper"]["x"] + 0.65, BOX_DECK, DECK + 1.0,
                         P["spiral_upper"]["z"] - 0.65, P["spiral_upper"]["z"] + 0.65),
-    "Kitchen": span(KITCHEN_X, KITCHEN_X + 6.04, 0, 2.42, Z1 - 0.95, Z1),
+    "Kitchen": span(KITCHEN_X, KITCHEN_END, 0, 2.42, Z1 - 0.95, Z1),
     "SofaYellow": span(P["desk_corner"]["sofa_x"] - 1.05, P["desk_corner"]["sofa_x"] + 1.05, 0, 0.65,
                        P["desk_corner"]["sofa_z"] - 0.4, P["desk_corner"]["sofa_z"] + 0.4),
     "Bench": span(X0 + P["desk_corner"]["bench_wall_gap"], X0 + P["desk_corner"]["bench_wall_gap"] + 0.75, 0, 1.25,

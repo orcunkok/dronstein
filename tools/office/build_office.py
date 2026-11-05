@@ -80,6 +80,7 @@ PARTITION_X = P["partition"]["x"]
 
 # Kitchen run on the east wall, north to south from KITCHEN_X.
 KITCHEN_X = P["kitchen"]["x0"]
+KITCHEN_END = BOX[0] - P["kitchen"]["box_gap"]
 
 # ---------------------------------------------------------------- materials (linear RGB, metallic, roughness)
 MATS = {
@@ -134,6 +135,7 @@ MATS = {
     "drinks": mat(0.30, 0.45, 0.60, 0.0, 0.6),
     "stripe_grey": mat(0.12, 0.12, 0.12, 0.0, 0.9),
     "glass_skylight": mat(0.10, 0.32, 0.85, 0.0, 0.1),
+    "rail_brown": mat(0.10, 0.06, 0.035, 0.3, 0.5),   # the spiral stairs' balusters
 }
 SOFA_YELLOW = mat(0.55, 0.38, 0.03, 0.0, 0.8)    # mustard tufted velvet
 BLACK_STAINLESS = mat(0.06, 0.06, 0.065, 0.9, 0.35)
@@ -155,6 +157,17 @@ class Graph:
         self.groups = {}
         self.extra = []
         self.n = 0
+        self.fields = None
+
+    def plane_fields(self):
+        """Shared point fields x, z and x*z of whatever geometry consumes them (made once per graph)."""
+        if self.fields is None:
+            xyz = self.e.node("SeparateXYZField", "point xyz",
+                              Source=self.e.node("PositionField", "point position").output("Value"))
+            xz = self.e.node("MathField", "point x*z", A=xyz.output("X"), B=xyz.output("Z"),
+                             Operation=Literal("Menu", "Multiply"))
+            self.fields = (xyz.output("X"), xyz.output("Z"), xz.output("Value"))
+        return self.fields
 
     def place(self, geometry, key, scale, pos, rot=IDENTITY):
         self.n += 1
@@ -213,27 +226,82 @@ class Graph:
 
 
 # ---------------------------------------------------------------- shell
-def roof_y(z):
-    """Roof underside height above z."""
-    return RIDGE - (RIDGE - H) * max(0.0, abs(z - ZC) - FLAT) / (ZC - Z0 - FLAT)
+def roof_part(x, z):
+    """The part of the roof over (x, z): the west or east slope, the flat middle, or one of the flat middle's ends
+    sloping down to the north or south wall."""
+    if abs(z - ZC) >= FLAT - 1e-6:
+        return "west" if z < ZC else "east"
+    return "north" if x < DROP_X[0] else "south" if x > DROP_X[1] else "flat"
 
 
-def slope_frame(side):
-    """side -1: west slope (rises toward +z), +1: east slope. Returns rotation, unit normal (up/out), angle."""
-    a = math.atan2(RIDGE - H, ZC - Z0 - FLAT)
-    r = roll(-a) if side < 0 else roll(a)
-    return r, [r[i][1] for i in range(3)], a
+def strip_y(x):
+    """Height of the flat middle at x: level between the drop lines, down to DROP_END at the end walls."""
+    d = max(0.0, DROP_X[0] - x, x - DROP_X[1]) / (DROP_X[0] - X0)
+    return RIDGE - (RIDGE - DROP_END) * d
 
 
-def on_roof(g, key, size, x, z, below=0.0):
-    """A box lying under the roof slope at (x, z), its top `below` metres under the roof underside."""
-    if abs(z - ZC) <= FLAT:
-        r, n = IDENTITY, [0.0, 1.0, 0.0]
-    else:
-        r, n, _ = slope_frame(-1 if z < ZC else 1)
-    y = roof_y(z)
+def part_y(f, x, z):
+    """Height of roof part f's underside over (x, z), carried on past the part's own edges. The side slopes run from
+    the eave up to the flat middle's edge, so near the end walls they slope down both ways (user)."""
+    if f == "west":
+        return H + (strip_y(x) - H) * (z - Z0) / (ZC - FLAT - Z0)
+    if f == "east":
+        return H + (strip_y(x) - H) * (Z1 - z) / (Z1 - ZC - FLAT)
+    return strip_y(x)
+
+
+def roof_y(x, z):
+    """Roof underside height over (x, z)."""
+    return part_y(roof_part(x, z), x, z)
+
+
+def roof_frame(f, x, z):
+    """Roof part f's tangent frame at (x, z): rotation (x along the roof over plan x, y the unit normal up), the normal,
+    and how much a plan length along x and along z stretches on it there."""
+    e = 1e-3
+    fx = (part_y(f, x + e, z) - part_y(f, x - e, z)) / (2 * e)
+    fz = (part_y(f, x, z + e) - part_y(f, x, z - e)) / (2 * e)
+    ln, lx = math.sqrt(1 + fx * fx + fz * fz), math.sqrt(1 + fx * fx)
+    n = [-fx / ln, 1 / ln, -fz / ln]
+    ax = [1 / lx, fx / lx, 0.0]
+    az = [ax[1] * n[2] - ax[2] * n[1], ax[2] * n[0] - ax[0] * n[2], ax[0] * n[1] - ax[1] * n[0]]
+    return [[ax[i], n[i], az[i]] for i in range(3)], n, (lx, math.sqrt(1 + fz * fz))
+
+
+def on_roof(g, key, size, x, z, below=0.0, f=None):
+    """A box lying under roof part f (the one over (x, z) if not given), its top `below` metres under the roof
+    underside, square to it; sizes along a slope are measured along it."""
+    f = f or roof_part(x, z)
+    r, n, _ = roof_frame(f, x, z)
+    y = part_y(f, x, z)
     off = below + size[1] / 2
     g.box(key, size, (x - n[0] * off, y - n[1] * off, z - n[2] * off), r)
+
+
+def roof_patch(g, f, x0, x1, z0, z1, segments=8, key="timber_white"):
+    """One smooth piece of the roof deck on roof part f over the plan box x0..x1, z0..z1: a grid bent to the part's
+    surface through its four corner heights (exact for flat, sloped and twisted parts, so neighbouring patches meet
+    without seams), ROOF_T thick down to the ceiling, smooth shaded."""
+    e = g.e
+    hx, hz = (x1 - x0) / 2, (z1 - z0) / 2
+    y = [[part_y(f, x, z) + ROOF_T for z in (z0, z1)] for x in (x0, x1)]       # the deck's top at the corners
+    a = (y[0][0] + y[0][1] + y[1][0] + y[1][1]) / 4
+    b = (y[1][0] + y[1][1] - y[0][0] - y[0][1]) / (4 * hx)
+    c = (y[0][1] + y[1][1] - y[0][0] - y[1][0]) / (4 * hz)
+    d = (y[1][1] - y[1][0] - y[0][1] + y[0][0]) / (4 * hx * hz)
+    px, pz, pxz = g.plane_fields()
+    g.n += 1
+    k = g.n
+    mad = Literal("Menu", "MultiplyAdd")
+    t = e.node("MathField", f"roof {k} x", A=px, B=b, C=a, Operation=mad)
+    t = e.node("MathField", f"roof {k} z", A=pz, B=c, C=t.output("Value"), Operation=mad)
+    t = e.node("MathField", f"roof {k} xz", A=pxz, B=d, C=t.output("Value"), Operation=mad)
+    grid = e.node("MeshGrid", f"roof {k}", SizeX=2 * hx, SizeZ=2 * hz, SegmentsX=segments, SegmentsZ=segments)
+    lift = e.node("SetPosition", f"roof {k} lift", Geometry=grid.output("Geometry"),
+                  Offset=e.node("CombineXYZField", f"roof {k} y", Y=t.output("Value")).output("Value"))
+    deck = e.node("Solidify", f"roof {k} deck", Geometry=lift.output("Geometry"), Thickness=ROOF_T)
+    smooth = e.node("SetShading", f"roof {k} smooth", Geometry=deck.output("Geometry"), Mode=Literal("Menu", "Smooth"))
+    g.place(smooth, key, (1, 1, 1), ((x0 + x1) / 2, 0.0, (z0 + z1) / 2))
 
 
 def sections(name):
@@ -265,6 +333,12 @@ def north_columns():
 # The roof is flat across the middle, from over the north wall's column on one side of the middle window group to the
 # one on the other (user), and slopes down to the long walls on either side.
 FLAT = ZC - north_columns()[0]
+# The flat middle slopes down to the north and south walls, to DROP_END there, from the thin north-south trusses'
+# outer verticals (user); the side slopes stay as they are.
+THIN_PANELS = 12
+_ka = round((TRUSS_X[0] - X0) / ((X1 - X0) / THIN_PANELS))
+DROP_X = (X0 + (X1 - X0) * (_ka - 1) / THIN_PANELS, X1 - (X1 - X0) * (_ka - 1) / THIN_PANELS)
+DROP_END = P["hall"]["drop_end"]
 
 
 def end_windows():
@@ -343,15 +417,32 @@ def angle(g, p0, p1, leg, t=0.008):
     g.box("steel_white", (t, length, leg), (m[0] - c * o, m[1] - s_ * o, m[2] + leg / 2), r)
 
 
-def slope_ibeam(g, x, za, zb, below, d=0.2, f=0.135, t=0.01):
-    """A small white I-beam along the roof slope from za to zb (one side of the ridge), its top `below` m under the
-    roof underside (measured square to the slope), web in the plane x."""
-    a = slope_frame(-1 if (za + zb) / 2 < ZC else 1)[2]
-    length = abs(zb - za) / math.cos(a)
-    zm = (za + zb) / 2
-    on_roof(g, "steel_white", (f, t, length), x, zm, below)
-    on_roof(g, "steel_white", (0.008, d - 2 * t, length), x, zm, below + t)
-    on_roof(g, "steel_white", (f, t, length), x, zm, below + d - t)
+def run_ibeam(g, p0, p1, d=0.2, f=0.135, t=0.01):
+    """A white I-beam along the straight line p0-p1 (x, y, z) on its top edge, its web in the vertical plane through
+    the line: d deep, flanges f wide and t thick."""
+    v = [b - a for a, b in zip(p0, p1)]
+    length = math.sqrt(sum(c * c for c in v))
+    u = [c / length for c in v]
+    h = [-u[2], 0.0, u[0]]                         # horizontal, square to the line
+    hl = math.hypot(h[0], h[2])
+    h = [c / hl for c in h]
+    up = [h[1] * u[2] - h[2] * u[1], h[2] * u[0] - h[0] * u[2], h[0] * u[1] - h[1] * u[0]]
+    side = [up[1] * u[2] - up[2] * u[1], up[2] * u[0] - up[0] * u[2], up[0] * u[1] - up[1] * u[0]]
+    r = [[side[i], up[i], u[i]] for i in range(3)]
+    m = [(a + b) / 2 for a, b in zip(p0, p1)]
+    for size, off in (((f, t, length), t / 2), ((0.008, d - 2 * t, length), d / 2), ((f, t, length), d - t / 2)):
+        g.box("steel_white", size, [m[i] - up[i] * off for i in range(3)], r)
+
+
+def roof_ibeam(g, f, x0, x1, z0, z1, below=0.0, d=0.2, t=0.01):
+    """A white I-beam under the sloping roof part f over the plan box x0..x1, z0..z1, running along its longer plan
+    side, its top `below` m under the roof, square to it."""
+    xm, zm = (x0 + x1) / 2, (z0 + z1) / 2
+    kx, kz = roof_frame(f, xm, zm)[2]
+    sx, sz = (x1 - x0) * kx, (z1 - z0) * kz
+    web = (sx, d - 2 * t, 0.008) if x1 - x0 > z1 - z0 else (0.008, d - 2 * t, sz)
+    for size, b in (((sx, t, sz), below), (web, below + t), ((sx, t, sz), below + d - t)):
+        on_roof(g, "steel_white", size, xm, zm, b, f)
 
 
 def build_shell(g):
@@ -363,103 +454,138 @@ def build_shell(g):
     g.span("tape_yellow", X0, CURTAIN_X[1] + 1.0, 0.0, 0.002, CURTAIN_Z + 2.45, CURTAIN_Z + 2.5)
     g.span("tape_yellow", X0 + 6.5, X0 + 6.55, 0.0, 0.002, CURTAIN_Z + 2.5, Z1)
 
-    # Walls: the end walls up to the eave, the gable above them in strips that end inside the roof slab.
+    # Walls: the end walls up to the eave, above it up the side slopes to DROP_END in strips that end inside the roof
+    # slab.
     for x, side in ((X0 - WALL_T / 2, -1), (X1 + WALL_T / 2, 1)):
         holes = [window_rect(z0, c, r) for w, z0, c, r in end_windows() if w == side]
         holed_wall(g, x - WALL_T / 2, x + WALL_T / 2, Z0 - WALL_T, Z1 + WALL_T, H, holes)
         steps = 12
+        hs = (DROP_END - H) / steps
         for i in range(steps):
-            y0 = H + (RIDGE - H) * i / steps
             half = FLAT + (ZC - Z0 - FLAT) * (1 - i / steps) + WALL_T
-            g.box("concrete_white", (WALL_T, (RIDGE - H) / steps + 0.001, 2 * half),
-                  (x, y0 + (RIDGE - H) / steps / 2, ZC))
+            g.box("concrete_white", (WALL_T, hs + 0.001, 2 * half), (x, H + hs * (i + 0.5), ZC))
+        g.span("concrete_white", x - WALL_T / 2, x + WALL_T / 2, DROP_END, DROP_END + ROOF_T, ZC - FLAT, ZC + FLAT)
     for z in (Z0 - WALL_T / 2, Z1 + WALL_T / 2):
         g.box("concrete_white", (length + 2 * WALL_T, H + ROOF_T, WALL_T), (xm, (H + ROOF_T) / 2, z))
 
-    # Roof beams' places and the skylights' (between two beams, see below), then the white timber roof deck: the two
-    # slopes and the flat middle, with an opening up through it over each skylight.
+    # Roof beams' places and the skylights' (between two beams, see below), then the white timber roof deck: one slab
+    # per roof part, each with an opening at every skylight; where the flat middle's ends come down below the side
+    # slopes the roof is left open (user).
     n, (bf, bd, bg), beams_z = P["hall"]["west_beams"], BEAM, BEAMS_Z
     sky_w = beams_z[1] - beams_z[0] - bf
     sky_x = LIGHT_X
     sky_z = ((beams_z[1] + beams_z[2]) / 2, (beams_z[4] + beams_z[5]) / 2)
-    a = slope_frame(-1)[2]
-    eave = Z0 - WALL_T - 0.2
-    for za, zb in ((eave, ZC - FLAT), (ZC - FLAT, ZC + FLAT), (ZC + FLAT, 2 * ZC - eave)):
-        zs = [za, zb]
-        for z in sky_z:
-            if za < z < zb:
-                zs = [za, z - sky_w / 2, z + sky_w / 2, zb]
-        for i, (z0, z1) in enumerate(zip(zs, zs[1:])):
-            xs = [X0 - WALL_T] + ([v for x in sky_x for v in (x - 1.2, x + 1.2)] if i == 1 else []) + [X1 + WALL_T]
-            zm = (z0 + z1) / 2
-            along = (z1 - z0) / (1.0 if abs(zm - ZC) < FLAT else math.cos(a))
-            for x0, x1 in zip(xs[::2], xs[1::2]):
-                on_roof(g, "timber_white", (x1 - x0, ROOF_T, along), (x0 + x1) / 2, zm, -ROOF_T)
+    o = WALL_T + 0.2
+    zw, ze = (Z0 - o, ZC - FLAT), (ZC + FLAT, Z1 + o)
+    xn_, xm_, xs_ = (X0 - o, DROP_X[0]), (DROP_X[0], DROP_X[1]), (DROP_X[1], X1 + o)
+    # (part, x range, z range, twisted): the side slopes' corners near the end walls are twisted and made as smooth
+    # bent patches (roof_patch); the other parts are flat planes, one board each. Every piece stops at the skylights'
+    # openings.
+    parts = [("west", xn_, zw, True), ("west", xm_, zw, False), ("west", xs_, zw, True),
+             ("east", xn_, ze, True), ("east", xm_, ze, False), ("east", xs_, ze, True),
+             ("north", xn_, (ZC - FLAT, ZC + FLAT), False), ("flat", xm_, (ZC - FLAT, ZC + FLAT), False),
+             ("south", xs_, (ZC - FLAT, ZC + FLAT), False)]
+    holes = [(x - 1.2, x + 1.2, z - sky_w / 2, z + sky_w / 2) for x in sky_x for z in sky_z]
+    for f, (x0, x1), (z0, z1), twisted in parts:
+        xs = sorted({x0, x1, *(min(max(h[i], x0), x1) for h in holes for i in (0, 1))})
+        zs = sorted({z0, z1, *(min(max(h[i], z0), z1) for h in holes for i in (2, 3))})
+        for xa, xb in zip(xs, xs[1:]):
+            for za, zb in zip(zs, zs[1:]):
+                if xb - xa < 1e-6 or zb - za < 1e-6:
+                    continue
+                if any(h[0] <= xa and xb <= h[1] and h[2] <= za and zb <= h[3] for h in holes):
+                    continue
+                if twisted:
+                    roof_patch(g, f, xa, xb, za, zb)
+                else:
+                    xc, zc = (xa + xb) / 2, (za + zb) / 2
+                    kx, kz = roof_frame(f, xc, zc)[2]
+                    on_roof(g, "timber_white", ((xb - xa) * kx, ROOF_T, (zb - za) * kz), xc, zc, -ROOF_T, f)
 
     # Roof framing (IMG_3106-3108, user): ten white steel I-beams north to south right under the roof, the size of the
     # west wall's I-beam columns: one on top of the columns, centred on them, its mirror on the east wall, eight equally
     # spaced between. Big I-beams on the end walls over the windows (the south one half in the wall, the north one
     # out to the columns' faces); the curtain beam is centred on
     # them and the two east-west A-frame trusses sit on it: small I-beam chords, the top one under the roof beams,
-    # small struts between, a pilaster under their east ends. Two thin trusses of steel angles hang under the fourth
-    # and seventh roof beams, north wall to south wall.
+    # small struts between, ending at the side walls' I-beam columns. Two thin trusses of steel angles hang under the
+    # fourth and seventh roof beams, north wall to south wall.
     # The roof beams frame into one more along the top of the north wall, following the roof, flush with the faces of
-    # the wall's concrete columns (user).
-    xn = X0 + COLUMN_D
+    # the wall's concrete columns, and one along the top of the south wall (user).
+    xn, xsw = X0 + COLUMN_D, X1 - bf           # the faces of the beams along the north and south walls' tops
+    # Each roof beam is three straight pieces with an upright web, meeting under the roof where it bends: over the side
+    # walls at the columns, the others at the drop lines (user).
+    cx = [X0 + k * length / (n + 1) for k in range(1, n + 1)]
     for z in beams_z:
-        ibeam(g, xn, X1, roof_y(z) - bd, roof_y(z), z - bf / 2, z + bf / 2, 1)
-    for za, zb in ((Z0, ZC - FLAT), (ZC + FLAT, Z1)):
-        slope_ibeam(g, xn - bf / 2, za, zb, 0.0, bd, bf)
-    ibeam(g, xn - bf, xn, RIDGE - bd, RIDGE, ZC - FLAT, ZC + FLAT, 1)
+        if z in (beams_z[0], beams_z[-1]):
+            ends = [xn, *(c + sd * bf / 2 for c in cx for sd in (-1, 1)), xsw]
+            runs = list(zip(ends[::2], ends[1::2]))
+        else:
+            ends = [xn, DROP_X[0], DROP_X[1], xsw]
+            runs = list(zip(ends, ends[1:]))
+        for xa, xb in runs:
+            run_ibeam(g, (xa, roof_y(xa, z), z), (xb, roof_y(xb, z), z), bd, bf)
+    # The beams along the north and south walls' tops, under the roof's edge there: up the side slopes, level across
+    # the flat middle's end (user).
+    zw = Z0 + (ZC - FLAT - Z0) * 0.999
+    for xa, xb, end in ((xn - bf, xn, "north"), (xsw, X1, "south")):
+        ye = part_y(end, (xa + xb) / 2, ZC)
+        for f, za, zb in (("west", Z0, zw), ("east", 2 * ZC - zw, Z1)):
+            roof_ibeam(g, f, xa, xb, za, zb, 0.0, bd)
+        ibeam(g, xa, xb, ye - bd, ye, ZC - FLAT, ZC + FLAT, 1)
+    # The side walls' I-beam columns, the east ones mirroring the west, up to the roof (user).
     for k in range(1, n + 1):
         x = X0 + k * length / (n + 1)
-        ibeam(g, x - bf / 2, x + bf / 2, 0.0, roof_y(beams_z[0]) - bd, Z0 + bg, Z0 + bg + bd, 2)
+        for z0, z1 in ((Z0 + bg, Z0 + bg + bd), (Z1 - bg - bd, Z1 - bg)):
+            ibeam(g, x - bf / 2, x + bf / 2, 0.0, roof_y(x, (z0 + z1) / 2), z0, z1, 2)
 
     wt = P["south_wall"]["window_top"]
-    end_beam = (wt + 0.475, wt + 1.075)           # ~W24, 0.6 m deep, 0.23 m flange; the curtain beam's top at 7.4 m (user)
+    end_beam = (wt + 0.475, wt + 1.075)   # ~W24, 0.6 m deep, 0.23 m flange; the curtain beam's top at 7.4 m (user)
     ibeam(g, xn - 0.23, xn, end_beam[0], end_beam[1], Z0, Z1, 1)     # north: its face flush with the columns' (user)
     ibeam(g, X1 - 0.115, X1 + 0.115, end_beam[0], end_beam[1], Z0, Z1, 1)
     curtain_beam = (sum(end_beam) / 2 - 0.225, sum(end_beam) / 2 + 0.225)   # ~W18
     bottom = curtain_beam[1]                       # the A-frames' bottom chord sits on the curtain beam
     chord, cf = 0.2, 0.135                         # small I-beam chords (~W8)
-    a = slope_frame(-1)[2]
-    # Both chords run between the columns on the side walls (the west wall's I-beam, the east wall's pilaster), the top
-    # one under the roof beams up the slope and flat across the middle (user); between the chords a vertical strut
+    # Both chords run between the side walls' I-beam columns, the top one under the roof beams up the slope and flat
+    # across the middle (user); between the chords a vertical strut
     # under each of the eight inner roof beams, one diagonal per panel leaning out from the middle, and an X in the
     # middle panel (user).
-    zw, ze = Z0 + bg + bd, Z1 - 0.3            # the columns' inner faces
+    zw, ze = Z0 + bg + bd, Z1 - bg - bd        # the columns' inner faces
     vz = beams_z[1:-1]
     for x in TRUSS_X:
         ibeam(g, x - cf / 2, x + cf / 2, bottom, bottom + chord, zw, ze, 1)
-        for za, zb in ((zw, ZC - FLAT), (ZC + FLAT, ze)):
-            slope_ibeam(g, x, za, zb, bd * math.cos(a), chord, cf)
+        for za, zb in ((zw, ZC - FLAT), (ZC + FLAT, ze)):      # the sloped parts just under the side beams
+            run_ibeam(g, (x, roof_y(x, za) - bd, za), (x, roof_y(x, zb) - bd, zb), chord, cf)
         ibeam(g, x - cf / 2, x + cf / 2, RIDGE - bd - chord, RIDGE - bd, ZC - FLAT, ZC + FLAT, 1)
         for z in vz:
-            g.strut("steel_white", (x, bottom + chord, z), (x, roof_y(z) - bd - chord, z), 0.08)
+            g.strut("steel_white", (x, bottom + chord, z), (x, roof_y(x, z) - bd - chord, z), 0.08)
         for za, zb in zip(vz, vz[1:]):
             ends = [(za, zb), (zb, za)] if za < ZC < zb else [(zb, za) if zb < ZC else (za, zb)]
             for z0, z1 in ends:                # from the bottom chord at z0 up to the top chord at z1
-                g.strut("steel_white", (x, bottom + chord, z0), (x, roof_y(z1) - bd - chord, z1), 0.07)
-        g.box("steel_white", (0.3, H, 0.3), (x, H / 2, Z1 - 0.15))
+                g.strut("steel_white", (x, bottom + chord, z0), (x, roof_y(x, z1) - bd - chord, z1), 0.07)
     # The thin trusses' bottoms line up with the A-frames' bottom, a square white plate under each crossing (user).
     for z in (beams_z[3], beams_z[6]):
-        yt, yb = roof_y(z) - bd, bottom + 0.04
-        panels = 12
+        yb = bottom + 0.04
+        panels = THIN_PANELS
+
+        def yt(x):                             # under the roof beam, which comes down at the ends
+            return roof_y(x, z) - bd
+
         # From each end wall: one three-panel bay with a V and a Λ, then a panel with an X up to the A-frame; between
         # the A-frames no verticals, one zigzag \/\ of three diagonals (user).
         ka = round((TRUSS_X[0] - X0) / (length / panels))
         xs = [X0 + length * k / panels for k in (0, ka - 1, ka, panels - ka, panels - ka + 1, panels)]
         angle(g, (X0, yb, z), (X1, yb, z), 0.08)
         for x in xs:
-            angle(g, (x, yb, z), (x, yt, z), 0.06)
+            angle(g, (x, yb, z), (x, yt(x), z), 0.06)
         for i, (x, xn) in enumerate(zip(xs, xs[1:])):
             out, xc = min(i, len(xs) - 2 - i), (x + xn) / 2
             if out == 0:
-                pairs = [((x, yt), (xc, yb)), ((xn, yt), (xc, yb)), ((x, yb), (xc, yt)), ((xn, yb), (xc, yt))]
+                pairs = [((x, yt(x)), (xc, yb)), ((xn, yt(xn)), (xc, yb)), ((x, yb), (xc, yt(xc))),
+                         ((xn, yb), (xc, yt(xc)))]
             elif out == 1:
-                pairs = [((x, yb), (xn, yt)), ((x, yt), (xn, yb))]
+                pairs = [((x, yb), (xn, yt(xn))), ((x, yt(x)), (xn, yb))]
             else:
-                zig = [(x + (xn - x) * j / 3, (yt, yb)[j % 2]) for j in range(4)]
+                zig = [(x + (xn - x) * j / 3, (yt(x + (xn - x) * j / 3), yb)[j % 2]) for j in range(4)]
                 pairs = list(zip(zig, zig[1:]))
             for (xa, ya), (xb, yb_) in pairs:
                 angle(g, (xa, ya, z), (xb, yb_, z), 0.06)
@@ -488,7 +614,7 @@ def build_shell(g):
     for w, z0, cols, rows in end_windows():
         sash(g, X0 if w < 0 else X1, -w, z0, cols, rows)
     for c in north_columns():
-        g.span("concrete_white", X0, X0 + COLUMN_D, 0.0, roof_y(c) - bd, c - 0.15, c + 0.15)
+        g.span("concrete_white", X0, X0 + COLUMN_D, 0.0, roof_y(X0, c) - bd, c - 0.15, c + 0.15)
 
     # Stage curtain: one greyish-white pleated sheet on a black track under the white curtain I-beam, which runs the
     # whole hall north wall to south wall, centred on the end-wall beams (user, IMG_3077/3078). The track follows the
@@ -525,7 +651,7 @@ def build_shell(g):
         x = X0 + 0.3 + k * 1.0
         g.tube("steel_dark", (x, ty, CURTAIN_Z), (x, b0, CURTAIN_Z), 0.008)
     for x, z in ((xt, (CURTAIN_Z + zt) / 2), (xt + 1.5, zt), (xt + 3.0, zt), (X1 - 0.4, zt)):
-        g.tube("steel_dark", (x, ty, z), (x, roof_y(z), z), 0.008)
+        g.tube("steel_dark", (x, ty, z), (x, roof_y(x, z), z), 0.008)
 
     # South wall, east to west behind the U stair: the big steel-sash window, the fire alarm gear, the steel exit door,
     # plain wall, the closed roll-up gate with its hood and three window units above it. Sizes from office_params.toml.
@@ -610,25 +736,21 @@ def build_shell(g):
             g.box("steel_white", (0.7, 0.012, 0.14), (x + 0.45 * math.cos(a), y - 0.05, z - 0.45 * math.sin(a)),
                   yaw(a))
     for x, z in LIGHTS:
-        top = bottom if z in (beams_z[3], beams_z[6]) else roof_y(z) - bd     # a truss or the roof beam above
+        top = bottom if z in (beams_z[3], beams_z[6]) else roof_y(x, z) - bd  # a truss or the roof beam above
         g.span("led_white", x - 0.3, x + 0.3, 6.35, 6.42, z - 0.12, z + 0.12)
         for xe in (x - 0.27, x + 0.27):        # two grey ropes from its narrow ends (user)
             g.tube("conduit", (xe, 6.42, z), (xe, top, z), 0.004)
 
 
 # ---------------------------------------------------------------- office block and mezzanine
-def balusters(g, key, p0, p1, base, height, step, w=0.022):
-    n = max(1, int(math.dist(p0, p1) / step))
+def deck_rail(g, p0, p1, base=BOX_DECK):
+    """A railing from p0 to p1 (x, z) standing on `base`: dark brown round balusters 0.1 m apart, the same as the
+    spiral stairs' (user), and a flat dark brown top rail 1 m up."""
+    n = max(1, int(math.dist(p0, p1) / 0.1))
     for i in range(n + 1):
-        t = i / n
-        x, z = p0[0] + (p1[0] - p0[0]) * t, p0[1] + (p1[1] - p0[1]) * t
-        g.box(key, (w, height, w), (x, base + height / 2, z))
-
-
-def deck_rail(g, p0, p1):
-    """Close steel balusters (0.1 m) from p0 to p1 (x, z) on the box deck, a flat top rail over them."""
-    balusters(g, "steel_grey", p0, p1, BOX_DECK, 1.0, 0.1, 0.02)
-    g.strut("steel_grey", (p0[0], BOX_DECK + 1.0, p0[1]), (p1[0], BOX_DECK + 1.0, p1[1]), 0.05, 0.03)
+        x, z = p0[0] + (p1[0] - p0[0]) * i / n, p0[1] + (p1[1] - p0[1]) * i / n
+        g.tube("rail_brown", (x, base, z), (x, base + 1.0, z), 0.012)
+    g.strut("rail_brown", (p0[0], base + 1.0, p0[1]), (p1[0], base + 1.0, p1[1]), 0.05, 0.03)
 
 
 def cable_rail(g, p0, p1, out=(-1.0, 0.0)):
@@ -657,10 +779,9 @@ def slat_rail(g, p0, p1):
 
 
 def spiral(g, cx, cz, r, y0, y1, treads, start, turn):
-    """A spiral stair round an anthracite post from y0 to y1: per step an anthracite collar clamped on the post, one
-    rectangular wood tread from the collar out, a slim black bracket under it from the collar, two balusters near its
-    outer corners (rail coloured) right up into the handrail; the bottom tread points along yaw `start`, the top
-    one `turn` radians further round."""
+    """A spiral stair round one anthracite post from y0 up to the top rails' height: per step a rectangular wood tread
+    from the post out, a slim black bracket under it, two dark brown balusters near its outer corners right up into
+    the handrail; the bottom tread points along yaw `start`, the top one `turn` radians further round."""
     rise = (y1 - y0) / treads
     step = turn / (treads - 1)
     hub = 0.065
@@ -670,12 +791,11 @@ def spiral(g, cx, cz, r, y0, y1, treads, start, turn):
     def rail_y(a):
         return y0 + rise * (1 + (treads - 1) * (a - start) / turn) + 0.9
 
-    g.tube("anthracite", (cx, y0, cz), (cx, y1 + 0.9, cz), 0.05)
+    g.tube("anthracite", (cx, y0, cz), (cx, y1 + 1.0, cz), hub)      # one post, up to the top rails (user)
     for i in range(treads):
         a = start + step * i
         y = y0 + rise * (i + 1)
         d = (math.cos(a), -math.sin(a))
-        g.tube("anthracite", (cx, y - 0.12, cz), (cx, y, cz), hub)
         mid = (hub + r) / 2
         g.box("wood_tread", (r - hub, 0.035, 0.24), (cx + d[0] * mid, y - 0.018, cz + d[1] * mid), yaw(a))
         mid = (hub + r - 0.08) / 2
@@ -683,7 +803,7 @@ def spiral(g, cx, cz, r, y0, y1, treads, start, turn):
         for side in (-1, 1):
             b = a + side * da
             foot = (cx + math.cos(b) * rr, y, cz - math.sin(b) * rr)
-            g.tube("steel_grey", foot, (foot[0], rail_y(b), foot[2]), 0.009)
+            g.tube("rail_brown", foot, (foot[0], rail_y(b), foot[2]), 0.012)
     # Handrail: a smooth helix through the baluster tops, a little past the first and last ones.
     m = 4 * (treads - 1)
     a0, a1 = start - math.copysign(da, turn), start + turn + math.copysign(da, turn)
@@ -807,26 +927,23 @@ def build_block(g):
     for x in (xc - 1.45, xc, xr):
         g.span("panel_grey", x - 0.06, x + 0.06, 2.54, 2.66, bz0 - 0.06, bz0)
     g.tube("conduit_red", (xr, 2.66, bz0 - 0.03), (xr, under, bz0 - 0.03), 0.01)
-    # Lower deck edge: a dark bolted steel channel round its north and west edges, close silver balusters on it
-    # (IMG_3104/3087), open where the big spiral's landing joins the deck.
+    # Lower deck edge: a dark bolted steel channel round its north and west edges, the railing on it (IMG_3104/3087).
     north_end = B["mid_box"][2]
     g.span("steel_dark", bx0 - 0.05, bx0, BOX_DECK - 0.22, BOX_DECK + 0.03, bz0 - 0.05, bz1)
-    # The big spiral comes up onto a square wood landing on a dark steel frame over its pole, between its top tread and
-    # the deck edge, railed on its north and west sides (IMG_3103/3087).
-    lx0, lx1, lz0 = S["x"] - S["radius"], S["x"] + 0.12, S["z"] - 0.12
-    for x0, x1 in ((bx0, lx0), (lx1, mx0)):
-        g.span("steel_dark", x0, x1, BOX_DECK - 0.22, BOX_DECK + 0.03, bz0 - 0.05, bz0)
-        for x in [x0 + 0.15 + 0.3 * k for k in range(int((x1 - x0) / 0.3))]:
-            for y in (BOX_DECK - 0.16, BOX_DECK - 0.03):
-                g.span("nickel", x - 0.012, x + 0.012, y - 0.012, y + 0.012, bz0 - 0.06, bz0 - 0.05)
+    # The big spiral comes up onto a square wood landing on a dark steel frame in the corner between its post, the
+    # box and the upper deck's front (flush with it); the deck's railing turns 90 degrees along the landing's north
+    # edge to the post, where the spiral's handrail goes on (IMG_3119, user).
+    lx0, lx1, lz0 = S["x"], mx0, S["z"]
+    g.span("steel_dark", bx0, lx0, BOX_DECK - 0.22, BOX_DECK + 0.03, bz0 - 0.05, bz0)
+    for x in [bx0 + 0.15 + 0.3 * k for k in range(int((lx0 - bx0) / 0.3))]:
+        for y in (BOX_DECK - 0.16, BOX_DECK - 0.03):
+            g.span("nickel", x - 0.012, x + 0.012, y - 0.012, y + 0.012, bz0 - 0.06, bz0 - 0.05)
     deck_rail(g, (bx0 + 0.03, bz0), (bx0 + 0.03, north_end))
     g.span("wood_tread", lx0, lx1, BOX_DECK - 0.04, BOX_DECK + 0.005, lz0, bz0)
-    for x0, x1, z0, z1 in ((lx0, lx0 + 0.03, lz0, bz0), (lx1 - 0.03, lx1, lz0, bz0), (lx0, lx1, lz0, lz0 + 0.03)):
+    for x0, x1, z0, z1 in ((lx0, lx0 + 0.03, lz0, bz0), (lx0, lx1, lz0, lz0 + 0.03)):
         g.span("steel_dark", x0, x1, BOX_DECK - 0.14, BOX_DECK - 0.04, z0, z1)
-    deck_rail(g, (lx0 + 0.02, lz0 + 0.02), (lx0 + 0.02, bz0))
-    deck_rail(g, (lx0 + 0.02, lz0 + 0.02), (S["x"] - 0.08, lz0 + 0.02))
-    for x0, x1 in ((bx0, lx0), (lx1, mx0)):
-        deck_rail(g, (x0, bz0 + 0.03), (x1, bz0 + 0.03))
+    deck_rail(g, (bx0, bz0 + 0.03), (lx0 + 0.02, bz0 + 0.03))
+    deck_rail(g, (lx0 + 0.02, bz0 + 0.03), (lx0 + 0.02, lz0))
 
     # Upper deck: one slab from its front to the south wall, from the U stair to the east wall; over the hall a front
     # beam on two white posts and the cable railing, over the box deck open (the small spiral comes up there and the
@@ -922,6 +1039,15 @@ def build_block(g):
     # Spiral stairs: floor -> lower deck just west of the box, lower deck -> upper deck where the mezzanine starts.
     for R, y0, y1 in ((S, 0.0, BOX_DECK), (T, BOX_DECK, DECK)):
         spiral(g, R["x"], R["z"], R["radius"], y0, y1, R["treads"], R["start"], R["turn"])
+    # The small spiral's top: a square wood walk-in platform on a dark steel frame at the upper deck's level, south of
+    # its post between the top tread and the upper deck, railed along its back by the tall box, a top rail from the
+    # post to that railing (IMG_3116, user).
+    tx, tz, tr = T["x"], T["z"], T["radius"]
+    g.span("wood_tread", tx, mx0, DECK - 0.045, DECK, tz, tz + tr)
+    for x0, x1, z0, z1 in ((tx, tx + 0.03, tz, tz + tr), (tx, mx0, tz + tr - 0.03, tz + tr)):
+        g.span("steel_dark", x0, x1, DECK - 0.14, DECK - 0.045, z0, z1)
+    deck_rail(g, (tx, tz + tr - 0.02), (mx0, tz + tr - 0.02), DECK)
+    g.strut("rail_brown", (tx, DECK + 1.0, tz), (tx, DECK + 1.0, tz + tr - 0.02), 0.05, 0.03)
 
 
 # ---------------------------------------------------------------- kitchen
@@ -965,15 +1091,16 @@ def upper_run(g, x0, x1, y0, y1, doors):
 
 def build_kitchen(g):
     x = KITCHEN_X
-    zf = Z1 - 0.61                    # base cabinet fronts
-    f1, f2 = x, x + 0.908             # fridges: 35.75" x 69.875" (GE Profile PFE28K-style), black stainless
-    c1 = x + 2 * 0.908
-    rng = c1 + 0.45                   # 30" range
-    dr = rng + 0.762
+    zf = Z1 - 0.61                    # base cabinet fronts left of the range
+    zr = Z1 - 0.70                    # right of it the cabinets, counter and pantry are 0.70 m deep (user)
+    f1, f2 = x, x + 0.88              # fridges 0.88 m wide each (user), black stainless
+    c1 = x + 2 * 0.88
+    rng = c1 + 0.45                   # range 0.80 m wide, the microwave over it the same (user)
+    dr = rng + 0.80
     dw = dr + 0.6                     # 24" dishwasher
     sk = dw + 0.61
-    pa = sk + 0.9
-    end = pa + 0.9
+    end = KITCHEN_END                 # the pantry ends short of the restroom (user)
+    pa = end - 0.9                    # the sink cabinets take the rest
     for fx in (f1, f2):
         fc = fx + 0.454
         g.kit("appliances/fridge_v2", (fc, 0.0, Z1 - 0.45), turn=math.pi,
@@ -993,21 +1120,21 @@ def build_kitchen(g):
         kx = rng + 0.1 + k * (dr - rng - 0.2) / 5
         g.tube("pc_black", (kx, 0.81, rf - 0.01), (kx, 0.81, rf - 0.04), 0.02)
     g.span("pc_black", rng + 0.02, dr - 0.02, 0.91, 0.935, rf + 0.03, Z1 - 0.05)
-    base_run(g, dr, dw, 1, zf, drawers=True)
-    g.kit("appliances/dishwasher_v2", ((dw + sk) / 2, 0.005, Z1 - 0.31), turn=math.pi,
+    base_run(g, dr, dw, 1, zr, drawers=True)
+    g.kit("appliances/dishwasher_v2", ((dw + sk) / 2, 0.005, Z1 - 0.40), turn=math.pi,
           width=0.61, height=0.86, depth=0.6, steel=STAINLESS)
-    g.span("stainless", dw + 0.01, sk - 0.01, 0.1, 0.86, Z1 - 0.63, Z1 - 0.61)
-    g.tube("nickel", (dw + 0.08, 0.78, Z1 - 0.66), (sk - 0.08, 0.78, Z1 - 0.66), 0.01)
-    g.span("counter_black", dw, sk, 0.876, 0.91, zf - 0.03, Z1)
-    base_run(g, sk, pa, 2, zf)
+    g.span("stainless", dw + 0.01, sk - 0.01, 0.1, 0.86, zr - 0.02, zr)
+    g.tube("nickel", (dw + 0.08, 0.78, zr - 0.05), (sk - 0.08, 0.78, zr - 0.05), 0.01)
+    g.span("counter_black", dw, sk, 0.876, 0.91, zr - 0.03, Z1)
+    base_run(g, sk, pa, 2, zr)
     # Sink basin and faucet.
     sc = (sk + pa) / 2
-    g.span("steel_dark", sc - 0.3, sc + 0.3, 0.911, 0.913, zf + 0.06, zf + 0.46)
+    g.span("steel_dark", sc - 0.3, sc + 0.3, 0.911, 0.913, zr + 0.06, zr + 0.46)
     g.tube("nickel", (sc, 0.91, Z1 - 0.08), (sc, 1.25, Z1 - 0.08), 0.015)
     g.tube("nickel", (sc, 1.25, Z1 - 0.08), (sc, 1.18, Z1 - 0.32), 0.012)
     # Backsplash, microwave over the range, upper cabinets, pantry.
     g.span("backsplash", c1, pa, 0.91, 1.42, Z1 - 0.01, Z1)
-    g.kit("appliances/microwave_v2", ((rng + dr) / 2, 1.48, Z1 - 0.21), turn=math.pi, steel=STAINLESS)
+    g.kit("appliances/microwave_v2", ((rng + dr) / 2, 1.48, Z1 - 0.21), turn=math.pi, steel=STAINLESS, width=0.80)
     # Wall clock over the cabinets (IMG_3094): black rim, white face, two hands.
     cx = x + 3.35
     g.tube("pc_black", (cx, 2.75, Z1), (cx, 2.75, Z1 - 0.05), 0.2)
@@ -1019,12 +1146,12 @@ def build_kitchen(g):
     upper_run(g, rng, dr, 1.9, 2.42, 2)
     upper_run(g, dr, sk, 1.42, 2.42, 2)
     upper_run(g, sk, pa, 1.42, 2.42, 2)
-    g.span("cabinet_white", pa, end, 0.0, 2.42, zf, Z1)
+    g.span("cabinet_white", pa, end, 0.0, 2.42, zr, Z1)
     for y0, y1 in ((0.1, 1.5), (1.52, 2.42)):
         for a in (pa, pa + 0.45):
-            shaker_door(g, a, a + 0.45, y0, y1, zf)
-    g.span("nickel", pa + 0.4, pa + 0.412, 0.9, 1.3, zf - 0.06, zf - 0.03)
-    g.span("nickel", pa + 0.488, pa + 0.5, 0.9, 1.3, zf - 0.06, zf - 0.03)
+            shaker_door(g, a, a + 0.45, y0, y1, zr)
+    g.span("nickel", pa + 0.4, pa + 0.412, 0.9, 1.3, zr - 0.06, zr - 0.03)
+    g.span("nickel", pa + 0.488, pa + 0.5, 0.9, 1.3, zr - 0.06, zr - 0.03)
     # Gooseneck barn lamps above the run.
     for lx in (x + 0.7, x + 3.1, x + 5.5):
         g.tube("steel_dark", (lx, 2.95, Z1), (lx, 3.05, Z1 - 0.35), 0.012)

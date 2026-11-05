@@ -17,8 +17,9 @@ x0 = -15.0            # north wall; length 30 m (record 30.2), med
 x1 = 15.0             # south wall (main gate wall)
 z0 = -16.0            # west wall; width 23.0 m: IMG_3077 south wall sum, record 22.3 m, med
 z1 = 7.0              # east wall (kitchen)
-wall_height = 9.5     # floor to roof bearing on the east and west walls (user)
+wall_height = 9.3     # floor to roof bearing on the east and west walls (user)
 ridge = 10.5          # roof underside across its flat middle (user)
+drop_end = 9.6        # the flat middle's ends slope down to this at the north and south walls (user)
 wall_thickness = 0.3
 roof_thickness = 0.3
 west_beams = 2         # steel I-beams on the west wall, 9.5" x 15.5", 0.22 m off the wall, equal gaps between them
@@ -35,8 +36,8 @@ top = 6.6             # its top, on a black track under the white curtain I-beam
                       # end walls' big beams over the windows (user)
 
 [kitchen]
-x0 = -1.6             # north end of the run on the east wall; it ends with the pantry against the box's north
-                      # face (IMG_3071); run length 6.04 m from appliance sizes, med
+x0 = -3.28            # north end of the run on the east wall: the left fridge 1.6 m from the east wall's column (user)
+box_gap = 0.88        # the pantry ends this far short of the restroom's north wall (user)
 
 [gate]                # main roll-up gate on the south wall, always closed
 # IMG_3077 (whole south wall at one depth, 1x lens, exit door 2.13 m = 115 px): opening 6.0 x 4.5 m, med
@@ -74,31 +75,31 @@ north_sections = [[3, 4, 4], [3, 4, 4], [3, 4, 4]]
 # New photo set lucky_office/mezazine (IMG_3087-3094), see lucky_office/CATALOGUE.md and questions.md.
 
 [box]                 # the closed restroom box; its flat roof is the lower deck (black baluster railing)
-x0 = 5.15             # north face, ~0.7 m south of the kitchen pantry's end: IMG_3094, med
-x1 = 10.9             # south face = the closet's north wall; west face 5.75 m long: IMG_3092/3087/3072, med
-z0 = 2.6              # west face, facing the hall: 4.4 m wide, IMG_3071 (MEN door scale), med
+x0 = 4.0              # north face: the lower deck is 5 m long to the upper deck's front (user)
+x1 = 10.5             # south face = the closet's north wall; the infirmary (west) face is 6.5 m long (user)
+z0 = 2.2              # west face, facing the hall: the restroom is 4.8 m wide (user)
 z1 = 7.0              # against the east (kitchen) wall, med
 deck = 3.05           # lower deck top: IMG_3071 MEN door 2.13 m -> 3.09, IMG_3067 -> 3.10, high
 men_door_z = 4.15     # the one door on the north face (MEN): IMG_3071/3094, med
-west_door_x = 8.1     # first-aid door on the west face, the first-aid box just north of it, the spiral south of it
-                      # with plain wall between: IMG_3104 (door 0.91 m as the ruler), user, med
-tall_box = [6.45, 10.0, 4.85, 7.0, 7.0]   # on the deck up to the roof, its south face against the mezzanine (no gap):
-                                        # x0, x1, z0, z1, top: IMG_3071/3087 and the user, low
-mid_box = [5.25, 6.45, 4.5, 7.0, 5.4]   # lower block in front of it: IMG_3071/3087, low
+west_door_x = 7.055   # first-aid door on the west face, its north edge 2.6 m from the box's north face (user), the
+                      # first-aid box just north of it, the spiral south of it
+tall_box = [5.12, 9.0, 5.7, 7.0, 7.0]  # on the deck from the east wall column's south face to the mezzanine (no gap):
+                                        # x0, x1, z0, z1, top; both boxes 1.3 m deep from the east wall, flush, leaving
+                                        # the lower deck 5 x 3.5 m open (user)
+mid_box = [4.0, 5.12, 5.7, 7.0, 5.4]    # lower block north of it, flush with it and the box's north face (user)
 
 [mezzanine]           # upper tier with the cable railing; the deck runs on east over the box to the east wall (user)
-front_x = 10.0        # front edge, straight from the U stair to the east wall: east post 0.8 m south of the spiral, IMG_3092, med-low
-z0 = -3.8             # west end = the room's west wall, the U stair flush against it; it ends in the gap east of the
-                      # window over the exit door: IMG_3089, user
-z1 = 2.6              # the box's west face line: east end of the front beam and the cable railing
-deck = 4.0            # upper deck top: three window pane heights (1.03 m) under the windows over it (user), med
+front_x = 9.0         # front edge, straight from the U stair to the east wall: the upper deck is 11 x 6 m (user)
+z0 = -4.0             # west end = the room's west wall, the U stair flush against it, 11 m from the east wall (user)
+z1 = 2.2              # the box's west face line: east end of the front beam and the cable railing
+deck = 4.3            # upper deck top: the beams under it are 3.8 m high at their bottom (user)
 thickness = 0.5       # grey fascia and white beam: IMG_3069/3070, med
 beam = [0.2, 0.2]     # steel I-beam section of its posts and beams, flange x depth (8" x 8"): IMG_3091, user
-posts_z = [1.65, -3.5] # white posts at the front: the east one right in front of the big spiral's pole, the west one
+posts_z = [1.25, -3.7] # white posts at the front: the east one right in front of the big spiral's pole, the west one
                       # 0.3 m from the room's west wall: IMG_3103/3070, user, med
 
 [partition]           # under the mezzanine: the front wall with French doors and transoms, continued east as the closet's south wall
-x = 12.4              # front wall, 2.8 m behind the mezzanine front: IMG_3070 floor line, med-low
+x = 12.4              # front wall under the upper deck: IMG_3070 floor line, med-low
 doors_z = [-0.13, 1.48]         # French doors (closed), 1.6 m frame from just east of transom 2 to under transom 3: IMG_3070, med
 transoms_z = [3.35, 1.93, 0.81, -0.31, -1.43]  # four along the front wall, 1.12 m apart (IMG_3070/3089), and one over
                                               # the side door in the closet (IMG_3091/3092), med
@@ -112,30 +113,32 @@ closet_z1 = 5.0                 # small open closet between the box and the part
 side_door_z = [2.9, 3.8]        # single glazed wood door in the closet's south wall: IMG_3091/3068, low
 
 [spiral]              # floor -> box deck, west of the box's west face, north of the mezzanine's east post
-x = 9.25              # 0.6 m south of the first-aid door, north of the east post: IMG_3092/3070, med
-z = 1.65
+x = 8.25              # just north of the east post at the upper deck's front: IMG_3092/3070, med
+z = 1.25              # 0.95 m out from the box's west face
 radius = 0.75
 treads = 17
 start = 0.785         # bottom tread points south-west into the hall: IMG_3070/3092, med
-turn = -8.639         # 1.375 turns up to the top tread pointing east onto the box deck; going up it passes
-                      # south of the pole first (the handrail climbs left to right on its north side): IMG_3070, user
+turn = -7.069         # 1.125 turns up to the top tread pointing south along the landing's west edge, the last
+                      # quarter turn on the hall side clear of the landing; going up it passes south of the pole first:
+                      # IMG_3070/3119, user
 
 [spiral_upper]        # small spiral on the box deck against the tall box's south-west corner -> the upper deck
-x = 9.4               # 1.5 m of cable railing east of the front corner, then the spiral: IMG_3087/3071, med-low
-z = 4.2
+x = 8.4               # by the tall box's south-west corner, its top tread onto the upper deck's front: IMG_3087/3071
+z = 5.05
 radius = 0.6
-treads = 6
+treads = 7
 start = 1.571         # bottom tread points west, to the big spiral's landing: you step on from the west
-turn = -1.571         # a quarter turn, top tread pointing south onto the upper deck (user)
+turn = 3.1416         # a half turn round its north side, the top tread pointing east, a walk-in platform south of it
+                      # onto the upper deck: IMG_3116, user
 
 [u_stair]             # grey dog-leg stair west of the mezzanine; risers of deck / (2 * risers)
 width = 1.1           # per flight
 risers = 11           # per flight: IMG_3066 count, med
-platform_x = [10.0, 11.0]   # top platform at the mezzanine front, z = upper flight's: IMG_3070/3089, med-low
-upper_z = [-4.9, -3.8]     # upper flight runs south from the platform down to the landing, flush with the room's west wall
+platform_x = [9.0, 10.0]    # top platform at the mezzanine front, z = upper flight's: IMG_3070/3089, med-low
+upper_z = [-5.1, -4.0]     # upper flight runs south from the platform down to the landing, flush with the room's west wall
 landing_x = [13.8, 15.0]   # landing against the south wall, half the deck height: IMG_3070, med
-landing_z = [-6.0, -3.8]
-lower_z = [-6.0, -4.9]     # right beside the upper flight (no well), its west side under the middle of the window over
+landing_z = [-6.2, -4.0]
+lower_z = [-6.2, -5.1]     # right beside the upper flight (no well), its west side under the middle of the window over
                            # the exit door; both flights run N-S (IMG_3089, user)
 
 # ---- north-west corner (desk bay), as in the newer photos IMG_3074/3075/3077

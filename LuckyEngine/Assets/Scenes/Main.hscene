@@ -704,6 +704,22 @@ Entities:
       Radius: 25
       LightSize: 0.05
       Falloff: 1
+  - Entity: 1075398876669694662
+    Domain: Client
+    TagComponent:
+      Tag: OfficeDesks
+    Parent: 6457545630762091772
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    PodComponent:
+      Kind: 0
+      PodGraph: 13391985512391057881
+      MaterialTable:
+        0: 0
   - Entity: 1134009517207024497
     Domain: Client
     TagComponent:
@@ -885,7 +901,7 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [-9.25, 2.025, 1.65]
+      Position: [-8.25, 2.025, 1.25]
       Rotation: [0, 0, 0]
       Scale: [1.6, 4.05, 1.6]
     MujocoBoxColliderComponent:
@@ -972,13 +988,13 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [-8.3, 1.6, -0.7]
-      Rotation: [0.348042, 2.59673, 0]
+      Position: [-6, 4.8, 0]
+      Rotation: [-0.327021, 2.58299, 0]
       Scale: [1, 1, 1]
     CameraComponent:
       Camera:
         ProjectionType: 0
-        PerspectiveFOV: 62
+        PerspectiveFOV: 75
         PerspectiveNear: 0.1
         PerspectiveFar: 1000
         OrthographicSize: 10
@@ -1127,22 +1143,6 @@ Entities:
       MaterialTable:
         0: 5906284485229172943
       Visible: true
-  - Entity: 2040290941788031392
-    Domain: Client
-    TagComponent:
-      Tag: OfficeBlock
-    Parent: 9808931576279411096
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    PodComponent:
-      Kind: 0
-      PodGraph: 9455958813015241850
-      MaterialTable:
-        0: 0
   - Entity: 2219724388333390735
     Domain: Client
     TagComponent:
@@ -1231,9 +1231,9 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [-8.225, 5.025, 5.925]
+      Position: [-7.06, 5.025, 6.35]
       Rotation: [0, 0, 0]
-      Scale: [3.55, 3.95, 2.15]
+      Scale: [3.88, 3.95, 1.3]
     MujocoBoxColliderComponent:
       Density: 500
       Friction: [1, 0.1, 0.01]
@@ -1771,9 +1771,9 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [-12.5, 2.525, -4.9]
+      Position: [-12, 2.675, -5.1]
       Rotation: [0, 0, 0]
-      Scale: [5, 5.05, 2.2]
+      Scale: [6, 5.35, 2.2]
     MujocoBoxColliderComponent:
       Density: 500
       Friction: [1, 0.1, 0.01]
@@ -2062,9 +2062,9 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [-12.475, 1.75, 1.6]
+      Position: [-12.475, 1.9, 1.5]
       Rotation: [0, 0, 0]
-      Scale: [0.15, 3.5, 10.8]
+      Scale: [0.15, 3.8, 11]
     MujocoBoxColliderComponent:
       Density: 500
       Friction: [1, 0.1, 0.01]
@@ -2463,22 +2463,6 @@ Entities:
       Radius: 25
       LightSize: 0.05
       Falloff: 1
-  - Entity: 6152478121401536775
-    Domain: Client
-    TagComponent:
-      Tag: OfficeDesks
-    Parent: 9808931576279411096
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    PodComponent:
-      Kind: 0
-      PodGraph: 17588501018783355712
-      MaterialTable:
-        0: 0
   - Entity: 6164777715395487094
     Domain: Client
     TagComponent:
@@ -2527,6 +2511,20 @@ Entities:
       MaterialTable:
         0: 12925081748185488627
       Visible: true
+  - Entity: 6457545630762091772
+    Domain: Client
+    TagComponent:
+      Tag: Office
+    Parent: 0
+    Children:
+      - Handle: 9661224086272562341
+      - Handle: 14939624536261724080
+      - Handle: 12218334004819027156
+      - Handle: 1075398876669694662
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
   - Entity: 6510114374010020510
     Domain: Client
     TagComponent:
@@ -3477,22 +3475,6 @@ Entities:
       MaterialTable:
         0: 14788740229170096286
       Visible: true
-  - Entity: 9167363594873509014
-    Domain: Client
-    TagComponent:
-      Tag: OfficeKitchen
-    Parent: 9808931576279411096
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    PodComponent:
-      Kind: 0
-      PodGraph: 7527727160312752266
-      MaterialTable:
-        0: 0
   - Entity: 9191149044170001192
     Domain: Client
     TagComponent:
@@ -3692,6 +3674,22 @@ Entities:
       MaterialTable:
         0: 14788740229170096286
       Visible: true
+  - Entity: 9661224086272562341
+    Domain: Client
+    TagComponent:
+      Tag: OfficeShell
+    Parent: 6457545630762091772
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    PodComponent:
+      Kind: 0
+      PodGraph: 17948458091439603079
+      MaterialTable:
+        0: 0
   - Entity: 9746366683398954405
     Domain: Client
     TagComponent:
@@ -3713,7 +3711,7 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [-0, 9.35, -4.5]
+      Position: [-0, 9.15, -4.5]
       Rotation: [0, 0, 0]
       Scale: [30, 0.3, 23]
     MujocoBoxColliderComponent:
@@ -3738,20 +3736,6 @@ Entities:
       MaterialTable:
         0: 12925081748185488627
       Visible: true
-  - Entity: 9808931576279411096
-    Domain: Client
-    TagComponent:
-      Tag: Office
-    Parent: 0
-    Children:
-      - Handle: 12349947786320482893
-      - Handle: 2040290941788031392
-      - Handle: 9167363594873509014
-      - Handle: 6152478121401536775
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
   - Entity: 9888961885174505994
     Domain: Client
     TagComponent:
@@ -3808,9 +3792,9 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [-1.42, 1.21, 6.525]
+      Position: [0.08, 1.21, 6.525]
       Rotation: [0, 0, 0]
-      Scale: [6.04, 2.42, 0.95]
+      Scale: [6.4, 2.42, 0.95]
     MujocoBoxColliderComponent:
       Density: 500
       Friction: [1, 0.1, 0.01]
@@ -4287,9 +4271,9 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [-5.85, 4.225, 5.75]
+      Position: [-4.56, 4.225, 6.35]
       Rotation: [0, 0, 0]
-      Scale: [1.2, 2.35, 2.5]
+      Scale: [1.12, 2.35, 1.3]
     MujocoBoxColliderComponent:
       Density: 500
       Friction: [1, 0.1, 0.01]
@@ -4334,6 +4318,22 @@ Entities:
       Contype: 1
       Conaffinity: 1
       Condim: -1
+  - Entity: 12218334004819027156
+    Domain: Client
+    TagComponent:
+      Tag: OfficeKitchen
+    Parent: 6457545630762091772
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    PodComponent:
+      Kind: 0
+      PodGraph: 4679416519827496696
+      MaterialTable:
+        0: 0
   - Entity: 12291108004638861228
     Domain: Client
     TagComponent:
@@ -4350,22 +4350,6 @@ Entities:
       MaterialTable:
         0: 12925081748185488627
       Visible: true
-  - Entity: 12349947786320482893
-    Domain: Client
-    TagComponent:
-      Tag: OfficeShell
-    Parent: 9808931576279411096
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    PodComponent:
-      Kind: 0
-      PodGraph: 15812585943992636909
-      MaterialTable:
-        0: 0
   - Entity: 12363373977174165505
     Domain: Client
     TagComponent:
@@ -4846,9 +4830,9 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [-13.7, 1.75, -3.74]
+      Position: [-13.7, 1.9, -3.94]
       Rotation: [0, 0, 0]
-      Scale: [2.6, 3.5, 0.12]
+      Scale: [2.6, 3.8, 0.12]
     MujocoBoxColliderComponent:
       Density: 500
       Friction: [1, 0.1, 0.01]
@@ -4895,9 +4879,9 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [-9.4, 4.025, 4.2]
+      Position: [-8.4, 4.175, 5.05]
       Rotation: [0, 0, 0]
-      Scale: [1.3, 1.95, 1.3]
+      Scale: [1.3, 2.25, 1.3]
     MujocoBoxColliderComponent:
       Density: 500
       Friction: [1, 0.1, 0.01]
@@ -5035,6 +5019,22 @@ Entities:
       MaterialTable:
         0: 17406367289790317398
       Visible: true
+  - Entity: 14939624536261724080
+    Domain: Client
+    TagComponent:
+      Tag: OfficeBlock
+    Parent: 6457545630762091772
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    PodComponent:
+      Kind: 0
+      PodGraph: 4420029598155771596
+      MaterialTable:
+        0: 0
   - Entity: 14949609241960068617
     Domain: Client
     TagComponent:
@@ -5075,9 +5075,9 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [-12.5, 4.285, 1.6]
+      Position: [-12, 4.585, 1.5]
       Rotation: [0, 0, 0]
-      Scale: [5, 1.57, 10.8]
+      Scale: [6, 1.57, 11]
     MujocoBoxColliderComponent:
       Density: 500
       Friction: [1, 0.1, 0.01]
@@ -5234,9 +5234,9 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [-8.025, 2.05, 4.8]
+      Position: [-7.25, 2.05, 4.6]
       Rotation: [0, 0, 0]
-      Scale: [5.75, 4.1, 4.4]
+      Scale: [6.5, 4.1, 4.8]
     MujocoBoxColliderComponent:
       Density: 500
       Friction: [1, 0.1, 0.01]
