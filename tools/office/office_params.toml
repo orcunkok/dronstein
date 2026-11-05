@@ -18,20 +18,21 @@ x1 = 15.0             # south wall (main gate wall)
 z0 = -16.0            # west wall; width 23.0 m: IMG_3077 south wall sum, record 22.3 m, med
 z1 = 7.0              # east wall (kitchen)
 wall_height = 7.3     # floor to roof bearing: IMG_3077 7.4 m and IMG_3059 7.3 m vs the exit door, med
-ridge = 9.3           # roof underside at the ridge: photos, low
+ridge = 9.3           # roof underside across its flat middle: photos, low
 wall_thickness = 0.3
 roof_thickness = 0.3
 west_beams = 2         # steel I-beams on the west wall, 9.5" x 15.5", 0.22 m off the wall, equal gaps between them
 west_beam = [0.241, 0.394, 0.22]   # and to the end walls: flange, depth, gap to the wall (user)
-truss_x = [-10.23, -2.73, 4.77, 12.27]   # 7.5 m bays; a pilaster 1.1 m north of the first fridge (IMG_3094) and one
-                                         # in the 0.7 m gap between the pantry and the box, med-low
+truss_x = [-5.0, 5.0]  # two A-frame trusses of thin steel angles east-west at thirds of the length, on the west
+                       # wall's I-beam columns, under the ten north-south roof I-beams (user, IMG_3106-3108)
 
 [curtain]
 z = -5.5              # greyish-white stage curtain, in line with the east side of the middle north window group's
                       # westmost unit (user)
 x0 = -14.0            # 1 m gap at the north wall: IMG_3053, med
 x1 = 0.0
-top = 6.6             # its top; the white I-beam track runs 0.15 m above it, north wall to south wall (user)
+top = 6.6             # its top, on a black track under the white curtain I-beam (~W18), which is centred on the
+                      # end walls' big beams over the windows (user)
 
 [kitchen]
 x0 = -1.6             # north end of the run on the east wall; it ends with the pantry against the box's north
@@ -79,7 +80,8 @@ z0 = 2.6              # west face, facing the hall: 4.4 m wide, IMG_3071 (MEN do
 z1 = 7.0              # against the east (kitchen) wall, med
 deck = 3.05           # lower deck top: IMG_3071 MEN door 2.13 m -> 3.09, IMG_3067 -> 3.10, high
 men_door_z = 4.15     # the one door on the north face (MEN): IMG_3071/3094, med
-west_door_x = 8.0     # first-aid door on the west face, the first-aid box north of it, the spiral just south: IMG_3092/3087, med
+west_door_x = 8.1     # first-aid door on the west face, the first-aid box just north of it, the spiral south of it
+                      # with plain wall between: IMG_3104 (door 0.91 m as the ruler), user, med
 tall_box = [6.45, 10.0, 4.85, 7.0, 7.0]   # on the deck up to the roof, its south face against the mezzanine (no gap):
                                         # x0, x1, z0, z1, top: IMG_3071/3087 and the user, low
 mid_box = [5.25, 6.45, 4.5, 7.0, 5.4]   # lower block in front of it: IMG_3071/3087, low
@@ -92,8 +94,8 @@ z1 = 2.6              # the box's west face line: east end of the front beam and
 deck = 4.0            # upper deck top: three window pane heights (1.03 m) under the windows over it (user), med
 thickness = 0.5       # grey fascia and white beam: IMG_3069/3070, med
 beam = [0.2, 0.2]     # steel I-beam section of its posts and beams, flange x depth (8" x 8"): IMG_3091, user
-posts_z = [1.15, -3.5] # white posts at the front: the east one by the big spiral, the west one 0.3 m from the room's
-                      # west wall: IMG_3070, med
+posts_z = [1.65, -3.5] # white posts at the front: the east one right in front of the big spiral's pole, the west one
+                      # 0.3 m from the room's west wall: IMG_3103/3070, user, med
 
 [partition]           # under the mezzanine: the front wall with French doors and transoms, continued east as the closet's south wall
 x = 12.4              # front wall, 2.8 m behind the mezzanine front: IMG_3070 floor line, med-low
@@ -123,8 +125,8 @@ x = 9.4               # 1.5 m of cable railing east of the front corner, then th
 z = 4.2
 radius = 0.6
 treads = 6
-start = 1.571         # bottom tread points west, to the big spiral's top
-turn = 4.712          # three quarters of a turn past the tall box side, top tread pointing south onto the upper deck
+start = 1.571         # bottom tread points west, to the big spiral's landing: you step on from the west
+turn = -1.571         # a quarter turn, top tread pointing south onto the upper deck (user)
 
 [u_stair]             # grey dog-leg stair west of the mezzanine; risers of deck / (2 * risers)
 width = 1.1           # per flight

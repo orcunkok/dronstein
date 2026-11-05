@@ -4,7 +4,7 @@ Run with the editor open (Edit mode):
     PYTHONPATH=<LuckyEngine>/Data/Authoring/python python3 build_office.py <new output dir>
 
 Writes into <out> four graphs (and the kit assets they use, under <out>/assets):
-- office_shell.hpodgraph: floor, tilt-up walls, gable roof, trusses, purlins, skylights, clerestory windows, the
+- office_shell.hpodgraph: floor, tilt-up walls, gable roof, trusses, roof I-beams, skylights, clerestory windows, the
   black stage curtain on its track, roll-up and exit doors, conduit, panels, heaters, fans, LED high-bays.
 - office_block.hpodgraph: the restroom box (lower deck) and the mezzanine (upper deck), the small closet south of the box, the
   room under the mezzanine (partition, French doors, transoms, blue sofa, pendants), railings, the two spiral stairs and
@@ -50,13 +50,18 @@ X0, X1 = P["hall"]["x0"], P["hall"]["x1"]
 Z0, Z1 = P["hall"]["z0"], P["hall"]["z1"]
 H = P["hall"]["wall_height"]
 RIDGE = P["hall"]["ridge"]
-ZC = (Z0 + Z1) / 2            # ridge line, along x
+ZC = (Z0 + Z1) / 2            # middle of the roof, along x
 WALL_T = P["hall"]["wall_thickness"]
 ROOF_T = P["hall"]["roof_thickness"]
 TRUSS_X = P["hall"]["truss_x"]
 CURTAIN_Z = P["curtain"]["z"]
 CURTAIN_X = (P["curtain"]["x0"], P["curtain"]["x1"])
 CURTAIN_TOP = P["curtain"]["top"]
+# Roof I-beams north to south, the size of the west wall's I-beam columns: one over the columns, centred on them, its
+# mirror on the east wall, eight equally spaced between.
+BEAM = P["hall"]["west_beam"]                  # flange, depth, gap to the wall
+BEAMS_Z = [Z0 + BEAM[2] + BEAM[1] / 2 + k * (Z1 - Z0 - 2 * (BEAM[2] + BEAM[1] / 2)) / 9 for k in range(10)]
+COLUMN_D = 0.25                                # the north wall's concrete columns stand this far into the hall
 
 # Restroom box and mezzanine at the south end, two tiers: the box's roof is the lower deck, the mezzanine west of it
 # (from the U stair to the east wall) the upper deck.
@@ -121,6 +126,8 @@ MATS = {
     "poster": mat(0.12, 0.10, 0.09, 0.0, 0.5),
     "drinks": mat(0.30, 0.45, 0.60, 0.0, 0.6),
     "stripe_grey": mat(0.12, 0.12, 0.12, 0.0, 0.9),
+    "glass_skylight": mat(0.10, 0.32, 0.85, 0.0, 0.1),
+    "cable_blue": mat(0.02, 0.10, 0.55, 0.0, 0.5),
 }
 SOFA_YELLOW = mat(0.55, 0.38, 0.03, 0.0, 0.8)    # mustard tufted velvet
 BLACK_STAINLESS = mat(0.06, 0.06, 0.065, 0.9, 0.35)
@@ -201,27 +208,31 @@ class Graph:
 # ---------------------------------------------------------------- shell
 def roof_y(z):
     """Roof underside height above z."""
-    return RIDGE - (RIDGE - H) * abs(z - ZC) / (ZC - Z0)
+    return RIDGE - (RIDGE - H) * max(0.0, abs(z - ZC) - FLAT) / (ZC - Z0 - FLAT)
 
 
 def slope_frame(side):
     """side -1: west slope (rises toward +z), +1: east slope. Returns rotation, unit normal (up/out), angle."""
-    a = math.atan2(RIDGE - H, ZC - Z0)
+    a = math.atan2(RIDGE - H, ZC - Z0 - FLAT)
     r = roll(-a) if side < 0 else roll(a)
     return r, [r[i][1] for i in range(3)], a
 
 
 def on_roof(g, key, size, x, z, below=0.0):
     """A box lying under the roof slope at (x, z), its top `below` metres under the roof underside."""
-    side = -1 if z < ZC else 1
-    r, n, _ = slope_frame(side)
+    if abs(z - ZC) <= FLAT:
+        r, n = IDENTITY, [0.0, 1.0, 0.0]
+    else:
+        r, n, _ = slope_frame(-1 if z < ZC else 1)
     y = roof_y(z)
     off = below + size[1] / 2
     g.box(key, size, (x - n[0] * off, y - n[1] * off, z - n[2] * off), r)
 
 
 def sections(name):
-    """The window sections of one end wall as (z0, z1, units, cols, rows), spaced with equal gaps along the wall."""
+    """The window sections of one end wall as (z0, z1, units, cols, rows), spaced with equal gaps along the wall. On the
+    north wall the concrete column in each gap stands under the nearest roof beam, and the side groups move with their
+    column; the middle one stays (user)."""
     pw = P["south_wall"]["pane"][0]
     rows = P["south_wall"][name]
     widths = [n * c * pw for n, c, _ in rows]
@@ -230,7 +241,23 @@ def sections(name):
     for (n, c, r), w in zip(rows, widths):
         out.append((z, z + w, n, c, r))
         z += w + gap
+    if name == "north_sections":
+        for i, k in ((0, 0), (len(out) - 1, len(out) - 2)):
+            c = (out[k][1] + out[k + 1][0]) / 2
+            d = min(BEAMS_Z, key=lambda zb: abs(zb - c)) - c
+            out[i] = (out[i][0] + d, out[i][1] + d, *out[i][2:])
     return out
+
+
+def north_columns():
+    """The north wall's concrete columns: one in each gap between window groups, under the nearest roof beam."""
+    n = sections("north_sections")
+    return [min(BEAMS_Z, key=lambda zb: abs(zb - (a[1] + b[0]) / 2)) for a, b in zip(n, n[1:])]
+
+
+# The roof is flat across the middle, from over the north wall's column on one side of the middle window group to the
+# one on the other (user), and slopes down to the long walls on either side.
+FLAT = ZC - north_columns()[0]
 
 
 def end_windows():
@@ -295,6 +322,31 @@ def ibeam(g, x0, x1, y0, y1, z0, z1, web):
     g.span("steel_white", a[0], b[0], a[1], b[1], a[2], b[2])
 
 
+def angle(g, p0, p1, leg, t=0.008):
+    """A thin white steel L-angle from p0 to p1 (x, y, z) in a vertical plane z = const: one leg in the plane, one
+    along z."""
+    dx, dy = p1[0] - p0[0], p1[1] - p0[1]
+    a = math.atan2(-dx, dy)
+    c, s_ = math.cos(a), math.sin(a)
+    r = [[c, -s_, 0.0], [s_, c, 0.0], [0.0, 0.0, 1.0]]
+    m = [(u + v) / 2 for u, v in zip(p0, p1)]
+    length = math.hypot(dx, dy)
+    o = leg / 2 - t / 2
+    g.box("steel_white", (leg, length, t), (m[0], m[1], m[2] + t / 2), r)
+    g.box("steel_white", (t, length, leg), (m[0] - c * o, m[1] - s_ * o, m[2] + leg / 2), r)
+
+
+def slope_ibeam(g, x, za, zb, below, d=0.2, f=0.135, t=0.01):
+    """A small white I-beam along the roof slope from za to zb (one side of the ridge), its top `below` m under the
+    roof underside (measured square to the slope), web in the plane x."""
+    a = slope_frame(-1 if (za + zb) / 2 < ZC else 1)[2]
+    length = abs(zb - za) / math.cos(a)
+    zm = (za + zb) / 2
+    on_roof(g, "steel_white", (f, t, length), x, zm, below)
+    on_roof(g, "steel_white", (0.008, d - 2 * t, length), x, zm, below + t)
+    on_roof(g, "steel_white", (f, t, length), x, zm, below + d - t)
+
+
 def build_shell(g):
     length, width = X1 - X0, Z1 - Z0
     xm, zm = (X0 + X1) / 2, (Z0 + Z1) / 2
@@ -311,79 +363,116 @@ def build_shell(g):
         steps = 12
         for i in range(steps):
             y0 = H + (RIDGE - H) * i / steps
-            half = (ZC - Z0) * (1 - i / steps) + WALL_T
+            half = FLAT + (ZC - Z0 - FLAT) * (1 - i / steps) + WALL_T
             g.box("concrete_white", (WALL_T, (RIDGE - H) / steps + 0.001, 2 * half),
                   (x, y0 + (RIDGE - H) / steps / 2, ZC))
     for z in (Z0 - WALL_T / 2, Z1 + WALL_T / 2):
         g.box("concrete_white", (length + 2 * WALL_T, H + ROOF_T, WALL_T), (xm, (H + ROOF_T) / 2, z))
 
-    # Roof slabs (white timber deck).
-    for side in (-1, 1):
-        r, n, a = slope_frame(side)
-        run = ZC - Z0 + WALL_T + 0.2
-        slab = run / math.cos(a)
-        zmid = ZC + side * run / 2
-        ymid = RIDGE - (RIDGE - H) * (run / 2) / (ZC - Z0)
-        g.box("timber_white", (length + 2 * WALL_T, ROOF_T, slab),
-              (xm + 0.0, ymid + n[1] * ROOF_T / 2, zmid + n[2] * ROOF_T / 2), r)
-        # Purlins along x, every ~2 m up the slope.
-        for k in range(1, 5):
-            z = ZC + side * (ZC - Z0) * k / 5
-            on_roof(g, "timber_white", (length, 0.22, 0.1), xm, z)
+    # Roof beams' places and the skylights' (between two beams, see below), then the white timber roof deck: the two
+    # slopes and the flat middle, with an opening up through it over each skylight.
+    n, (bf, bd, bg), beams_z = P["hall"]["west_beams"], BEAM, BEAMS_Z
+    sky_w = beams_z[1] - beams_z[0] - bf
+    edge = P["desk_corner"]["row_wall_gap"] + 1.3         # outer frame edge in line with the desk row's back (user)
+    sky_x = (X0 + edge, X0 + length / 2, X1 - edge)
+    sky_z = ((beams_z[1] + beams_z[2]) / 2, (beams_z[4] + beams_z[5]) / 2)
+    a = slope_frame(-1)[2]
+    eave = Z0 - WALL_T - 0.2
+    for za, zb in ((eave, ZC - FLAT), (ZC - FLAT, ZC + FLAT), (ZC + FLAT, 2 * ZC - eave)):
+        zs = [za, zb]
+        for z in sky_z:
+            if za < z < zb:
+                zs = [za, z - sky_w / 2, z + sky_w / 2, zb]
+        for i, (z0, z1) in enumerate(zip(zs, zs[1:])):
+            xs = [X0 - WALL_T] + ([v for x in sky_x for v in (x - 1.2, x + 1.2)] if i == 1 else []) + [X1 + WALL_T]
+            zm = (z0 + z1) / 2
+            along = (z1 - z0) / (1.0 if abs(zm - ZC) < FLAT else math.cos(a))
+            for x0, x1 in zip(xs[::2], xs[1::2]):
+                on_roof(g, "timber_white", (x1 - x0, ROOF_T, along), (x0 + x1) / 2, zm, -ROOF_T)
 
-    # Trusses (white steel), pilasters under their ends, eave beams along the long walls.
-    bottom = H - 0.3
-    for x in TRUSS_X:
-        g.strut("steel_white", (x, bottom, Z0), (x, bottom, Z1), 0.2, 0.25)
-        for side, ze in ((-1, Z0), (1, Z1)):
-            top_e, top_r = (x, H - 0.05, ze), (x, RIDGE - 0.12, ZC)
-            g.strut("steel_white", top_e, top_r, 0.2, 0.25)
-            for k in range(1, 4):
-                f = k / 4
-                z = ze + (ZC - ze) * f
-                yt = top_e[1] + (top_r[1] - top_e[1]) * f
-                g.strut("steel_white", (x, bottom, z), (x, yt, z), 0.12)
-                zn = ze + (ZC - ze) * (f + 0.25)
-                ytn = top_e[1] + (top_r[1] - top_e[1]) * (f + 0.25)
-                g.strut("steel_white", (x, bottom, z), (x, ytn, zn), 0.1)
-            if side > 0:                       # the west wall has its own I-beams, below
-                g.box("steel_white", (0.3, H, 0.3), (x, H / 2, ze - side * 0.15))
-        g.strut("steel_white", (x, bottom, ZC), (x, RIDGE - 0.12, ZC), 0.12)
-    for z in (Z0 + 0.15, Z1 - 0.15):
-        g.box("steel_white", (length, 0.4, 0.3), (xm, H - 0.2, z))
-    # West wall: steel I-beams standing off the wall, evenly spaced along it, web pointing into the hall.
-    n, (bf, bd, bg) = P["hall"]["west_beams"], P["hall"]["west_beam"]
+    # Roof framing (IMG_3106-3108, user): ten white steel I-beams north to south right under the roof, the size of the
+    # west wall's I-beam columns: one on top of the columns, centred on them, its mirror on the east wall, eight equally
+    # spaced between. Big I-beams on the end walls over the windows (the south one half in the wall, the north one
+    # out to the columns' faces); the curtain beam is centred on
+    # them and the two east-west A-frame trusses sit on it: small I-beam chords, the top one under the roof beams,
+    # small struts between, a pilaster under their east ends. Two thin trusses of steel angles hang under the fourth
+    # and seventh roof beams, north wall to south wall.
+    # The roof beams frame into one more along the top of the north wall, following the roof, flush with the faces of
+    # the wall's concrete columns (user).
+    xn = X0 + COLUMN_D
+    for z in beams_z:
+        ibeam(g, xn, X1, roof_y(z) - bd, roof_y(z), z - bf / 2, z + bf / 2, 1)
+    for za, zb in ((Z0, ZC - FLAT), (ZC + FLAT, Z1)):
+        slope_ibeam(g, xn - bf / 2, za, zb, 0.0, bd, bf)
+    ibeam(g, xn - bf, xn, RIDGE - bd, RIDGE, ZC - FLAT, ZC + FLAT, 1)
     for k in range(1, n + 1):
         x = X0 + k * length / (n + 1)
-        ibeam(g, x - bf / 2, x + bf / 2, 0.0, H - 0.4, Z0 + bg, Z0 + bg + bd, 2)
+        ibeam(g, x - bf / 2, x + bf / 2, 0.0, roof_y(beams_z[0]) - bd, Z0 + bg, Z0 + bg + bd, 2)
 
-    # Skylights: a dark louvred well in the roof between trusses.
-    for x, z in ((-6.5, ZC - 4.0), (1.0, ZC - 4.0), (-6.5, ZC + 4.0), (8.5, ZC + 4.0)):
-        on_roof(g, "glass_dark", (2.4, 0.02, 1.5), x, z, below=-0.01)
-        for dx in (-1.25, 1.25):
-            on_roof(g, "paint_white", (0.1, 0.3, 1.6), x + dx, z)
-        for dz in (-0.8, 0.8):
-            on_roof(g, "paint_white", (2.6, 0.3, 0.1), x, z + dz)
-        for k in range(-3, 4):
-            on_roof(g, "paint_white", (0.05, 0.22, 1.5), x + k * 0.33, z)
+    wt = P["south_wall"]["window_top"]
+    end_beam = (wt + 0.25, wt + 0.85)             # ~W24, 0.6 m deep, 0.23 m flange
+    ibeam(g, xn - 0.23, xn, end_beam[0], end_beam[1], Z0, Z1, 1)     # north: its face flush with the columns' (user)
+    ibeam(g, X1 - 0.115, X1 + 0.115, end_beam[0], end_beam[1], Z0, Z1, 1)
+    curtain_beam = (sum(end_beam) / 2 - 0.225, sum(end_beam) / 2 + 0.225)   # ~W18
+    bottom = curtain_beam[1]                       # the A-frames' bottom chord sits on the curtain beam
+    chord, cf = 0.2, 0.135                         # small I-beam chords (~W8)
+    a = slope_frame(-1)[2]
+    # The top chord runs under the roof beams, from where it meets the bottom chord up the slope and flat across the
+    # middle; struts between the chords, verticals and diagonals leaning out from the middle.
+    reach = FLAT + (RIDGE - bd - chord - bottom - chord) / (RIDGE - H) * (ZC - Z0 - FLAT)
+    panels = 16
+    zs = [ZC - reach + 2 * reach * k / panels for k in range(panels + 1)]
+    for x in TRUSS_X:
+        ibeam(g, x - cf / 2, x + cf / 2, bottom, bottom + chord, beams_z[0] + bf / 2, beams_z[-1] - bf / 2, 1)
+        for side in (-1, 1):
+            slope_ibeam(g, x, ZC + side * reach, ZC + side * FLAT, bd * math.cos(a), chord, cf)
+        ibeam(g, x - cf / 2, x + cf / 2, RIDGE - bd - chord, RIDGE - bd, ZC - FLAT, ZC + FLAT, 1)
+        for k in range(1, panels):
+            z = zs[k]
+            g.strut("steel_white", (x, bottom + chord, z), (x, roof_y(z) - bd - chord, z), 0.08)
+            zo = zs[k - 1] if z < ZC else zs[k + 1]
+            g.strut("steel_white", (x, bottom + chord, z), (x, roof_y(zo) - bd - chord, zo), 0.07)
+        g.box("steel_white", (0.3, H, 0.3), (x, H / 2, Z1 - 0.15))
+    for z in (beams_z[3], beams_z[6]):
+        yt = roof_y(z) - bd
+        panels = 12
+        angle(g, (X0, bottom, z), (X1, bottom, z), 0.08)
+        for k in range(panels + 1):
+            x = X0 + length * k / panels
+            angle(g, (x, bottom, z), (x, yt, z), 0.06)
+            if k < panels:
+                xn = X0 + length * (k + 1) / panels
+                a0, a1 = ((x, bottom, z), (xn, yt, z)) if k < panels / 2 else ((x, yt, z), (xn, bottom, z))
+                angle(g, a0, a1, 0.06)
+
+    # Skylights: three rows north to south, between the trusses, in a west and a middle column, none on the east side
+    # over the mezzanine (user). Each fills the gap between two roof beams (the second gap from the west wall, on the
+    # slope, and the middle one, in the flat): blue glass up at the top of its opening in the deck, louvre bars just
+    # under it, a white frame flush with the ceiling round the opening. The north row's outer frame edge lines up with
+    # the back of the desk row by the north wall, the south row's sits as far from the south wall (user).
+    for x in sky_x:
+        for z in sky_z:
+            on_roof(g, "glass_skylight", (2.4, 0.02, sky_w), x, z, below=0.03 - ROOF_T)
+            for k in range(-3, 4):
+                on_roof(g, "paint_white", (0.05, 0.05, sky_w), x + k * 0.33, z, below=0.08 - ROOF_T)
+            for dx in (-1.25, 1.25):
+                on_roof(g, "paint_white", (0.1, 0.03, sky_w + 0.2), x + dx, z, below=-0.01)
+            for dz in (-1, 1):
+                on_roof(g, "paint_white", (2.6, 0.03, 0.1), x, z + dz * (sky_w / 2 + 0.05), below=-0.01)
 
     # Steel-sash windows in their wall openings (end_windows): on the north wall three groups of three 4 x 4 pane units,
-    # symmetric, two columns in each gap between groups (IMG_3053/3063); on the south wall three 4 x 4 units over the
-    # gate and the 8 pane wide windows from the exit door to the U stair's inner wall and over the upper deck
-    # (IMG_3059/3077/3088). A white beam runs above the windows on both end walls, a little gap over their tops.
+    # symmetric, one concrete column in each gap between groups (IMG_3053/3063, user); on the south wall three 4 x 4
+    # units over the gate and the 8 pane wide windows from the exit door to the U stair's inner wall and over the upper
+    # deck (IMG_3059/3077/3088). The big end-wall beams run above them (roof framing).
     for w, z0, cols, rows in end_windows():
         sash(g, X0 if w < 0 else X1, -w, z0, cols, rows)
-    north = sections("north_sections")
-    for a, b in zip(north, north[1:]):
-        c = (a[1] + b[0]) / 2
-        for z0 in (c - 0.375, c + 0.075):
-            g.span("concrete_white", X0, X0 + 0.25, 0.0, H, z0, z0 + 0.3)
-    wt = P["south_wall"]["window_top"]
-    for x0, x1 in ((X0, X0 + 0.25), (X1 - 0.25, X1)):
-        g.span("steel_white", x0, x1, wt + 0.25, wt + 0.6, Z0, Z1)
+    for c in north_columns():
+        g.span("concrete_white", X0, X0 + COLUMN_D, 0.0, roof_y(c) - bd, c - 0.15, c + 0.15)
 
-    # Stage curtain: one greyish-white pleated sheet, hanging 0.15 m under a white I-beam track that runs the whole hall,
-    # north wall to south wall, right under the trusses' bottom chords (user, IMG_3077/3078).
+    # Stage curtain: one greyish-white pleated sheet on a black track under the white curtain I-beam, which runs the
+    # whole hall north wall to south wall, centred on the end-wall beams (user, IMG_3077/3078). The track follows the
+    # beam to the mezzanine front, bends west, then south to the gate wall in line with the fire extinguisher, hung on
+    # rods from the roof where it leaves the beam (user).
     cl = CURTAIN_X[1] - CURTAIN_X[0]
     ch = CURTAIN_TOP - 0.05
     e = g.e
@@ -399,9 +488,23 @@ def build_shell(g):
                    Mode=Literal("Menu", "Smooth"))
     g.place(thick, "curtain_white", (1, 1, 1), ((CURTAIN_X[0] + CURTAIN_X[1]) / 2, 0.05 + ch / 2, CURTAIN_Z),
             roll(math.pi / 2))
-    b0 = CURTAIN_TOP + 0.15
-    for y0, y1, w in ((b0, b0 + 0.02, 0.07), (b0 + 0.02, b0 + 0.23, 0.006), (b0 + 0.23, b0 + 0.25, 0.07)):
+    b0, b1 = curtain_beam
+    for y0, y1, w in ((b0, b0 + 0.011, 0.076), (b0 + 0.011, b1 - 0.011, 0.004), (b1 - 0.011, b1, 0.076)):
         g.span("steel_white", X0, X1, y0, y1, CURTAIN_Z - w, CURTAIN_Z + w)
+    ty = CURTAIN_TOP + 0.03                        # track centre
+    xt, zt, rb = P["mezzanine"]["front_x"], P["exit_door"]["z0"] - 0.36, 0.6
+    track = [(X0, CURTAIN_Z)]
+    for cx, cz, f0, f1 in ((xt - rb, CURTAIN_Z - rb, math.pi / 2, 0.0), (xt + rb, zt + rb, math.pi, 1.5 * math.pi)):
+        track += [(cx + rb * math.cos(f0 + (f1 - f0) * k / 6), cz + rb * math.sin(f0 + (f1 - f0) * k / 6))
+                  for k in range(7)]
+    track.append((X1, zt))
+    for (xa, za), (xb, zb) in zip(track, track[1:]):
+        g.strut("steel_dark", (xa, ty, za), (xb, ty, zb), 0.05, 0.05)
+    for k in range(int((xt - rb - X0) / 1.0) + 1):
+        x = X0 + 0.3 + k * 1.0
+        g.tube("steel_dark", (x, ty, CURTAIN_Z), (x, b0, CURTAIN_Z), 0.008)
+    for x, z in ((xt, (CURTAIN_Z + zt) / 2), (xt + 1.5, zt), (xt + 3.0, zt), (X1 - 0.4, zt)):
+        g.tube("steel_dark", (x, ty, z), (x, roof_y(z), z), 0.008)
 
     # South wall, east to west behind the U stair: the big steel-sash window, the fire alarm gear, the steel exit door,
     # plain wall, the closed roll-up gate with its hood and three window units above it. Sizes from office_params.toml.
@@ -455,10 +558,27 @@ def build_shell(g):
         z = (P["gate"]["z0"] + Z0) / 2
         g.tube("yellow_safety", (x, 0.0, z), (x, 1.1, z), 0.07)
 
-    # Unit heaters (hung from the roof), ceiling fans, LED high-bays.
-    for x, z in ((-11.0, Z1 - 2.5), (-3.0, Z1 - 2.5)):
-        g.span("heater_brown", x - 0.3, x + 0.3, 5.4, 6.0, z - 0.25, z + 0.25)
-        g.tube("conduit", (x, 6.0, z), (x, roof_y(z), z), 0.02)
+    # Two unit heaters hung on rods from the north east-west truss, in the outer bays, aimed at the middle of the south
+    # wall: a thin tall brown box, an aluminium fan panel standing out from its back, an aluminium exhaust hood under it
+    # reaching out past its front (user, IMG_3106).
+    # Ceiling fans, LED high-bays.
+    xh = TRUSS_X[0]
+    for z in (Z0 + width / 6, Z1 - width / 6):
+        a = math.atan2(-(ZC - z), X1 - xh)
+        r = yaw(a)
+
+        def at(u, y, w):
+            return (xh + u * math.cos(a) + w * math.sin(a), y, z - u * math.sin(a) + w * math.cos(a))
+
+        g.box("heater_brown", (0.35, 0.9, 0.6), at(0.0, 6.05, 0.0), r)
+        g.box("alu_matte", (0.04, 1.0, 0.7), at(-0.21, 6.05, 0.0), r)
+        g.tube("alu_matte", at(-0.23, 6.05, 0.0), at(-0.33, 6.05, 0.0), 0.26)
+        g.box("alu_matte", (0.5, 0.18, 0.7), at(0.06, 5.51, 0.0), r)
+        for k in range(3):
+            g.box("steel_dark", (0.01, 0.025, 0.64), at(0.315, 5.45 + 0.055 * k, 0.0), r)
+        for w in (-0.22, 0.22):
+            p = at(0.0, 6.5, w)
+            g.tube("conduit", p, (p[0], bottom, p[2]), 0.01)
     for x, z in ((-7.5, ZC + 3.0), (0.0, ZC - 5.0)):
         y = 7.4
         g.tube("steel_white", (x, y, z), (x, roof_y(z), z), 0.02)
@@ -480,6 +600,12 @@ def balusters(g, key, p0, p1, base, height, step, w=0.022):
         t = i / n
         x, z = p0[0] + (p1[0] - p0[0]) * t, p0[1] + (p1[1] - p0[1]) * t
         g.box(key, (w, height, w), (x, base + height / 2, z))
+
+
+def deck_rail(g, p0, p1):
+    """Close steel balusters (0.1 m) from p0 to p1 (x, z) on the box deck, a flat top rail over them."""
+    balusters(g, "steel_grey", p0, p1, BOX_DECK, 1.0, 0.1, 0.02)
+    g.strut("steel_grey", (p0[0], BOX_DECK + 1.0, p0[1]), (p1[0], BOX_DECK + 1.0, p1[1]), 0.05, 0.03)
 
 
 def cable_rail(g, p0, p1, out=(-1.0, 0.0)):
@@ -509,32 +635,39 @@ def slat_rail(g, p0, p1):
 
 def spiral(g, cx, cz, r, y0, y1, treads, start, turn):
     """A spiral stair round an anthracite post from y0 to y1: per step an anthracite collar clamped on the post, one
-    rectangular wood tread from the collar out, a slim black bracket under it from the collar, two balusters at its
-    outer corners (a little inset, rail coloured) up to the handrail; the bottom tread points along yaw `start`, the top
+    rectangular wood tread from the collar out, a slim black bracket under it from the collar, two balusters near its
+    outer corners (rail coloured) right up into the handrail; the bottom tread points along yaw `start`, the top
     one `turn` radians further round."""
     rise = (y1 - y0) / treads
     step = turn / (treads - 1)
     hub = 0.065
-    g.tube("anthracite", (cx, y0, cz), (cx, y1 + 1.0, cz), 0.05)
+    rr = r - 0.03                      # handrail radius; the balusters stand on it, 0.1 m either side of each tread's middle
+    da = 0.1 / rr
+
+    def rail_y(a):
+        return y0 + rise * (1 + (treads - 1) * (a - start) / turn) + 0.9
+
+    g.tube("anthracite", (cx, y0, cz), (cx, y1 + 0.9, cz), 0.05)
     for i in range(treads):
         a = start + step * i
         y = y0 + rise * (i + 1)
-        d, n = (math.cos(a), -math.sin(a)), (math.sin(a), math.cos(a))
+        d = (math.cos(a), -math.sin(a))
         g.tube("anthracite", (cx, y - 0.12, cz), (cx, y, cz), hub)
         mid = (hub + r) / 2
         g.box("wood_tread", (r - hub, 0.035, 0.24), (cx + d[0] * mid, y - 0.018, cz + d[1] * mid), yaw(a))
         mid = (hub + r - 0.08) / 2
         g.box("steel_dark", (r - 0.08 - hub, 0.06, 0.03), (cx + d[0] * mid, y - 0.065, cz + d[1] * mid), yaw(a))
         for side in (-1, 1):
-            foot = (cx + d[0] * (r - 0.06) + side * n[0] * 0.1, y, cz + d[1] * (r - 0.06) + side * n[1] * 0.1)
-            g.tube("steel_grey", foot, (foot[0], y + 0.9, foot[2]), 0.009)
-    # Handrail: a smooth helix over the baluster tops.
+            b = a + side * da
+            foot = (cx + math.cos(b) * rr, y, cz - math.sin(b) * rr)
+            g.tube("steel_grey", foot, (foot[0], rail_y(b), foot[2]), 0.009)
+    # Handrail: a smooth helix through the baluster tops, a little past the first and last ones.
     m = 4 * (treads - 1)
+    a0, a1 = start - math.copysign(da, turn), start + turn + math.copysign(da, turn)
     prev = None
     for j in range(m + 1):
-        a = start + turn * j / m
-        y = y0 + rise * (1 + (treads - 1) * j / m) + 0.9
-        pt = (cx + math.cos(a) * (r - 0.03), y, cz - math.sin(a) * (r - 0.03))
+        a = a0 + (a1 - a0) * j / m
+        pt = (cx + math.cos(a) * rr, rail_y(a), cz - math.sin(a) * rr)
         if prev:
             g.tube("steel_grey", prev, pt, 0.02)
         prev = pt
@@ -636,22 +769,43 @@ def build_block(g):
     g.span("nickel", xc - 0.4, xc - 0.25, 0.97, 1.0, bz0 - 0.09, bz0 - 0.03)
     g.span("panel_grey", xc - 0.12, xc + 0.12, 1.66, 1.73, bz0 - 0.035, bz0 - 0.03)
     g.span("red_cross", xc - 0.105, xc - 0.055, 1.67, 1.72, bz0 - 0.04, bz0 - 0.035)
-    fa0, fa1 = xc - 1.15, xc - 0.76
+    fa0, fa1 = xc - 1.0, xc - 0.61
     g.span("first_aid_cream", fa0, fa1, 1.35, 1.82, bz0 - 0.12, bz0)
     fm = (fa0 + fa1) / 2
     g.span("red_cross", fm - 0.08, fm + 0.08, 1.6, 1.76, bz0 - 0.125, bz0 - 0.12)
     g.span("clock_face", fm - 0.018, fm + 0.018, 1.62, 1.74, bz0 - 0.128, bz0 - 0.125)
     g.span("clock_face", fm - 0.06, fm + 0.06, 1.662, 1.698, bz0 - 0.128, bz0 - 0.125)
     g.span("red_cross", fm - 0.09, fm + 0.09, 1.52, 1.56, bz0 - 0.125, bz0 - 0.12)
+    # Red conduit round the box at 2.6 m with grey junction boxes (IMG_3104); south of the mezzanine front a riser
+    # goes up the west face to the deck, blue cables climbing beside it (IMG_3103).
     g.tube("conduit_red", (bx0 - 0.03, 2.6, bz0), (bx0 - 0.03, 2.6, bz1), 0.01)
     g.tube("conduit_red", (bx0, 2.6, bz0 - 0.03), (bx1, 2.6, bz0 - 0.03), 0.01)
-    # Black baluster railing round the lower deck's open north and west edges, open where the big spiral arrives.
+    xr = mx0 + 0.3
+    for x in (xc - 1.45, xc, xr):
+        g.span("panel_grey", x - 0.06, x + 0.06, 2.54, 2.66, bz0 - 0.06, bz0)
+    g.tube("conduit_red", (xr, 2.66, bz0 - 0.03), (xr, under, bz0 - 0.03), 0.01)
+    for k in range(3):
+        g.tube("cable_blue", (xr + 0.08 + 0.03 * k, 2.62, bz0 - 0.03), (xr + 0.45 + 0.03 * k, under, bz0 - 0.03), 0.006)
+    # Lower deck edge: a dark bolted steel channel round its north and west edges, close silver balusters on it
+    # (IMG_3104/3087), open where the big spiral's landing joins the deck.
     north_end = B["mid_box"][2]
-    balusters(g, "steel_dark", (bx0 + 0.03, bz0), (bx0 + 0.03, north_end), BOX_DECK, 1.0, 0.13)
-    g.span("steel_dark", bx0 - 0.01, bx0 + 0.07, BOX_DECK + 1.0, BOX_DECK + 1.05, bz0, north_end)
-    for x0, x1 in ((bx0, S["x"] - 0.45), (S["x"] + 0.45, mx0)):
-        balusters(g, "steel_dark", (x0, bz0 + 0.03), (x1, bz0 + 0.03), BOX_DECK, 1.0, 0.13)
-        g.span("steel_dark", x0, x1, BOX_DECK + 1.0, BOX_DECK + 1.05, bz0 - 0.01, bz0 + 0.07)
+    g.span("steel_dark", bx0 - 0.05, bx0, BOX_DECK - 0.22, BOX_DECK + 0.03, bz0 - 0.05, bz1)
+    # The big spiral comes up onto a square wood landing on a dark steel frame over its pole, between its top tread and
+    # the deck edge, railed on its north and west sides (IMG_3103/3087).
+    lx0, lx1, lz0 = S["x"] - S["radius"], S["x"] + 0.12, S["z"] - 0.12
+    for x0, x1 in ((bx0, lx0), (lx1, mx0)):
+        g.span("steel_dark", x0, x1, BOX_DECK - 0.22, BOX_DECK + 0.03, bz0 - 0.05, bz0)
+        for x in [x0 + 0.15 + 0.3 * k for k in range(int((x1 - x0) / 0.3))]:
+            for y in (BOX_DECK - 0.16, BOX_DECK - 0.03):
+                g.span("nickel", x - 0.012, x + 0.012, y - 0.012, y + 0.012, bz0 - 0.06, bz0 - 0.05)
+    deck_rail(g, (bx0 + 0.03, bz0), (bx0 + 0.03, north_end))
+    g.span("wood_tread", lx0, lx1, BOX_DECK - 0.04, BOX_DECK + 0.005, lz0, bz0)
+    for x0, x1, z0, z1 in ((lx0, lx0 + 0.03, lz0, bz0), (lx1 - 0.03, lx1, lz0, bz0), (lx0, lx1, lz0, lz0 + 0.03)):
+        g.span("steel_dark", x0, x1, BOX_DECK - 0.14, BOX_DECK - 0.04, z0, z1)
+    deck_rail(g, (lx0 + 0.02, lz0 + 0.02), (lx0 + 0.02, bz0))
+    deck_rail(g, (lx0 + 0.02, lz0 + 0.02), (S["x"] - 0.08, lz0 + 0.02))
+    for x0, x1 in ((bx0, lx0), (lx1, mx0)):
+        deck_rail(g, (x0, bz0 + 0.03), (x1, bz0 + 0.03))
 
     # Upper deck: one slab from its front to the south wall, from the U stair to the east wall; over the hall a front
     # beam on two white posts and the cable railing, over the box deck open (the small spiral comes up there and the
