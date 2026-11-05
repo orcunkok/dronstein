@@ -245,7 +245,7 @@ SceneSettings:
       Intensity: 1
       DirtIntensity: 1
     Rendering:
-      PathTraced: true
+      PathTraced: false
       Denoiser: 3
       DLSSQuality: 2
     LidarView: Preview
@@ -318,19 +318,6 @@ Entities:
           Name: CloseSpeed
           Type: Float
           Value: 180
-  - Entity: 170054346821229300
-    Domain: Client
-    TagComponent:
-      Tag: Upper_Arm
-    Parent: 12765432612116365153
-    Children:
-      []
-    TransformComponent:
-      Position: [0.0535989, 0.119, 0.0535984]
-      Rotation: [-1.74921, 0.7854, 0]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 3
   - Entity: 245167270397148752
     Domain: Client
     TagComponent:
@@ -344,19 +331,6 @@ Entities:
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 8
-  - Entity: 336868437144006632
-    Domain: Client
-    TagComponent:
-      Tag: grasp_site
-    Parent: 17043353010356308012
-    Children:
-      []
-    TransformComponent:
-      Position: [0.127058, 0.018423, -0.127058]
-      Rotation: [2.64754, -0.638232, -2.40655]
-      Scale: [1, 1, 1]
-    MujocoSiteComponent:
-      ID: 0
   - Entity: 344505556118670621
     Domain: Client
     TagComponent:
@@ -370,26 +344,6 @@ Entities:
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 5
-  - Entity: 361471223336009338
-    Domain: Client
-    TagComponent:
-      Tag: geom_15
-    Parent: 12765432612116365153
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.0930929, 0.0749876, 0.0925674]
-      Rotation: [1.31803, 0.919085, -0.0529633]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 15
   - Entity: 395192763572778910
     Domain: Client
     TagComponent:
@@ -428,26 +382,6 @@ Entities:
       MaterialTable:
         0: 12925081748185488627
       Visible: true
-  - Entity: 412571088634004645
-    Domain: Client
-    TagComponent:
-      Tag: geom_7
-    Parent: 2936284825316491361
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.0266142, 0.115326, 0.0270138]
-      Rotation: [-1.42004, -0.769661, -0.249804]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 7
   - Entity: 442664863485632070
     Domain: Client
     TagComponent:
@@ -621,26 +555,6 @@ Entities:
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 7
-  - Entity: 671567979266332299
-    Domain: Client
-    TagComponent:
-      Tag: geom_3
-    Parent: 2936284825316491361
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [-0.0516782, 0.0648936, -0.0518169]
-      Rotation: [-1.18365, -0.832787, 3.1078]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 3
   - Entity: 745646443823374667
     Domain: Client
     TagComponent:
@@ -657,26 +571,6 @@ Entities:
       MaterialTable:
         0: 12925081748185488627
       Visible: true
-  - Entity: 752704764585291333
-    Domain: Client
-    TagComponent:
-      Tag: geom_13
-    Parent: 2936284825316491361
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [-0.0728445, 0.119118, -0.0902386]
-      Rotation: [-0.674803, 0.638212, 2.40653]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 13
   - Entity: 756123043266677426
     Domain: Client
     TagComponent:
@@ -826,26 +720,6 @@ Entities:
       MaterialTable:
         0: 12925081748185488627
       Visible: true
-  - Entity: 1121925077329520522
-    Domain: Client
-    TagComponent:
-      Tag: geom_1
-    Parent: 17043353010356308012
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.0238781, 0.0462177, -0.0238771]
-      Rotation: [3.11675, 0.785392, 3.14159]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 1
   - Entity: 1134009517207024497
     Domain: Client
     TagComponent:
@@ -955,26 +829,6 @@ Entities:
       MaterialTable:
         0: 14788740229170096286
       Visible: true
-  - Entity: 1480704568687383061
-    Domain: Client
-    TagComponent:
-      Tag: geom_15
-    Parent: 2936284825316491361
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [-0.0930929, 0.074987, -0.0925694]
-      Rotation: [-1.82355, -0.919079, -3.08863]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 15
   - Entity: 1603381186949079525
     Domain: Client
     TagComponent:
@@ -1072,26 +926,6 @@ Entities:
       MaterialTable:
         0: 12925081748185488627
       Visible: true
-  - Entity: 1779964855600234430
-    Domain: Client
-    TagComponent:
-      Tag: geom_23
-    Parent: 2936284825316491361
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [-0.114896, 0.0719749, -0.115068]
-      Rotation: [-1.87426, 0.735848, 2.70345]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 23
   - Entity: 1834295992527500920
     Domain: Client
     TagComponent:
@@ -1162,6 +996,27 @@ Entities:
       PodGraph: 10815986655699624251
       MaterialTable:
         0: 0
+        1: 0
+        2: 0
+        3: 0
+        4: 0
+        5: 0
+        6: 0
+        7: 0
+        8: 0
+        9: 0
+        10: 0
+        11: 0
+        12: 0
+        13: 0
+        14: 0
+        15: 0
+        16: 0
+        17: 0
+        18: 0
+        19: 0
+        20: 0
+        21: 0
   - Entity: 1927214016068331338
     Domain: Client
     TagComponent:
@@ -1216,19 +1071,6 @@ Entities:
         VignettingExponent: 4
         VignettingCorrection: 0
         SensorHeightMM: 24
-  - Entity: 1949635337831828225
-    Domain: Client
-    TagComponent:
-      Tag: Upper_Arm
-    Parent: 2936284825316491361
-    Children:
-      []
-    TransformComponent:
-      Position: [-0.0535989, 0.118999, -0.0536003]
-      Rotation: [1.39239, -0.785393, -3.14159]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 3
   - Entity: 1979815025508288610
     Domain: Client
     TagComponent:
@@ -1338,26 +1180,6 @@ Entities:
       MaterialTable:
         0: 5906284485229172943
       Visible: true
-  - Entity: 2158296106771987467
-    Domain: Client
-    TagComponent:
-      Tag: geom_12
-    Parent: 17043353010356308012
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.0801697, 0.132663, -0.070714]
-      Rotation: [1.5119, 0.639074, 0.732517]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 12
   - Entity: 2219724388333390735
     Domain: Client
     TagComponent:
@@ -1581,74 +1403,6 @@ Entities:
       Position: [0, 0, 0]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
-  - Entity: 2803064301961912472
-    Domain: Client
-    TagComponent:
-      Tag: geom_12
-    Parent: 12765432612116365153
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.070714, 0.132664, 0.0801659]
-      Rotation: [0.526635, -0.639459, 0.732787]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 12
-  - Entity: 2864279402823854185
-    Domain: Client
-    TagComponent:
-      Tag: Lower_Arm
-    Parent: 17043353010356308012
-    Children:
-      []
-    TransformComponent:
-      Position: [-0.0282478, 0.126578, 0.0282497]
-      Rotation: [2.9616, 0.785393, 3.14159]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 4
-  - Entity: 2936284825316491361
-    Domain: Client
-    TagComponent:
-      Tag: SO100
-    Parent: 0
-    Children:
-      - Handle: 3918625943524972859
-      - Handle: 15734756949423911087
-      - Handle: 1949635337831828225
-      - Handle: 12118830121399641712
-      - Handle: 4295026381695420280
-      - Handle: 3170081233677045310
-      - Handle: 16418620595612275484
-      - Handle: 3588619474384551200
-      - Handle: 12694146350048253766
-      - Handle: 3751463122837232980
-      - Handle: 671567979266332299
-      - Handle: 13616304625258458274
-      - Handle: 14036636980507861220
-      - Handle: 412571088634004645
-      - Handle: 8118248953018843837
-      - Handle: 14844214254785045029
-      - Handle: 5861904858693479965
-      - Handle: 752704764585291333
-      - Handle: 1480704568687383061
-      - Handle: 16575284716025715233
-      - Handle: 1779964855600234430
-    TransformComponent:
-      Position: [11.32, 0.74, -10.13]
-      Rotation: [0, 2.3562, 0]
-      Scale: [1, 1, 1]
-    RobotControllerComponent:
-      PodMotionGraph: 371560933525860165
-    MujocoSceneComponent:
-      MujocoScene: 15892768782260195932
   - Entity: 2970630481716693422
     Domain: Client
     TagComponent:
@@ -1793,19 +1547,6 @@ Entities:
       MaterialTable:
         0: 14788740229170096286
       Visible: true
-  - Entity: 3170081233677045310
-    Domain: Client
-    TagComponent:
-      Tag: Fixed_Jaw
-    Parent: 2936284825316491361
-    Children:
-      []
-    TransformComponent:
-      Position: [-0.0878282, 0.105206, -0.0878296]
-      Rotation: [0.49406, -0.638244, -0.735045]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 6
   - Entity: 3263799576751459641
     Domain: Client
     TagComponent:
@@ -1870,19 +1611,6 @@ Entities:
       MaterialTable:
         0: 12925081748185488627
       Visible: true
-  - Entity: 3393998204613868891
-    Domain: Client
-    TagComponent:
-      Tag: Base
-    Parent: 12521236771330862867
-    Children:
-      []
-    TransformComponent:
-      Position: [0, -5.96046e-07, 0]
-      Rotation: [-1.5708, -0.7854, 0]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 1
   - Entity: 3431107646684660533
     Domain: Client
     TagComponent:
@@ -1921,19 +1649,6 @@ Entities:
       MaterialTable:
         0: 12925081748185488627
       Visible: true
-  - Entity: 3588619474384551200
-    Domain: Client
-    TagComponent:
-      Tag: grasp_site
-    Parent: 2936284825316491361
-    Children:
-      []
-    TransformComponent:
-      Position: [-0.127056, 0.018423, -0.127058]
-      Rotation: [0.49406, -0.638244, -0.735045]
-      Scale: [1, 1, 1]
-    MujocoSiteComponent:
-      ID: 0
   - Entity: 3627075593681298681
     Domain: Client
     TagComponent:
@@ -2056,26 +1771,6 @@ Entities:
       MaterialTable:
         0: 14788740229170096286
       Visible: true
-  - Entity: 3751463122837232980
-    Domain: Client
-    TagComponent:
-      Tag: geom_1
-    Parent: 2936284825316491361
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [-0.0238767, 0.0462177, -0.0238781]
-      Rotation: [3.11675, -0.785394, -3.14159]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 1
   - Entity: 3787078912260264561
     Domain: Client
     TagComponent:
@@ -2140,19 +1835,6 @@ Entities:
       MaterialTable:
         0: 14788740229170096286
       Visible: true
-  - Entity: 3918625943524972859
-    Domain: Client
-    TagComponent:
-      Tag: Base
-    Parent: 2936284825316491361
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [1.5708, -0.785393, -3.14159]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 1
   - Entity: 3955080215586890195
     Domain: Client
     TagComponent:
@@ -2263,19 +1945,6 @@ Entities:
       MaterialTable:
         0: 14788740229170096286
       Visible: true
-  - Entity: 4295026381695420280
-    Domain: Client
-    TagComponent:
-      Tag: Wrist_Pitch_Roll
-    Parent: 2936284825316491361
-    Children:
-      []
-    TransformComponent:
-      Position: [-0.0649395, 0.155844, -0.0649414]
-      Rotation: [2.57281, -0.785393, -3.14159]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 5
   - Entity: 4349336411905971544
     Domain: Client
     TagComponent:
@@ -2348,19 +2017,6 @@ Entities:
       Position: [0.85, 0, -13.65]
       Rotation: [0, -1.5708, 0]
       Scale: [1, 1, 1]
-  - Entity: 4464967322564008860
-    Domain: Client
-    TagComponent:
-      Tag: Moving_Jaw
-    Parent: 12521236771330862867
-    Children:
-      []
-    TransformComponent:
-      Position: [-0.109156, 0.0955287, 0.109156]
-      Rotation: [-2.77442, -0.711158, 2.60913]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 7
   - Entity: 4494102967913845626
     Domain: Client
     TagComponent:
@@ -2377,26 +2033,6 @@ Entities:
       MaterialTable:
         0: 12925081748185488627
       Visible: true
-  - Entity: 4545499135889256929
-    Domain: Client
-    TagComponent:
-      Tag: geom_3
-    Parent: 12765432612116365153
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.0516782, 0.0648937, 0.051815]
-      Rotation: [1.95793, 0.832794, 0.0337961]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 3
   - Entity: 4656342592927566935
     Domain: Client
     TagComponent:
@@ -2718,26 +2354,6 @@ Entities:
       Contype: 1
       Conaffinity: 1
       Condim: -1
-  - Entity: 5659953726270240418
-    Domain: Client
-    TagComponent:
-      Tag: geom_9
-    Parent: 12765432612116365153
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.0141406, 0.138769, 0.0188675]
-      Rotation: [0.929548, 0.130721, 1.7127]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 9
   - Entity: 5682138623771747757
     Domain: Client
     TagComponent:
@@ -2786,19 +2402,6 @@ Entities:
       MaterialTable:
         0: 12925081748185488627
       Visible: true
-  - Entity: 5755201364588635279
-    Domain: Client
-    TagComponent:
-      Tag: Fixed_Jaw
-    Parent: 12765432612116365153
-    Children:
-      []
-    TransformComponent:
-      Position: [0.0878282, 0.105207, 0.0878277]
-      Rotation: [-2.64753, 0.638235, -2.40654]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 6
   - Entity: 5816497446257569881
     Domain: Client
     TagComponent:
@@ -2815,46 +2418,6 @@ Entities:
       MaterialTable:
         0: 5906284485229172943
       Visible: true
-  - Entity: 5861904858693479965
-    Domain: Client
-    TagComponent:
-      Tag: geom_12
-    Parent: 2936284825316491361
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [-0.0707145, 0.132663, -0.0801687]
-      Rotation: [-2.61496, 0.639468, 2.40881]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 12
-  - Entity: 5866535638932453428
-    Domain: Client
-    TagComponent:
-      Tag: geom_1
-    Parent: 12765432612116365153
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.0238762, 0.0462174, 0.0238762]
-      Rotation: [-0.0248528, 0.785401, -1.90735e-06]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 1
   - Entity: 5877137516897359276
     Domain: Client
     TagComponent:
@@ -2871,26 +2434,6 @@ Entities:
       MaterialTable:
         0: 15222367373148893193
       Visible: true
-  - Entity: 5914144290124256119
-    Domain: Client
-    TagComponent:
-      Tag: geom_9
-    Parent: 12521236771330862867
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [-0.0188675, 0.138769, 0.0141406]
-      Rotation: [-0.659872, 0.140682, 1.43876]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 9
   - Entity: 5917624705653497054
     Domain: Client
     TagComponent:
@@ -2907,26 +2450,6 @@ Entities:
       MaterialTable:
         0: 17406367289790317398
       Visible: true
-  - Entity: 5926904094054117010
-    Domain: Client
-    TagComponent:
-      Tag: geom_13
-    Parent: 12521236771330862867
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [-0.0902367, 0.119119, 0.0728431]
-      Rotation: [0.31335, -0.638228, 2.4065]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 13
   - Entity: 5928455949621777808
     Domain: Client
     TagComponent:
@@ -2975,32 +2498,6 @@ Entities:
       MaterialTable:
         0: 12925081748185488627
       Visible: true
-  - Entity: 5989102630014047035
-    Domain: Client
-    TagComponent:
-      Tag: Lower_Arm
-    Parent: 12521236771330862867
-    Children:
-      []
-    TransformComponent:
-      Position: [0.0282497, 0.126578, -0.0282502]
-      Rotation: [-0.179999, -0.7854, 0]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 4
-  - Entity: 6065991122769275544
-    Domain: Client
-    TagComponent:
-      Tag: Fixed_Jaw
-    Parent: 17043353010356308012
-    Children:
-      []
-    TransformComponent:
-      Position: [0.0878296, 0.105206, -0.0878291]
-      Rotation: [2.64754, -0.638232, -2.40655]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 6
   - Entity: 6073118377350982459
     Domain: Client
     TagComponent:
@@ -3038,19 +2535,6 @@ Entities:
       Radius: 25
       LightSize: 0.05
       Falloff: 1
-  - Entity: 6150884449582430725
-    Domain: Client
-    TagComponent:
-      Tag: Rotation_Pitch
-    Parent: 12521236771330862867
-    Children:
-      []
-    TransformComponent:
-      Position: [-0.0319614, 0.0164996, 0.0319614]
-      Rotation: [7.15256e-07, -0.7854, 0]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 2
   - Entity: 6164777715395487094
     Domain: Client
     TagComponent:
@@ -3104,26 +2588,6 @@ Entities:
       MaterialTable:
         0: 17406367289790317398
       Visible: true
-  - Entity: 6300896647021621299
-    Domain: Client
-    TagComponent:
-      Tag: geom_12
-    Parent: 12521236771330862867
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [-0.0801678, 0.132664, 0.070714]
-      Rotation: [-1.6297, -0.639066, 2.40907]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 12
   - Entity: 6373894461367624838
     Domain: Client
     TagComponent:
@@ -3140,26 +2604,6 @@ Entities:
       MaterialTable:
         0: 12925081748185488627
       Visible: true
-  - Entity: 6421730374673624259
-    Domain: Client
-    TagComponent:
-      Tag: geom_7
-    Parent: 12521236771330862867
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.0270147, 0.115325, -0.0266156]
-      Rotation: [-1.77146, 0.769613, -0.249805]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 7
   - Entity: 6510114374010020510
     Domain: Client
     TagComponent:
@@ -3208,26 +2652,6 @@ Entities:
       MaterialTable:
         0: 14788740229170096286
       Visible: true
-  - Entity: 6644737380521514687
-    Domain: Client
-    TagComponent:
-      Tag: geom_15
-    Parent: 12521236771330862867
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [-0.0925684, 0.0749876, 0.0930924]
-      Rotation: [1.38461, -0.650645, -0.0403655]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 15
   - Entity: 6690199291405621092
     Domain: Client
     TagComponent:
@@ -3358,19 +2782,6 @@ Entities:
       Contype: 1
       Conaffinity: 1
       Condim: -1
-  - Entity: 6909284791776998866
-    Domain: Client
-    TagComponent:
-      Tag: Moving_Jaw
-    Parent: 17043353010356308012
-    Children:
-      []
-    TransformComponent:
-      Position: [0.109158, 0.0955279, -0.109157]
-      Rotation: [0.367171, 0.711167, 0.532459]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 7
   - Entity: 6956470410964588103
     Domain: Client
     TagComponent:
@@ -3684,26 +3095,6 @@ Entities:
       Radius: 25
       LightSize: 0.05
       Falloff: 1
-  - Entity: 7790165432900445388
-    Domain: Client
-    TagComponent:
-      Tag: geom_16
-    Parent: 12765432612116365153
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.102498, 0.0893704, 0.10219]
-      Rotation: [-2.24604, 0.390722, 1.99533]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 16
   - Entity: 7847370191315332534
     Domain: Client
     TagComponent:
@@ -3825,46 +3216,6 @@ Entities:
       Position: [1.75, 0, -13.65]
       Rotation: [0, -1.5708, 0]
       Scale: [1, 1, 1]
-  - Entity: 8118248953018843837
-    Domain: Client
-    TagComponent:
-      Tag: geom_9
-    Parent: 2936284825316491361
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [-0.0141416, 0.138769, -0.0188694]
-      Rotation: [-2.21205, -0.130717, 1.4289]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 9
-  - Entity: 8149588384116531238
-    Domain: Client
-    TagComponent:
-      Tag: geom_10
-    Parent: 12521236771330862867
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [-0.0567856, 0.153798, 0.0571842]
-      Rotation: [-0.81846, 0.126933, 1.44283]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 10
   - Entity: 8170836057042241114
     Domain: Client
     TagComponent:
@@ -3930,26 +3281,6 @@ Entities:
       Position: [2.65, 0, -13.65]
       Rotation: [0, -1.5708, 0]
       Scale: [1, 1, 1]
-  - Entity: 8362871652898615570
-    Domain: Client
-    TagComponent:
-      Tag: geom_10
-    Parent: 12765432612116365153
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.0571842, 0.153798, 0.0567846]
-      Rotation: [0.768627, 0.126935, 1.69876]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 10
   - Entity: 8389595262201967105
     Domain: Client
     TagComponent:
@@ -4149,39 +3480,6 @@ Entities:
       MaterialTable:
         0: 14788740229170096286
       Visible: true
-  - Entity: 8890737312305069625
-    Domain: Client
-    TagComponent:
-      Tag: geom_13
-    Parent: 17043353010356308012
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.0902395, 0.119118, -0.0728445]
-      Rotation: [-2.82824, 0.638236, 0.735082]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 13
-  - Entity: 8918609025498865950
-    Domain: Client
-    TagComponent:
-      Tag: Wrist_Pitch_Roll
-    Parent: 12521236771330862867
-    Children:
-      []
-    TransformComponent:
-      Position: [-0.0649395, 0.155845, 0.0649385]
-      Rotation: [-0.568789, -0.7854, 0]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 5
   - Entity: 8930667415280694591
     Domain: Client
     TagComponent:
@@ -4198,19 +3496,6 @@ Entities:
       MaterialTable:
         0: 12925081748185488627
       Visible: true
-  - Entity: 8990764326423627280
-    Domain: Client
-    TagComponent:
-      Tag: Upper_Arm
-    Parent: 12521236771330862867
-    Children:
-      []
-    TransformComponent:
-      Position: [-0.0535994, 0.119, 0.0535989]
-      Rotation: [-1.74921, -0.7854, 0]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 3
   - Entity: 9039404825748457884
     Domain: Client
     TagComponent:
@@ -4322,26 +3607,6 @@ Entities:
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 21
-  - Entity: 9274574002845002918
-    Domain: Client
-    TagComponent:
-      Tag: geom_10
-    Parent: 17043353010356308012
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.0567875, 0.153797, -0.0571856]
-      Rotation: [2.32314, -0.126929, 1.69876]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 10
   - Entity: 9359758603787633405
     Domain: Client
     TagComponent:
@@ -4719,46 +3984,6 @@ Entities:
       MaterialTable:
         0: 12925081748185488627
       Visible: true
-  - Entity: 10422092500394701292
-    Domain: Client
-    TagComponent:
-      Tag: geom_0
-    Parent: 12521236771330862867
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [-0.0108938, 0.028442, 0.0109005]
-      Rotation: [-0.930395, -0.48982, 2.13318]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 0
-  - Entity: 10617299161398670116
-    Domain: Client
-    TagComponent:
-      Tag: geom_4
-    Parent: 17043353010356308012
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.053401, 0.107566, -0.0537992]
-      Rotation: [1.59564, 0.785402, -1.14441e-05]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 4
   - Entity: 10649582792352841483
     Domain: Client
     TagComponent:
@@ -4812,26 +4037,6 @@ Entities:
       MaterialTable:
         0: 12925081748185488627
       Visible: true
-  - Entity: 10881576417121625492
-    Domain: Client
-    TagComponent:
-      Tag: geom_3
-    Parent: 12521236771330862867
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [-0.051816, 0.0648937, 0.0516782]
-      Rotation: [1.91226, -0.737487, 0.0307198]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 3
   - Entity: 10883897787002097870
     Domain: Client
     TagComponent:
@@ -5036,45 +4241,6 @@ Entities:
       MaterialTable:
         0: 14788740229170096286
       Visible: true
-  - Entity: 11548469999132913429
-    Domain: Client
-    TagComponent:
-      Tag: Upper_Arm
-    Parent: 17043353010356308012
-    Children:
-      []
-    TransformComponent:
-      Position: [0.0536003, 0.118999, -0.0535998]
-      Rotation: [1.39239, 0.785393, 3.14159]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 3
-  - Entity: 11596119899825197034
-    Domain: Client
-    TagComponent:
-      Tag: Rotation_Pitch
-    Parent: 12765432612116365153
-    Children:
-      []
-    TransformComponent:
-      Position: [0.0319615, 0.0164996, 0.0319614]
-      Rotation: [7.15256e-07, 0.7854, 0]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 2
-  - Entity: 11636381117649430226
-    Domain: Client
-    TagComponent:
-      Tag: grasp_site
-    Parent: 12521236771330862867
-    Children:
-      []
-    TransformComponent:
-      Position: [-0.127057, 0.018424, 0.127056]
-      Rotation: [-0.494055, 0.638224, -0.735045]
-      Scale: [1, 1, 1]
-    MujocoSiteComponent:
-      ID: 0
   - Entity: 11804955140436517477
     Domain: Client
     TagComponent:
@@ -5091,26 +4257,6 @@ Entities:
       MaterialTable:
         0: 14788740229170096286
       Visible: true
-  - Entity: 11812526565605452757
-    Domain: Client
-    TagComponent:
-      Tag: geom_15
-    Parent: 17043353010356308012
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.0925694, 0.074987, -0.0930934]
-      Rotation: [-1.75697, 0.650638, -3.10123]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 15
   - Entity: 11850728636176473896
     Domain: Client
     TagComponent:
@@ -5159,26 +4305,6 @@ Entities:
       MaterialTable:
         0: 14788740229170096286
       Visible: true
-  - Entity: 11905935468983616578
-    Domain: Client
-    TagComponent:
-      Tag: geom_6
-    Parent: 12765432612116365153
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.0129972, 0.108106, 0.0131636]
-      Rotation: [0.787302, 0.13495, 1.71156]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 6
   - Entity: 11914807962488419758
     Domain: Client
     TagComponent:
@@ -5211,26 +4337,6 @@ Entities:
       MaterialTable:
         0: 14788740229170096286
       Visible: true
-  - Entity: 11977584742618531614
-    Domain: Client
-    TagComponent:
-      Tag: geom_7
-    Parent: 12765432612116365153
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [-0.0266156, 0.115325, -0.0270157]
-      Rotation: [1.72156, 0.769653, -2.89178]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 7
   - Entity: 12012381259446299033
     Domain: Client
     TagComponent:
@@ -5269,19 +4375,6 @@ Entities:
       Contype: 1
       Conaffinity: 1
       Condim: -1
-  - Entity: 12118830121399641712
-    Domain: Client
-    TagComponent:
-      Tag: Lower_Arm
-    Parent: 2936284825316491361
-    Children:
-      []
-    TransformComponent:
-      Position: [0.0282497, 0.126578, 0.0282497]
-      Rotation: [2.9616, -0.785393, -3.14159]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 4
   - Entity: 12157374869143816941
     Domain: Client
     TagComponent:
@@ -5320,26 +4413,6 @@ Entities:
       Contype: 1
       Conaffinity: 1
       Condim: -1
-  - Entity: 12276364469431526047
-    Domain: Client
-    TagComponent:
-      Tag: geom_6
-    Parent: 12521236771330862867
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [-0.0131645, 0.108106, 0.0129972]
-      Rotation: [-0.80256, 0.139477, 1.43451]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 6
   - Entity: 12291108004638861228
     Domain: Client
     TagComponent:
@@ -5356,26 +4429,6 @@ Entities:
       MaterialTable:
         0: 12925081748185488627
       Visible: true
-  - Entity: 12333257629106424799
-    Domain: Client
-    TagComponent:
-      Tag: geom_23
-    Parent: 12765432612116365153
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.114896, 0.0719757, 0.115067]
-      Rotation: [1.26733, -0.73584, 0.438154]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 23
   - Entity: 12363373977174165505
     Domain: Client
     TagComponent:
@@ -5440,41 +4493,6 @@ Entities:
       MaterialTable:
         0: 12925081748185488627
       Visible: true
-  - Entity: 12521236771330862867
-    Domain: Client
-    TagComponent:
-      Tag: SO100
-    Parent: 0
-    Children:
-      - Handle: 3393998204613868891
-      - Handle: 6150884449582430725
-      - Handle: 8990764326423627280
-      - Handle: 5989102630014047035
-      - Handle: 8918609025498865950
-      - Handle: 16333079917550525305
-      - Handle: 4464967322564008860
-      - Handle: 11636381117649430226
-      - Handle: 10422092500394701292
-      - Handle: 15931447576378725652
-      - Handle: 10881576417121625492
-      - Handle: 13117192957431697726
-      - Handle: 12276364469431526047
-      - Handle: 6421730374673624259
-      - Handle: 5914144290124256119
-      - Handle: 8149588384116531238
-      - Handle: 6300896647021621299
-      - Handle: 5926904094054117010
-      - Handle: 6644737380521514687
-      - Handle: 18417419857443738223
-      - Handle: 14266405562946481562
-    TransformComponent:
-      Position: [10.78, 0.74, -10.13]
-      Rotation: [0, 0.7854, 0]
-      Scale: [1, 1, 1]
-    RobotControllerComponent:
-      PodMotionGraph: 371560933525860165
-    MujocoSceneComponent:
-      MujocoScene: 15892768782260195932
   - Entity: 12536530573539641025
     Domain: Client
     TagComponent:
@@ -5507,74 +4525,6 @@ Entities:
       MaterialTable:
         0: 14788740229170096286
       Visible: true
-  - Entity: 12694146350048253766
-    Domain: Client
-    TagComponent:
-      Tag: geom_0
-    Parent: 2936284825316491361
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [-0.0109005, 0.0284424, -0.0108948]
-      Rotation: [-2.21292, 0.489877, 2.13315]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 0
-  - Entity: 12765432612116365153
-    Domain: Client
-    TagComponent:
-      Tag: SO100
-    Parent: 0
-    Children:
-      - Handle: 15104614004034488334
-      - Handle: 11596119899825197034
-      - Handle: 170054346821229300
-      - Handle: 14495370533195064072
-      - Handle: 17848467020472344967
-      - Handle: 5755201364588635279
-      - Handle: 17995747252953007335
-      - Handle: 14685264992904296255
-      - Handle: 16593524150773353507
-      - Handle: 5866535638932453428
-      - Handle: 4545499135889256929
-      - Handle: 15464204427475983156
-      - Handle: 11905935468983616578
-      - Handle: 11977584742618531614
-      - Handle: 5659953726270240418
-      - Handle: 8362871652898615570
-      - Handle: 2803064301961912472
-      - Handle: 12977918308369686809
-      - Handle: 361471223336009338
-      - Handle: 7790165432900445388
-      - Handle: 12333257629106424799
-    TransformComponent:
-      Position: [10.78, 0.74, -11.37]
-      Rotation: [0, -0.7854, 0]
-      Scale: [1, 1, 1]
-    RobotControllerComponent:
-      PodMotionGraph: 371560933525860165
-    MujocoSceneComponent:
-      MujocoScene: 15892768782260195932
-  - Entity: 12875907030603358511
-    Domain: Client
-    TagComponent:
-      Tag: Base
-    Parent: 17043353010356308012
-    Children:
-      []
-    TransformComponent:
-      Position: [1.90735e-06, 0, 0]
-      Rotation: [1.5708, 0.785393, 3.14159]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 1
   - Entity: 12910596875482974431
     Domain: Client
     TagComponent:
@@ -5626,26 +4576,6 @@ Entities:
       MaterialTable:
         0: 14788740229170096286
       Visible: true
-  - Entity: 12977918308369686809
-    Domain: Client
-    TagComponent:
-      Tag: geom_13
-    Parent: 12765432612116365153
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.0728431, 0.119119, 0.0902367]
-      Rotation: [2.46679, -0.638204, 0.735072]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 13
   - Entity: 13045595022062664316
     Domain: Client
     TagComponent:
@@ -5678,26 +4608,6 @@ Entities:
       MaterialTable:
         0: 17406367289790317398
       Visible: true
-  - Entity: 13117192957431697726
-    Domain: Client
-    TagComponent:
-      Tag: geom_4
-    Parent: 12521236771330862867
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [-0.0534, 0.107566, 0.0537987]
-      Rotation: [-1.54595, -0.785395, 3.14159]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 4
   - Entity: 13129489785444233558
     Domain: Client
     TagComponent:
@@ -5881,26 +4791,6 @@ Entities:
       MaterialTable:
         0: 17406367289790317398
       Visible: true
-  - Entity: 13616304625258458274
-    Domain: Client
-    TagComponent:
-      Tag: geom_4
-    Parent: 2936284825316491361
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [-0.0537992, 0.107566, -0.053401]
-      Rotation: [-1.54594, 0.785405, -3.14158]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 4
   - Entity: 13632217528594285167
     Domain: Client
     TagComponent:
@@ -5913,26 +4803,6 @@ Entities:
       Rotation: [-1.5708, 0, 0]
       Scale: [1, 1, 1]
     MujocoBodyComponent:
-      ID: 16
-  - Entity: 13868236667793609194
-    Domain: Client
-    TagComponent:
-      Tag: geom_16
-    Parent: 17043353010356308012
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.102192, 0.0893698, -0.102499]
-      Rotation: [-0.845723, -0.390718, 1.99532]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
       ID: 16
   - Entity: 13927092224105300103
     Domain: Client
@@ -5950,26 +4820,6 @@ Entities:
       MaterialTable:
         0: 17406367289790317398
       Visible: true
-  - Entity: 14036636980507861220
-    Domain: Client
-    TagComponent:
-      Tag: geom_6
-    Parent: 2936284825316491361
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [-0.0129981, 0.108106, -0.0131655]
-      Rotation: [-2.3543, -0.134946, 1.43004]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 6
   - Entity: 14038399448075607784
     Domain: Client
     TagComponent:
@@ -6149,26 +4999,6 @@ Entities:
       MaterialTable:
         0: 12925081748185488627
       Visible: true
-  - Entity: 14266405562946481562
-    Domain: Client
-    TagComponent:
-      Tag: geom_23
-    Parent: 12521236771330862867
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [-0.115067, 0.0719757, 0.114895]
-      Rotation: [-1.26486, -0.735883, 2.70342]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 23
   - Entity: 14289461405601719315
     Domain: Client
     TagComponent:
@@ -6214,32 +5044,6 @@ Entities:
       MaterialTable:
         0: 14788740229170096286
       Visible: true
-  - Entity: 14495370533195064072
-    Domain: Client
-    TagComponent:
-      Tag: Lower_Arm
-    Parent: 12765432612116365153
-    Children:
-      []
-    TransformComponent:
-      Position: [-0.0282507, 0.126578, -0.0282497]
-      Rotation: [-0.179999, 0.7854, 0]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 4
-  - Entity: 14685264992904296255
-    Domain: Client
-    TagComponent:
-      Tag: grasp_site
-    Parent: 12765432612116365153
-    Children:
-      []
-    TransformComponent:
-      Position: [0.127057, 0.018424, 0.127056]
-      Rotation: [-2.64753, 0.638235, -2.40654]
-      Scale: [1, 1, 1]
-    MujocoSiteComponent:
-      ID: 0
   - Entity: 14716781457493885884
     Domain: Client
     TagComponent:
@@ -6262,26 +5066,6 @@ Entities:
       Contype: 1
       Conaffinity: 1
       Condim: -1
-  - Entity: 14844214254785045029
-    Domain: Client
-    TagComponent:
-      Tag: geom_10
-    Parent: 2936284825316491361
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [-0.0571856, 0.153797, -0.0567875]
-      Rotation: [-2.37297, -0.126931, 1.44284]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 10
   - Entity: 14869391488883133901
     Domain: Client
     TagComponent:
@@ -6363,19 +5147,6 @@ Entities:
       Contype: 1
       Conaffinity: 1
       Condim: -1
-  - Entity: 15104614004034488334
-    Domain: Client
-    TagComponent:
-      Tag: Base
-    Parent: 12765432612116365153
-    Children:
-      []
-    TransformComponent:
-      Position: [2.98023e-08, -5.96046e-07, 0]
-      Rotation: [-1.5708, 0.7854, 0]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 1
   - Entity: 15130540521307331526
     Domain: Client
     TagComponent:
@@ -6472,26 +5243,6 @@ Entities:
       MaterialTable:
         0: 12925081748185488627
       Visible: true
-  - Entity: 15464204427475983156
-    Domain: Client
-    TagComponent:
-      Tag: geom_4
-    Parent: 12765432612116365153
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.0537987, 0.107566, 0.0533981]
-      Rotation: [1.59564, -0.785398, 4.76837e-07]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 4
   - Entity: 15517991742549953451
     Domain: Client
     TagComponent:
@@ -6555,39 +5306,6 @@ Entities:
       Contype: 1
       Conaffinity: 1
       Condim: -1
-  - Entity: 15601209623099371670
-    Domain: Client
-    TagComponent:
-      Tag: Rotation_Pitch
-    Parent: 17043353010356308012
-    Children:
-      []
-    TransformComponent:
-      Position: [0.0319614, 0.0164998, -0.0319614]
-      Rotation: [-3.14158, 0.785393, 3.14159]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 2
-  - Entity: 15601359334573694632
-    Domain: Client
-    TagComponent:
-      Tag: geom_9
-    Parent: 17043353010356308012
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.0188694, 0.138769, -0.0141411]
-      Rotation: [2.48173, -0.140678, 1.70282]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 9
   - Entity: 15617138459948193253
     Domain: Client
     TagComponent:
@@ -6604,32 +5322,6 @@ Entities:
       MaterialTable:
         0: 17406367289790317398
       Visible: true
-  - Entity: 15703991615307807270
-    Domain: Client
-    TagComponent:
-      Tag: Wrist_Pitch_Roll
-    Parent: 17043353010356308012
-    Children:
-      []
-    TransformComponent:
-      Position: [0.0649414, 0.155844, -0.0649405]
-      Rotation: [2.57281, 0.785393, 3.14159]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 5
-  - Entity: 15734756949423911087
-    Domain: Client
-    TagComponent:
-      Tag: Rotation_Pitch
-    Parent: 2936284825316491361
-    Children:
-      []
-    TransformComponent:
-      Position: [-0.0319614, 0.0164998, -0.0319624]
-      Rotation: [-3.14158, -0.785393, -3.14159]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 2
   - Entity: 15748087159218340944
     Domain: Client
     TagComponent:
@@ -6745,26 +5437,6 @@ Entities:
       MaterialTable:
         0: 17406367289790317398
       Visible: true
-  - Entity: 15931447576378725652
-    Domain: Client
-    TagComponent:
-      Tag: geom_1
-    Parent: 12521236771330862867
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [-0.0238762, 0.0462174, 0.0238762]
-      Rotation: [-0.0248501, -0.785398, -1.90735e-06]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 1
   - Entity: 16028136394604606545
     Domain: Client
     TagComponent:
@@ -6954,19 +5626,6 @@ Entities:
       MaterialTable:
         0: 17406367289790317398
       Visible: true
-  - Entity: 16333079917550525305
-    Domain: Client
-    TagComponent:
-      Tag: Fixed_Jaw
-    Parent: 12521236771330862867
-    Children:
-      []
-    TransformComponent:
-      Position: [-0.0878286, 0.105207, 0.0878282]
-      Rotation: [-0.494055, 0.638224, -0.735045]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 6
   - Entity: 16377743310094621875
     Domain: Client
     TagComponent:
@@ -7015,19 +5674,6 @@ Entities:
       MaterialTable:
         0: 12925081748185488627
       Visible: true
-  - Entity: 16418620595612275484
-    Domain: Client
-    TagComponent:
-      Tag: Moving_Jaw
-    Parent: 2936284825316491361
-    Children:
-      []
-    TransformComponent:
-      Position: [-0.109156, 0.0955279, -0.109158]
-      Rotation: [2.77444, 0.711176, 2.60913]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 7
   - Entity: 16456055512201389535
     Domain: Client
     TagComponent:
@@ -7066,46 +5712,6 @@ Entities:
       MaterialTable:
         0: 10640983446431700429
       Visible: true
-  - Entity: 16575284716025715233
-    Domain: Client
-    TagComponent:
-      Tag: geom_16
-    Parent: 2936284825316491361
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [-0.102499, 0.0893698, -0.102192]
-      Rotation: [0.895544, -0.39072, 1.14627]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 16
-  - Entity: 16593524150773353507
-    Domain: Client
-    TagComponent:
-      Tag: geom_0
-    Parent: 12765432612116365153
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.0109001, 0.028442, 0.0108938]
-      Rotation: [0.928673, -0.489869, 1.00845]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 0
   - Entity: 16665276476672919994
     Domain: Client
     TagComponent:
@@ -7224,61 +5830,6 @@ Entities:
       Contype: 1
       Conaffinity: 1
       Condim: -1
-  - Entity: 17043353010356308012
-    Domain: Client
-    TagComponent:
-      Tag: SO100
-    Parent: 0
-    Children:
-      - Handle: 12875907030603358511
-      - Handle: 15601209623099371670
-      - Handle: 11548469999132913429
-      - Handle: 2864279402823854185
-      - Handle: 15703991615307807270
-      - Handle: 6065991122769275544
-      - Handle: 6909284791776998866
-      - Handle: 336868437144006632
-      - Handle: 17102069882798516501
-      - Handle: 1121925077329520522
-      - Handle: 17210560932876557610
-      - Handle: 10617299161398670116
-      - Handle: 17283990305566420698
-      - Handle: 17166065771439630575
-      - Handle: 15601359334573694632
-      - Handle: 9274574002845002918
-      - Handle: 2158296106771987467
-      - Handle: 8890737312305069625
-      - Handle: 11812526565605452757
-      - Handle: 13868236667793609194
-      - Handle: 18396643266322401656
-    TransformComponent:
-      Position: [11.32, 0.74, -11.37]
-      Rotation: [0, -2.3562, 0]
-      Scale: [1, 1, 1]
-    RobotControllerComponent:
-      PodMotionGraph: 371560933525860165
-    MujocoSceneComponent:
-      MujocoScene: 15892768782260195932
-  - Entity: 17102069882798516501
-    Domain: Client
-    TagComponent:
-      Tag: geom_0
-    Parent: 17043353010356308012
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.0108967, 0.0284424, -0.0108995]
-      Rotation: [2.2112, 0.489829, 1.0084]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 0
   - Entity: 17121903389656461497
     Domain: Client
     TagComponent:
@@ -7317,26 +5868,6 @@ Entities:
       MaterialTable:
         0: 12925081748185488627
       Visible: true
-  - Entity: 17166065771439630575
-    Domain: Client
-    TagComponent:
-      Tag: geom_7
-    Parent: 17043353010356308012
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [-0.0270138, 0.115326, 0.0266151]
-      Rotation: [1.37014, -0.769621, -2.8918]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 7
   - Entity: 17168540220499114429
     Domain: Client
     TagComponent:
@@ -7366,26 +5897,6 @@ Entities:
       MaterialTable:
         0: 15312976335413109328
       Visible: true
-  - Entity: 17210560932876557610
-    Domain: Client
-    TagComponent:
-      Tag: geom_3
-    Parent: 17043353010356308012
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.0518169, 0.0648936, -0.0516787]
-      Rotation: [-1.22932, 0.73748, 3.11087]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 3
   - Entity: 17220499276268527643
     Domain: Client
     TagComponent:
@@ -7415,26 +5926,6 @@ Entities:
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 22
-  - Entity: 17283990305566420698
-    Domain: Client
-    TagComponent:
-      Tag: geom_6
-    Parent: 17043353010356308012
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.0131664, 0.108106, -0.0129967]
-      Rotation: [2.33904, -0.139472, 1.70707]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 6
   - Entity: 17334347121404989582
     Domain: Client
     TagComponent:
@@ -7569,19 +6060,6 @@ Entities:
       MaterialTable:
         0: 12925081748185488627
       Visible: true
-  - Entity: 17848467020472344967
-    Domain: Client
-    TagComponent:
-      Tag: Wrist_Pitch_Roll
-    Parent: 12765432612116365153
-    Children:
-      []
-    TransformComponent:
-      Position: [0.0649386, 0.155845, 0.0649385]
-      Rotation: [-0.568789, 0.7854, 0]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 5
   - Entity: 17849749303881500182
     Domain: Client
     TagComponent:
@@ -7611,19 +6089,6 @@ Entities:
       MaterialTable:
         0: 17406367289790317398
       Visible: true
-  - Entity: 17995747252953007335
-    Domain: Client
-    TagComponent:
-      Tag: Moving_Jaw
-    Parent: 12765432612116365153
-    Children:
-      []
-    TransformComponent:
-      Position: [0.109156, 0.0955287, 0.109156]
-      Rotation: [-0.367159, -0.711168, 0.532472]
-      Scale: [1, 1, 1]
-    MujocoBodyComponent:
-      ID: 7
   - Entity: 18022564441730755926
     Domain: Client
     TagComponent:
@@ -7847,46 +6312,6 @@ Entities:
       DropShadow: false
       ShadowDistance: 0
       ShadowColor: [0, 0, 0, 0.75]
-  - Entity: 18396643266322401656
-    Domain: Client
-    TagComponent:
-      Tag: geom_23
-    Parent: 17043353010356308012
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [0.115068, 0.0719749, -0.114897]
-      Rotation: [1.87673, 0.735892, 0.438163]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 23
-  - Entity: 18417419857443738223
-    Domain: Client
-    TagComponent:
-      Tag: geom_16
-    Parent: 12521236771330862867
-    Children:
-      []
-    MetadataComponent:
-      Data: "Group: 2\nConDim: 3\nConAffinity: 0\nConType: 0"
-    TransformComponent:
-      Position: [-0.10219, 0.0893704, 0.102498]
-      Rotation: [2.29586, 0.390719, 1.14626]
-      Scale: [1, 1, 1]
-    StaticMeshComponent:
-      AssetID: 0
-      MaterialTable:
-        0: 0
-      Visible: true
-    MujocoGeomComponent:
-      ID: 16
   - Entity: 18435202741007044140
     Domain: Client
     TagComponent:

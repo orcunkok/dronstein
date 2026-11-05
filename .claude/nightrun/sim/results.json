@@ -1,0 +1,4242 @@
+{
+ "nominal": [
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 9.76,
+    "DESCEND": 14.24,
+    "CLOSE": 21.08,
+    "LIFT": 24.88,
+    "CARRY": 29.14,
+    "DROP": 37.28,
+    "RETREAT": 39.08
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.3108097481138712,
+   "deploy_tilt_deg": 0.8974859524004875,
+   "deploy_drone_xy_err": 0.0012378992166183756,
+   "ball_moved_cm": 6.658562590189376e-12,
+   "ball_moved_cm_at_ground": 0.03038791686923066,
+   "ball_in_jaw_at_ground": [
+    -0.0297,
+    -0.089,
+    -0.0057
+   ],
+   "site_ground_z": 0.006634138635664519,
+   "lowest_pt_ground": 0.0030083040020426957,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.39602787833734987,
+   "grip_joint_closed": 0.39602787833734987,
+   "ball_moved_cm_after_close": 0.31717649073588544,
+   "ball_in_jaw_after_close": [
+    -0.0135,
+    -0.0923,
+    0.0029
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6023124684192589,
+   "ball_to_bin_xy_cm": 0.5648261960904848,
+   "ball_final": [
+    -3.093,
+    0.118,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 4.874924575915188e-07,
+   "bin_tilt_deg": 0.00022583240939134664,
+   "max_tilt_deg": 7.487931849715837,
+   "max_ball_tool_cm": 1.7535980735468755,
+   "min_clear_above_rim_cm": 14.151260423445061,
+   "t_total": 43.2,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1000.0,
+    "ball_pos": [
+     -1.026475688227431,
+     0.16614695521012735
+    ],
+    "start_yaw": 2.9590145814719326,
+    "start_xy": [
+     0.7032479425446788,
+     0.028759025620052614
+    ],
+    "ball_fric": 0.6910362800807888,
+    "ball_mass": 0.03587294297766099,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 11.46,
+    "DESCEND": 15.9,
+    "CLOSE": 22.74,
+    "LIFT": 26.48,
+    "CARRY": 30.66,
+    "DROP": 39.3,
+    "RETREAT": 41.1
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 0.8708895054545699,
+   "deploy_tilt_deg": 0.638233692081806,
+   "deploy_drone_xy_err": 0.003343715596117547,
+   "ball_moved_cm": 0.0,
+   "ball_moved_cm_at_ground": 0.04004583080218643,
+   "ball_in_jaw_at_ground": [
+    -0.0305,
+    -0.0885,
+    -0.0045
+   ],
+   "site_ground_z": 0.0064296836045700245,
+   "lowest_pt_ground": 0.0029976463882516943,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.4007457516927275,
+   "grip_joint_closed": 0.4007457516927275,
+   "ball_moved_cm_after_close": 0.07906275271098279,
+   "ball_in_jaw_after_close": [
+    -0.0132,
+    -0.09,
+    0.0003
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6026296426472403,
+   "ball_to_bin_xy_cm": 0.571474595684013,
+   "ball_final": [
+    -2.87,
+    0.134,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 1.3317444103946374e-06,
+   "bin_tilt_deg": 0.0004073439872217407,
+   "max_tilt_deg": 7.236170629010437,
+   "max_ball_tool_cm": 1.8528751333088258,
+   "min_clear_above_rim_cm": 14.273496899499943,
+   "t_total": 45.2,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1001.0,
+    "ball_pos": [
+     -0.926145578573054,
+     -0.7748792514874696
+    ],
+    "start_yaw": 1.1792883917752939,
+    "start_xy": [
+     1.357890064541125,
+     -0.42380136573218574
+    ],
+    "ball_fric": 0.7010902444454241,
+    "ball_mass": 0.05187163587122376,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 10.7,
+    "DESCEND": 15.16,
+    "CLOSE": 22.0,
+    "LIFT": 25.68,
+    "CARRY": 29.92,
+    "DROP": 37.58,
+    "RETREAT": 39.38
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.1166680372009452,
+   "deploy_tilt_deg": 0.9863334819645806,
+   "deploy_drone_xy_err": 0.0014834074694294336,
+   "ball_moved_cm": 1.622396661460357e-10,
+   "ball_moved_cm_at_ground": 0.02734335260417657,
+   "ball_in_jaw_at_ground": [
+    -0.0295,
+    -0.0884,
+    -0.0038
+   ],
+   "site_ground_z": 0.006438752224556449,
+   "lowest_pt_ground": 0.002995250402584815,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.40063972150727184,
+   "grip_joint_closed": 0.40063972150727184,
+   "ball_moved_cm_after_close": 0.11721834341169336,
+   "ball_in_jaw_after_close": [
+    -0.0131,
+    -0.0899,
+    -0.0058
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6045747364561815,
+   "ball_to_bin_xy_cm": 0.9776910581002045,
+   "ball_final": [
+    -3.13,
+    0.139,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 7.90183104881939e-07,
+   "bin_tilt_deg": 0.0002523764140780024,
+   "max_tilt_deg": 7.397810224511308,
+   "max_ball_tool_cm": 1.942861678595411,
+   "min_clear_above_rim_cm": 14.23324432306155,
+   "t_total": 43.5,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1002.0,
+    "ball_pos": [
+     -1.1810967245685726,
+     -0.22849705972648493
+    ],
+    "start_yaw": 4.697386726069344,
+    "start_xy": [
+     0.8894919191049115,
+     -0.1628688132004633
+    ],
+    "ball_fric": 1.0548945295296241,
+    "ball_mass": 0.03154332463640426,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 12.4,
+    "DESCEND": 16.78,
+    "CLOSE": 23.62,
+    "LIFT": 27.28,
+    "CARRY": 31.58,
+    "DROP": 38.74,
+    "RETREAT": 40.54
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.2845679713975748,
+   "deploy_tilt_deg": 0.8706555033574838,
+   "deploy_drone_xy_err": 0.001900115058911617,
+   "ball_moved_cm": 5.491718191308337e-11,
+   "ball_moved_cm_at_ground": 0.03219143055966517,
+   "ball_in_jaw_at_ground": [
+    -0.0305,
+    -0.0882,
+    -0.0018
+   ],
+   "site_ground_z": 0.0064086529788018876,
+   "lowest_pt_ground": 0.0029859990581886124,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.4013199492836926,
+   "grip_joint_closed": 0.4013199492836926,
+   "ball_moved_cm_after_close": 0.07527550307924812,
+   "ball_in_jaw_after_close": [
+    -0.0131,
+    -0.0896,
+    -0.0059
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6055757126054987,
+   "ball_to_bin_xy_cm": 0.9679292427777538,
+   "ball_final": [
+    -2.962,
+    0.139,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 4.909562102445199e-07,
+   "bin_tilt_deg": 0.00023417845436098905,
+   "max_tilt_deg": 7.463904636102562,
+   "max_ball_tool_cm": 1.9628763040841273,
+   "min_clear_above_rim_cm": 14.299800371975863,
+   "t_total": 44.6,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1003.0,
+    "ball_pos": [
+     -1.3934668949045033,
+     -0.38927070364988464
+    ],
+    "start_yaw": 3.108161880358474,
+    "start_xy": [
+     1.1607915574841852,
+     0.2521128616760768
+    ],
+    "ball_fric": 1.2230978681396767,
+    "ball_mass": 0.03857606745723728,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 12.36,
+    "DESCEND": 16.8,
+    "CLOSE": 23.64,
+    "LIFT": 27.34,
+    "CARRY": 31.48,
+    "DROP": 38.32,
+    "RETREAT": 40.12
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.292962110665286,
+   "deploy_tilt_deg": 1.0145216075288432,
+   "deploy_drone_xy_err": 0.0011552675122058502,
+   "ball_moved_cm": 2.698841150561293e-10,
+   "ball_moved_cm_at_ground": 0.02524547216860365,
+   "ball_in_jaw_at_ground": [
+    -0.03,
+    -0.0883,
+    -0.0051
+   ],
+   "site_ground_z": 0.006415720170934086,
+   "lowest_pt_ground": 0.0029951441171759685,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.4011906717786493,
+   "grip_joint_closed": 0.4011906717786493,
+   "ball_moved_cm_after_close": 0.13428744561752426,
+   "ball_in_jaw_after_close": [
+    -0.0131,
+    -0.0898,
+    -0.0014
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6048882314547099,
+   "ball_to_bin_xy_cm": 0.891693789852388,
+   "ball_final": [
+    -3.026,
+    0.139,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 6.711204978883245e-07,
+   "bin_tilt_deg": 0.00017118960005483495,
+   "max_tilt_deg": 7.4941920998645175,
+   "max_ball_tool_cm": 1.867380601907128,
+   "min_clear_above_rim_cm": 14.217624253024491,
+   "t_total": 44.2,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1004.0,
+    "ball_pos": [
+     -1.5990315019852135,
+     -0.5917579005957898
+    ],
+    "start_yaw": 0.8700789470210494,
+    "start_xy": [
+     0.8806546369472374,
+     0.12067380485798762
+    ],
+    "ball_fric": 1.3370927679159852,
+    "ball_mass": 0.028710098408734407,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 12.5,
+    "DESCEND": 16.9,
+    "CLOSE": 23.74,
+    "LIFT": 27.42,
+    "CARRY": 31.7,
+    "DROP": 38.8,
+    "RETREAT": 40.6
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.0455954175399969,
+   "deploy_tilt_deg": 1.0932129496540084,
+   "deploy_drone_xy_err": 0.0015181595915945744,
+   "ball_moved_cm": 0.0,
+   "ball_moved_cm_at_ground": 0.026504337249914217,
+   "ball_in_jaw_at_ground": [
+    -0.0298,
+    -0.0884,
+    -0.0027
+   ],
+   "site_ground_z": 0.006438444285357892,
+   "lowest_pt_ground": 0.002995755513106905,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.4011441773725281,
+   "grip_joint_closed": 0.4011441773725281,
+   "ball_moved_cm_after_close": 0.06864979162797426,
+   "ball_in_jaw_after_close": [
+    -0.0131,
+    -0.0898,
+    -0.0036
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6031226904870354,
+   "ball_to_bin_xy_cm": 0.75411417733274,
+   "ball_final": [
+    -3.051,
+    0.068,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 4.4830727236284814e-07,
+   "bin_tilt_deg": 0.0001084729413489197,
+   "max_tilt_deg": 7.535428013857921,
+   "max_ball_tool_cm": 1.896440474167151,
+   "min_clear_above_rim_cm": 14.493989930811763,
+   "t_total": 44.7,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1005.0,
+    "ball_pos": [
+     -1.509558909625317,
+     0.6888992678217658
+    ],
+    "start_yaw": 1.8050587860277387,
+    "start_xy": [
+     1.1385580486204985,
+     0.3347927245440864
+    ],
+    "ball_fric": 1.4767220034530402,
+    "ball_mass": 0.03039657291773825,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 10.28,
+    "DESCEND": 14.72,
+    "CLOSE": 21.56,
+    "LIFT": 25.28,
+    "CARRY": 29.56,
+    "DROP": 37.02,
+    "RETREAT": 38.82
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.3107513483283657,
+   "deploy_tilt_deg": 0.8935733369658206,
+   "deploy_drone_xy_err": 0.001654058806447918,
+   "ball_moved_cm": 6.332712132461893e-11,
+   "ball_moved_cm_at_ground": 0.03410718031447019,
+   "ball_in_jaw_at_ground": [
+    -0.0312,
+    -0.0885,
+    -0.0038
+   ],
+   "site_ground_z": 0.006438338035493721,
+   "lowest_pt_ground": 0.002982144123893666,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.40092202112804487,
+   "grip_joint_closed": 0.40092202112804487,
+   "ball_moved_cm_after_close": 0.15419558489151614,
+   "ball_in_jaw_after_close": [
+    -0.0132,
+    -0.0899,
+    -0.0045
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.606359824534169,
+   "ball_to_bin_xy_cm": 1.0125879158802156,
+   "ball_final": [
+    -3.138,
+    0.12,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 1.8470188330907383e-06,
+   "bin_tilt_deg": 0.00032186247354382244,
+   "max_tilt_deg": 7.2592806343807235,
+   "max_ball_tool_cm": 1.9101745416248845,
+   "min_clear_above_rim_cm": 14.337847555343725,
+   "t_total": 42.9,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1006.0,
+    "ball_pos": [
+     -1.2293864230698932,
+     0.1613711100794477
+    ],
+    "start_yaw": 1.8713292444659357,
+    "start_xy": [
+     0.7375724446955731,
+     0.29976985616573937
+    ],
+    "ball_fric": 0.8350451551953154,
+    "ball_mass": 0.041574998567163415,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 10.66,
+    "DESCEND": 15.04,
+    "CLOSE": 21.88,
+    "LIFT": 25.62,
+    "CARRY": 29.8,
+    "DROP": 36.7,
+    "RETREAT": 38.5
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.1326003186317861,
+   "deploy_tilt_deg": 0.9535240161887749,
+   "deploy_drone_xy_err": 0.0027994482530585203,
+   "ball_moved_cm": 0.0,
+   "ball_moved_cm_at_ground": 0.03538732630763673,
+   "ball_in_jaw_at_ground": [
+    -0.029,
+    -0.0887,
+    -0.0037
+   ],
+   "site_ground_z": 0.006488206983352535,
+   "lowest_pt_ground": 0.0030019802363878273,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.3999198718611309,
+   "grip_joint_closed": 0.3999198718611309,
+   "ball_moved_cm_after_close": 0.1552005077525957,
+   "ball_in_jaw_after_close": [
+    -0.0132,
+    -0.0903,
+    -0.0045
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6036912838748847,
+   "ball_to_bin_xy_cm": 0.6384090635868478,
+   "ball_final": [
+    -3.118,
+    0.139,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 1.1413010746231527e-06,
+   "bin_tilt_deg": 0.00033455183242007795,
+   "max_tilt_deg": 8.310316243408536,
+   "max_ball_tool_cm": 1.8884356378006346,
+   "min_clear_above_rim_cm": 14.214633667873173,
+   "t_total": 42.6,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1007.0,
+    "ball_pos": [
+     -1.5216525687930258,
+     0.5055685522847093
+    ],
+    "start_yaw": 4.039638985937328,
+    "start_xy": [
+     0.6965952448276485,
+     0.08881879351666999
+    ],
+    "ball_fric": 1.3953371516183264,
+    "ball_mass": 0.04365920145880013,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 13.4,
+    "DESCEND": 17.86,
+    "CLOSE": 24.7,
+    "LIFT": 28.4,
+    "CARRY": 32.58,
+    "DROP": 39.84,
+    "RETREAT": 41.64
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 0.9918453308211992,
+   "deploy_tilt_deg": 1.1924701181664012,
+   "deploy_drone_xy_err": 0.0012205537331042425,
+   "ball_moved_cm": 0.0,
+   "ball_moved_cm_at_ground": 0.033909018495449986,
+   "ball_in_jaw_at_ground": [
+    -0.0301,
+    -0.0885,
+    -0.0046
+   ],
+   "site_ground_z": 0.006460975030561936,
+   "lowest_pt_ground": 0.0030095439049278028,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.4007597859026894,
+   "grip_joint_closed": 0.4007597859026894,
+   "ball_moved_cm_after_close": 0.1335590152829579,
+   "ball_in_jaw_after_close": [
+    -0.0132,
+    -0.0899,
+    -0.0032
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6030689910375031,
+   "ball_to_bin_xy_cm": 0.5640561222001537,
+   "ball_final": [
+    -3.139,
+    0.137,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 1.9693224797258452e-06,
+   "bin_tilt_deg": 0.0003395078971021776,
+   "max_tilt_deg": 7.52277081928885,
+   "max_ball_tool_cm": 1.881462497973971,
+   "min_clear_above_rim_cm": 14.20881120717637,
+   "t_total": 45.7,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1008.0,
+    "ball_pos": [
+     -1.4160219760399195,
+     0.5008811963660467
+    ],
+    "start_yaw": 1.3661707578174123,
+    "start_xy": [
+     1.4837694545488607,
+     0.4831882741432073
+    ],
+    "ball_fric": 1.3442756883349178,
+    "ball_mass": 0.04125829842289709,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 11.8,
+    "DESCEND": 16.24,
+    "CLOSE": 23.08,
+    "LIFT": 26.76,
+    "CARRY": 30.9,
+    "DROP": 37.7,
+    "RETREAT": 39.5
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.244679795574165,
+   "deploy_tilt_deg": 1.172601401656528,
+   "deploy_drone_xy_err": 0.003319858837140698,
+   "ball_moved_cm": 0.0,
+   "ball_moved_cm_at_ground": 0.03835098848285548,
+   "ball_in_jaw_at_ground": [
+    -0.0308,
+    -0.0883,
+    -0.0019
+   ],
+   "site_ground_z": 0.006417213807864822,
+   "lowest_pt_ground": 0.0029973327509864936,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.4014111959363485,
+   "grip_joint_closed": 0.4014111959363485,
+   "ball_moved_cm_after_close": 0.19518265405064986,
+   "ball_in_jaw_after_close": [
+    -0.0131,
+    -0.0897,
+    -0.004
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6064978517006903,
+   "ball_to_bin_xy_cm": 0.4090255875165666,
+   "ball_final": [
+    -2.962,
+    0.139,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 7.275304668436484e-07,
+   "bin_tilt_deg": 0.00029625207382932383,
+   "max_tilt_deg": 7.245567553650785,
+   "max_ball_tool_cm": 1.9102352337072142,
+   "min_clear_above_rim_cm": 14.269872416022539,
+   "t_total": 43.6,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1009.0,
+    "ball_pos": [
+     -1.5378494917412169,
+     -0.27693505972342114
+    ],
+    "start_yaw": 0.31322597403973956,
+    "start_xy": [
+     0.7813264184263258,
+     0.32584587247741903
+    ],
+    "ball_fric": 1.1089774830291266,
+    "ball_mass": 0.04876066201448121,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 13.28,
+    "DESCEND": 17.72,
+    "CLOSE": 24.56,
+    "LIFT": 28.24,
+    "CARRY": 32.4,
+    "DROP": 39.2,
+    "RETREAT": 41.0
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.5181946715533645,
+   "deploy_tilt_deg": 0.8708717627687627,
+   "deploy_drone_xy_err": 0.0017687821611623645,
+   "ball_moved_cm": 1.251707071325825e-11,
+   "ball_moved_cm_at_ground": 0.03421156706657144,
+   "ball_in_jaw_at_ground": [
+    -0.0322,
+    -0.0882,
+    -0.0024
+   ],
+   "site_ground_z": 0.006361278952755373,
+   "lowest_pt_ground": 0.0029773762257910372,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.40162411363437994,
+   "grip_joint_closed": 0.40162411363437994,
+   "ball_moved_cm_after_close": 0.09845095594794863,
+   "ball_in_jaw_after_close": [
+    -0.0131,
+    -0.0896,
+    -0.0025
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6059572843541856,
+   "ball_to_bin_xy_cm": 1.103319100686433,
+   "ball_final": [
+    -3.139,
+    0.135,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 1.7129303210788915e-06,
+   "bin_tilt_deg": 0.00034181667882680466,
+   "max_tilt_deg": 7.393672042307334,
+   "max_ball_tool_cm": 1.8892460543598395,
+   "min_clear_above_rim_cm": 14.256157142569641,
+   "t_total": 45.1,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1010.0,
+    "ball_pos": [
+     -1.4955084887422707,
+     0.05728916997894973
+    ],
+    "start_yaw": 5.765932966239059,
+    "start_xy": [
+     1.481465848888803,
+     0.34881953914569463
+    ],
+    "ball_fric": 1.2461448559623958,
+    "ball_mass": 0.04174245365868163,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 10.64,
+    "DESCEND": 15.06,
+    "CLOSE": 21.9,
+    "LIFT": 25.56,
+    "CARRY": 29.8,
+    "DROP": 37.04,
+    "RETREAT": 38.84
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.370780489975094,
+   "deploy_tilt_deg": 1.3141698198497114,
+   "deploy_drone_xy_err": 0.0012529410634505248,
+   "ball_moved_cm": 0.0,
+   "ball_moved_cm_at_ground": 0.03448679639228951,
+   "ball_in_jaw_at_ground": [
+    -0.0302,
+    -0.0883,
+    -0.0043
+   ],
+   "site_ground_z": 0.006387290116999983,
+   "lowest_pt_ground": 0.0029743222759284474,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.4008613990258587,
+   "grip_joint_closed": 0.4008613990258587,
+   "ball_moved_cm_after_close": 0.10793674793099733,
+   "ball_in_jaw_after_close": [
+    -0.0131,
+    -0.0896,
+    -0.0069
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6057253572212458,
+   "ball_to_bin_xy_cm": 0.9676248750844187,
+   "ball_final": [
+    -3.033,
+    0.129,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 1.4001027994551752e-06,
+   "bin_tilt_deg": 0.00023810490330904342,
+   "max_tilt_deg": 7.586369887755448,
+   "max_ball_tool_cm": 1.9919761810388157,
+   "min_clear_above_rim_cm": 14.486594019157979,
+   "t_total": 42.9,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1011.0,
+    "ball_pos": [
+     -1.2874626756145198,
+     0.1013176568150328
+    ],
+    "start_yaw": 1.33580604236235,
+    "start_xy": [
+     0.5820389808216673,
+     -0.39719166972779196
+    ],
+    "ball_fric": 0.8976635452008815,
+    "ball_mass": 0.04218606139270388,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 12.7,
+    "DESCEND": 17.16,
+    "CLOSE": 24.0,
+    "LIFT": 27.74,
+    "CARRY": 32.14,
+    "DROP": 39.7,
+    "RETREAT": 41.5
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.2505067801637384,
+   "deploy_tilt_deg": 1.118107536211539,
+   "deploy_drone_xy_err": 0.00041392286328446084,
+   "ball_moved_cm": 8.182343691487404e-11,
+   "ball_moved_cm_at_ground": 0.03874250054404227,
+   "ball_in_jaw_at_ground": [
+    -0.0312,
+    -0.0884,
+    -0.0025
+   ],
+   "site_ground_z": 0.006439463481750174,
+   "lowest_pt_ground": 0.002997789716069001,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.40082727067113005,
+   "grip_joint_closed": 0.40082727067113005,
+   "ball_moved_cm_after_close": 0.14314735404120024,
+   "ball_in_jaw_after_close": [
+    -0.0132,
+    -0.0899,
+    -0.0031
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6079170336978104,
+   "ball_to_bin_xy_cm": 1.094494859054042,
+   "ball_final": [
+    -3.139,
+    0.137,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 1.4420044856798043e-06,
+   "bin_tilt_deg": 0.00040757744602626763,
+   "max_tilt_deg": 7.314427960310926,
+   "max_ball_tool_cm": 1.8818354807646704,
+   "min_clear_above_rim_cm": 14.370509509195278,
+   "t_total": 45.6,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1012.0,
+    "ball_pos": [
+     -1.2630474684022972,
+     0.4490346950047879
+    ],
+    "start_yaw": 1.4981402080361623,
+    "start_xy": [
+     1.3604006784670388,
+     -0.006273586549114141
+    ],
+    "ball_fric": 1.1651875362293218,
+    "ball_mass": 0.04946600595874387,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 10.34,
+    "DESCEND": 14.8,
+    "CLOSE": 21.64,
+    "LIFT": 25.38,
+    "CARRY": 29.74,
+    "DROP": 38.86,
+    "RETREAT": 40.66
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.4618726321657685,
+   "deploy_tilt_deg": 1.0774859487828865,
+   "deploy_drone_xy_err": 0.003004328287440829,
+   "ball_moved_cm": 0.0,
+   "ball_moved_cm_at_ground": 0.037353734370949854,
+   "ball_in_jaw_at_ground": [
+    -0.0305,
+    -0.0886,
+    -0.003
+   ],
+   "site_ground_z": 0.0064754535038141076,
+   "lowest_pt_ground": 0.002995081564074832,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.400301425090255,
+   "grip_joint_closed": 0.400301425090255,
+   "ball_moved_cm_after_close": 0.12717688665384894,
+   "ball_in_jaw_after_close": [
+    -0.0131,
+    -0.0899,
+    -0.0069
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6058490452813979,
+   "ball_to_bin_xy_cm": 1.5653512764143376,
+   "ball_final": [
+    -2.974,
+    0.135,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 1.4155649477884783e-06,
+   "bin_tilt_deg": 0.00027397488555355146,
+   "max_tilt_deg": 7.322333950134309,
+   "max_ball_tool_cm": 2.002501753272356,
+   "min_clear_above_rim_cm": 14.33584202551909,
+   "t_total": 44.8,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1013.0,
+    "ball_pos": [
+     -0.7260577931631934,
+     -0.6736328454811903
+    ],
+    "start_yaw": 4.226444860769286,
+    "start_xy": [
+     0.9475685073833062,
+     0.21211349373759203
+    ],
+    "ball_fric": 0.7395205664620175,
+    "ball_mass": 0.04699834695293293,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 12.84,
+    "DESCEND": 17.24,
+    "CLOSE": 24.08,
+    "LIFT": 27.78,
+    "CARRY": 32.04,
+    "DROP": 39.8,
+    "RETREAT": 41.6
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.1636783527498988,
+   "deploy_tilt_deg": 0.9542422118780819,
+   "deploy_drone_xy_err": 0.0006164289842601796,
+   "ball_moved_cm": 2.474020988074699e-10,
+   "ball_moved_cm_at_ground": 0.0448743563279945,
+   "ball_in_jaw_at_ground": [
+    -0.0304,
+    -0.0885,
+    -0.0045
+   ],
+   "site_ground_z": 0.006423601292916498,
+   "lowest_pt_ground": 0.0029968636087073534,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.40081456752458644,
+   "grip_joint_closed": 0.40081456752458644,
+   "ball_moved_cm_after_close": 0.12037557218999279,
+   "ball_in_jaw_after_close": [
+    -0.0132,
+    -0.0899,
+    -0.0031
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6055579325941242,
+   "ball_to_bin_xy_cm": 0.6797765352189575,
+   "ball_final": [
+    -3.139,
+    0.133,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 2.0344413434617123e-06,
+   "bin_tilt_deg": 0.0005016179930191326,
+   "max_tilt_deg": 7.368059633103871,
+   "max_ball_tool_cm": 1.8797912120960885,
+   "min_clear_above_rim_cm": 14.289034532639372,
+   "t_total": 45.7,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1014.0,
+    "ball_pos": [
+     -1.1209235982149202,
+     0.13712368848066325
+    ],
+    "start_yaw": 5.642079281612756,
+    "start_xy": [
+     1.4925806404171906,
+     0.011393724049719167
+    ],
+    "ball_fric": 0.7329634083100911,
+    "ball_mass": 0.061658730527686265,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 9.9,
+    "DESCEND": 14.36,
+    "CLOSE": 21.2,
+    "LIFT": 24.94,
+    "CARRY": 29.14,
+    "DROP": 36.72,
+    "RETREAT": 38.52
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.2164321005505043,
+   "deploy_tilt_deg": 0.9827088004641736,
+   "deploy_drone_xy_err": 0.002946864532465204,
+   "ball_moved_cm": 2.315370117855764e-11,
+   "ball_moved_cm_at_ground": 0.03251995431203768,
+   "ball_in_jaw_at_ground": [
+    -0.0283,
+    -0.0888,
+    -0.0036
+   ],
+   "site_ground_z": 0.006679471162162623,
+   "lowest_pt_ground": 0.0031709567970552733,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.3970801935733945,
+   "grip_joint_closed": 0.3970801935733945,
+   "ball_moved_cm_after_close": 0.1010203463044474,
+   "ball_in_jaw_after_close": [
+    -0.0131,
+    -0.0902,
+    -0.0086
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6040769437429506,
+   "ball_to_bin_xy_cm": 1.2925463285946566,
+   "ball_final": [
+    -3.029,
+    0.139,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 3.683344807610388e-07,
+   "bin_tilt_deg": 0.00023548990182784287,
+   "max_tilt_deg": 7.27454467114966,
+   "max_ball_tool_cm": 2.2331886644232863,
+   "min_clear_above_rim_cm": 14.200107149714974,
+   "t_total": 42.6,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1015.0,
+    "ball_pos": [
+     -1.2041067712425362,
+     0.17130852577178446
+    ],
+    "start_yaw": 4.029438906258114,
+    "start_xy": [
+     0.5929353044789323,
+     -0.4695105150223877
+    ],
+    "ball_fric": 0.6466079067059286,
+    "ball_mass": 0.039080638895115864,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 11.36,
+    "DESCEND": 15.78,
+    "CLOSE": 22.62,
+    "LIFT": 26.36,
+    "CARRY": 30.64,
+    "DROP": 37.76,
+    "RETREAT": 39.56
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.2548534933107833,
+   "deploy_tilt_deg": 0.5733849361503957,
+   "deploy_drone_xy_err": 0.0011068437321815738,
+   "ball_moved_cm": 8.136546991721616e-12,
+   "ball_moved_cm_at_ground": 0.046784539604378256,
+   "ball_in_jaw_at_ground": [
+    -0.0292,
+    -0.0888,
+    -0.0047
+   ],
+   "site_ground_z": 0.006498476640979828,
+   "lowest_pt_ground": 0.002995205393093739,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.40012306947579784,
+   "grip_joint_closed": 0.40012306947579784,
+   "ball_moved_cm_after_close": 0.025741073218400877,
+   "ball_in_jaw_after_close": [
+    -0.0132,
+    -0.0902,
+    -0.0029
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6040313193659833,
+   "ball_to_bin_xy_cm": 1.0338253338291308,
+   "ball_final": [
+    -3.097,
+    0.139,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 1.3800173540950271e-06,
+   "bin_tilt_deg": 0.00047068332823389016,
+   "max_tilt_deg": 7.467221904398532,
+   "max_ball_tool_cm": 1.8627363596379947,
+   "min_clear_above_rim_cm": 14.180913804909617,
+   "t_total": 43.7,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1016.0,
+    "ball_pos": [
+     -1.349209243616596,
+     -0.09168961424910171
+    ],
+    "start_yaw": 2.2218848313152733,
+    "start_xy": [
+     1.0797076696211896,
+     -0.08503863302780801
+    ],
+    "ball_fric": 0.9840478325042161,
+    "ball_mass": 0.06597462896393415,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 10.5,
+    "DESCEND": 14.92,
+    "CLOSE": 21.76,
+    "LIFT": 25.42,
+    "CARRY": 29.74,
+    "DROP": 39.18,
+    "RETREAT": 40.98
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.0291460351012702,
+   "deploy_tilt_deg": 1.0211571773279047,
+   "deploy_drone_xy_err": 0.0012735604513640045,
+   "ball_moved_cm": 0.0,
+   "ball_moved_cm_at_ground": 0.039609534618457315,
+   "ball_in_jaw_at_ground": [
+    -0.0303,
+    -0.0882,
+    -0.0025
+   ],
+   "site_ground_z": 0.006407711023570975,
+   "lowest_pt_ground": 0.0030011319797944667,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.4014349972629798,
+   "grip_joint_closed": 0.4014349972629798,
+   "ball_moved_cm_after_close": 0.07319361189219092,
+   "ball_in_jaw_after_close": [
+    -0.0131,
+    -0.0897,
+    -0.0044
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6052455370234332,
+   "ball_to_bin_xy_cm": 0.8531024854589832,
+   "ball_final": [
+    -3.137,
+    0.139,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 8.902913913039178e-07,
+   "bin_tilt_deg": 0.00042002713261184285,
+   "max_tilt_deg": 7.43158834862136,
+   "max_ball_tool_cm": 1.9198759231061877,
+   "min_clear_above_rim_cm": 14.400873831735634,
+   "t_total": 45.1,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1017.0,
+    "ball_pos": [
+     -0.5898130702586963,
+     0.5141309978141035
+    ],
+    "start_yaw": 6.110896546364497,
+    "start_xy": [
+     1.0996217327383533,
+     -0.43138387952390067
+    ],
+    "ball_fric": 0.9167277006677115,
+    "ball_mass": 0.05105624827676856,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 11.9,
+    "DESCEND": 16.32,
+    "CLOSE": 23.16,
+    "LIFT": 26.86,
+    "CARRY": 31.16,
+    "DROP": 39.42,
+    "RETREAT": 41.22
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.2815960172367657,
+   "deploy_tilt_deg": 0.826629210484291,
+   "deploy_drone_xy_err": 0.0015566538011748633,
+   "ball_moved_cm": 1.1066882853235471e-10,
+   "ball_moved_cm_at_ground": 0.030623989938135046,
+   "ball_in_jaw_at_ground": [
+    -0.0287,
+    -0.0883,
+    -0.0031
+   ],
+   "site_ground_z": 0.006433537964604372,
+   "lowest_pt_ground": 0.003007509877764245,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.4015410073429245,
+   "grip_joint_closed": 0.4015410073429245,
+   "ball_moved_cm_after_close": 0.03042084275234622,
+   "ball_in_jaw_after_close": [
+    -0.0131,
+    -0.0897,
+    -0.0025
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6067651969535516,
+   "ball_to_bin_xy_cm": 0.5555669328737524,
+   "ball_final": [
+    -3.03,
+    0.139,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 2.8287980209920765e-07,
+   "bin_tilt_deg": 0.0002170903128915335,
+   "max_tilt_deg": 7.411118613044006,
+   "max_ball_tool_cm": 1.8881772638792995,
+   "min_clear_above_rim_cm": 14.374109815257158,
+   "t_total": 45.3,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1018.0,
+    "ball_pos": [
+     -0.9466270058924419,
+     -0.072065478887826
+    ],
+    "start_yaw": 5.475883254532775,
+    "start_xy": [
+     1.3143883875486497,
+     0.028241850198594265
+    ],
+    "ball_fric": 1.176487451348183,
+    "ball_mass": 0.036220558842773976,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 12.4,
+    "DESCEND": 16.76,
+    "CLOSE": 23.6,
+    "LIFT": 27.34,
+    "CARRY": 31.42,
+    "DROP": 38.56,
+    "RETREAT": 40.36
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.1357201924447942,
+   "deploy_tilt_deg": 1.1638297977334864,
+   "deploy_drone_xy_err": 0.0011212296401193359,
+   "ball_moved_cm": 8.621992009238966e-11,
+   "ball_moved_cm_at_ground": 0.029986588794680274,
+   "ball_in_jaw_at_ground": [
+    -0.031,
+    -0.0884,
+    -0.002
+   ],
+   "site_ground_z": 0.006426805907553526,
+   "lowest_pt_ground": 0.0029954883730533106,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.4013881685208954,
+   "grip_joint_closed": 0.4013881685208954,
+   "ball_moved_cm_after_close": 0.16674402376796582,
+   "ball_in_jaw_after_close": [
+    -0.0131,
+    -0.0897,
+    -0.0038
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6044140174080956,
+   "ball_to_bin_xy_cm": 0.6295797806938749,
+   "ball_final": [
+    -3.072,
+    0.139,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 1.438041371977414e-06,
+   "bin_tilt_deg": 0.00023287214205745802,
+   "max_tilt_deg": 7.073364919194738,
+   "max_ball_tool_cm": 1.9042021935643427,
+   "min_clear_above_rim_cm": 14.346597529261413,
+   "t_total": 44.5,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1019.0,
+    "ball_pos": [
+     -1.3613804555327493,
+     -0.1664079233700433
+    ],
+    "start_yaw": 2.9335197209759545,
+    "start_xy": [
+     1.3287519478664287,
+     -0.2877349955046786
+    ],
+    "ball_fric": 1.2048651224771212,
+    "ball_mass": 0.035286114160749366,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 11.54,
+    "DESCEND": 16.02,
+    "CLOSE": 22.86,
+    "LIFT": 26.64,
+    "CARRY": 30.96,
+    "DROP": 39.32,
+    "RETREAT": 41.12
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.0802458055102055,
+   "deploy_tilt_deg": 0.885349604101629,
+   "deploy_drone_xy_err": 0.0012488756622875958,
+   "ball_moved_cm": 0.0,
+   "ball_moved_cm_at_ground": 0.03643501833572246,
+   "ball_in_jaw_at_ground": [
+    -0.0288,
+    -0.0889,
+    -0.0043
+   ],
+   "site_ground_z": 0.006584512249831642,
+   "lowest_pt_ground": 0.003007211792169194,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.39701349657491064,
+   "grip_joint_closed": 0.39701349657491064,
+   "ball_moved_cm_after_close": 0.08816774648104675,
+   "ball_in_jaw_after_close": [
+    -0.0134,
+    -0.0917,
+    -0.0041
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6038896832602263,
+   "ball_to_bin_xy_cm": 1.236141920917026,
+   "ball_final": [
+    -3.139,
+    0.132,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 1.841155648012923e-06,
+   "bin_tilt_deg": 0.0003703459088183713,
+   "max_tilt_deg": 7.507291620974536,
+   "max_ball_tool_cm": 1.801274891979158,
+   "min_clear_above_rim_cm": 14.151160487127795,
+   "t_total": 45.2,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1020.0,
+    "ball_pos": [
+     -0.9634297327045531,
+     -0.3461195499388776
+    ],
+    "start_yaw": 0.4755917525075713,
+    "start_xy": [
+     1.206967028505706,
+     -0.411229877808139
+    ],
+    "ball_fric": 0.9341181172999391,
+    "ball_mass": 0.04541663241265286,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 10.24,
+    "DESCEND": 14.68,
+    "CLOSE": 21.52,
+    "LIFT": 25.2,
+    "CARRY": 29.46,
+    "DROP": 37.46,
+    "RETREAT": 39.26
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.3160208648184628,
+   "deploy_tilt_deg": 1.1085013632668863,
+   "deploy_drone_xy_err": 0.0010040035468324936,
+   "ball_moved_cm": 1.227684620630498e-10,
+   "ball_moved_cm_at_ground": 0.04179131418761764,
+   "ball_in_jaw_at_ground": [
+    -0.0282,
+    -0.0888,
+    -0.0045
+   ],
+   "site_ground_z": 0.006633738134853184,
+   "lowest_pt_ground": 0.0031695485626621056,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.40129156095135915,
+   "grip_joint_closed": 0.40129156095135915,
+   "ball_moved_cm_after_close": 0.04510876476840924,
+   "ball_in_jaw_after_close": [
+    -0.0131,
+    -0.0897,
+    -0.006
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6036614910944031,
+   "ball_to_bin_xy_cm": 0.583583594831214,
+   "ball_final": [
+    -2.861,
+    0.133,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 1.6294947656690398e-06,
+   "bin_tilt_deg": 0.0004479798404370848,
+   "max_tilt_deg": 7.21919707225604,
+   "max_ball_tool_cm": 1.963383666091775,
+   "min_clear_above_rim_cm": 14.339651425171034,
+   "t_total": 43.4,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1021.0,
+    "ball_pos": [
+     -1.1881730432179647,
+     -0.6706377396442532
+    ],
+    "start_yaw": 6.229548114438849,
+    "start_xy": [
+     0.6128970666718979,
+     -0.3253476839340955
+    ],
+    "ball_fric": 1.452793642104135,
+    "ball_mass": 0.055241342663168665,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 13.08,
+    "DESCEND": 17.5,
+    "CLOSE": 24.34,
+    "LIFT": 28.04,
+    "CARRY": 32.34,
+    "DROP": 39.2,
+    "RETREAT": 41.0
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.2069717634884924,
+   "deploy_tilt_deg": 1.2610246470468656,
+   "deploy_drone_xy_err": 0.0009048496869656891,
+   "ball_moved_cm": 1.2498890811230012e-10,
+   "ball_moved_cm_at_ground": 0.04369941479693759,
+   "ball_in_jaw_at_ground": [
+    -0.0306,
+    -0.0884,
+    -0.0046
+   ],
+   "site_ground_z": 0.006394178317343194,
+   "lowest_pt_ground": 0.002985060244574643,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.40071874688583037,
+   "grip_joint_closed": 0.40071874688583037,
+   "ball_moved_cm_after_close": 0.15320699891302614,
+   "ball_in_jaw_after_close": [
+    -0.0131,
+    -0.0899,
+    -0.0009
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6052443861972882,
+   "ball_to_bin_xy_cm": 0.7291734884010557,
+   "ball_final": [
+    -3.139,
+    0.136,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 9.664778499319145e-07,
+   "bin_tilt_deg": 0.00048561486206533024,
+   "max_tilt_deg": 6.97873013875581,
+   "max_ball_tool_cm": 1.8551829411040468,
+   "min_clear_above_rim_cm": 14.449744334118792,
+   "t_total": 45.1,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1022.0,
+    "ball_pos": [
+     -1.5994206900332526,
+     0.6694668096899965
+    ],
+    "start_yaw": 3.705913421984965,
+    "start_xy": [
+     1.1460669862766726,
+     0.01410799232054516
+    ],
+    "ball_fric": 1.2425920144210396,
+    "ball_mass": 0.05913795573318752,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 12.5,
+    "DESCEND": 16.9,
+    "CLOSE": 23.74,
+    "LIFT": 27.48,
+    "CARRY": 31.72,
+    "DROP": 39.64,
+    "RETREAT": 41.44
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.2520787556921826,
+   "deploy_tilt_deg": 0.9751440160738539,
+   "deploy_drone_xy_err": 0.0012704693708159066,
+   "ball_moved_cm": 0.0,
+   "ball_moved_cm_at_ground": 0.023919700014590414,
+   "ball_in_jaw_at_ground": [
+    -0.0295,
+    -0.0885,
+    -0.0027
+   ],
+   "site_ground_z": 0.00648214473509745,
+   "lowest_pt_ground": 0.002985658350928435,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.4002753632782994,
+   "grip_joint_closed": 0.4002753632782994,
+   "ball_moved_cm_after_close": 0.12854726016033963,
+   "ball_in_jaw_after_close": [
+    -0.0132,
+    -0.0901,
+    -0.0055
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6058126384889128,
+   "ball_to_bin_xy_cm": 0.7188322637073401,
+   "ball_final": [
+    -3.076,
+    0.136,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 7.596626501055622e-07,
+   "bin_tilt_deg": 0.00017790069809866523,
+   "max_tilt_deg": 7.5144976765001505,
+   "max_ball_tool_cm": 1.9248982503638374,
+   "min_clear_above_rim_cm": 14.229388706014706,
+   "t_total": 45.5,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1023.0,
+    "ball_pos": [
+     -1.2272440119906212,
+     0.6494379761322828
+    ],
+    "start_yaw": 5.715197614975505,
+    "start_xy": [
+     1.2472233822093672,
+     0.32310232172885434
+    ],
+    "ball_fric": 0.7676365569973718,
+    "ball_mass": 0.02697546930864278,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 11.78,
+    "DESCEND": 16.22,
+    "CLOSE": 23.06,
+    "LIFT": 26.74,
+    "CARRY": 30.9,
+    "DROP": 38.46,
+    "RETREAT": 40.26
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.1856114115506218,
+   "deploy_tilt_deg": 1.0296237102555206,
+   "deploy_drone_xy_err": 0.0017904133341611994,
+   "ball_moved_cm": 3.7485738508851745e-10,
+   "ball_moved_cm_at_ground": 0.04576481838576285,
+   "ball_in_jaw_at_ground": [
+    -0.0306,
+    -0.0889,
+    -0.0052
+   ],
+   "site_ground_z": 0.006733493550444031,
+   "lowest_pt_ground": 0.0033065270108126347,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.400792623820832,
+   "grip_joint_closed": 0.400792623820832,
+   "ball_moved_cm_after_close": 0.07562213451991304,
+   "ball_in_jaw_after_close": [
+    -0.0132,
+    -0.09,
+    -0.0041
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6025975539128678,
+   "ball_to_bin_xy_cm": 0.33940372134221586,
+   "ball_final": [
+    -2.989,
+    0.139,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 1.310551815300336e-06,
+   "bin_tilt_deg": 0.00037394311065735004,
+   "max_tilt_deg": 7.715624689125878,
+   "max_ball_tool_cm": 1.8988891815542375,
+   "min_clear_above_rim_cm": 14.208898378435592,
+   "t_total": 44.4,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1024.0,
+    "ball_pos": [
+     -1.2452918339717731,
+     -0.3866355039632781
+    ],
+    "start_yaw": 2.326737749731555,
+    "start_xy": [
+     1.3850496566737038,
+     0.12372852079150098
+    ],
+    "ball_fric": 0.542019205079651,
+    "ball_mass": 0.06363572931348882,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 9.62,
+    "DESCEND": 14.08,
+    "CLOSE": 20.92,
+    "LIFT": 24.6,
+    "CARRY": 28.88,
+    "DROP": 37.98,
+    "RETREAT": 39.78
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.2592606326195244,
+   "deploy_tilt_deg": 0.6184935939523512,
+   "deploy_drone_xy_err": 0.0010128132133046634,
+   "ball_moved_cm": 0.0,
+   "ball_moved_cm_at_ground": 0.04056144163202095,
+   "ball_in_jaw_at_ground": [
+    -0.0283,
+    -0.0887,
+    -0.0043
+   ],
+   "site_ground_z": 0.006488588511935234,
+   "lowest_pt_ground": 0.003018744332152954,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.40039536943125653,
+   "grip_joint_closed": 0.40039536943125653,
+   "ball_moved_cm_after_close": 0.04256580762721912,
+   "ball_in_jaw_after_close": [
+    -0.0132,
+    -0.09,
+    -0.0058
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6036170309908765,
+   "ball_to_bin_xy_cm": 0.8485051539123631,
+   "ball_final": [
+    -2.989,
+    0.139,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 4.810488237169364e-07,
+   "bin_tilt_deg": 0.0003106762524091781,
+   "max_tilt_deg": 7.3567564069911695,
+   "max_ball_tool_cm": 1.937993425439799,
+   "min_clear_above_rim_cm": 14.277368125244333,
+   "t_total": 43.9,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1025.0,
+    "ball_pos": [
+     -0.6967708967370131,
+     0.20641199188035286
+    ],
+    "start_yaw": 1.018786758504687,
+    "start_xy": [
+     0.7577285630712373,
+     -0.23136720841556124
+    ],
+    "ball_fric": 1.1434848587121444,
+    "ball_mass": 0.05284879927178472,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 10.58,
+    "DESCEND": 15.06,
+    "CLOSE": 21.9,
+    "LIFT": 25.62,
+    "CARRY": 29.9,
+    "DROP": 36.92,
+    "RETREAT": 38.72
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.3145304714110149,
+   "deploy_tilt_deg": 0.8654695015315724,
+   "deploy_drone_xy_err": 0.0015830838224257671,
+   "ball_moved_cm": 0.0,
+   "ball_moved_cm_at_ground": 0.034898158376960725,
+   "ball_in_jaw_at_ground": [
+    -0.0294,
+    -0.0885,
+    -0.0035
+   ],
+   "site_ground_z": 0.0064345684154451105,
+   "lowest_pt_ground": 0.0029964844786379147,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.4003579700909243,
+   "grip_joint_closed": 0.4003579700909243,
+   "ball_moved_cm_after_close": 0.12267456304759979,
+   "ball_in_jaw_after_close": [
+    -0.0132,
+    -0.0901,
+    -0.0037
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6048273364509782,
+   "ball_to_bin_xy_cm": 0.7557616177400549,
+   "ball_final": [
+    -3.113,
+    0.12,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 2.2507483919601663e-06,
+   "bin_tilt_deg": 0.00029814675452113736,
+   "max_tilt_deg": 7.428354026592459,
+   "max_ball_tool_cm": 1.880401654458564,
+   "min_clear_above_rim_cm": 14.186924802678996,
+   "t_total": 42.8,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1026.0,
+    "ball_pos": [
+     -1.4121890845051728,
+     0.15218762330771352
+    ],
+    "start_yaw": 1.2225202206166552,
+    "start_xy": [
+     0.5355560164436163,
+     0.07009245477409232
+    ],
+    "ball_fric": 0.9912674676044625,
+    "ball_mass": 0.04285481785431961,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 10.6,
+    "DESCEND": 15.04,
+    "CLOSE": 21.88,
+    "LIFT": 25.6,
+    "CARRY": 29.84,
+    "DROP": 36.34,
+    "RETREAT": 38.14
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.2045672271443153,
+   "deploy_tilt_deg": 1.0182019215469653,
+   "deploy_drone_xy_err": 0.002517122691924718,
+   "ball_moved_cm": 0.0,
+   "ball_moved_cm_at_ground": 0.032753354697300646,
+   "ball_in_jaw_at_ground": [
+    -0.0295,
+    -0.0886,
+    -0.0044
+   ],
+   "site_ground_z": 0.0064610016662282055,
+   "lowest_pt_ground": 0.002997213939574944,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.4005139365428853,
+   "grip_joint_closed": 0.4005139365428853,
+   "ball_moved_cm_after_close": 0.1342978886721251,
+   "ball_in_jaw_after_close": [
+    -0.0132,
+    -0.0901,
+    -0.0049
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6026574977048543,
+   "ball_to_bin_xy_cm": 0.8454691627361856,
+   "ball_final": [
+    -3.134,
+    0.139,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 6.647129712126126e-07,
+   "bin_tilt_deg": 0.0003198974897466575,
+   "max_tilt_deg": 7.2804657699104505,
+   "max_ball_tool_cm": 1.9091736835317163,
+   "min_clear_above_rim_cm": 14.214433043876735,
+   "t_total": 42.2,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1027.0,
+    "ball_pos": [
+     -1.5692279882777684,
+     0.09943302945664745
+    ],
+    "start_yaw": 3.55101795853787,
+    "start_xy": [
+     0.5115158880065799,
+     0.4058213478066107
+    ],
+    "ball_fric": 1.4918859175632673,
+    "ball_mass": 0.039441492913157385,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 8.98,
+    "DESCEND": 13.44,
+    "CLOSE": 20.28,
+    "LIFT": 23.98,
+    "CARRY": 28.32,
+    "DROP": 37.38,
+    "RETREAT": 39.18
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.3322018648875555,
+   "deploy_tilt_deg": 1.3626982565742924,
+   "deploy_drone_xy_err": 0.0019975009414576273,
+   "ball_moved_cm": 0.0,
+   "ball_moved_cm_at_ground": 0.047718421673490635,
+   "ball_in_jaw_at_ground": [
+    -0.0307,
+    -0.0886,
+    -0.0025
+   ],
+   "site_ground_z": 0.006442150593017407,
+   "lowest_pt_ground": 0.003007958815825335,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.4003667103159325,
+   "grip_joint_closed": 0.4003667103159325,
+   "ball_moved_cm_after_close": 0.1326878969132545,
+   "ball_in_jaw_after_close": [
+    -0.0132,
+    -0.0901,
+    -0.0023
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6031475710728946,
+   "ball_to_bin_xy_cm": 0.8483843753209036,
+   "ball_final": [
+    -3.127,
+    0.139,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 1.1416157381700426e-06,
+   "bin_tilt_deg": 0.0005404049976889594,
+   "max_tilt_deg": 7.470078354804326,
+   "max_ball_tool_cm": 1.8591004542859348,
+   "min_clear_above_rim_cm": 14.38754051835613,
+   "t_total": 43.3,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1028.0,
+    "ball_pos": [
+     -0.7022118135260421,
+     -0.18237369026725614
+    ],
+    "start_yaw": 4.243111456318666,
+    "start_xy": [
+     0.681378610044826,
+     0.3380242449096703
+    ],
+    "ball_fric": 0.9745085655206861,
+    "ball_mass": 0.06819092498105633,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 9.28,
+    "DESCEND": 13.68,
+    "CLOSE": 20.52,
+    "LIFT": 24.24,
+    "CARRY": 28.58,
+    "DROP": 37.72,
+    "RETREAT": 39.52
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.2370727818610476,
+   "deploy_tilt_deg": 0.9028087048673231,
+   "deploy_drone_xy_err": 0.002022876530171035,
+   "ball_moved_cm": 1.2212453270876722e-12,
+   "ball_moved_cm_at_ground": 0.037700930497016824,
+   "ball_in_jaw_at_ground": [
+    -0.0289,
+    -0.0886,
+    -0.0041
+   ],
+   "site_ground_z": 0.006459728658711181,
+   "lowest_pt_ground": 0.002993714825573937,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.40072925487071276,
+   "grip_joint_closed": 0.40072925487071276,
+   "ball_moved_cm_after_close": 0.06598681531511387,
+   "ball_in_jaw_after_close": [
+    -0.0132,
+    -0.09,
+    -0.0045
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.605368448364632,
+   "ball_to_bin_xy_cm": 1.0865895306094921,
+   "ball_final": [
+    -3.139,
+    0.117,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 1.788231257548113e-06,
+   "bin_tilt_deg": 0.0003658786172346814,
+   "max_tilt_deg": 7.475430156492821,
+   "max_ball_tool_cm": 1.9064166197559789,
+   "min_clear_above_rim_cm": 14.205988751628567,
+   "t_total": 43.6,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1029.0,
+    "ball_pos": [
+     -0.6795449300408679,
+     0.5166977957346874
+    ],
+    "start_yaw": 0.3091109532051812,
+    "start_xy": [
+     0.6840158898539408,
+     -0.13146502436418994
+    ],
+    "ball_fric": 0.9903683067320743,
+    "ball_mass": 0.04760641378330072,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  }
+ ],
+ "ring": [
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 21.34,
+    "DESCEND": 25.84,
+    "CLOSE": 32.68,
+    "LIFT": 36.38,
+    "CARRY": 40.52,
+    "DROP": 46.94,
+    "RETREAT": 48.74
+   },
+   "fail": null,
+   "transit_high": true,
+   "deploy_dev_cm": 0.9710773320038191,
+   "deploy_tilt_deg": 0.8431153523637221,
+   "deploy_drone_xy_err": 0.001196181708267462,
+   "ball_moved_cm": 0.0,
+   "ball_moved_cm_at_ground": 0.030387916850387747,
+   "ball_in_jaw_at_ground": [
+    -0.0313,
+    -0.0882,
+    -0.003
+   ],
+   "site_ground_z": 0.006389633743854914,
+   "lowest_pt_ground": 0.0030081422851005726,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.4016646322042173,
+   "grip_joint_closed": 0.4016646322042173,
+   "ball_moved_cm_after_close": 0.15731293017259249,
+   "ball_in_jaw_after_close": [
+    -0.0131,
+    -0.0896,
+    -0.0021
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6061015514521502,
+   "ball_to_bin_xy_cm": 1.1071555733158482,
+   "ball_final": [
+    -2.865,
+    -0.112,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 8.904970299504775e-07,
+   "bin_tilt_deg": 0.0002657157021976191,
+   "max_tilt_deg": 7.309105528241335,
+   "max_ball_tool_cm": 1.885652008921738,
+   "min_clear_above_rim_cm": 14.343618832257937,
+   "t_total": 52.8,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1000.0,
+    "ball_pos": [
+     -4.081198538738521,
+     -0.8261324370482049
+    ],
+    "start_yaw": 2.9590145814719326,
+    "start_xy": [
+     0.7032479425446788,
+     0.028759025620052614
+    ],
+    "ball_fric": 0.6910362800807888,
+    "ball_mass": 0.03587294297766099,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 13.7,
+    "DESCEND": 18.1,
+    "CLOSE": 24.94,
+    "LIFT": 28.68,
+    "CARRY": 32.94,
+    "DROP": 39.34,
+    "RETREAT": 41.14
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.1655552860134633,
+   "deploy_tilt_deg": 0.8454776614681446,
+   "deploy_drone_xy_err": 0.000957246710353342,
+   "ball_moved_cm": 0.0,
+   "ball_moved_cm_at_ground": 0.04004583081327964,
+   "ball_in_jaw_at_ground": [
+    -0.0304,
+    -0.0885,
+    -0.0056
+   ],
+   "site_ground_z": 0.006436240978091826,
+   "lowest_pt_ground": 0.003012942631444971,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.4001284718392025,
+   "grip_joint_closed": 0.4001284718392025,
+   "ball_moved_cm_after_close": 0.09013473323917948,
+   "ball_in_jaw_after_close": [
+    -0.0132,
+    -0.0902,
+    -0.0025
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6045592671335472,
+   "ball_to_bin_xy_cm": 0.5532207131499421,
+   "ball_final": [
+    -3.063,
+    0.136,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 1.2885922177325097e-06,
+   "bin_tilt_deg": 0.00032906301549818687,
+   "max_tilt_deg": 7.236170629010437,
+   "max_ball_tool_cm": 1.8575992273194442,
+   "min_clear_above_rim_cm": 14.150669595363702,
+   "t_total": 45.2,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1001.0,
+    "ball_pos": [
+     -1.6005397610539032,
+     0.13850486512496687
+    ],
+    "start_yaw": 1.1792883917752939,
+    "start_xy": [
+     1.357890064541125,
+     -0.42380136573218574
+    ],
+    "ball_fric": 0.7010902444454241,
+    "ball_mass": 0.05187163587122376,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 20.86,
+    "DESCEND": 25.38,
+    "CLOSE": 32.22,
+    "LIFT": 35.88,
+    "CARRY": 40.06,
+    "DROP": 46.08,
+    "RETREAT": 47.88
+   },
+   "fail": null,
+   "transit_high": true,
+   "deploy_dev_cm": 1.2592079892754406,
+   "deploy_tilt_deg": 0.6938961818415202,
+   "deploy_drone_xy_err": 0.0010429811324557386,
+   "ball_moved_cm": 0.0,
+   "ball_moved_cm_at_ground": 0.027343352609107002,
+   "ball_in_jaw_at_ground": [
+    -0.0293,
+    -0.0882,
+    -0.0061
+   ],
+   "site_ground_z": 0.00638309744357661,
+   "lowest_pt_ground": 0.00300703724812737,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.40132783543132994,
+   "grip_joint_closed": 0.40132783543132994,
+   "ball_moved_cm_after_close": 0.08455685116231915,
+   "ball_in_jaw_after_close": [
+    -0.0131,
+    -0.0897,
+    -0.0018
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6053048633981266,
+   "ball_to_bin_xy_cm": 1.0227753210234736,
+   "ball_final": [
+    -3.053,
+    -0.139,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 7.560313126473459e-07,
+   "bin_tilt_deg": 0.00019753931168208506,
+   "max_tilt_deg": 7.504202026295104,
+   "max_ball_tool_cm": 1.8755711752528184,
+   "min_clear_above_rim_cm": 14.246904719944325,
+   "t_total": 52.0,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1002.0,
+    "ball_pos": [
+     -3.804852442558436,
+     1.0086486058170423
+    ],
+    "start_yaw": 4.697386726069344,
+    "start_xy": [
+     0.8894919191049115,
+     -0.1628688132004633
+    ],
+    "ball_fric": 1.0548945295296241,
+    "ball_mass": 0.03154332463640426,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 18.08,
+    "DESCEND": 22.5,
+    "CLOSE": 29.34,
+    "LIFT": 33.04,
+    "CARRY": 37.32,
+    "DROP": 43.2,
+    "RETREAT": 45.0
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 0.767664722791654,
+   "deploy_tilt_deg": 0.6818496290285111,
+   "deploy_drone_xy_err": 0.0022629198963422074,
+   "ball_moved_cm": 0.0,
+   "ball_moved_cm_at_ground": 0.03219143056145887,
+   "ball_in_jaw_at_ground": [
+    -0.0305,
+    -0.0884,
+    -0.0017
+   ],
+   "site_ground_z": 0.006442786311069856,
+   "lowest_pt_ground": 0.0029918682450018894,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.4008883698602064,
+   "grip_joint_closed": 0.4008883698602064,
+   "ball_moved_cm_after_close": 0.11040877215298464,
+   "ball_in_jaw_after_close": [
+    -0.0131,
+    -0.0899,
+    -0.0048
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6063170984752057,
+   "ball_to_bin_xy_cm": 0.9615976016230706,
+   "ball_final": [
+    -3.139,
+    -0.04,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 2.843186439519736e-07,
+   "bin_tilt_deg": 0.00023520185583287054,
+   "max_tilt_deg": 7.255859561662556,
+   "max_ball_tool_cm": 1.9174210824938327,
+   "min_clear_above_rim_cm": 14.089717410875007,
+   "t_total": 49.1,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1003.0,
+    "ball_pos": [
+     -3.050287821208932,
+     1.1928191176655185
+    ],
+    "start_yaw": 3.108161880358474,
+    "start_xy": [
+     1.1607915574841852,
+     0.2521128616760768
+    ],
+    "ball_fric": 1.2230978681396767,
+    "ball_mass": 0.03857606745723728,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 14.24,
+    "DESCEND": 18.66,
+    "CLOSE": 25.5,
+    "LIFT": 29.18,
+    "CARRY": 33.36,
+    "DROP": 38.92,
+    "RETREAT": 40.72
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.1003848933105758,
+   "deploy_tilt_deg": 0.8749587570050931,
+   "deploy_drone_xy_err": 0.00048174224871737884,
+   "ball_moved_cm": 9.245937349078304e-11,
+   "ball_moved_cm_at_ground": 0.025245472168603997,
+   "ball_in_jaw_at_ground": [
+    -0.0305,
+    -0.0885,
+    -0.0019
+   ],
+   "site_ground_z": 0.006475703066289848,
+   "lowest_pt_ground": 0.0030030253100515733,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.40090231906351786,
+   "grip_joint_closed": 0.40090231906351786,
+   "ball_moved_cm_after_close": 0.2082174484070427,
+   "ball_in_jaw_after_close": [
+    -0.0132,
+    -0.0899,
+    -0.0044
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6041783863738939,
+   "ball_to_bin_xy_cm": 0.9200144464916951,
+   "ball_final": [
+    -3.139,
+    0.048,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 5.007310432890676e-07,
+   "bin_tilt_deg": 0.00017793347423971967,
+   "max_tilt_deg": 7.4941920998645175,
+   "max_ball_tool_cm": 1.9062017579997343,
+   "min_clear_above_rim_cm": 13.822805899349062,
+   "t_total": 44.8,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1004.0,
+    "ball_pos": [
+     -2.2474598244906807,
+     0.8029022207332889
+    ],
+    "start_yaw": 0.8700789470210494,
+    "start_xy": [
+     0.8806546369472374,
+     0.12067380485798762
+    ],
+    "ball_fric": 1.3370927679159852,
+    "ball_mass": 0.028710098408734407,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 13.74,
+    "DESCEND": 18.2,
+    "CLOSE": 25.04,
+    "LIFT": 28.76,
+    "CARRY": 32.94,
+    "DROP": 38.66,
+    "RETREAT": 40.46
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.2289871814610718,
+   "deploy_tilt_deg": 1.3178003436063435,
+   "deploy_drone_xy_err": 0.0009885610940239319,
+   "ball_moved_cm": 0.0,
+   "ball_moved_cm_at_ground": 0.02650433727440088,
+   "ball_in_jaw_at_ground": [
+    -0.0303,
+    -0.0885,
+    -0.0028
+   ],
+   "site_ground_z": 0.0064739283664402986,
+   "lowest_pt_ground": 0.0029974102016855075,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.4004859839371164,
+   "grip_joint_closed": 0.4004859839371164,
+   "ball_moved_cm_after_close": 0.09288933068401536,
+   "ball_in_jaw_after_close": [
+    -0.0132,
+    -0.0901,
+    -0.0022
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6072093082279056,
+   "ball_to_bin_xy_cm": 1.038221009723595,
+   "ball_final": [
+    -3.01,
+    0.139,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 1.5209868591224278e-06,
+   "bin_tilt_deg": 0.0001785693655433564,
+   "max_tilt_deg": 7.535428013857921,
+   "max_ball_tool_cm": 1.8595605056856244,
+   "min_clear_above_rim_cm": 13.976257176027978,
+   "t_total": 44.6,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1005.0,
+    "ball_pos": [
+     -1.9657838410352801,
+     -0.4822115977617463
+    ],
+    "start_yaw": 1.8050587860277387,
+    "start_xy": [
+     1.1385580486204985,
+     0.3347927245440864
+    ],
+    "ball_fric": 1.4767220034530402,
+    "ball_mass": 0.03039657291773825,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 21.34,
+    "DESCEND": 25.84,
+    "CLOSE": 32.68,
+    "LIFT": 36.38,
+    "CARRY": 40.54,
+    "DROP": 46.66,
+    "RETREAT": 48.46
+   },
+   "fail": null,
+   "transit_high": true,
+   "deploy_dev_cm": 1.09093530308625,
+   "deploy_tilt_deg": 0.6599504585492056,
+   "deploy_drone_xy_err": 0.0010704314143816336,
+   "ball_moved_cm": 4.703928835620145e-10,
+   "ball_moved_cm_at_ground": 0.03410718031447054,
+   "ball_in_jaw_at_ground": [
+    -0.0306,
+    -0.0883,
+    -0.0024
+   ],
+   "site_ground_z": 0.006405750063667948,
+   "lowest_pt_ground": 0.0029884367844660222,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.4015713287172769,
+   "grip_joint_closed": 0.4015713287172769,
+   "ball_moved_cm_after_close": 0.11706753305623649,
+   "ball_in_jaw_after_close": [
+    -0.0131,
+    -0.0896,
+    -0.0042
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6039504253103545,
+   "ball_to_bin_xy_cm": 0.4721802286118266,
+   "ball_final": [
+    -2.861,
+    -0.133,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 9.782223495277177e-07,
+   "bin_tilt_deg": 0.0003382614121872281,
+   "max_tilt_deg": 7.106514872129147,
+   "max_ball_tool_cm": 1.9194306020075065,
+   "min_clear_above_rim_cm": 14.128866978490167,
+   "t_total": 52.6,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1006.0,
+    "ball_pos": [
+     -4.022176953371378,
+     -0.7510971082534569
+    ],
+    "start_yaw": 1.8713292444659357,
+    "start_xy": [
+     0.7375724446955731,
+     0.29976985616573937
+    ],
+    "ball_fric": 0.8350451551953154,
+    "ball_mass": 0.041574998567163415,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 15.46,
+    "DESCEND": 19.88,
+    "CLOSE": 26.72,
+    "LIFT": 30.42,
+    "CARRY": 34.64,
+    "DROP": 40.28,
+    "RETREAT": 42.08
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.0553109975541586,
+   "deploy_tilt_deg": 0.8003384023290853,
+   "deploy_drone_xy_err": 0.0018005647896950584,
+   "ball_moved_cm": 9.836575998178887e-12,
+   "ball_moved_cm_at_ground": 0.03538732629027319,
+   "ball_in_jaw_at_ground": [
+    -0.0302,
+    -0.0886,
+    -0.0027
+   ],
+   "site_ground_z": 0.006587050391982638,
+   "lowest_pt_ground": 0.0031148364291408498,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.3959892802148092,
+   "grip_joint_closed": 0.3959892802148092,
+   "ball_moved_cm_after_close": 0.16746944588168144,
+   "ball_in_jaw_after_close": [
+    -0.0129,
+    -0.0898,
+    -0.0095
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6046653692941516,
+   "ball_to_bin_xy_cm": 1.6058910178094898,
+   "ball_final": [
+    -2.861,
+    0.041,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 3.6501998980285386e-07,
+   "bin_tilt_deg": 0.0002665401469135066,
+   "max_tilt_deg": 7.345820491324529,
+   "max_ball_tool_cm": 2.2759550707407508,
+   "min_clear_above_rim_cm": 13.958227204705315,
+   "t_total": 46.2,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1007.0,
+    "ball_pos": [
+     -2.542582786920521,
+     -1.039415784137731
+    ],
+    "start_yaw": 4.039638985937328,
+    "start_xy": [
+     0.6965952448276485,
+     0.08881879351666999
+    ],
+    "ball_fric": 1.3953371516183264,
+    "ball_mass": 0.04365920145880013,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 17.18,
+    "DESCEND": 21.6,
+    "CLOSE": 28.44,
+    "LIFT": 32.14,
+    "CARRY": 36.42,
+    "DROP": 42.22,
+    "RETREAT": 44.02
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 0.6837938405380849,
+   "deploy_tilt_deg": 0.8469416027396943,
+   "deploy_drone_xy_err": 0.0014763357407816754,
+   "ball_moved_cm": 8.923972671937008e-11,
+   "ball_moved_cm_at_ground": 0.03390901851798335,
+   "ball_in_jaw_at_ground": [
+    -0.0305,
+    -0.0883,
+    -0.0038
+   ],
+   "site_ground_z": 0.00645578992126164,
+   "lowest_pt_ground": 0.0030388551035467727,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.40155824803537143,
+   "grip_joint_closed": 0.40155824803537143,
+   "ball_moved_cm_after_close": 0.13584637957527754,
+   "ball_in_jaw_after_close": [
+    -0.0131,
+    -0.0897,
+    -0.0041
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6049574088981405,
+   "ball_to_bin_xy_cm": 0.7611881558958378,
+   "ball_final": [
+    -2.861,
+    0.139,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 7.58787465413255e-07,
+   "bin_tilt_deg": 0.00034189130872971837,
+   "max_tilt_deg": 7.52277081928885,
+   "max_ball_tool_cm": 1.9142737106341023,
+   "min_clear_above_rim_cm": 14.248563673949494,
+   "t_total": 48.1,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1008.0,
+    "ball_pos": [
+     -2.5432644162693805,
+     -1.0919542119662862
+    ],
+    "start_yaw": 1.3661707578174123,
+    "start_xy": [
+     1.4837694545488607,
+     0.4831882741432073
+    ],
+    "ball_fric": 1.3442756883349178,
+    "ball_mass": 0.04125829842289709,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 18.42,
+    "DESCEND": 22.86,
+    "CLOSE": 29.7,
+    "LIFT": 33.46,
+    "CARRY": 37.74,
+    "DROP": 43.48,
+    "RETREAT": 45.28
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 0.916170340262071,
+   "deploy_tilt_deg": 0.8958627378836896,
+   "deploy_drone_xy_err": 0.0006596567013419992,
+   "ball_moved_cm": 0.0,
+   "ball_moved_cm_at_ground": 0.038350988472036704,
+   "ball_in_jaw_at_ground": [
+    -0.0294,
+    -0.0886,
+    -0.0032
+   ],
+   "site_ground_z": 0.006475774888941965,
+   "lowest_pt_ground": 0.0029946669428254262,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.4000843085180646,
+   "grip_joint_closed": 0.4000843085180646,
+   "ball_moved_cm_after_close": 0.038774713407683487,
+   "ball_in_jaw_after_close": [
+    -0.0132,
+    -0.0902,
+    -0.005
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.604039177251992,
+   "ball_to_bin_xy_cm": 0.5480763548787636,
+   "ball_final": [
+    -3.134,
+    -0.139,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 7.649604006056365e-07,
+   "bin_tilt_deg": 0.00039775224128660633,
+   "max_tilt_deg": 7.510425831124751,
+   "max_ball_tool_cm": 1.9049992024309979,
+   "min_clear_above_rim_cm": 13.858372044434681,
+   "t_total": 49.4,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1009.0,
+    "ball_pos": [
+     -3.5242770155995187,
+     0.9990406371744388
+    ],
+    "start_yaw": 0.31322597403973956,
+    "start_xy": [
+     0.7813264184263258,
+     0.32584587247741903
+    ],
+    "ball_fric": 1.1089774830291266,
+    "ball_mass": 0.04876066201448121,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 23.56,
+    "DESCEND": 28.08,
+    "CLOSE": 34.92,
+    "LIFT": 38.64,
+    "CARRY": 42.88,
+    "DROP": 48.56,
+    "RETREAT": 50.36
+   },
+   "fail": null,
+   "transit_high": true,
+   "deploy_dev_cm": 1.0150969388182904,
+   "deploy_tilt_deg": 0.991098870094642,
+   "deploy_drone_xy_err": 0.0010040702322299496,
+   "ball_moved_cm": 5.636519815928735e-10,
+   "ball_moved_cm_at_ground": 0.0342115670665711,
+   "ball_in_jaw_at_ground": [
+    -0.0312,
+    -0.0885,
+    -0.0034
+   ],
+   "site_ground_z": 0.006495934319427216,
+   "lowest_pt_ground": 0.0030649065123282485,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.40091525887657864,
+   "grip_joint_closed": 0.40091525887657864,
+   "ball_moved_cm_after_close": 0.09409482908519634,
+   "ball_in_jaw_after_close": [
+    -0.0131,
+    -0.0899,
+    0.0007
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6051340696566232,
+   "ball_to_bin_xy_cm": 1.0037424049068493,
+   "ball_final": [
+    -2.932,
+    -0.139,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 9.951599783299025e-07,
+   "bin_tilt_deg": 0.00027183139289719285,
+   "max_tilt_deg": 7.2844620199286725,
+   "max_ball_tool_cm": 1.858458386315588,
+   "min_clear_above_rim_cm": 13.867505383732087,
+   "t_total": 54.5,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1010.0,
+    "ball_pos": [
+     -4.118579121206797,
+     -0.25598465640253215
+    ],
+    "start_yaw": 5.765932966239059,
+    "start_xy": [
+     1.481465848888803,
+     0.34881953914569463
+    ],
+    "ball_fric": 1.2461448559623958,
+    "ball_mass": 0.04174245365868163,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 20.72,
+    "DESCEND": 25.24,
+    "CLOSE": 32.08,
+    "LIFT": 35.8,
+    "CARRY": 39.96,
+    "DROP": 45.92,
+    "RETREAT": 47.72
+   },
+   "fail": null,
+   "transit_high": true,
+   "deploy_dev_cm": 1.1561988597752524,
+   "deploy_tilt_deg": 1.1285699864046868,
+   "deploy_drone_xy_err": 0.0029519581332672577,
+   "ball_moved_cm": 0.0,
+   "ball_moved_cm_at_ground": 0.03448679637774281,
+   "ball_in_jaw_at_ground": [
+    -0.0296,
+    -0.0886,
+    -0.0039
+   ],
+   "site_ground_z": 0.006453747493040549,
+   "lowest_pt_ground": 0.002991956891528723,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.40017458228641,
+   "grip_joint_closed": 0.40017458228641,
+   "ball_moved_cm_after_close": 0.05229139563152749,
+   "ball_in_jaw_after_close": [
+    -0.0132,
+    -0.0902,
+    -0.0041
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6055744187716406,
+   "ball_to_bin_xy_cm": 1.3049743866032026,
+   "ball_final": [
+    -2.888,
+    -0.137,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 2.12593692614441e-06,
+   "bin_tilt_deg": 0.0003162099128923542,
+   "max_tilt_deg": 7.234113076923828,
+   "max_ball_tool_cm": 1.8858751924910515,
+   "min_clear_above_rim_cm": 14.12812198515359,
+   "t_total": 51.8,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1011.0,
+    "ball_pos": [
+     -4.145041205675287,
+     -0.4812480575723972
+    ],
+    "start_yaw": 1.33580604236235,
+    "start_xy": [
+     0.5820389808216673,
+     -0.39719166972779196
+    ],
+    "ball_fric": 0.8976635452008815,
+    "ball_mass": 0.04218606139270388,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 17.94,
+    "DESCEND": 22.38,
+    "CLOSE": 29.22,
+    "LIFT": 32.96,
+    "CARRY": 37.2,
+    "DROP": 43.14,
+    "RETREAT": 44.94
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 0.9294030692181982,
+   "deploy_tilt_deg": 0.8918502588275428,
+   "deploy_drone_xy_err": 0.0009757666066233816,
+   "ball_moved_cm": 1.0103029524088925e-10,
+   "ball_moved_cm_at_ground": 0.03874250054397427,
+   "ball_in_jaw_at_ground": [
+    -0.0315,
+    -0.0887,
+    -0.003
+   ],
+   "site_ground_z": 0.006553212745995685,
+   "lowest_pt_ground": 0.0030901726914899326,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.4003109702173205,
+   "grip_joint_closed": 0.4003109702173205,
+   "ball_moved_cm_after_close": 0.16031379089936207,
+   "ball_in_jaw_after_close": [
+    -0.0132,
+    -0.0901,
+    -0.0049
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6042020051071045,
+   "ball_to_bin_xy_cm": 1.0433551025574732,
+   "ball_final": [
+    -2.861,
+    0.071,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 1.0079624476590755e-06,
+   "bin_tilt_deg": 0.0003251913872907829,
+   "max_tilt_deg": 7.314427960310926,
+   "max_ball_tool_cm": 1.90742418134421,
+   "min_clear_above_rim_cm": 14.014845508915268,
+   "t_total": 49.0,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1012.0,
+    "ball_pos": [
+     -2.760181442009008,
+     -1.2299990449015046
+    ],
+    "start_yaw": 1.4981402080361623,
+    "start_xy": [
+     1.3604006784670388,
+     -0.006273586549114141
+    ],
+    "ball_fric": 1.1651875362293218,
+    "ball_mass": 0.04946600595874387,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 11.82,
+    "DESCEND": 16.28,
+    "CLOSE": 23.12,
+    "LIFT": 26.92,
+    "CARRY": 31.24,
+    "DROP": 37.86,
+    "RETREAT": 39.66
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.1561794110730086,
+   "deploy_tilt_deg": 0.9838270861472088,
+   "deploy_drone_xy_err": 0.00011624822786406337,
+   "ball_moved_cm": 0.0,
+   "ball_moved_cm_at_ground": 0.03735373439813991,
+   "ball_in_jaw_at_ground": [
+    -0.0295,
+    -0.089,
+    -0.0035
+   ],
+   "site_ground_z": 0.0065893563382288245,
+   "lowest_pt_ground": 0.0029964013806443937,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.3959581185261103,
+   "grip_joint_closed": 0.3959581185261103,
+   "ball_moved_cm_after_close": 0.0951561126836496,
+   "ball_in_jaw_after_close": [
+    -0.0135,
+    -0.0922,
+    -0.0025
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6049859391516724,
+   "ball_to_bin_xy_cm": 0.8525152616695912,
+   "ball_final": [
+    -3.131,
+    0.139,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 1.4027054591604995e-06,
+   "bin_tilt_deg": 0.00037871093149852977,
+   "max_tilt_deg": 7.322333950134309,
+   "max_ball_tool_cm": 1.7462865734321504,
+   "min_clear_above_rim_cm": 14.061449205817384,
+   "t_total": 43.8,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1013.0,
+    "ball_pos": [
+     -1.6833548089111103,
+     0.7128761433357405
+    ],
+    "start_yaw": 4.226444860769286,
+    "start_xy": [
+     0.9475685073833062,
+     0.21211349373759203
+    ],
+    "ball_fric": 0.7395205664620175,
+    "ball_mass": 0.04699834695293293,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 23.9,
+    "DESCEND": 28.4,
+    "CLOSE": 35.24,
+    "LIFT": 39.0,
+    "CARRY": 43.2,
+    "DROP": 49.34,
+    "RETREAT": 51.14
+   },
+   "fail": null,
+   "transit_high": true,
+   "deploy_dev_cm": 1.2325841168326896,
+   "deploy_tilt_deg": 1.1047389020608243,
+   "deploy_drone_xy_err": 0.0011700601592874351,
+   "ball_moved_cm": 3.204103649068202e-10,
+   "ball_moved_cm_at_ground": 0.04487435632787862,
+   "ball_in_jaw_at_ground": [
+    -0.0311,
+    -0.0887,
+    -0.0029
+   ],
+   "site_ground_z": 0.006584667928052582,
+   "lowest_pt_ground": 0.003130557800832116,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.40031582229277196,
+   "grip_joint_closed": 0.40031582229277196,
+   "ball_moved_cm_after_close": 0.17992275026637672,
+   "ball_in_jaw_after_close": [
+    -0.0132,
+    -0.0901,
+    -0.0046
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6051938843248873,
+   "ball_to_bin_xy_cm": 1.0044022872989358,
+   "ball_final": [
+    -2.876,
+    -0.139,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 2.140839160956344e-06,
+   "bin_tilt_deg": 0.0004853430969961316,
+   "max_tilt_deg": 7.546729517194296,
+   "max_ball_tool_cm": 1.9003926811519765,
+   "min_clear_above_rim_cm": 14.052366051964421,
+   "t_total": 55.2,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1014.0,
+    "ball_pos": [
+     -4.131282073559445,
+     -0.6757940224842961
+    ],
+    "start_yaw": 5.642079281612756,
+    "start_xy": [
+     1.4925806404171906,
+     0.011393724049719167
+    ],
+    "ball_fric": 0.7329634083100911,
+    "ball_mass": 0.061658730527686265,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 20.46,
+    "DESCEND": 25.02,
+    "CLOSE": 31.86,
+    "LIFT": 35.6,
+    "CARRY": 39.84,
+    "DROP": 45.94,
+    "RETREAT": 47.74
+   },
+   "fail": null,
+   "transit_high": true,
+   "deploy_dev_cm": 1.1213920780481657,
+   "deploy_tilt_deg": 1.3935409828508512,
+   "deploy_drone_xy_err": 0.002496310863681891,
+   "ball_moved_cm": 0.0,
+   "ball_moved_cm_at_ground": 0.032519954311189744,
+   "ball_in_jaw_at_ground": [
+    -0.0305,
+    -0.0887,
+    -0.004
+   ],
+   "site_ground_z": 0.006516980339200715,
+   "lowest_pt_ground": 0.0029930670838315687,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.39961429566164214,
+   "grip_joint_closed": 0.39961429566164214,
+   "ball_moved_cm_after_close": 0.14409417344296852,
+   "ball_in_jaw_after_close": [
+    -0.0133,
+    -0.0905,
+    -0.0009
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6037496803400851,
+   "ball_to_bin_xy_cm": 0.8524282444179947,
+   "ball_final": [
+    -2.882,
+    -0.137,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 2.0078990501294703e-06,
+   "bin_tilt_deg": 0.0002992863300044757,
+   "max_tilt_deg": 7.412457086873912,
+   "max_ball_tool_cm": 1.8237451990108462,
+   "min_clear_above_rim_cm": 14.100595937575038,
+   "t_total": 51.8,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1015.0,
+    "ball_pos": [
+     -4.001082451216138,
+     -0.7975648470952543
+    ],
+    "start_yaw": 4.029438906258114,
+    "start_xy": [
+     0.5929353044789323,
+     -0.4695105150223877
+    ],
+    "ball_fric": 0.6466079067059286,
+    "ball_mass": 0.039080638895115864,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 22.68,
+    "DESCEND": 27.24,
+    "CLOSE": 34.08,
+    "LIFT": 37.76,
+    "CARRY": 42.12,
+    "DROP": 47.94,
+    "RETREAT": 49.74
+   },
+   "fail": null,
+   "transit_high": true,
+   "deploy_dev_cm": 1.202598853422387,
+   "deploy_tilt_deg": 0.9097480209071229,
+   "deploy_drone_xy_err": 0.0019501161876594173,
+   "ball_moved_cm": 9.57456336436735e-10,
+   "ball_moved_cm_at_ground": 0.046784539588487856,
+   "ball_in_jaw_at_ground": [
+    -0.0294,
+    -0.0885,
+    -0.004
+   ],
+   "site_ground_z": 0.006480813080492823,
+   "lowest_pt_ground": 0.0030483454975926538,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.4011231357334031,
+   "grip_joint_closed": 0.4011231357334031,
+   "ball_moved_cm_after_close": 0.11860451762427182,
+   "ball_in_jaw_after_close": [
+    -0.0131,
+    -0.0898,
+    -0.0053
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6057851840899054,
+   "ball_to_bin_xy_cm": 1.3644940755333708,
+   "ball_final": [
+    -3.014,
+    -0.139,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 2.0616972449810296e-06,
+   "bin_tilt_deg": 0.00038851391685303945,
+   "max_tilt_deg": 7.238180471624543,
+   "max_ball_tool_cm": 1.9380001841486743,
+   "min_clear_above_rim_cm": 14.105166444415024,
+   "t_total": 53.8,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1016.0,
+    "ball_pos": [
+     -4.136147322265512,
+     0.4277324637377357
+    ],
+    "start_yaw": 2.2218848313152733,
+    "start_xy": [
+     1.0797076696211896,
+     -0.08503863302780801
+    ],
+    "ball_fric": 0.9840478325042161,
+    "ball_mass": 0.06597462896393415,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 15.78,
+    "DESCEND": 20.2,
+    "CLOSE": 27.04,
+    "LIFT": 30.76,
+    "CARRY": 35.04,
+    "DROP": 41.88,
+    "RETREAT": 43.68
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 0.9576062592767906,
+   "deploy_tilt_deg": 0.7162580363119762,
+   "deploy_drone_xy_err": 0.0020169432079268773,
+   "ball_moved_cm": 8.638305689029449e-12,
+   "ball_moved_cm_at_ground": 0.03960953460676771,
+   "ball_in_jaw_at_ground": [
+    -0.0291,
+    -0.0887,
+    -0.0028
+   ],
+   "site_ground_z": 0.006483119797707715,
+   "lowest_pt_ground": 0.0029830882241290704,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.4001157420113268,
+   "grip_joint_closed": 0.4001157420113268,
+   "ball_moved_cm_after_close": 0.07323033438864365,
+   "ball_in_jaw_after_close": [
+    -0.0132,
+    -0.0902,
+    -0.0054
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6045921936266425,
+   "ball_to_bin_xy_cm": 0.884697230856373,
+   "ball_final": [
+    -2.861,
+    0.087,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 8.456787785132814e-07,
+   "bin_tilt_deg": 0.00035252064689124304,
+   "max_tilt_deg": 7.424173947768572,
+   "max_ball_tool_cm": 1.9183105625999013,
+   "min_clear_above_rim_cm": 14.331098481076616,
+   "t_total": 47.8,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1017.0,
+    "ball_pos": [
+     -2.3243525609728595,
+     -1.4051796874558644
+    ],
+    "start_yaw": 6.110896546364497,
+    "start_xy": [
+     1.0996217327383533,
+     -0.43138387952390067
+    ],
+    "ball_fric": 0.9167277006677115,
+    "ball_mass": 0.05105624827676856,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 23.36,
+    "DESCEND": 27.96,
+    "CLOSE": 34.8,
+    "LIFT": 38.5,
+    "CARRY": 42.78,
+    "DROP": 49.24,
+    "RETREAT": 51.04
+   },
+   "fail": null,
+   "transit_high": true,
+   "deploy_dev_cm": 1.1995388572955974,
+   "deploy_tilt_deg": 1.2414413100420232,
+   "deploy_drone_xy_err": 0.002963186748608053,
+   "ball_moved_cm": 9.172842015659366e-10,
+   "ball_moved_cm_at_ground": 0.030623989938135063,
+   "ball_in_jaw_at_ground": [
+    -0.0295,
+    -0.0886,
+    -0.0024
+   ],
+   "site_ground_z": 0.006501001136448914,
+   "lowest_pt_ground": 0.00298537302953205,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.39992356415679425,
+   "grip_joint_closed": 0.39992356415679425,
+   "ball_moved_cm_after_close": 0.10686613253817079,
+   "ball_in_jaw_after_close": [
+    -0.0131,
+    -0.09,
+    -0.007
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6068731119492019,
+   "ball_to_bin_xy_cm": 1.467030099517998,
+   "ball_final": [
+    -3.073,
+    -0.139,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 1.0793619202728053e-06,
+   "bin_tilt_deg": 0.00023917855751603471,
+   "max_tilt_deg": 7.4835278069501685,
+   "max_ball_tool_cm": 1.9751099118662165,
+   "min_clear_above_rim_cm": 14.352451362512204,
+   "t_total": 55.1,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1018.0,
+    "ball_pos": [
+     -4.341418228917633,
+     0.3900920888646218
+    ],
+    "start_yaw": 5.475883254532775,
+    "start_xy": [
+     1.3143883875486497,
+     0.028241850198594265
+    ],
+    "ball_fric": 1.176487451348183,
+    "ball_mass": 0.036220558842773976,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 23.16,
+    "DESCEND": 27.66,
+    "CLOSE": 34.5,
+    "LIFT": 38.2,
+    "CARRY": 42.36,
+    "DROP": 48.3,
+    "RETREAT": 50.1
+   },
+   "fail": null,
+   "transit_high": true,
+   "deploy_dev_cm": 1.3131266038930853,
+   "deploy_tilt_deg": 0.7522916453457817,
+   "deploy_drone_xy_err": 0.0018407610760113994,
+   "ball_moved_cm": 1.5905055050779993e-10,
+   "ball_moved_cm_at_ground": 0.029986588794680274,
+   "ball_in_jaw_at_ground": [
+    -0.0298,
+    -0.0886,
+    -0.0057
+   ],
+   "site_ground_z": 0.00664277014289287,
+   "lowest_pt_ground": 0.0032125627464198864,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.40107098795068025,
+   "grip_joint_closed": 0.40107098795068025,
+   "ball_moved_cm_after_close": 0.08733485749536246,
+   "ball_in_jaw_after_close": [
+    -0.0131,
+    -0.0897,
+    -0.0058
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6061075524486852,
+   "ball_to_bin_xy_cm": 1.1502918328471181,
+   "ball_final": [
+    -3.11,
+    -0.139,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 1.1591197825958617e-06,
+   "bin_tilt_deg": 0.00026307591018301016,
+   "max_tilt_deg": 7.495167614230465,
+   "max_ball_tool_cm": 1.9536942246600841,
+   "min_clear_above_rim_cm": 14.054589001978062,
+   "t_total": 54.2,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1019.0,
+    "ball_pos": [
+     -3.95948550052478,
+     0.7346913870777266
+    ],
+    "start_yaw": 2.9335197209759545,
+    "start_xy": [
+     1.3287519478664287,
+     -0.2877349955046786
+    ],
+    "ball_fric": 1.2048651224771212,
+    "ball_mass": 0.035286114160749366,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  }
+ ],
+ "corners": [
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 9.64,
+    "DESCEND": 14.08,
+    "CLOSE": 20.92,
+    "LIFT": 24.64,
+    "CARRY": 28.86,
+    "DROP": 37.1,
+    "RETREAT": 38.9
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.312927461855489,
+   "deploy_tilt_deg": 0.9297208624846987,
+   "deploy_drone_xy_err": 0.00033466169653068197,
+   "ball_moved_cm": 0.0,
+   "ball_moved_cm_at_ground": 0.020723477876713817,
+   "ball_in_jaw_at_ground": [
+    -0.0295,
+    -0.0886,
+    -0.003
+   ],
+   "site_ground_z": 0.00650904141008514,
+   "lowest_pt_ground": 0.0029937638949949254,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.40017364954240314,
+   "grip_joint_closed": 0.40017364954240314,
+   "ball_moved_cm_after_close": 0.05306064064202088,
+   "ball_in_jaw_after_close": [
+    -0.0132,
+    -0.0901,
+    -0.0052
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6034150230239699,
+   "ball_to_bin_xy_cm": 0.9364529262090653,
+   "ball_final": [
+    -3.138,
+    0.102,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 2.2949904526675214e-06,
+   "bin_tilt_deg": 0.00016647710413603847,
+   "max_tilt_deg": 7.487931849715837,
+   "max_ball_tool_cm": 1.9157613402909675,
+   "min_clear_above_rim_cm": 14.279973945853703,
+   "t_total": 43.0,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1000.0,
+    "ball_pos": [
+     -0.9828914096199497,
+     0.10384184700632959
+    ],
+    "start_yaw": 2.9590145814719326,
+    "start_xy": [
+     0.7032479425446788,
+     0.028759025620052614
+    ],
+    "ball_fric": 0.5,
+    "ball_mass": 0.02295,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 11.36,
+    "DESCEND": 15.8,
+    "CLOSE": 22.64,
+    "LIFT": 26.4,
+    "CARRY": 30.54,
+    "DROP": 39.06,
+    "RETREAT": 40.86
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 0.8293805544492476,
+   "deploy_tilt_deg": 0.7658757453460242,
+   "deploy_drone_xy_err": 0.0032909234498928277,
+   "ball_moved_cm": 0.0,
+   "ball_moved_cm_at_ground": 0.02072347790321137,
+   "ball_in_jaw_at_ground": [
+    -0.0302,
+    -0.0884,
+    -0.0047
+   ],
+   "site_ground_z": 0.006490574800393598,
+   "lowest_pt_ground": 0.0030278988799005632,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.40067833568638034,
+   "grip_joint_closed": 0.40067833568638034,
+   "ball_moved_cm_after_close": 0.027596463923883468,
+   "ball_in_jaw_after_close": [
+    -0.0132,
+    -0.09,
+    -0.0021
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6031947339850425,
+   "ball_to_bin_xy_cm": 0.5541918569518548,
+   "ball_final": [
+    -3.071,
+    0.139,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 8.726672068544059e-07,
+   "bin_tilt_deg": 0.00015101419280856633,
+   "max_tilt_deg": 7.236170629010437,
+   "max_ball_tool_cm": 1.8619288736433748,
+   "min_clear_above_rim_cm": 14.22585257604146,
+   "t_total": 45.0,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1001.0,
+    "ball_pos": [
+     -0.9099240571440392,
+     -0.4842995321796685
+    ],
+    "start_yaw": 1.1792883917752939,
+    "start_xy": [
+     1.357890064541125,
+     -0.42380136573218574
+    ],
+    "ball_fric": 1.5,
+    "ball_mass": 0.02295,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 10.44,
+    "DESCEND": 14.9,
+    "CLOSE": 21.74,
+    "LIFT": 25.44,
+    "CARRY": 29.7,
+    "DROP": 37.56,
+    "RETREAT": 39.36
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.0821501435409002,
+   "deploy_tilt_deg": 1.1730145337965063,
+   "deploy_drone_xy_err": 0.0004236415181147997,
+   "ball_moved_cm": 4.683475829381223e-11,
+   "ball_moved_cm_at_ground": 0.047990255855843295,
+   "ball_in_jaw_at_ground": [
+    -0.0309,
+    -0.0885,
+    -0.0019
+   ],
+   "site_ground_z": 0.00642739519050152,
+   "lowest_pt_ground": 0.002993700651395847,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.40012829131852107,
+   "grip_joint_closed": 0.40012829131852107,
+   "ball_moved_cm_after_close": 0.10088921022957731,
+   "ball_in_jaw_after_close": [
+    -0.0132,
+    -0.0901,
+    -0.0054
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6049318039546012,
+   "ball_to_bin_xy_cm": 1.2889513088577869,
+   "ball_final": [
+    -3.076,
+    0.139,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 1.3572278243402464e-06,
+   "bin_tilt_deg": 0.0004597648375913572,
+   "max_tilt_deg": 7.397810224511308,
+   "max_ball_tool_cm": 1.9226944957802046,
+   "min_clear_above_rim_cm": 14.23207707984751,
+   "t_total": 43.5,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1002.0,
+    "ball_pos": [
+     -1.0953430724135071,
+     -0.14281066232905304
+    ],
+    "start_yaw": 4.697386726069344,
+    "start_xy": [
+     0.8894919191049115,
+     -0.1628688132004633
+    ],
+    "ball_fric": 0.5,
+    "ball_mass": 0.06885000000000001,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 11.92,
+    "DESCEND": 16.34,
+    "CLOSE": 23.18,
+    "LIFT": 26.92,
+    "CARRY": 31.36,
+    "DROP": 38.82,
+    "RETREAT": 40.62
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.1456183416820662,
+   "deploy_tilt_deg": 0.7121192353975545,
+   "deploy_drone_xy_err": 0.0016881523105329245,
+   "ball_moved_cm": 5.129452418373148e-10,
+   "ball_moved_cm_at_ground": 0.04799025584545925,
+   "ball_in_jaw_at_ground": [
+    -0.0314,
+    -0.0886,
+    -0.0025
+   ],
+   "site_ground_z": 0.0064502734443435406,
+   "lowest_pt_ground": 0.0029846134947430327,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.40067585171995573,
+   "grip_joint_closed": 0.40067585171995573,
+   "ball_moved_cm_after_close": 0.2572077951595438,
+   "ball_in_jaw_after_close": [
+    -0.0131,
+    -0.0899,
+    -0.0056
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6046547787876269,
+   "ball_to_bin_xy_cm": 1.1331359287718092,
+   "ball_final": [
+    -3.06,
+    0.139,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 1.3632881515548085e-06,
+   "bin_tilt_deg": 0.0004395077135549816,
+   "max_tilt_deg": 6.932841325690141,
+   "max_ball_tool_cm": 1.93938511827099,
+   "min_clear_above_rim_cm": 14.34179868318814,
+   "t_total": 44.7,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1003.0,
+    "ball_pos": [
+     -1.2497941053850932,
+     -0.2432941897811779
+    ],
+    "start_yaw": 3.108161880358474,
+    "start_xy": [
+     1.1607915574841852,
+     0.2521128616760768
+    ],
+    "ball_fric": 1.5,
+    "ball_mass": 0.06885000000000001,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 11.82,
+    "DESCEND": 16.28,
+    "CLOSE": 23.12,
+    "LIFT": 26.82,
+    "CARRY": 30.96,
+    "DROP": 38.2,
+    "RETREAT": 40.0
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.25405194197647,
+   "deploy_tilt_deg": 1.2152897047489308,
+   "deploy_drone_xy_err": 0.0014470218562887011,
+   "ball_moved_cm": 0.0,
+   "ball_moved_cm_at_ground": 0.020723477877990226,
+   "ball_in_jaw_at_ground": [
+    -0.0304,
+    -0.0882,
+    -0.0032
+   ],
+   "site_ground_z": 0.006422371485395914,
+   "lowest_pt_ground": 0.0029938192687646,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.4005697865807339,
+   "grip_joint_closed": 0.4005697865807339,
+   "ball_moved_cm_after_close": 0.0836359298934241,
+   "ball_in_jaw_after_close": [
+    -0.0131,
+    -0.0898,
+    -0.0065
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6052954720422412,
+   "ball_to_bin_xy_cm": 0.6737256283452824,
+   "ball_final": [
+    -2.864,
+    0.1,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 1.0375643354947218e-06,
+   "bin_tilt_deg": 0.00016332535878257803,
+   "max_tilt_deg": 7.4941920998645175,
+   "max_ball_tool_cm": 1.9660304132414348,
+   "min_clear_above_rim_cm": 14.417713381500658,
+   "t_total": 44.1,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1004.0,
+    "ball_pos": [
+     -1.399295637807428,
+     -0.3698486878723686
+    ],
+    "start_yaw": 0.8700789470210494,
+    "start_xy": [
+     0.8806546369472374,
+     0.12067380485798762
+    ],
+    "ball_fric": 0.5,
+    "ball_mass": 0.02295,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 11.88,
+    "DESCEND": 16.26,
+    "CLOSE": 23.1,
+    "LIFT": 26.8,
+    "CARRY": 31.06,
+    "DROP": 38.42,
+    "RETREAT": 40.22
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.256789540445655,
+   "deploy_tilt_deg": 1.3160738722056695,
+   "deploy_drone_xy_err": 0.0017981200835324404,
+   "ball_moved_cm": 0.0,
+   "ball_moved_cm_at_ground": 0.02072347785916362,
+   "ball_in_jaw_at_ground": [
+    -0.0313,
+    -0.0881,
+    -0.0025
+   ],
+   "site_ground_z": 0.006446467205363432,
+   "lowest_pt_ground": 0.003048858546391875,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.4014590767651249,
+   "grip_joint_closed": 0.4014590767651249,
+   "ball_moved_cm_after_close": 0.08921004013285458,
+   "ball_in_jaw_after_close": [
+    -0.0131,
+    -0.0897,
+    -0.0026
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6054714431289919,
+   "ball_to_bin_xy_cm": 0.580874654145201,
+   "ball_final": [
+    -3.089,
+    0.139,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 7.679551011567501e-07,
+   "bin_tilt_deg": 0.00015970588593175323,
+   "max_tilt_deg": 7.535428013857921,
+   "max_ball_tool_cm": 1.8878140908541947,
+   "min_clear_above_rim_cm": 14.609592201487114,
+   "t_total": 44.3,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1005.0,
+    "ball_pos": [
+     -1.334224661545685,
+     0.4305620423886036
+    ],
+    "start_yaw": 1.8050587860277387,
+    "start_xy": [
+     1.1385580486204985,
+     0.3347927245440864
+    ],
+    "ball_fric": 1.5,
+    "ball_mass": 0.02295,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 10.1,
+    "DESCEND": 14.6,
+    "CLOSE": 21.44,
+    "LIFT": 25.18,
+    "CARRY": 29.52,
+    "DROP": 37.26,
+    "RETREAT": 39.06
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.238384795868578,
+   "deploy_tilt_deg": 1.2496877744008348,
+   "deploy_drone_xy_err": 0.00044418815651649853,
+   "ball_moved_cm": 2.6653679263688446e-11,
+   "ball_moved_cm_at_ground": 0.04799025584932941,
+   "ball_in_jaw_at_ground": [
+    -0.031,
+    -0.0887,
+    -0.0042
+   ],
+   "site_ground_z": 0.006482212751905886,
+   "lowest_pt_ground": 0.0030091130365461054,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.400359961789696,
+   "grip_joint_closed": 0.400359961789696,
+   "ball_moved_cm_after_close": 0.1868098969191856,
+   "ball_in_jaw_after_close": [
+    -0.0132,
+    -0.0901,
+    -0.0047
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.6056602081977985,
+   "ball_to_bin_xy_cm": 0.7650795433874285,
+   "ball_final": [
+    -3.028,
+    0.139,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 8.33313307982927e-07,
+   "bin_tilt_deg": 0.00041130894315313706,
+   "max_tilt_deg": 7.2592806343807235,
+   "max_ball_tool_cm": 1.9025393337397734,
+   "min_clear_above_rim_cm": 14.335053090218281,
+   "t_total": 43.2,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1006.0,
+    "ball_pos": [
+     -1.1304628531417404,
+     0.10085694379965482
+    ],
+    "start_yaw": 1.8713292444659357,
+    "start_xy": [
+     0.7375724446955731,
+     0.29976985616573937
+    ],
+    "ball_fric": 0.5,
+    "ball_mass": 0.06885000000000001,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  },
+  {
+   "phase_t": {
+    "TRANSIT": 0.0,
+    "DEPLOY": 10.46,
+    "DESCEND": 14.88,
+    "CLOSE": 21.72,
+    "LIFT": 25.42,
+    "CARRY": 29.68,
+    "DROP": 36.94,
+    "RETREAT": 38.74
+   },
+   "fail": null,
+   "transit_high": false,
+   "deploy_dev_cm": 1.0452169448071735,
+   "deploy_tilt_deg": 0.854791183109346,
+   "deploy_drone_xy_err": 0.0020068494807913124,
+   "ball_moved_cm": 3.6926017799032707e-10,
+   "ball_moved_cm_at_ground": 0.04799025584530936,
+   "ball_in_jaw_at_ground": [
+    -0.0293,
+    -0.0887,
+    -0.0036
+   ],
+   "site_ground_z": 0.006454851490950236,
+   "lowest_pt_ground": 0.002992645476839686,
+   "drone_ground_contact": false,
+   "grip_stall_angle": 0.4003421240723598,
+   "grip_joint_closed": 0.4003421240723598,
+   "ball_moved_cm_after_close": 0.14209636274605436,
+   "ball_in_jaw_after_close": [
+    -0.0132,
+    -0.0901,
+    -0.0051
+   ],
+   "grasp_detected": true,
+   "lift_ball_z": 0.604220565536776,
+   "ball_to_bin_xy_cm": 0.8859311301399578,
+   "ball_final": [
+    -3.139,
+    0.138,
+    0.051
+   ],
+   "ball_in_bin": true,
+   "bin_moved_cm": 9.505420345276609e-07,
+   "bin_tilt_deg": 0.0005686773419142075,
+   "max_tilt_deg": 7.345820491324529,
+   "max_ball_tool_cm": 1.915804230952235,
+   "min_clear_above_rim_cm": 14.296302097555019,
+   "t_total": 42.8,
+   "ok": true,
+   "a_ok": true,
+   "b_ok": true,
+   "c_ok": true,
+   "clear_ok": true,
+   "scene": {
+    "seed": 1007.0,
+    "ball_pos": [
+     -1.3430200500312912,
+     0.31598034517794327
+    ],
+    "start_yaw": 4.039638985937328,
+    "start_xy": [
+     0.6965952448276485,
+     0.08881879351666999
+    ],
+    "ball_fric": 1.5,
+    "ball_mass": 0.06885000000000001,
+    "bin_pos": [
+     -3.0,
+     0.0
+    ]
+   }
+  }
+ ]
+}
