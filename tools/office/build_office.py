@@ -62,6 +62,13 @@ CURTAIN_TOP = P["curtain"]["top"]
 BEAM = P["hall"]["west_beam"]                  # flange, depth, gap to the wall
 BEAMS_Z = [Z0 + BEAM[2] + BEAM[1] / 2 + k * (Z1 - Z0 - 2 * (BEAM[2] + BEAM[1] / 2)) / 9 for k in range(10)]
 COLUMN_D = 0.25                                # the north wall's concrete columns stand this far into the hall
+# LED high-bays, four columns of three in line with the skylight rows: on the roof beam outside the west skylights, its
+# mirror on the kitchen side, and under the two thin north-south trusses (user).
+SKY_EDGE = P["desk_corner"]["row_wall_gap"] + 1.3   # skylight rows: outer frame edge in line with the desk row's back
+LIGHT_X = (X0 + SKY_EDGE, (X0 + X1) / 2, X1 - SKY_EDGE)
+LIGHT_Z = (BEAMS_Z[1], BEAMS_Z[3], BEAMS_Z[6], BEAMS_Z[-2])
+# all but the kitchen-side one by the tall box on the lower deck (user)
+LIGHTS = [(x, z) for x in LIGHT_X for z in LIGHT_Z if not (x > P["mezzanine"]["front_x"] and z == BEAMS_Z[-2])]
 
 # Restroom box and mezzanine at the south end, two tiers: the box's roof is the lower deck, the mezzanine west of it
 # (from the U stair to the east wall) the upper deck.
@@ -373,8 +380,7 @@ def build_shell(g):
     # slopes and the flat middle, with an opening up through it over each skylight.
     n, (bf, bd, bg), beams_z = P["hall"]["west_beams"], BEAM, BEAMS_Z
     sky_w = beams_z[1] - beams_z[0] - bf
-    edge = P["desk_corner"]["row_wall_gap"] + 1.3         # outer frame edge in line with the desk row's back (user)
-    sky_x = (X0 + edge, X0 + length / 2, X1 - edge)
+    sky_x = LIGHT_X
     sky_z = ((beams_z[1] + beams_z[2]) / 2, (beams_z[4] + beams_z[5]) / 2)
     a = slope_frame(-1)[2]
     eave = Z0 - WALL_T - 0.2
@@ -410,40 +416,55 @@ def build_shell(g):
         ibeam(g, x - bf / 2, x + bf / 2, 0.0, roof_y(beams_z[0]) - bd, Z0 + bg, Z0 + bg + bd, 2)
 
     wt = P["south_wall"]["window_top"]
-    end_beam = (wt + 0.25, wt + 0.85)             # ~W24, 0.6 m deep, 0.23 m flange
+    end_beam = (wt + 0.475, wt + 1.075)           # ~W24, 0.6 m deep, 0.23 m flange; the curtain beam's top at 7.4 m (user)
     ibeam(g, xn - 0.23, xn, end_beam[0], end_beam[1], Z0, Z1, 1)     # north: its face flush with the columns' (user)
     ibeam(g, X1 - 0.115, X1 + 0.115, end_beam[0], end_beam[1], Z0, Z1, 1)
     curtain_beam = (sum(end_beam) / 2 - 0.225, sum(end_beam) / 2 + 0.225)   # ~W18
     bottom = curtain_beam[1]                       # the A-frames' bottom chord sits on the curtain beam
     chord, cf = 0.2, 0.135                         # small I-beam chords (~W8)
     a = slope_frame(-1)[2]
-    # The top chord runs under the roof beams, from where it meets the bottom chord up the slope and flat across the
-    # middle; struts between the chords, verticals and diagonals leaning out from the middle.
-    reach = FLAT + (RIDGE - bd - chord - bottom - chord) / (RIDGE - H) * (ZC - Z0 - FLAT)
-    panels = 16
-    zs = [ZC - reach + 2 * reach * k / panels for k in range(panels + 1)]
+    # Both chords run between the columns on the side walls (the west wall's I-beam, the east wall's pilaster), the top
+    # one under the roof beams up the slope and flat across the middle (user); between the chords a vertical strut
+    # under each of the eight inner roof beams, one diagonal per panel leaning out from the middle, and an X in the
+    # middle panel (user).
+    zw, ze = Z0 + bg + bd, Z1 - 0.3            # the columns' inner faces
+    vz = beams_z[1:-1]
     for x in TRUSS_X:
-        ibeam(g, x - cf / 2, x + cf / 2, bottom, bottom + chord, beams_z[0] + bf / 2, beams_z[-1] - bf / 2, 1)
-        for side in (-1, 1):
-            slope_ibeam(g, x, ZC + side * reach, ZC + side * FLAT, bd * math.cos(a), chord, cf)
+        ibeam(g, x - cf / 2, x + cf / 2, bottom, bottom + chord, zw, ze, 1)
+        for za, zb in ((zw, ZC - FLAT), (ZC + FLAT, ze)):
+            slope_ibeam(g, x, za, zb, bd * math.cos(a), chord, cf)
         ibeam(g, x - cf / 2, x + cf / 2, RIDGE - bd - chord, RIDGE - bd, ZC - FLAT, ZC + FLAT, 1)
-        for k in range(1, panels):
-            z = zs[k]
+        for z in vz:
             g.strut("steel_white", (x, bottom + chord, z), (x, roof_y(z) - bd - chord, z), 0.08)
-            zo = zs[k - 1] if z < ZC else zs[k + 1]
-            g.strut("steel_white", (x, bottom + chord, z), (x, roof_y(zo) - bd - chord, zo), 0.07)
+        for za, zb in zip(vz, vz[1:]):
+            ends = [(za, zb), (zb, za)] if za < ZC < zb else [(zb, za) if zb < ZC else (za, zb)]
+            for z0, z1 in ends:                # from the bottom chord at z0 up to the top chord at z1
+                g.strut("steel_white", (x, bottom + chord, z0), (x, roof_y(z1) - bd - chord, z1), 0.07)
         g.box("steel_white", (0.3, H, 0.3), (x, H / 2, Z1 - 0.15))
+    # The thin trusses' bottoms line up with the A-frames' bottom, a square white plate under each crossing (user).
     for z in (beams_z[3], beams_z[6]):
-        yt = roof_y(z) - bd
+        yt, yb = roof_y(z) - bd, bottom + 0.04
         panels = 12
-        angle(g, (X0, bottom, z), (X1, bottom, z), 0.08)
-        for k in range(panels + 1):
-            x = X0 + length * k / panels
-            angle(g, (x, bottom, z), (x, yt, z), 0.06)
-            if k < panels:
-                xn = X0 + length * (k + 1) / panels
-                a0, a1 = ((x, bottom, z), (xn, yt, z)) if k < panels / 2 else ((x, yt, z), (xn, bottom, z))
-                angle(g, a0, a1, 0.06)
+        # From each end wall: one three-panel bay with a V and a Λ, then a panel with an X up to the A-frame; between
+        # the A-frames no verticals, one zigzag \/\ of three diagonals (user).
+        ka = round((TRUSS_X[0] - X0) / (length / panels))
+        xs = [X0 + length * k / panels for k in (0, ka - 1, ka, panels - ka, panels - ka + 1, panels)]
+        angle(g, (X0, yb, z), (X1, yb, z), 0.08)
+        for x in xs:
+            angle(g, (x, yb, z), (x, yt, z), 0.06)
+        for i, (x, xn) in enumerate(zip(xs, xs[1:])):
+            out, xc = min(i, len(xs) - 2 - i), (x + xn) / 2
+            if out == 0:
+                pairs = [((x, yt), (xc, yb)), ((xn, yt), (xc, yb)), ((x, yb), (xc, yt)), ((xn, yb), (xc, yt))]
+            elif out == 1:
+                pairs = [((x, yb), (xn, yt)), ((x, yt), (xn, yb))]
+            else:
+                zig = [(x + (xn - x) * j / 3, (yt, yb)[j % 2]) for j in range(4)]
+                pairs = list(zip(zig, zig[1:]))
+            for (xa, ya), (xb, yb_) in pairs:
+                angle(g, (xa, ya, z), (xb, yb_, z), 0.06)
+        for x in TRUSS_X:
+            g.span("steel_white", x - 0.25, x + 0.25, bottom - 0.02, bottom, z - 0.25, z + 0.25)
 
     # Skylights: three rows north to south, between the trusses, in a west and a middle column, none on the east side
     # over the mezzanine (user). Each fills the gap between two roof beams (the second gap from the west wall, on the
@@ -579,18 +600,20 @@ def build_shell(g):
         for w in (-0.22, 0.22):
             p = at(0.0, 6.5, w)
             g.tube("conduit", p, (p[0], bottom, p[2]), 0.01)
-    for x, z in ((-7.5, ZC + 3.0), (0.0, ZC - 5.0)):
-        y = 7.4
-        g.tube("steel_white", (x, y, z), (x, roof_y(z), z), 0.02)
+    # Ceiling fans: one hanging under each white plate where a thin truss crosses an A-frame (user).
+    for x, z in ((x, z) for x in TRUSS_X for z in (beams_z[3], beams_z[6])):
+        y = bottom - 0.7
+        g.tube("steel_white", (x, y, z), (x, bottom - 0.02, z), 0.02)
         g.tube("steel_white", (x, y - 0.1, z), (x, y + 0.05, z), 0.1)
         for k in range(3):
             a = 2 * math.pi * k / 3
             g.box("steel_white", (0.7, 0.012, 0.14), (x + 0.45 * math.cos(a), y - 0.05, z - 0.45 * math.sin(a)),
                   yaw(a))
-    for x in (-8.5, -0.5, 7.5):
-        for z in (ZC - 5.5, ZC + 4.5):
-            g.span("led_white", x - 0.3, x + 0.3, 6.35, 6.42, z - 0.12, z + 0.12)
-            g.tube("conduit", (x, 6.42, z), (x, H - 0.3, z), 0.006)
+    for x, z in LIGHTS:
+        top = bottom if z in (beams_z[3], beams_z[6]) else roof_y(z) - bd     # a truss or the roof beam above
+        g.span("led_white", x - 0.3, x + 0.3, 6.35, 6.42, z - 0.12, z + 0.12)
+        for xe in (x - 0.27, x + 0.27):        # two grey ropes from its narrow ends (user)
+            g.tube("conduit", (xe, 6.42, z), (xe, top, z), 0.004)
 
 
 # ---------------------------------------------------------------- office block and mezzanine

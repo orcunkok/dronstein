@@ -289,6 +289,38 @@ Entities:
       MaterialTable:
         0: 17406367289790317398
       Visible: true
+  - Entity: 64911311796742568
+    Domain: Client
+    TagComponent:
+      Tag: OfficeKitchen
+    Parent: 6006761266487599547
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    PodComponent:
+      Kind: 0
+      PodGraph: 10436420525567372557
+      MaterialTable:
+        0: 0
+        1: 0
+        2: 0
+        3: 0
+        4: 0
+        5: 0
+        6: 0
+        7: 0
+        8: 0
+        9: 0
+        10: 0
+        11: 0
+        12: 0
+        13: 0
+        14: 0
+        15: 0
+        16: 0
   - Entity: 81215081681058999
     Domain: Client
     TagComponent:
@@ -587,27 +619,6 @@ Entities:
       MaterialTable:
         0: 5906284485229172943
       Visible: true
-  - Entity: 794744784963647682
-    Domain: Client
-    TagComponent:
-      Tag: OfficeFill_0
-    Parent: 0
-    Children:
-      []
-    TransformComponent:
-      Position: [5, 3, 1.5]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    PointLightComponent:
-      Radiance: [1, 0.96, 0.9]
-      Intensity: 15
-      CastShadows: false
-      SoftShadows: false
-      MinRadius: 1
-      Photometric: false
-      Radius: 15
-      LightSize: 0.05
-      Falloff: 1
   - Entity: 816145862529472640
     Domain: Client
     TagComponent:
@@ -704,6 +715,27 @@ Entities:
       MaterialTable:
         0: 12925081748185488627
       Visible: true
+  - Entity: 998801572236370664
+    Domain: Client
+    TagComponent:
+      Tag: OfficeLight_13
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [-0, 5.5, 4.12011]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    PointLightComponent:
+      Radiance: [1, 0.96, 0.9]
+      Intensity: 25
+      CastShadows: false
+      SoftShadows: false
+      MinRadius: 1
+      Photometric: false
+      Radius: 25
+      LightSize: 0.05
+      Falloff: 1
   - Entity: 1134009517207024497
     Domain: Client
     TagComponent:
@@ -717,6 +749,44 @@ Entities:
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 14
+  - Entity: 1154485970529808187
+    Domain: Client
+    TagComponent:
+      Tag: OfficeShell
+    Parent: 6006761266487599547
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    PodComponent:
+      Kind: 0
+      PodGraph: 17682890278389404628
+      MaterialTable:
+        0: 0
+        1: 0
+        2: 0
+        3: 0
+        4: 0
+        5: 0
+        6: 0
+        7: 0
+        8: 0
+        9: 0
+        10: 0
+        11: 0
+        12: 0
+        13: 0
+        14: 0
+        15: 0
+        16: 0
+        17: 0
+        18: 0
+        19: 0
+        20: 0
+        21: 0
+        22: 0
   - Entity: 1223973736405521014
     Domain: Client
     TagComponent:
@@ -972,13 +1042,13 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [-2, 6, -9]
-      Rotation: [0.790735, -0.477345, 0]
+      Position: [2, 4, 1]
+      Rotation: [0.235364, 1.61077, 0]
       Scale: [1, 1, 1]
     CameraComponent:
       Camera:
         ProjectionType: 0
-        PerspectiveFOV: 60
+        PerspectiveFOV: 85
         PerspectiveNear: 0.1
         PerspectiveFar: 1000
         OrthographicSize: 10
@@ -1451,12 +1521,12 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [-7.5, 5.5, -10]
+      Position: [-10.1, 5.5, -13.1201]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     PointLightComponent:
       Radiance: [1, 0.96, 0.9]
-      Intensity: 60
+      Intensity: 25
       CastShadows: false
       SoftShadows: false
       MinRadius: 1
@@ -1480,22 +1550,6 @@ Entities:
       MaterialTable:
         0: 14788740229170096286
       Visible: true
-  - Entity: 3230993799134542295
-    Domain: Client
-    TagComponent:
-      Tag: OfficeKitchen
-    Parent: 6567781721337331323
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    PodComponent:
-      Kind: 0
-      PodGraph: 6562955209881538133
-      MaterialTable:
-        0: 0
   - Entity: 3263799576751459641
     Domain: Client
     TagComponent:
@@ -1670,38 +1724,17 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [8.5, 5.5, -10]
+      Position: [10.1, 5.5, -13.1201]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     PointLightComponent:
       Radiance: [1, 0.96, 0.9]
-      Intensity: 60
+      Intensity: 25
       CastShadows: false
       SoftShadows: false
       MinRadius: 1
       Photometric: false
       Radius: 25
-      LightSize: 0.05
-      Falloff: 1
-  - Entity: 3708631378690720785
-    Domain: Client
-    TagComponent:
-      Tag: OfficeFill_4
-    Parent: 0
-    Children:
-      []
-    TransformComponent:
-      Position: [-11.6, 3, 3.8]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    PointLightComponent:
-      Radiance: [1, 0.96, 0.9]
-      Intensity: 1
-      CastShadows: false
-      SoftShadows: false
-      MinRadius: 1
-      Photometric: false
-      Radius: 15
       LightSize: 0.05
       Falloff: 1
   - Entity: 3744289619715871537
@@ -1720,6 +1753,22 @@ Entities:
       MaterialTable:
         0: 14788740229170096286
       Visible: true
+  - Entity: 3764597739136611367
+    Domain: Client
+    TagComponent:
+      Tag: OfficeDesks
+    Parent: 6006761266487599547
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    PodComponent:
+      Kind: 0
+      PodGraph: 13708202093912402241
+      MaterialTable:
+        0: 0
   - Entity: 3787078912260264561
     Domain: Client
     TagComponent:
@@ -2257,12 +2306,12 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [-7.5, 5.5, 0]
+      Position: [-10.1, 5.5, -8.19433]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     PointLightComponent:
       Radiance: [1, 0.96, 0.9]
-      Intensity: 60
+      Intensity: 25
       CastShadows: false
       SoftShadows: false
       MinRadius: 1
@@ -2447,6 +2496,20 @@ Entities:
       MaterialTable:
         0: 12925081748185488627
       Visible: true
+  - Entity: 6006761266487599547
+    Domain: Client
+    TagComponent:
+      Tag: Office
+    Parent: 0
+    Children:
+      - Handle: 1154485970529808187
+      - Handle: 17310846224984906888
+      - Handle: 64911311796742568
+      - Handle: 3764597739136611367
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
   - Entity: 6073118377350982459
     Domain: Client
     TagComponent:
@@ -2471,12 +2534,12 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [0.5, 5.5, -10]
+      Position: [-0, 5.5, -13.1201]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     PointLightComponent:
       Radiance: [1, 0.96, 0.9]
-      Intensity: 60
+      Intensity: 25
       CastShadows: false
       SoftShadows: false
       MinRadius: 1
@@ -2500,27 +2563,6 @@ Entities:
       MaterialTable:
         0: 17406367289790317398
       Visible: true
-  - Entity: 6183264062293081380
-    Domain: Client
-    TagComponent:
-      Tag: OfficeFill_1
-    Parent: 0
-    Children:
-      []
-    TransformComponent:
-      Position: [6, 3, -8.5]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    PointLightComponent:
-      Radiance: [1, 0.96, 0.9]
-      Intensity: 15
-      CastShadows: false
-      SoftShadows: false
-      MinRadius: 1
-      Photometric: false
-      Radius: 15
-      LightSize: 0.05
-      Falloff: 1
   - Entity: 6278721535277837111
     Domain: Client
     TagComponent:
@@ -2601,20 +2643,27 @@ Entities:
       MaterialTable:
         0: 14788740229170096286
       Visible: true
-  - Entity: 6567781721337331323
+  - Entity: 6590223614421907028
     Domain: Client
     TagComponent:
-      Tag: Office
+      Tag: OfficeLight_03
     Parent: 0
     Children:
-      - Handle: 7412314944152447754
-      - Handle: 7924418882201930733
-      - Handle: 3230993799134542295
-      - Handle: 18148823876049414977
+      []
     TransformComponent:
-      Position: [0, 0, 0]
+      Position: [10.1, 5.5, 4.12011]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
+    PointLightComponent:
+      Radiance: [1, 0.96, 0.9]
+      Intensity: 25
+      CastShadows: false
+      SoftShadows: false
+      MinRadius: 1
+      Photometric: false
+      Radius: 25
+      LightSize: 0.05
+      Falloff: 1
   - Entity: 6690199291405621092
     Domain: Client
     TagComponent:
@@ -2886,22 +2935,6 @@ Entities:
       MaterialTable:
         0: 14788740229170096286
       Visible: true
-  - Entity: 7412314944152447754
-    Domain: Client
-    TagComponent:
-      Tag: OfficeShell
-    Parent: 6567781721337331323
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    PodComponent:
-      Kind: 0
-      PodGraph: 12263790013634266192
-      MaterialTable:
-        0: 0
   - Entity: 7458444494842256821
     Domain: Client
     TagComponent:
@@ -3045,12 +3078,12 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [8.5, 5.5, 0]
+      Position: [10.1, 5.5, -8.19433]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     PointLightComponent:
       Radiance: [1, 0.96, 0.9]
-      Intensity: 60
+      Intensity: 25
       CastShadows: false
       SoftShadows: false
       MinRadius: 1
@@ -3104,22 +3137,6 @@ Entities:
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 11
-  - Entity: 7924418882201930733
-    Domain: Client
-    TagComponent:
-      Tag: OfficeBlock
-    Parent: 6567781721337331323
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    PodComponent:
-      Kind: 0
-      PodGraph: 14353150334039732853
-      MaterialTable:
-        0: 0
   - Entity: 7953271992647032964
     Domain: Client
     TagComponent:
@@ -3459,6 +3476,27 @@ Entities:
       MaterialTable:
         0: 12925081748185488627
       Visible: true
+  - Entity: 9007591794121721116
+    Domain: Client
+    TagComponent:
+      Tag: OfficeLight_02
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [10.1, 5.5, -0.805667]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    PointLightComponent:
+      Radiance: [1, 0.96, 0.9]
+      Intensity: 25
+      CastShadows: false
+      SoftShadows: false
+      MinRadius: 1
+      Photometric: false
+      Radius: 25
+      LightSize: 0.05
+      Falloff: 1
   - Entity: 9039404825748457884
     Domain: Client
     TagComponent:
@@ -3727,7 +3765,7 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [-0, 7.15, -4.5]
+      Position: [-0, 9.35, -4.5]
       Rotation: [0, 0, 0]
       Scale: [30, 0.3, 23]
     MujocoBoxColliderComponent:
@@ -3947,27 +3985,6 @@ Entities:
       MaterialTable:
         0: 12925081748185488627
       Visible: true
-  - Entity: 10649582792352841483
-    Domain: Client
-    TagComponent:
-      Tag: OfficeFill_2
-    Parent: 0
-    Children:
-      []
-    TransformComponent:
-      Position: [12, 3, -9]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    PointLightComponent:
-      Radiance: [1, 0.96, 0.9]
-      Intensity: 15
-      CastShadows: false
-      SoftShadows: false
-      MinRadius: 1
-      Photometric: false
-      Radius: 15
-      LightSize: 0.05
-      Falloff: 1
   - Entity: 10770126571884085997
     Domain: Client
     TagComponent:
@@ -4300,27 +4317,6 @@ Entities:
       MaterialTable:
         0: 14788740229170096286
       Visible: true
-  - Entity: 12012381259446299033
-    Domain: Client
-    TagComponent:
-      Tag: OfficeFill_3
-    Parent: 0
-    Children:
-      []
-    TransformComponent:
-      Position: [-11, 3, -1]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    PointLightComponent:
-      Radiance: [1, 0.96, 0.9]
-      Intensity: 2
-      CastShadows: false
-      SoftShadows: false
-      MinRadius: 1
-      Photometric: false
-      Radius: 15
-      LightSize: 0.05
-      Falloff: 1
   - Entity: 12035802603418326138
     Domain: Client
     TagComponent:
@@ -5889,6 +5885,47 @@ Entities:
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 22
+  - Entity: 17310846224984906888
+    Domain: Client
+    TagComponent:
+      Tag: OfficeBlock
+    Parent: 6006761266487599547
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    PodComponent:
+      Kind: 0
+      PodGraph: 2271791849362976782
+      MaterialTable:
+        0: 0
+        1: 0
+        2: 0
+        3: 0
+        4: 0
+        5: 0
+        6: 0
+        7: 0
+        8: 0
+        9: 0
+        10: 0
+        11: 0
+        12: 0
+        13: 0
+        14: 0
+        15: 0
+        16: 0
+        17: 0
+        18: 0
+        19: 0
+        20: 0
+        21: 0
+        22: 0
+        23: 0
+        24: 0
+        25: 0
   - Entity: 17334347121404989582
     Domain: Client
     TagComponent:
@@ -5905,6 +5942,27 @@ Entities:
       MaterialTable:
         0: 2116205926439990434
       Visible: true
+  - Entity: 17431766841809405343
+    Domain: Client
+    TagComponent:
+      Tag: OfficeLight_12
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [-0, 5.5, -0.805667]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    PointLightComponent:
+      Radiance: [1, 0.96, 0.9]
+      Intensity: 25
+      CastShadows: false
+      SoftShadows: false
+      MinRadius: 1
+      Photometric: false
+      Radius: 25
+      LightSize: 0.05
+      Falloff: 1
   - Entity: 17437553327821000184
     Domain: Client
     TagComponent:
@@ -5994,12 +6052,12 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [0.5, 5.5, 0]
+      Position: [-0, 5.5, -8.19433]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     PointLightComponent:
       Radiance: [1, 0.96, 0.9]
-      Intensity: 60
+      Intensity: 25
       CastShadows: false
       SoftShadows: false
       MinRadius: 1
@@ -6145,22 +6203,27 @@ Entities:
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 17
-  - Entity: 18148823876049414977
+  - Entity: 18141126289688132794
     Domain: Client
     TagComponent:
-      Tag: OfficeDesks
-    Parent: 6567781721337331323
+      Tag: OfficeLight_22
+    Parent: 0
     Children:
       []
     TransformComponent:
-      Position: [0, 0, 0]
+      Position: [-10.1, 5.5, -0.805667]
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
-    PodComponent:
-      Kind: 0
-      PodGraph: 8357045669162968728
-      MaterialTable:
-        0: 0
+    PointLightComponent:
+      Radiance: [1, 0.96, 0.9]
+      Intensity: 25
+      CastShadows: false
+      SoftShadows: false
+      MinRadius: 1
+      Photometric: false
+      Radius: 25
+      LightSize: 0.05
+      Falloff: 1
   - Entity: 18178580058356738030
     Domain: Client
     TagComponent:

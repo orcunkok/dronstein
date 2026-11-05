@@ -1,0 +1,110 @@
+# Sprint 171 W97 / Section 4.6b. Office chair — 5-spoke star base (1 spoke
+# authored, mirror×2 gives 4, plus 1 transformed for centred 5th — V1 just
+# does 4 spokes via mirror×2) + central pole + seat + back rest.
+parameters:
+  base_radius:  { kind: Float, default: 0.30 }
+  spoke_w:      { kind: Float, default: 0.06 }
+  spoke_h:      { kind: Float, default: 0.04 }
+  pole_height:  { kind: Float, default: 0.42 }
+  pole_radius:  { kind: Float, default: 0.025 }
+  seat_w:       { kind: Float, default: 0.50 }
+  seat_d:       { kind: Float, default: 0.48 }
+  seat_h:       { kind: Float, default: 0.06 }
+  back_w:       { kind: Float, default: 0.50 }
+  back_h:       { kind: Float, default: 0.55 }
+  back_thick:   { kind: Float, default: 0.05 }
+
+  fabric:    { kind: Material, expr: "0.18, 0.18, 0.20, 1.0, 0.0, 0.85" }
+  metal:     { kind: Material, expr: "0.45, 0.45, 0.50, 1.0, 1.0, 0.30" }
+
+  spoke_y:        { kind: Float, expr: "spoke_h / 2" }
+  spoke_x_offset: { kind: Float, expr: "base_radius / 2" }
+  pole_y:         { kind: Float, expr: "spoke_h + pole_height / 2" }
+  seat_y:         { kind: Float, expr: "spoke_h + pole_height + seat_h / 2" }
+  back_y:         { kind: Float, expr: "spoke_h + pole_height + seat_h + back_h / 2" }
+  back_z:         { kind: Float, expr: "-(seat_d - back_thick) / 2" }
+
+  spoke_pos: { kind: Float3, expr: "spoke_x_offset, spoke_y, 0" }
+  pole_pos:  { kind: Float3, expr: "0, pole_y, 0" }
+  seat_pos:  { kind: Float3, expr: "0, seat_y, 0" }
+  back_pos:  { kind: Float3, expr: "0, back_y, back_z" }
+
+nodes:
+  # Base spoke + 2 mirrors → 4 spokes.
+  - id: 1
+    type: MeshCube
+    inputs: { SizeX: { param: base_radius }, SizeY: { param: spoke_h }, SizeZ: { param: spoke_w } }
+  - id: 2
+    type: Transform
+    inputs: { Translation: { param: spoke_pos } }
+  - id: 3
+    type: MirrorAxis
+    inputs: { Axis: { kind: Menu, value: X }, Pivot: { kind: Float3, value: [0.0, 0.0, 0.0] } }
+  - id: 4
+    type: MirrorAxis
+    inputs: { Axis: { kind: Menu, value: Z }, Pivot: { kind: Float3, value: [0.0, 0.0, 0.0] } }
+
+  # Pole.
+  - id: 10
+    type: MeshCylinder
+    inputs: { Sides: { kind: Int32, value: 12 }, Radius: { param: pole_radius }, Height: { param: pole_height } }
+  - id: 11
+    type: Transform
+    inputs: { Translation: { param: pole_pos } }
+
+  # Metal compose.
+  - id: 12
+    type: JoinGeometry
+  - id: 13
+    type: SetMaterial
+    inputs: { Material: { param: metal } }
+
+  # Seat.
+  - id: 20
+    type: MeshCube
+    inputs: { SizeX: { param: seat_w }, SizeY: { param: seat_h }, SizeZ: { param: seat_d } }
+  - id: 21
+    type: Transform
+    inputs: { Translation: { param: seat_pos } }
+
+  # Back.
+  - id: 30
+    type: MeshCube
+    inputs: { SizeX: { param: back_w }, SizeY: { param: back_h }, SizeZ: { param: back_thick } }
+  - id: 31
+    type: Transform
+    inputs: { Translation: { param: back_pos } }
+
+  - id: 40
+    type: JoinGeometry
+  - id: 41
+    type: SetMaterial
+    inputs: { Material: { param: fabric } }
+
+  - id: 50
+    type: JoinGeometry
+
+  - id: 99
+    type: Viewer
+
+links:
+  - { from: { node: 1, pin: Geometry }, to: { node: 2, pin: Geometry } }
+  - { from: { node: 2, pin: Geometry }, to: { node: 3, pin: Geometry } }
+  - { from: { node: 3, pin: Geometry }, to: { node: 4, pin: Geometry } }
+  - { from: { node: 10, pin: Geometry }, to: { node: 11, pin: Geometry } }
+  - { from: { node: 4,  pin: Geometry }, to: { node: 12, pin: A } }
+  - { from: { node: 11, pin: Geometry }, to: { node: 12, pin: B } }
+  - { from: { node: 12, pin: Geometry }, to: { node: 13, pin: Geometry } }
+
+  - { from: { node: 20, pin: Geometry }, to: { node: 21, pin: Geometry } }
+  - { from: { node: 30, pin: Geometry }, to: { node: 31, pin: Geometry } }
+  - { from: { node: 21, pin: Geometry }, to: { node: 40, pin: A } }
+  - { from: { node: 31, pin: Geometry }, to: { node: 40, pin: B } }
+  - { from: { node: 40, pin: Geometry }, to: { node: 41, pin: Geometry } }
+
+  - { from: { node: 13, pin: Geometry }, to: { node: 50, pin: A } }
+  - { from: { node: 41, pin: Geometry }, to: { node: 50, pin: B } }
+  - { from: { node: 50, pin: Geometry }, to: { node: 99, pin: Geometry } }
+
+outputs:
+  Geometry: { node: 50, pin: Geometry }

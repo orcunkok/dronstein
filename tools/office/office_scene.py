@@ -4,7 +4,7 @@ Run with the editor open (Edit mode, scene Main):
     PYTHONPATH=<LuckyEngine>/Data/Authoring/python python3 office_scene.py
 
 Creates at the root of the scene, or moves if they already exist (found by name):
-- OfficeLight_*: point lights under the LED high-bays (the roof blocks the sun); OfficeFill_*: one fill per bay.
+- OfficeLight_*: point lights under the LED high-bays (the roof blocks the sun), the only lights in the hall.
 - OfficeCollider_*: static MujocoBoxCollider entities (size = Transform Scale) for the walls, the ceiling under the
   trusses, the curtain, the restroom box, the mezzanine, the spiral and U stairs, the kitchen run, the sofa and the desks,
   so the drone can't fly through them.
@@ -17,17 +17,13 @@ from __future__ import annotations
 import json
 import re
 
-from build_office import BOX, BOX_DECK, CURTAIN_TOP, CURTAIN_X, CURTAIN_Z, DECK, H, KITCHEN_X, MEZZ, P, PARTITION_X, \
-    X0, X1, Z0, Z1, ZC
+from build_office import BOX, BOX_DECK, CURTAIN_TOP, CURTAIN_X, CURTAIN_Z, DECK, H, KITCHEN_X, LIGHT_X, LIGHT_Z, LIGHTS, \
+    MEZZ, P, PARTITION_X, X0, X1, Z0, Z1
 from pod_authoring import McpSession
 
 ENDPOINT = "http://127.0.0.1:19331/mcp"
 GROUND = "7004567898520840787"
 OLD_FLOOR = ("GroundSurface", "GroundSlab")
-LIGHT_X = (-8.5, -0.5, 7.5)                                 # plan x of the LED high-bays (build_shell)
-LIGHT_Z = (ZC - 5.5, ZC + 4.5)
-FILL = ((-5.0, 1.5, 15), (-6.0, -8.5, 15), (-12.0, -9.0, 15),  # plan (x, z, intensity): one fill per bay, one in the
-        (11.0, -1.0, 2), (11.6, 3.8, 1))                      # desk corner, one under the mezzanine, one in the closet
 
 
 def span(x0, x1, y0, y1, z0, z1):
@@ -97,17 +93,15 @@ def main():
 
         for i, x in enumerate(LIGHT_X):
             for j, z in enumerate(LIGHT_Z):
+                if (x, z) not in LIGHTS:
+                    if uuid := find(f"OfficeLight_{i}{j}"):
+                        call("destroy_entity", entityID=uuid)
+                    continue
                 light = entity(f"OfficeLight_{i}{j}", "PointLight")
                 place(light, (-x, 5.5, z))
-                for prop, value in (("Intensity", "60"), ("Radius", "25"), ("Radiance", "1 0.96 0.9")):
+                for prop, value in (("Intensity", "25"), ("Radius", "25"), ("Radiance", "1 0.96 0.9")):
                     call("set_entity_property", entityID=light, componentName="PointLight", propertyName=prop,
                          value=value)
-        for k, (x, z, intensity) in enumerate(FILL):
-            light = entity(f"OfficeFill_{k}", "PointLight")
-            place(light, (-x, 3.0, z))
-            for prop, value in (("Intensity", str(intensity)), ("Radius", "15"), ("Radiance", "1 0.96 0.9")):
-                call("set_entity_property", entityID=light, componentName="PointLight", propertyName=prop,
-                     value=value)
         for name, (pos, size) in COLLIDERS.items():
             box = entity(f"OfficeCollider_{name}", "MujocoBoxCollider")
             place(box, pos, size)
@@ -116,7 +110,7 @@ def main():
         for name in OLD_FLOOR:
             if uuid := find(name):
                 call("destroy_entity", entityID=uuid)
-        print(json.dumps({"lights": len(LIGHT_X) * len(LIGHT_Z), "colliders": len(COLLIDERS)}))
+        print(json.dumps({"lights": len(LIGHTS), "colliders": len(COLLIDERS)}))
 
 
 if __name__ == "__main__":
