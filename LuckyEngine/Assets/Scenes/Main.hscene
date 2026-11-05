@@ -289,38 +289,6 @@ Entities:
       MaterialTable:
         0: 17406367289790317398
       Visible: true
-  - Entity: 64911311796742568
-    Domain: Client
-    TagComponent:
-      Tag: OfficeKitchen
-    Parent: 6006761266487599547
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    PodComponent:
-      Kind: 0
-      PodGraph: 10436420525567372557
-      MaterialTable:
-        0: 0
-        1: 0
-        2: 0
-        3: 0
-        4: 0
-        5: 0
-        6: 0
-        7: 0
-        8: 0
-        9: 0
-        10: 0
-        11: 0
-        12: 0
-        13: 0
-        14: 0
-        15: 0
-        16: 0
   - Entity: 81215081681058999
     Domain: Client
     TagComponent:
@@ -749,44 +717,6 @@ Entities:
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 14
-  - Entity: 1154485970529808187
-    Domain: Client
-    TagComponent:
-      Tag: OfficeShell
-    Parent: 6006761266487599547
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    PodComponent:
-      Kind: 0
-      PodGraph: 17682890278389404628
-      MaterialTable:
-        0: 0
-        1: 0
-        2: 0
-        3: 0
-        4: 0
-        5: 0
-        6: 0
-        7: 0
-        8: 0
-        9: 0
-        10: 0
-        11: 0
-        12: 0
-        13: 0
-        14: 0
-        15: 0
-        16: 0
-        17: 0
-        18: 0
-        19: 0
-        20: 0
-        21: 0
-        22: 0
   - Entity: 1223973736405521014
     Domain: Client
     TagComponent:
@@ -1042,13 +972,13 @@ Entities:
     Children:
       []
     TransformComponent:
-      Position: [2, 4, 1]
-      Rotation: [0.235364, 1.61077, 0]
+      Position: [-8.3, 1.6, -0.7]
+      Rotation: [0.348042, 2.59673, 0]
       Scale: [1, 1, 1]
     CameraComponent:
       Camera:
         ProjectionType: 0
-        PerspectiveFOV: 85
+        PerspectiveFOV: 62
         PerspectiveNear: 0.1
         PerspectiveFar: 1000
         OrthographicSize: 10
@@ -1197,6 +1127,22 @@ Entities:
       MaterialTable:
         0: 5906284485229172943
       Visible: true
+  - Entity: 2040290941788031392
+    Domain: Client
+    TagComponent:
+      Tag: OfficeBlock
+    Parent: 9808931576279411096
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    PodComponent:
+      Kind: 0
+      PodGraph: 9455958813015241850
+      MaterialTable:
+        0: 0
   - Entity: 2219724388333390735
     Domain: Client
     TagComponent:
@@ -1753,22 +1699,6 @@ Entities:
       MaterialTable:
         0: 14788740229170096286
       Visible: true
-  - Entity: 3764597739136611367
-    Domain: Client
-    TagComponent:
-      Tag: OfficeDesks
-    Parent: 6006761266487599547
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    PodComponent:
-      Kind: 0
-      PodGraph: 13708202093912402241
-      MaterialTable:
-        0: 0
   - Entity: 3787078912260264561
     Domain: Client
     TagComponent:
@@ -2496,20 +2426,6 @@ Entities:
       MaterialTable:
         0: 12925081748185488627
       Visible: true
-  - Entity: 6006761266487599547
-    Domain: Client
-    TagComponent:
-      Tag: Office
-    Parent: 0
-    Children:
-      - Handle: 1154485970529808187
-      - Handle: 17310846224984906888
-      - Handle: 64911311796742568
-      - Handle: 3764597739136611367
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
   - Entity: 6073118377350982459
     Domain: Client
     TagComponent:
@@ -2547,6 +2463,22 @@ Entities:
       Radius: 25
       LightSize: 0.05
       Falloff: 1
+  - Entity: 6152478121401536775
+    Domain: Client
+    TagComponent:
+      Tag: OfficeDesks
+    Parent: 9808931576279411096
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    PodComponent:
+      Kind: 0
+      PodGraph: 17588501018783355712
+      MaterialTable:
+        0: 0
   - Entity: 6164777715395487094
     Domain: Client
     TagComponent:
@@ -3545,6 +3477,22 @@ Entities:
       MaterialTable:
         0: 14788740229170096286
       Visible: true
+  - Entity: 9167363594873509014
+    Domain: Client
+    TagComponent:
+      Tag: OfficeKitchen
+    Parent: 9808931576279411096
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    PodComponent:
+      Kind: 0
+      PodGraph: 7527727160312752266
+      MaterialTable:
+        0: 0
   - Entity: 9191149044170001192
     Domain: Client
     TagComponent:
@@ -3790,6 +3738,20 @@ Entities:
       MaterialTable:
         0: 12925081748185488627
       Visible: true
+  - Entity: 9808931576279411096
+    Domain: Client
+    TagComponent:
+      Tag: Office
+    Parent: 0
+    Children:
+      - Handle: 12349947786320482893
+      - Handle: 2040290941788031392
+      - Handle: 9167363594873509014
+      - Handle: 6152478121401536775
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
   - Entity: 9888961885174505994
     Domain: Client
     TagComponent:
@@ -4388,6 +4350,22 @@ Entities:
       MaterialTable:
         0: 12925081748185488627
       Visible: true
+  - Entity: 12349947786320482893
+    Domain: Client
+    TagComponent:
+      Tag: OfficeShell
+    Parent: 9808931576279411096
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    PodComponent:
+      Kind: 0
+      PodGraph: 15812585943992636909
+      MaterialTable:
+        0: 0
   - Entity: 12363373977174165505
     Domain: Client
     TagComponent:
@@ -5885,47 +5863,6 @@ Entities:
       Scale: [1, 1, 1]
     MujocoBodyComponent:
       ID: 22
-  - Entity: 17310846224984906888
-    Domain: Client
-    TagComponent:
-      Tag: OfficeBlock
-    Parent: 6006761266487599547
-    Children:
-      []
-    TransformComponent:
-      Position: [0, 0, 0]
-      Rotation: [0, 0, 0]
-      Scale: [1, 1, 1]
-    PodComponent:
-      Kind: 0
-      PodGraph: 2271791849362976782
-      MaterialTable:
-        0: 0
-        1: 0
-        2: 0
-        3: 0
-        4: 0
-        5: 0
-        6: 0
-        7: 0
-        8: 0
-        9: 0
-        10: 0
-        11: 0
-        12: 0
-        13: 0
-        14: 0
-        15: 0
-        16: 0
-        17: 0
-        18: 0
-        19: 0
-        20: 0
-        21: 0
-        22: 0
-        23: 0
-        24: 0
-        25: 0
   - Entity: 17334347121404989582
     Domain: Client
     TagComponent:

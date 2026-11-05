@@ -134,7 +134,6 @@ MATS = {
     "drinks": mat(0.30, 0.45, 0.60, 0.0, 0.6),
     "stripe_grey": mat(0.12, 0.12, 0.12, 0.0, 0.9),
     "glass_skylight": mat(0.10, 0.32, 0.85, 0.0, 0.1),
-    "cable_blue": mat(0.02, 0.10, 0.55, 0.0, 0.5),
 }
 SOFA_YELLOW = mat(0.55, 0.38, 0.03, 0.0, 0.8)    # mustard tufted velvet
 BLACK_STAINLESS = mat(0.06, 0.06, 0.065, 0.9, 0.35)
@@ -152,6 +151,7 @@ class Graph:
         self.cube = edit.node("MeshCube", "unit cube", SizeX=1.0, SizeY=1.0, SizeZ=1.0)
         self.cyl = edit.node("MeshCylinder", "unit cylinder", Sides=16, Radius=1.0, Height=1.0,
                              CapFill=Literal("Menu", "Ngon"))
+        self.shade = edit.node("MeshCone", "lamp shade", Sides=32, BottomRadius=1.0, TopRadius=0.28, Height=1.0)
         self.groups = {}
         self.extra = []
         self.n = 0
@@ -800,15 +800,13 @@ def build_block(g):
     g.span("clock_face", fm - 0.06, fm + 0.06, 1.662, 1.698, bz0 - 0.128, bz0 - 0.125)
     g.span("red_cross", fm - 0.09, fm + 0.09, 1.52, 1.56, bz0 - 0.125, bz0 - 0.12)
     # Red conduit round the box at 2.6 m with grey junction boxes (IMG_3104); south of the mezzanine front a riser
-    # goes up the west face to the deck, blue cables climbing beside it (IMG_3103).
+    # goes up the west face to the deck (IMG_3103).
     g.tube("conduit_red", (bx0 - 0.03, 2.6, bz0), (bx0 - 0.03, 2.6, bz1), 0.01)
     g.tube("conduit_red", (bx0, 2.6, bz0 - 0.03), (bx1, 2.6, bz0 - 0.03), 0.01)
     xr = mx0 + 0.3
     for x in (xc - 1.45, xc, xr):
         g.span("panel_grey", x - 0.06, x + 0.06, 2.54, 2.66, bz0 - 0.06, bz0)
     g.tube("conduit_red", (xr, 2.66, bz0 - 0.03), (xr, under, bz0 - 0.03), 0.01)
-    for k in range(3):
-        g.tube("cable_blue", (xr + 0.08 + 0.03 * k, 2.62, bz0 - 0.03), (xr + 0.45 + 0.03 * k, under, bz0 - 0.03), 0.006)
     # Lower deck edge: a dark bolted steel channel round its north and west edges, close silver balusters on it
     # (IMG_3104/3087), open where the big spiral's landing joins the deck.
     north_end = B["mid_box"][2]
@@ -881,11 +879,14 @@ def build_block(g):
                                (ty0, ty1, zb - fw, zb)):
             g.span("alu_matte", px - 0.035, px, y0, y1, z0, z1)
     sofa(g, px, Q["sofa_z"])
-    # White enamel barn pendants on a cord from the joists.
+    # White enamel barn pendants on a cord from the joists: a narrow neck, the shade flaring out from it, a short
+    # straight rim at the bottom (IMG_3070/3091, user).
     for z in Q["pendants_z"]:
-        g.tube("pc_black", (px - 0.8, 2.6, z), (px - 0.8, top - 0.25, z), 0.004)
-        g.tube("clock_face", (px - 0.8, 2.5, z), (px - 0.8, 2.6, z), 0.07)
-        g.tube("clock_face", (px - 0.8, 2.45, z), (px - 0.8, 2.5, z), 0.2)
+        x = px - 0.8
+        g.tube("conduit", (x, 2.7, z), (x, top, z), 0.004)    # grey cord up to the deck's underside (user)
+        g.tube("clock_face", (x, 2.62, z), (x, 2.7, z), 0.03)
+        g.place(g.shade, "clock_face", (0.18, 0.14, 0.18), (x, 2.55, z))
+        g.tube("clock_face", (x, 2.43, z), (x, 2.48, z), 0.18)
     g.span("glass_light", px + 0.07, px + 0.08, 0.1, 2.05, sz0 + 0.05, sz1 - 0.05)
     for z0 in (sz0, sz1 - 0.06):
         g.span("wood_door", px - 0.02, px + 0.17, 0.0, 2.21, z0, z0 + 0.06)
@@ -1144,8 +1145,8 @@ def build_desks(g):
     # West wall, south to north: a desk north of the gate's west end, its user facing into the hall, boxes on its gate
     # side (IMG_3059, user), the grey cases north of the pilaster with one open on the floor, more boxes (the robot
     # dogs are Unitree Go2 packs in the scene).
-    # The desk group: 6.7 m north of the gate wall, 1.2 m east of the gate's west side (user).
-    gx, gz = X1 - 6.7, P["gate"]["z0"] + 1.2
+    # The desk group: 5.7 m north of the gate wall, 1.2 m east of the gate's west side (user).
+    gx, gz = X1 - 5.7, P["gate"]["z0"] + 1.2
     standing_desk(g, gx, gz + 0.85, along_z=False, length=1.2, depth=0.55)
     g.kit("seating/office_chair_v2", (gx, 0.0, gz + 0.24))
     # Cardboard boxes on the desk's gate side, various sizes, some stacked: (x, z, size, base height, turn).
