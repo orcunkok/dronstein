@@ -24,9 +24,10 @@ from pod_authoring import McpSession
 ENDPOINT = "http://127.0.0.1:19331/mcp"
 GROUND = "7004567898520840787"
 OLD_FLOOR = ("GroundSurface", "GroundSlab")
-LIGHT_X = (-9.5, -1.5, 6.5)                                 # plan x of the LED high-bays (build_shell)
+LIGHT_X = (-8.5, -0.5, 7.5)                                 # plan x of the LED high-bays (build_shell)
 LIGHT_Z = (ZC - 5.5, ZC + 4.5)
-FILL = ((-5.0, 1.5), (-6.0, -8.5), (-12.0, -9.0))           # plan (x, z): one fill per bay, one in the desk corner
+FILL = ((-5.0, 1.5, 15), (-6.0, -8.5, 15), (-12.0, -9.0, 15),  # plan (x, z, intensity): one fill per bay, one in the
+        (11.0, -1.0, 2), (11.6, 3.8, 1))                      # desk corner, one under the mezzanine, one in the closet
 
 
 def span(x0, x1, y0, y1, z0, z1):
@@ -46,8 +47,7 @@ COLLIDERS = {
     "Block": span(BOX[0], BOX[1], 0, BOX_DECK + 1.05, BOX[2], BOX[3]),
     "UpperBox": span(*P["box"]["tall_box"][:2], BOX_DECK, P["box"]["tall_box"][4], *P["box"]["tall_box"][2:4]),
     "MidBox": span(*P["box"]["mid_box"][:2], BOX_DECK, P["box"]["mid_box"][4], *P["box"]["mid_box"][2:4]),
-    "Mezzanine": span(MEZZ[0], MEZZ[1], DECK - P["mezzanine"]["thickness"], DECK + 1.07, MEZZ[2], MEZZ[3]),
-    "MezzanineEast": span(BOX[1], X1, DECK - P["mezzanine"]["thickness"], DECK + 1.07, MEZZ[3], Z1),
+    "Mezzanine": span(MEZZ[0], MEZZ[1], DECK - P["mezzanine"]["thickness"], DECK + 1.07, MEZZ[2], Z1),
     "Partition": span(PARTITION_X, PARTITION_X + 0.15, 0, DECK - P["mezzanine"]["thickness"], MEZZ[2], Z1),
     "RoomWall": span(PARTITION_X, X1, 0, DECK - P["mezzanine"]["thickness"], MEZZ[2], MEZZ[2] + 0.12),
     "Spiral": span(P["spiral"]["x"] - 0.8, P["spiral"]["x"] + 0.8, 0, BOX_DECK + 1.0,
@@ -55,13 +55,14 @@ COLLIDERS = {
     "SpiralUpper": span(P["spiral_upper"]["x"] - 0.65, P["spiral_upper"]["x"] + 0.65, BOX_DECK, DECK + 1.0,
                         P["spiral_upper"]["z"] - 0.65, P["spiral_upper"]["z"] + 0.65),
     "Kitchen": span(KITCHEN_X, KITCHEN_X + 6.04, 0, 2.42, Z1 - 0.95, Z1),
-    "SofaYellow": span(P["desk_corner"]["sofa_x"] - 0.475, P["desk_corner"]["sofa_x"] + 0.475, 0, 0.65,
-                       P["desk_corner"]["sofa_z"] - 1.05, P["desk_corner"]["sofa_z"] + 1.05),
+    "SofaYellow": span(P["desk_corner"]["sofa_x"] - 1.05, P["desk_corner"]["sofa_x"] + 1.05, 0, 0.65,
+                       P["desk_corner"]["sofa_z"] - 0.4, P["desk_corner"]["sofa_z"] + 0.4),
     "Bench": span(X0 + P["desk_corner"]["bench_wall_gap"], X0 + P["desk_corner"]["bench_wall_gap"] + 0.75, 0, 1.25,
                   *P["desk_corner"]["bench_z"]),
-    "Crane": span(P["desk_corner"]["crane"][0] - 0.25, P["desk_corner"]["crane"][0] + 0.35, 0, 2.35,
-                  P["desk_corner"]["crane"][1] - 0.25, P["desk_corner"]["crane"][1] + 0.45),
-    "Desks": span(X0 + P["desk_corner"]["row_wall_gap"], X0 + P["desk_corner"]["row_wall_gap"] + 0.75, 0, 0.76, *P["desk_corner"]["row_z"]),
+    "Crane": span(P["desk_corner"]["crane"][0] - 0.3, P["desk_corner"]["crane"][0] + 1.0, 0, 2.4,
+                  P["desk_corner"]["crane"][1] - 0.4, P["desk_corner"]["crane"][1] + 0.4),
+    "Desks": span(X0 + P["desk_corner"]["row_wall_gap"], X0 + P["desk_corner"]["row_wall_gap"] + P["desk_corner"]["row_desk"][1],
+                  0, 0.76, *P["desk_corner"]["row_z"]),
     "Stair": span(P["u_stair"]["platform_x"][0], P["u_stair"]["landing_x"][1], 0, DECK + 1.05,
                   P["u_stair"]["landing_z"][0], P["u_stair"]["upper_z"][1]),
 }
@@ -101,10 +102,10 @@ def main():
                 for prop, value in (("Intensity", "60"), ("Radius", "25"), ("Radiance", "1 0.96 0.9")):
                     call("set_entity_property", entityID=light, componentName="PointLight", propertyName=prop,
                          value=value)
-        for k, (x, z) in enumerate(FILL):
+        for k, (x, z, intensity) in enumerate(FILL):
             light = entity(f"OfficeFill_{k}", "PointLight")
             place(light, (-x, 3.0, z))
-            for prop, value in (("Intensity", "15"), ("Radius", "15"), ("Radiance", "1 0.96 0.9")):
+            for prop, value in (("Intensity", str(intensity)), ("Radius", "15"), ("Radiance", "1 0.96 0.9")):
                 call("set_entity_property", entityID=light, componentName="PointLight", propertyName=prop,
                      value=value)
         for name, (pos, size) in COLLIDERS.items():

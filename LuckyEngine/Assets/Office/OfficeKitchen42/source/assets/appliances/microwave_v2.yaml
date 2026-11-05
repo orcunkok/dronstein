@@ -1,0 +1,134 @@
+# Sprint 171 W74 / Section 4.1c. Microwave v2 — body + glass door
+# panel + handle + button panel + display + 3 vent slats on the side.
+parameters:
+  width:    { kind: Float, default: 0.50 }
+  height:   { kind: Float, default: 0.30 }
+  depth:    { kind: Float, default: 0.40 }
+
+  steel:    { kind: Material, expr: "0.62, 0.62, 0.66, 1.0, 0.85, 0.30" }
+  glass:    { kind: Material, expr: "0.16, 0.18, 0.22, 0.7, 0.0, 0.10" }
+  control:  { kind: Material, expr: "0.20, 0.22, 0.26, 1.0, 0.0, 0.55" }
+  display:  { kind: Material, expr: "0.10, 0.40, 0.10, 1.0, 0.30, 0.30" }
+
+nodes:
+  - id: 1
+    type: MeshCube
+    inputs: { SizeX: { param: width }, SizeY: { param: height }, SizeZ: { param: depth } }
+  - id: 2
+    type: Transform
+    inputs: { Translation: { kind: Float3, value: [0.0, 0.150, 0.0] } }
+  - id: 3
+    type: SetMaterial
+    inputs: { Material: { param: steel } }
+
+  # Glass door (left 70% of front)
+  - id: 10
+    type: MeshCube
+    inputs: { SizeX: { kind: Float, value: 0.30 }, SizeY: { kind: Float, value: 0.24 }, SizeZ: { kind: Float, value: 0.012 } }
+  - id: 11
+    type: Transform
+    inputs: { Translation: { kind: Float3, value: [-0.07, 0.150, 0.205] } }
+  - id: 12
+    type: SetMaterial
+    inputs: { Material: { param: glass } }
+
+  # Door handle (vertical)
+  - id: 20
+    type: MeshCube
+    inputs: { SizeX: { kind: Float, value: 0.020 }, SizeY: { kind: Float, value: 0.20 }, SizeZ: { kind: Float, value: 0.030 } }
+  - id: 21
+    type: Transform
+    inputs: { Translation: { kind: Float3, value: [0.10, 0.150, 0.215] } }
+
+  # Button panel (right 25%)
+  - id: 30
+    type: MeshCube
+    inputs: { SizeX: { kind: Float, value: 0.10 }, SizeY: { kind: Float, value: 0.24 }, SizeZ: { kind: Float, value: 0.012 } }
+  - id: 31
+    type: Transform
+    inputs: { Translation: { kind: Float3, value: [0.18, 0.150, 0.205] } }
+  - id: 32
+    type: SetMaterial
+    inputs: { Material: { param: control } }
+
+  # Display window in the button panel
+  - id: 40
+    type: MeshCube
+    inputs: { SizeX: { kind: Float, value: 0.07 }, SizeY: { kind: Float, value: 0.025 }, SizeZ: { kind: Float, value: 0.005 } }
+  - id: 41
+    type: Transform
+    inputs: { Translation: { kind: Float3, value: [0.18, 0.250, 0.214] } }
+  - id: 42
+    type: SetMaterial
+    inputs: { Material: { param: display } }
+
+  # 3 side vent slats
+  - id: 50
+    type: MeshCube
+    inputs: { SizeX: { kind: Float, value: 0.012 }, SizeY: { kind: Float, value: 0.02 }, SizeZ: { kind: Float, value: 0.06 } }
+  - id: 51
+    type: Transform
+    inputs: { Translation: { kind: Float3, value: [-0.255, 0.245, 0.0] } }
+  - id: 52
+    type: MeshCube
+    inputs: { SizeX: { kind: Float, value: 0.012 }, SizeY: { kind: Float, value: 0.02 }, SizeZ: { kind: Float, value: 0.06 } }
+  - id: 53
+    type: Transform
+    inputs: { Translation: { kind: Float3, value: [-0.255, 0.215, 0.0] } }
+  - id: 54
+    type: MeshCube
+    inputs: { SizeX: { kind: Float, value: 0.012 }, SizeY: { kind: Float, value: 0.02 }, SizeZ: { kind: Float, value: 0.06 } }
+  - id: 55
+    type: Transform
+    inputs: { Translation: { kind: Float3, value: [-0.255, 0.185, 0.0] } }
+
+  - id: 60
+    type: JoinGeometry
+  - id: 61
+    type: JoinGeometry
+  - id: 62
+    type: JoinGeometry
+  - id: 63
+    type: JoinGeometry
+  - id: 64
+    type: JoinGeometry
+  - id: 65
+    type: JoinGeometry
+  - id: 66
+    type: JoinGeometry
+
+  - id: 99
+    type: Viewer
+
+links:
+  - { from: { node: 1, pin: Geometry }, to: { node: 2, pin: Geometry } }
+  - { from: { node: 2, pin: Geometry }, to: { node: 3, pin: Geometry } }
+  - { from: { node: 10, pin: Geometry }, to: { node: 11, pin: Geometry } }
+  - { from: { node: 11, pin: Geometry }, to: { node: 12, pin: Geometry } }
+  - { from: { node: 20, pin: Geometry }, to: { node: 21, pin: Geometry } }
+  - { from: { node: 30, pin: Geometry }, to: { node: 31, pin: Geometry } }
+  - { from: { node: 31, pin: Geometry }, to: { node: 32, pin: Geometry } }
+  - { from: { node: 40, pin: Geometry }, to: { node: 41, pin: Geometry } }
+  - { from: { node: 41, pin: Geometry }, to: { node: 42, pin: Geometry } }
+  - { from: { node: 50, pin: Geometry }, to: { node: 51, pin: Geometry } }
+  - { from: { node: 52, pin: Geometry }, to: { node: 53, pin: Geometry } }
+  - { from: { node: 54, pin: Geometry }, to: { node: 55, pin: Geometry } }
+
+  - { from: { node: 3,  pin: Geometry }, to: { node: 60, pin: A } }
+  - { from: { node: 12, pin: Geometry }, to: { node: 60, pin: B } }
+  - { from: { node: 60, pin: Geometry }, to: { node: 61, pin: A } }
+  - { from: { node: 21, pin: Geometry }, to: { node: 61, pin: B } }
+  - { from: { node: 61, pin: Geometry }, to: { node: 62, pin: A } }
+  - { from: { node: 32, pin: Geometry }, to: { node: 62, pin: B } }
+  - { from: { node: 62, pin: Geometry }, to: { node: 63, pin: A } }
+  - { from: { node: 42, pin: Geometry }, to: { node: 63, pin: B } }
+  - { from: { node: 63, pin: Geometry }, to: { node: 64, pin: A } }
+  - { from: { node: 51, pin: Geometry }, to: { node: 64, pin: B } }
+  - { from: { node: 64, pin: Geometry }, to: { node: 65, pin: A } }
+  - { from: { node: 53, pin: Geometry }, to: { node: 65, pin: B } }
+  - { from: { node: 65, pin: Geometry }, to: { node: 66, pin: A } }
+  - { from: { node: 55, pin: Geometry }, to: { node: 66, pin: B } }
+  - { from: { node: 66, pin: Geometry }, to: { node: 99, pin: Geometry } }
+
+outputs:
+  Geometry: { node: 66, pin: Geometry }

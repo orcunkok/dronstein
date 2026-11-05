@@ -11,6 +11,9 @@ Assets:
   - Handle: 203066059061262358
     FilePath: Materials/TennisBall_Material2.hmaterial
     Type: Material
+  - Handle: 300346873606781589
+    FilePath: Office/OfficeKitchen19/source/office_kitchen.hpodgraph
+    Type: PodGraph
   - Handle: 314402147493877231
     FilePath: ContentVault/Robots/SO100Pod/assets/Rotation_Pitch.stl
     Type: MeshSource
@@ -29,17 +32,41 @@ Assets:
   - Handle: 450624845371457783
     FilePath: Office/OfficeDesks7/source/office_desks.hpodgraph
     Type: PodGraph
+  - Handle: 462515113378203857
+    FilePath: Office/OfficeDesks37/source/office_desks.hpodgraph
+    Type: PodGraph
   - Handle: 472466418818970438
     FilePath: Robots/X500V2/source/x500v2.hpodgraph
     Type: PodGraph
   - Handle: 484847274384006846
     FilePath: Office/OfficeShell10/source/office_shell.hpodgraph
     Type: PodGraph
+  - Handle: 514493014844624339
+    FilePath: Meshes/base_0.hsmesh
+    Type: StaticMesh
+  - Handle: 631651943238707359
+    FilePath: Office/OfficeShell39/source/office_shell.hpodgraph
+    Type: PodGraph
+  - Handle: 769160728058574674
+    FilePath: Office/OfficeDesks46/source/office_desks.hpodgraph
+    Type: PodGraph
+  - Handle: 861436110616270107
+    FilePath: Office/OfficeBlock29/source/office_block.hpodgraph
+    Type: PodGraph
   - Handle: 907663416148390069
     FilePath: ContentVault/Robots/SO100Pod/assets/Wrist_Pitch_Roll_Motor.stl
     Type: MeshSource
+  - Handle: 920494601398871862
+    FilePath: Office/OfficeDesks28/source/office_desks.hpodgraph
+    Type: PodGraph
+  - Handle: 1018311162826679797
+    FilePath: Robots/Go2Mesh/base_4.glb
+    Type: MeshSource
   - Handle: 1047767593981804957
     FilePath: Office/OfficeShell14/source/office_shell.hpodgraph
+    Type: PodGraph
+  - Handle: 1055160738342625656
+    FilePath: Office/OfficeShell40/source/office_shell.hpodgraph
     Type: PodGraph
   - Handle: 1081997398400101489
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/Policies/walker.onnx
@@ -56,17 +83,41 @@ Assets:
   - Handle: 1185486503833618192
     FilePath: ContentVault/Robots/SO100Pod/assets/Upper_Arm_Motor.stl
     Type: MeshSource
+  - Handle: 1188882323980360271
+    FilePath: Office/OfficeShell51/source/office_shell.hpodgraph
+    Type: PodGraph
+  - Handle: 1243622273730238074
+    FilePath: Office/OfficeBlock51/source/office_block.hpodgraph
+    Type: PodGraph
   - Handle: 1271349667627160951
     FilePath: Robots/ClawFingerR8/source/claw_finger_r.hpodgraph
     Type: PodGraph
   - Handle: 1327583849692850576
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/left_hand_thumb_2_link.STL
     Type: MeshSource
+  - Handle: 1509107606980037381
+    FilePath: Office/OfficeKitchen34/source/office_kitchen.hpodgraph
+    Type: PodGraph
+  - Handle: 1525697489319404245
+    FilePath: Meshes/base_1.hsmesh
+    Type: StaticMesh
+  - Handle: 1565141614944339401
+    FilePath: Office/OfficeDesks51/source/office_desks.hpodgraph
+    Type: PodGraph
   - Handle: 1590398502246618458
     FilePath: ContentVault/Robots/UnitreeGo2Pod/assets/calf_1.obj
     Type: MeshSource
+  - Handle: 1620668363091615523
+    FilePath: Office/OfficeKitchen21/source/office_kitchen.hpodgraph
+    Type: PodGraph
+  - Handle: 1690940374111907480
+    FilePath: Office/OfficeBlock18/source/office_block.hpodgraph
+    Type: PodGraph
   - Handle: 1700460298204588844
     FilePath: Robots/ClawBracket9/source/claw_bracket.hpodgraph
+    Type: PodGraph
+  - Handle: 1736747401481327794
+    FilePath: Office/OfficeDesks22/source/office_desks.hpodgraph
     Type: PodGraph
   - Handle: 1835717665204745648
     FilePath: Office/OfficeBlock12/source/office_block.hpodgraph
@@ -77,21 +128,36 @@ Assets:
   - Handle: 1982304448194497519
     FilePath: Office/OfficeShell4/source/office_shell.hpodgraph
     Type: PodGraph
+  - Handle: 1988969395092782168
+    FilePath: Office/OfficeDesks49/source/office_desks.hpodgraph
+    Type: PodGraph
   - Handle: 1994689223014747889
     FilePath: ContentVault/Robots/UnitreeGo2Pod/assets/calf_0.obj
     Type: MeshSource
   - Handle: 2012512725116115944
     FilePath: Office/OfficeKitchen5/source/office_kitchen.hpodgraph
     Type: PodGraph
+  - Handle: 2064490809707639894
+    FilePath: Office/OfficeShell45/source/office_shell.hpodgraph
+    Type: PodGraph
   - Handle: 2071043330516425862
     FilePath: Office/OfficeBlock4/source/office_block.hpodgraph
+    Type: PodGraph
+  - Handle: 2073353973025211125
+    FilePath: Office/OfficeShell33/source/office_shell.hpodgraph
     Type: PodGraph
   - Handle: 2116205926439990434
     FilePath: Materials/Waypoint_Soft_Material.hmaterial
     Type: Material
+  - Handle: 2173131470050306430
+    FilePath: Office/OfficeBlock20/source/office_block.hpodgraph
+    Type: PodGraph
   - Handle: 2198985268617169293
     FilePath: ContentVault/Robots/SO100Pod/assets/Fixed_Jaw_Collision_1.stl
     Type: MeshSource
+  - Handle: 2252427384764102234
+    FilePath: Office/OfficeBlock47/source/office_block.hpodgraph
+    Type: PodGraph
   - Handle: 2299960294570842191
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/left_wrist_yaw_link.STL
     Type: MeshSource
@@ -104,11 +170,17 @@ Assets:
   - Handle: 2556849476321986060
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/left_wrist_pitch_link.STL
     Type: MeshSource
+  - Handle: 2669722495287880758
+    FilePath: Office/OfficeShell19/source/office_shell.hpodgraph
+    Type: PodGraph
   - Handle: 2681935931737735909
     FilePath: Robots/ClawFingerL14/source/claw_finger_l.hpodgraph
     Type: PodGraph
   - Handle: 2717638430959145200
     FilePath: Office/OfficeDesks4/source/office_desks.hpodgraph
+    Type: PodGraph
+  - Handle: 2752685742677329745
+    FilePath: Office/OfficeKitchen43/source/office_kitchen.hpodgraph
     Type: PodGraph
   - Handle: 2871429880033931469
     FilePath: Robots/Dronstein/dronstein.xml
@@ -122,6 +194,9 @@ Assets:
   - Handle: 3008810176146964967
     FilePath: Scripts/Client/Source/X500View.cs
     Type: ScriptFile
+  - Handle: 3036712072831075501
+    FilePath: Office/OfficeKitchen49/source/office_kitchen.hpodgraph
+    Type: PodGraph
   - Handle: 3103829455824115434
     FilePath: ContentVault/Robots/SO100Pod/assets/Lower_Arm.stl
     Type: MeshSource
@@ -140,15 +215,30 @@ Assets:
   - Handle: 3362350904907030190
     FilePath: Office/OfficeShell6/source/office_shell.hpodgraph
     Type: PodGraph
+  - Handle: 3471900868553138496
+    FilePath: Meshes/hip_0.hsmesh
+    Type: StaticMesh
+  - Handle: 3479068676944535788
+    FilePath: Office/OfficeShell43/source/office_shell.hpodgraph
+    Type: PodGraph
+  - Handle: 3505441897568849820
+    FilePath: Office/OfficeDesks35/source/office_desks.hpodgraph
+    Type: PodGraph
   - Handle: 3535866187081167236
     FilePath: Scripts/Source/Generated/MainPolicyIds.cs
     Type: ScriptFile
   - Handle: 3540977605776157042
     FilePath: Office/OfficeDesks1/source/office_desks.hpodgraph
     Type: PodGraph
+  - Handle: 3547220543325110905
+    FilePath: Office/OfficeDesks42/source/office_desks.hpodgraph
+    Type: PodGraph
   - Handle: 3583092929723200481
     FilePath: ContentVault/Robots/UnitreeGo2Pod/Agents/UnitreeGo2Agent.cs
     Type: ScriptFile
+  - Handle: 3597357748856942737
+    FilePath: Office/OfficeDesks31/source/office_desks.hpodgraph
+    Type: PodGraph
   - Handle: 3667870137572895153
     FilePath: Office/OfficeShell1/source/office_shell.hpodgraph
     Type: PodGraph
@@ -158,15 +248,24 @@ Assets:
   - Handle: 3914806320013558393
     FilePath: Scripts/Source/Generated/LocomotionCommands.cs
     Type: ScriptFile
+  - Handle: 3917853446479758801
+    FilePath: Office/OfficeShell52/source/office_shell.hpodgraph
+    Type: PodGraph
   - Handle: 4126996966457312155
     FilePath: ContentVault/Robots/UnitreeGo2Pod/assets/base_4.obj
     Type: MeshSource
   - Handle: 4203287512373935578
     FilePath: Materials/CenterDot_Red_Material.hmaterial
     Type: Material
+  - Handle: 4205727061803809571
+    FilePath: Office/OfficeDesks19/source/office_desks.hpodgraph
+    Type: PodGraph
   - Handle: 4238462185458477247
     FilePath: ContentVault/Robots/UnitreeGo2Pod/go2.xml
     Type: MujocoScene
+  - Handle: 4278085415209046296
+    FilePath: Office/OfficeBlock42/source/office_block.hpodgraph
+    Type: PodGraph
   - Handle: 4284494088797782014
     FilePath: ContentVault/Robots/SO100Pod/assets/Moving_Jaw_Collision_1.stl
     Type: MeshSource
@@ -176,12 +275,33 @@ Assets:
   - Handle: 4339807503884747651
     FilePath: Robots/ClawBracket12/source/claw_bracket.hpodgraph
     Type: PodGraph
+  - Handle: 4353758707459370074
+    FilePath: Office/OfficeShell26/source/office_shell.hpodgraph
+    Type: PodGraph
+  - Handle: 4412302319387295488
+    FilePath: Office/OfficeBlock31/source/office_block.hpodgraph
+    Type: PodGraph
+  - Handle: 4440634152381150262
+    FilePath: Office/OfficeDesks40/source/office_desks.hpodgraph
+    Type: PodGraph
   - Handle: 4512471431298144687
     FilePath: Meshes/Default/Cube.hsmesh
     Type: StaticMesh
+  - Handle: 4516509483642486543
+    FilePath: Office/OfficeDesks26/source/office_desks.hpodgraph
+    Type: PodGraph
+  - Handle: 4522132419334481889
+    FilePath: Office/OfficeDesks27/source/office_desks.hpodgraph
+    Type: PodGraph
   - Handle: 4528579510824270796
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/Policies/policy_descriptor.walker.json
     Type: Motion
+  - Handle: 4567625680583280438
+    FilePath: Office/OfficeDesks41/source/office_desks.hpodgraph
+    Type: PodGraph
+  - Handle: 4576358909628104522
+    FilePath: Robots/Go2Mesh/hip_0.glb
+    Type: MeshSource
   - Handle: 4623547013937064680
     FilePath: ContentVault/Robots/UnitreeGo2Pod/assets/hip_1.obj
     Type: MeshSource
@@ -191,12 +311,24 @@ Assets:
   - Handle: 4723399741370758433
     FilePath: Scripts/Intermediates/Debug/Dronstein.sourcelink.json
     Type: Motion
+  - Handle: 4742392892996867349
+    FilePath: Office/OfficeBlock21/source/office_block.hpodgraph
+    Type: PodGraph
   - Handle: 4942199622351904206
     FilePath: Scripts/Client/obj/Dronstein.csproj.nuget.dgspec.json
     Type: Motion
+  - Handle: 4946884672413367357
+    FilePath: Meshes/calf_1.hsmesh
+    Type: StaticMesh
   - Handle: 5061336415018500623
     FilePath: Office/OfficeShell2/source/office_shell.hpodgraph
     Type: PodGraph
+  - Handle: 5109948554433631237
+    FilePath: Meshes/calf_mirror_1.hsmesh
+    Type: StaticMesh
+  - Handle: 5146199837094617668
+    FilePath: Robots/Go2Mesh/thigh_mirror_1.glb
+    Type: MeshSource
   - Handle: 5314089285819500078
     FilePath: ContentVault/Robots/SO100Pod/assets/Fixed_Jaw_Motor.stl
     Type: MeshSource
@@ -212,20 +344,56 @@ Assets:
   - Handle: 5379993343713449284
     FilePath: ContentVault/Robots/SO100Pod/assets/Fixed_Jaw_Collision_2.stl
     Type: MeshSource
+  - Handle: 5474008100136793907
+    FilePath: Meshes/calf_mirror_0.hsmesh
+    Type: StaticMesh
+  - Handle: 5515962876237523564
+    FilePath: Office/OfficeDesks29/source/office_desks.hpodgraph
+    Type: PodGraph
+  - Handle: 5576455693982005333
+    FilePath: Office/OfficeKitchen25/source/office_kitchen.hpodgraph
+    Type: PodGraph
   - Handle: 5613043231468391983
     FilePath: ContentVault/Robots/UnitreeGo2Pod/Policies/locomotion.honnx
     Type: OnnxPolicy
+  - Handle: 5637165758997818452
+    FilePath: Meshes/base_2.hsmesh
+    Type: StaticMesh
+  - Handle: 5767252430797609434
+    FilePath: Robots/Go2Mesh/calf_mirror_0.glb
+    Type: MeshSource
+  - Handle: 5834126746340089115
+    FilePath: Office/OfficeBlock27/source/office_block.hpodgraph
+    Type: PodGraph
   - Handle: 5906284485229172943
     FilePath: Materials/TennisBall_Felt.hmaterial
     Type: Material
   - Handle: 5912065693765363687
     FilePath: Office/OfficeBlock9/source/office_block.hpodgraph
     Type: PodGraph
+  - Handle: 5965120171728902053
+    FilePath: Office/OfficeBlock19/source/office_block.hpodgraph
+    Type: PodGraph
+  - Handle: 5967516211472509629
+    FilePath: Office/OfficeKitchen50/source/office_kitchen.hpodgraph
+    Type: PodGraph
   - Handle: 6004925888757710830
     FilePath: Scripts/Intermediates/Debug/.NETCoreApp,Version=v9.0.AssemblyAttributes.cs
     Type: ScriptFile
   - Handle: 6021129611545278756
     FilePath: Office/OfficeKitchen12/source/office_kitchen.hpodgraph
+    Type: PodGraph
+  - Handle: 6108713486607218038
+    FilePath: Office/OfficeBlock41/source/office_block.hpodgraph
+    Type: PodGraph
+  - Handle: 6166264062985844133
+    FilePath: Office/OfficeShell22/source/office_shell.hpodgraph
+    Type: PodGraph
+  - Handle: 6184473732053994974
+    FilePath: Office/OfficeDesks33/source/office_desks.hpodgraph
+    Type: PodGraph
+  - Handle: 6224252433666803783
+    FilePath: Office/OfficeKitchen27/source/office_kitchen.hpodgraph
     Type: PodGraph
   - Handle: 6424584304296353460
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/Policies/model_config.json
@@ -235,6 +403,12 @@ Assets:
     Type: MeshSource
   - Handle: 6440123275808066291
     FilePath: Office/OfficeBlock5/source/office_block.hpodgraph
+    Type: PodGraph
+  - Handle: 6491147096621070469
+    FilePath: Office/OfficeDesks21/source/office_desks.hpodgraph
+    Type: PodGraph
+  - Handle: 6556662927651238894
+    FilePath: Office/OfficeBlock50/source/office_block.hpodgraph
     Type: PodGraph
   - Handle: 6596340704801840007
     FilePath: Office/OfficeDesks15/source/office_desks.hpodgraph
@@ -248,6 +422,9 @@ Assets:
   - Handle: 6764097885585758396
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/right_shoulder_roll_link.STL
     Type: MeshSource
+  - Handle: 6798447605273982645
+    FilePath: Office/OfficeBlock36/source/office_block.hpodgraph
+    Type: PodGraph
   - Handle: 6857452233223371732
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/left_hip_pitch_link.STL
     Type: MeshSource
@@ -266,14 +443,44 @@ Assets:
   - Handle: 7144994396234222597
     FilePath: Meshes/Default/Source/Sphere.gltf
     Type: MeshSource
+  - Handle: 7304442467682211499
+    FilePath: Meshes/base_4.hsmesh
+    Type: StaticMesh
+  - Handle: 7305919407392052150
+    FilePath: Office/OfficeKitchen36/source/office_kitchen.hpodgraph
+    Type: PodGraph
   - Handle: 7340910210788460174
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/waist_yaw_link_rev_1_0.STL
     Type: MeshSource
+  - Handle: 7347447412973216848
+    FilePath: Office/OfficeKitchen18/source/office_kitchen.hpodgraph
+    Type: PodGraph
+  - Handle: 7357051861827981606
+    FilePath: Office/OfficeShell27/source/office_shell.hpodgraph
+    Type: PodGraph
   - Handle: 7380493306657166170
     FilePath: Office/OfficeShell12/source/office_shell.hpodgraph
     Type: PodGraph
+  - Handle: 7448898892678971935
+    FilePath: Office/OfficeDesks52/source/office_desks.hpodgraph
+    Type: PodGraph
+  - Handle: 7449466292321053197
+    FilePath: Office/OfficeShell37/source/office_shell.hpodgraph
+    Type: PodGraph
   - Handle: 7577218173056010266
     FilePath: Office/OfficeShell7/source/office_shell.hpodgraph
+    Type: PodGraph
+  - Handle: 7608507936282926740
+    FilePath: Office/OfficeDesks43/source/office_desks.hpodgraph
+    Type: PodGraph
+  - Handle: 7637964956393495194
+    FilePath: Office/OfficeKitchen33/source/office_kitchen.hpodgraph
+    Type: PodGraph
+  - Handle: 7727144238452344340
+    FilePath: Office/OfficeKitchen52/source/office_kitchen.hpodgraph
+    Type: PodGraph
+  - Handle: 7873264126197829090
+    FilePath: Office/OfficeDesks53/source/office_desks.hpodgraph
     Type: PodGraph
   - Handle: 7881267729997430730
     FilePath: ContentVault/Robots/SO100Pod/assets/Fixed_Jaw.stl
@@ -290,6 +497,21 @@ Assets:
   - Handle: 7935106140740169735
     FilePath: Materials/TrashCan_Aluminum.hmaterial
     Type: Material
+  - Handle: 7953053770151335872
+    FilePath: Office/OfficeDesks18/source/office_desks.hpodgraph
+    Type: PodGraph
+  - Handle: 7953096514899634872
+    FilePath: Office/OfficeBlock28/source/office_block.hpodgraph
+    Type: PodGraph
+  - Handle: 7954337734802048296
+    FilePath: Office/OfficeShell44/source/office_shell.hpodgraph
+    Type: PodGraph
+  - Handle: 8004581583913610734
+    FilePath: Office/OfficeDesks34/source/office_desks.hpodgraph
+    Type: PodGraph
+  - Handle: 8029380413720273322
+    FilePath: Office/OfficeKitchen28/source/office_kitchen.hpodgraph
+    Type: PodGraph
   - Handle: 8055655304240113313
     FilePath: Fonts/NotoSans-Light.ttf
     Type: Font
@@ -299,33 +521,66 @@ Assets:
   - Handle: 8097780751493488071
     FilePath: Office/OfficeKitchen4/source/office_kitchen.hpodgraph
     Type: PodGraph
+  - Handle: 8144744784510832612
+    FilePath: Office/OfficeKitchen44/source/office_kitchen.hpodgraph
+    Type: PodGraph
   - Handle: 8147788432871808966
     FilePath: Scripts/Binaries/Dronstein.deps.json
     Type: Motion
+  - Handle: 8180844301002266122
+    FilePath: Office/OfficeShell30/source/office_shell.hpodgraph
+    Type: PodGraph
   - Handle: 8256912212406075000
     FilePath: Robots/ClawBracket10/source/claw_bracket.hpodgraph
     Type: PodGraph
   - Handle: 8258144651727178850
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/left_elbow_link.STL
     Type: MeshSource
+  - Handle: 8307478840335358159
+    FilePath: Office/OfficeShell29/source/office_shell.hpodgraph
+    Type: PodGraph
+  - Handle: 8310317501901869992
+    FilePath: Office/OfficeDesks23/source/office_desks.hpodgraph
+    Type: PodGraph
   - Handle: 8330295793252425182
     FilePath: ContentVault/Robots/UnitreeGo2Pod/Policies/locomotion_Policy.cs
     Type: ScriptFile
   - Handle: 8364455007451361809
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/right_wrist_yaw_link.STL
     Type: MeshSource
+  - Handle: 8398702439151312356
+    FilePath: Office/OfficeDesks50/source/office_desks.hpodgraph
+    Type: PodGraph
   - Handle: 8491083034060217254
     FilePath: ContentVault/Robots/UnitreeGo2Pod/assets/base_3.obj
     Type: MeshSource
+  - Handle: 8492970879351995763
+    FilePath: Office/OfficeKitchen40/source/office_kitchen.hpodgraph
+    Type: PodGraph
+  - Handle: 8502505265442080855
+    FilePath: Office/OfficeKitchen26/source/office_kitchen.hpodgraph
+    Type: PodGraph
+  - Handle: 8570250233478634368
+    FilePath: Office/OfficeKitchen22/source/office_kitchen.hpodgraph
+    Type: PodGraph
   - Handle: 8580527296604893480
     FilePath: ContentVault/Robots/SO100Pod/assets/Lower_Arm_Motor.stl
     Type: MeshSource
   - Handle: 8709799235278677937
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/right_shoulder_yaw_link.STL
     Type: MeshSource
+  - Handle: 8712170635779960468
+    FilePath: Office/OfficeKitchen47/source/office_kitchen.hpodgraph
+    Type: PodGraph
   - Handle: 8735909782679955498
     FilePath: ContentVault/Robots/UnitreeGo2Pod/assets/base_2.obj
     Type: MeshSource
+  - Handle: 8741554936207911722
+    FilePath: Office/OfficeShell38/source/office_shell.hpodgraph
+    Type: PodGraph
+  - Handle: 8752906162117871111
+    FilePath: Office/OfficeKitchen46/source/office_kitchen.hpodgraph
+    Type: PodGraph
   - Handle: 8765081959629355269
     FilePath: Office/OfficeKitchen6/source/office_kitchen.hpodgraph
     Type: PodGraph
@@ -359,6 +614,9 @@ Assets:
   - Handle: 9235591463991605713
     FilePath: Office/OfficeKitchen10/source/office_kitchen.hpodgraph
     Type: PodGraph
+  - Handle: 9238303264640921948
+    FilePath: Office/OfficeDesks32/source/office_desks.hpodgraph
+    Type: PodGraph
   - Handle: 9298698431548517186
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/right_hip_yaw_link.STL
     Type: MeshSource
@@ -368,8 +626,17 @@ Assets:
   - Handle: 9346834634786424791
     FilePath: Meshes/Default/Sphere.hsmesh
     Type: StaticMesh
+  - Handle: 9454541685951085226
+    FilePath: Office/OfficeBlock37/source/office_block.hpodgraph
+    Type: PodGraph
   - Handle: 9494191913052500138
     FilePath: Office/OfficeBlock10/source/office_block.hpodgraph
+    Type: PodGraph
+  - Handle: 9613462114705428760
+    FilePath: Office/OfficeBlock30/source/office_block.hpodgraph
+    Type: PodGraph
+  - Handle: 9636948286644183080
+    FilePath: Office/OfficeKitchen39/source/office_kitchen.hpodgraph
     Type: PodGraph
   - Handle: 9673457966519413290
     FilePath: ContentVault/Robots/UnitreeGo2Pod/Policies/policy_descriptor.locomotion.json
@@ -377,6 +644,9 @@ Assets:
   - Handle: 9679587971079740980
     FilePath: ContentVault/Robots/UnitreeGo2Pod/assets/hip_0.obj
     Type: MeshSource
+  - Handle: 9682491116931932899
+    FilePath: Office/OfficeShell41/source/office_shell.hpodgraph
+    Type: PodGraph
   - Handle: 9748285304680276796
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/right_hand_index_1_link.STL
     Type: MeshSource
@@ -389,15 +659,39 @@ Assets:
   - Handle: 10082179969641669727
     FilePath: Office/OfficeShell15/source/office_shell.hpodgraph
     Type: PodGraph
+  - Handle: 10154257294955772187
+    FilePath: Office/OfficeBlock46/source/office_block.hpodgraph
+    Type: PodGraph
   - Handle: 10182881317950416563
     FilePath: Office/OfficeDesks6/source/office_desks.hpodgraph
+    Type: PodGraph
+  - Handle: 10213375344150368167
+    FilePath: Office/OfficeKitchen48/source/office_kitchen.hpodgraph
+    Type: PodGraph
+  - Handle: 10215936045203854422
+    FilePath: Office/OfficeDesks45/source/office_desks.hpodgraph
     Type: PodGraph
   - Handle: 10256617576360597686
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/pelvis.STL
     Type: MeshSource
+  - Handle: 10379534737656418055
+    FilePath: Office/OfficeBlock39/source/office_block.hpodgraph
+    Type: PodGraph
+  - Handle: 10416682256332391287
+    FilePath: Office/OfficeBlock43/source/office_block.hpodgraph
+    Type: PodGraph
+  - Handle: 10436438662491476649
+    FilePath: Office/OfficeDesks47/source/office_desks.hpodgraph
+    Type: PodGraph
+  - Handle: 10513238501878419288
+    FilePath: Office/OfficeBlock38/source/office_block.hpodgraph
+    Type: PodGraph
   - Handle: 10513990494132964776
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/right_wrist_roll_link.STL
     Type: MeshSource
+  - Handle: 10538706146814309645
+    FilePath: Office/OfficeKitchen23/source/office_kitchen.hpodgraph
+    Type: PodGraph
   - Handle: 10606637422414580256
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/right_ankle_roll_link.STL
     Type: MeshSource
@@ -407,8 +701,20 @@ Assets:
   - Handle: 10659316373089500452
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/left_ankle_pitch_link.STL
     Type: MeshSource
+  - Handle: 10698453658886552373
+    FilePath: Office/OfficeShell35/source/office_shell.hpodgraph
+    Type: PodGraph
+  - Handle: 10772064388218340011
+    FilePath: Office/OfficeKitchen30/source/office_kitchen.hpodgraph
+    Type: PodGraph
+  - Handle: 10800303219711930751
+    FilePath: Robots/Go2Mesh/calf_mirror_1.glb
+    Type: MeshSource
   - Handle: 10813052971343210968
     FilePath: Office/OfficeDesks10/source/office_desks.hpodgraph
+    Type: PodGraph
+  - Handle: 10815986655699624251
+    FilePath: Office/OfficeShell53/source/office_shell.hpodgraph
     Type: PodGraph
   - Handle: 10838570227640032807
     FilePath: Office/OfficeDesks16/source/office_desks.hpodgraph
@@ -416,15 +722,36 @@ Assets:
   - Handle: 10852971797541566053
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/right_shoulder_pitch_link.STL
     Type: MeshSource
+  - Handle: 10919769742584996232
+    FilePath: Office/OfficeBlock25/source/office_block.hpodgraph
+    Type: PodGraph
+  - Handle: 10940932884368702569
+    FilePath: Meshes/thigh_0.hsmesh
+    Type: StaticMesh
   - Handle: 10945738421186187934
     FilePath: Office/OfficeBlock14/source/office_block.hpodgraph
     Type: PodGraph
   - Handle: 11092215447312638621
     FilePath: ContentVault/Robots/SO100Pod/so_arm100.png
     Type: Texture
+  - Handle: 11095639115714985893
+    FilePath: Office/OfficeKitchen31/source/office_kitchen.hpodgraph
+    Type: PodGraph
+  - Handle: 11157697033035445823
+    FilePath: Robots/Go2Mesh/calf_1.glb
+    Type: MeshSource
+  - Handle: 11265756292510829479
+    FilePath: Robots/Go2Mesh/foot.glb
+    Type: MeshSource
   - Handle: 11277745165592382671
     FilePath: Scripts/Source/Generated/WalkerCommands.cs
     Type: ScriptFile
+  - Handle: 11317884956039218060
+    FilePath: Office/OfficeDesks38/source/office_desks.hpodgraph
+    Type: PodGraph
+  - Handle: 11376572663913706767
+    FilePath: Office/OfficeKitchen32/source/office_kitchen.hpodgraph
+    Type: PodGraph
   - Handle: 11379596525762784658
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/Policies/walker.honnx
     Type: OnnxPolicy
@@ -434,6 +761,9 @@ Assets:
   - Handle: 11449053202791896141
     FilePath: Office/OfficeBlock3/source/office_block.hpodgraph
     Type: PodGraph
+  - Handle: 11464684250872539145
+    FilePath: Office/OfficeBlock48/source/office_block.hpodgraph
+    Type: PodGraph
   - Handle: 11471613804710718996
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/right_elbow_link.STL
     Type: MeshSource
@@ -442,6 +772,9 @@ Assets:
     Type: PodGraph
   - Handle: 11592196628079589841
     FilePath: ContentVault/Robots/UnitreeGo2Pod/MG_UnitreeGo2.hpodgraph
+    Type: PodGraph
+  - Handle: 11757408474853314493
+    FilePath: Office/OfficeKitchen41/source/office_kitchen.hpodgraph
     Type: PodGraph
   - Handle: 11811293436037047550
     FilePath: Textures/GroundChecker.png
@@ -455,6 +788,21 @@ Assets:
   - Handle: 11915941130364992866
     FilePath: ContentVault/Robots/SO100Pod/assets/Moving_Jaw.stl
     Type: MeshSource
+  - Handle: 11939465084566901266
+    FilePath: Office/OfficeBlock17/source/office_block.hpodgraph
+    Type: PodGraph
+  - Handle: 12028562425762343196
+    FilePath: Office/OfficeKitchen29/source/office_kitchen.hpodgraph
+    Type: PodGraph
+  - Handle: 12036262135127461873
+    FilePath: Office/OfficeBlock22/source/office_block.hpodgraph
+    Type: PodGraph
+  - Handle: 12044858360581472130
+    FilePath: Office/OfficeBlock49/source/office_block.hpodgraph
+    Type: PodGraph
+  - Handle: 12058068564222632791
+    FilePath: Meshes/base_3.hsmesh
+    Type: StaticMesh
   - Handle: 12064031891056581335
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/pelvis_contour_link.STL
     Type: MeshSource
@@ -463,6 +811,9 @@ Assets:
     Type: ScriptFile
   - Handle: 12153599568314165752
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/left_hand_thumb_0_link.STL
+    Type: MeshSource
+  - Handle: 12224522070095086242
+    FilePath: Robots/Go2Mesh/calf_0.glb
     Type: MeshSource
   - Handle: 12228846103395814417
     FilePath: Office/OfficeBlock2/source/office_block.hpodgraph
@@ -473,8 +824,32 @@ Assets:
   - Handle: 12262660805379528079
     FilePath: Office/OfficeDesks2/source/office_desks.hpodgraph
     Type: PodGraph
+  - Handle: 12286983584380539386
+    FilePath: Office/OfficeBlock24/source/office_block.hpodgraph
+    Type: PodGraph
   - Handle: 12341417819047262223
     FilePath: Robots/ClawBracket11/source/claw_bracket.hpodgraph
+    Type: PodGraph
+  - Handle: 12416991449188803293
+    FilePath: Office/OfficeShell50/source/office_shell.hpodgraph
+    Type: PodGraph
+  - Handle: 12525688740098879869
+    FilePath: Office/OfficeShell36/source/office_shell.hpodgraph
+    Type: PodGraph
+  - Handle: 12546758496413066387
+    FilePath: Meshes/hip_1.hsmesh
+    Type: StaticMesh
+  - Handle: 12596191075735618388
+    FilePath: Robots/Go2Mesh/base_1.glb
+    Type: MeshSource
+  - Handle: 12654161794158488538
+    FilePath: Office/OfficeBlock32/source/office_block.hpodgraph
+    Type: PodGraph
+  - Handle: 12709724570024311209
+    FilePath: Office/OfficeKitchen45/source/office_kitchen.hpodgraph
+    Type: PodGraph
+  - Handle: 12775093736601170412
+    FilePath: Office/OfficeDesks24/source/office_desks.hpodgraph
     Type: PodGraph
   - Handle: 12779242973963474337
     FilePath: Office/OfficeShell11/source/office_shell.hpodgraph
@@ -485,15 +860,30 @@ Assets:
   - Handle: 12808044336197462794
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/right_ankle_pitch_link.STL
     Type: MeshSource
+  - Handle: 12812417454881826693
+    FilePath: Robots/Go2Mesh/thigh_mirror_0.glb
+    Type: MeshSource
   - Handle: 12817455618362877805
     FilePath: ContentVault/Robots/UnitreeGo2Pod/assets/base_0.obj
     Type: MeshSource
+  - Handle: 12846437607050824116
+    FilePath: Office/OfficeDesks44/source/office_desks.hpodgraph
+    Type: PodGraph
   - Handle: 12869216658696565463
     FilePath: Textures/TennisBall.png
     Type: Texture
   - Handle: 12882093462498960904
     FilePath: Scenes/Main.hscene
     Type: Scene
+  - Handle: 12925081748185488627
+    FilePath: Materials/Go2Static_gray.hmaterial
+    Type: Material
+  - Handle: 12934477047532691608
+    FilePath: Meshes/calf_0.hsmesh
+    Type: StaticMesh
+  - Handle: 13052812584489786646
+    FilePath: Office/OfficeShell25/source/office_shell.hpodgraph
+    Type: PodGraph
   - Handle: 13096879880278512984
     FilePath: Office/OfficeBlock16/source/office_block.hpodgraph
     Type: PodGraph
@@ -503,27 +893,63 @@ Assets:
   - Handle: 13257414713749435924
     FilePath: Office/OfficeDesks8/source/office_desks.hpodgraph
     Type: PodGraph
+  - Handle: 13267960623397517771
+    FilePath: Office/OfficeBlock40/source/office_block.hpodgraph
+    Type: PodGraph
   - Handle: 13290137406038238993
     FilePath: Meshes/Default/Plane.hsmesh
     Type: StaticMesh
+  - Handle: 13311328534519152049
+    FilePath: Office/OfficeBlock33/source/office_block.hpodgraph
+    Type: PodGraph
+  - Handle: 13313370161230457847
+    FilePath: Office/OfficeKitchen35/source/office_kitchen.hpodgraph
+    Type: PodGraph
   - Handle: 13341008224982955814
     FilePath: Scripts/Client/obj/project.assets.json
     Type: Motion
+  - Handle: 13353538001632379401
+    FilePath: Office/OfficeKitchen51/source/office_kitchen.hpodgraph
+    Type: PodGraph
+  - Handle: 13361769549498891645
+    FilePath: Office/OfficeDesks36/source/office_desks.hpodgraph
+    Type: PodGraph
+  - Handle: 13403680828988280395
+    FilePath: Office/OfficeKitchen20/source/office_kitchen.hpodgraph
+    Type: PodGraph
   - Handle: 13460341766205971760
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/right_hand_thumb_1_link.STL
     Type: MeshSource
+  - Handle: 13491004097851571722
+    FilePath: Meshes/thigh_mirror_0.hsmesh
+    Type: StaticMesh
   - Handle: 13514529717210286293
     FilePath: ContentVault/Robots/SO100Pod/assets/Base_Motor.stl
     Type: MeshSource
+  - Handle: 13536154411947694891
+    FilePath: Office/OfficeShell28/source/office_shell.hpodgraph
+    Type: PodGraph
   - Handle: 13563027401113785913
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/left_shoulder_yaw_link.STL
     Type: MeshSource
   - Handle: 13616395226157983734
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/torso_link_rev_1_0.STL
     Type: MeshSource
+  - Handle: 13677537573028922058
+    FilePath: Office/OfficeDesks48/source/office_desks.hpodgraph
+    Type: PodGraph
+  - Handle: 13698962243335893861
+    FilePath: Office/OfficeShell21/source/office_shell.hpodgraph
+    Type: PodGraph
+  - Handle: 13791394107978360278
+    FilePath: Meshes/foot.hsmesh
+    Type: StaticMesh
   - Handle: 13861805104504844746
     FilePath: Office/OfficeKitchen3/source/office_kitchen.hpodgraph
     Type: PodGraph
+  - Handle: 13882400501231590403
+    FilePath: Robots/Go2Mesh/base_3.glb
+    Type: MeshSource
   - Handle: 13925004283765552579
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/g1_three_fingers.xml
     Type: MujocoScene
@@ -533,15 +959,36 @@ Assets:
   - Handle: 14021616608533410266
     FilePath: Office/OfficeShell8/source/office_shell.hpodgraph
     Type: PodGraph
+  - Handle: 14126705325817776483
+    FilePath: Office/OfficeShell34/source/office_shell.hpodgraph
+    Type: PodGraph
+  - Handle: 14144343562859239598
+    FilePath: Office/OfficeShell17/source/office_shell.hpodgraph
+    Type: PodGraph
   - Handle: 14151601812946333791
     FilePath: Scripts/Client/Source/X500Flight.cs
     Type: ScriptFile
+  - Handle: 14184478250364039187
+    FilePath: Robots/Go2Mesh/thigh_1.glb
+    Type: MeshSource
+  - Handle: 14207158439501701334
+    FilePath: Office/OfficeBlock44/source/office_block.hpodgraph
+    Type: PodGraph
+  - Handle: 14277003447878147035
+    FilePath: Robots/Go2Mesh/thigh_0.glb
+    Type: MeshSource
   - Handle: 14287514996704516707
     FilePath: ContentVault/Robots/SO100Pod/assets/Base.stl
     Type: MeshSource
   - Handle: 14287695933949408008
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/left_ankle_roll_link.STL
     Type: MeshSource
+  - Handle: 14288324324475845734
+    FilePath: Office/OfficeKitchen37/source/office_kitchen.hpodgraph
+    Type: PodGraph
+  - Handle: 14316794318744568133
+    FilePath: Office/OfficeShell47/source/office_shell.hpodgraph
+    Type: PodGraph
   - Handle: 14366925346743752285
     FilePath: Office/OfficeDesks12/source/office_desks.hpodgraph
     Type: PodGraph
@@ -551,11 +998,17 @@ Assets:
   - Handle: 14421229642418837506
     FilePath: Office/OfficeShell5/source/office_shell.hpodgraph
     Type: PodGraph
+  - Handle: 14487621280583784572
+    FilePath: Office/OfficeDesks25/source/office_desks.hpodgraph
+    Type: PodGraph
   - Handle: 14570699731383293133
     FilePath: Robots/ClawBracket8/source/claw_bracket.hpodgraph
     Type: PodGraph
   - Handle: 14610928418480335016
     FilePath: Office/OfficeBlock6/source/office_block.hpodgraph
+    Type: PodGraph
+  - Handle: 14645150340920643087
+    FilePath: Office/OfficeBlock26/source/office_block.hpodgraph
     Type: PodGraph
   - Handle: 14697393763005477120
     FilePath: Office/OfficeDesks14/source/office_desks.hpodgraph
@@ -566,8 +1019,14 @@ Assets:
   - Handle: 14775165077481864236
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/right_hand_palm_link.STL
     Type: MeshSource
+  - Handle: 14788740229170096286
+    FilePath: Materials/Go2Static_black.hmaterial
+    Type: Material
   - Handle: 14798546884343852680
     FilePath: Office/OfficeKitchen1/source/office_kitchen.hpodgraph
+    Type: PodGraph
+  - Handle: 14819706147263306934
+    FilePath: Office/OfficeDesks39/source/office_desks.hpodgraph
     Type: PodGraph
   - Handle: 14861723440063490683
     FilePath: Meshes/Default/Source/Cone.gltf
@@ -575,9 +1034,27 @@ Assets:
   - Handle: 14886177787868467765
     FilePath: Office/OfficeBlock8/source/office_block.hpodgraph
     Type: PodGraph
+  - Handle: 14895403682081656746
+    FilePath: Office/OfficeKitchen17/source/office_kitchen.hpodgraph
+    Type: PodGraph
   - Handle: 14896512403181023555
     FilePath: Office/OfficeKitchen11/source/office_kitchen.hpodgraph
     Type: PodGraph
+  - Handle: 14984816822220341127
+    FilePath: Office/OfficeBlock34/source/office_block.hpodgraph
+    Type: PodGraph
+  - Handle: 15004226289155892990
+    FilePath: Meshes/thigh_1.hsmesh
+    Type: StaticMesh
+  - Handle: 15091839125748212217
+    FilePath: Office/OfficeShell31/source/office_shell.hpodgraph
+    Type: PodGraph
+  - Handle: 15219826830589126636
+    FilePath: Office/OfficeShell42/source/office_shell.hpodgraph
+    Type: PodGraph
+  - Handle: 15222367373148893193
+    FilePath: Materials/Go2Static_white.hmaterial
+    Type: Material
   - Handle: 15302296947795542489
     FilePath: ContentVault/Robots/SO100Pod/assets/Rotation_Pitch_Motor.stl
     Type: MeshSource
@@ -602,12 +1079,30 @@ Assets:
   - Handle: 15570593522519615541
     FilePath: ContentVault/Robots/UnitreeGo2Pod/assets/thigh_mirror_0.obj
     Type: MeshSource
+  - Handle: 15580947627187372506
+    FilePath: Office/OfficeKitchen42/source/office_kitchen.hpodgraph
+    Type: PodGraph
+  - Handle: 15587025968077384979
+    FilePath: Office/OfficeBlock35/source/office_block.hpodgraph
+    Type: PodGraph
+  - Handle: 15672103792578031475
+    FilePath: Office/OfficeDesks30/source/office_desks.hpodgraph
+    Type: PodGraph
   - Handle: 15713254205662536047
     FilePath: Office/OfficeBlock1/source/office_block.hpodgraph
     Type: PodGraph
   - Handle: 15725964065274453976
     FilePath: Meshes/Default/Source/Torus.gltf
     Type: MeshSource
+  - Handle: 15727044479434370498
+    FilePath: Office/OfficeShell46/source/office_shell.hpodgraph
+    Type: PodGraph
+  - Handle: 15740648272044368144
+    FilePath: Office/OfficeShell32/source/office_shell.hpodgraph
+    Type: PodGraph
+  - Handle: 15772784818194134405
+    FilePath: Office/OfficeShell20/source/office_shell.hpodgraph
+    Type: PodGraph
   - Handle: 15813263012333358553
     FilePath: Office/OfficeKitchen8/source/office_kitchen.hpodgraph
     Type: PodGraph
@@ -623,11 +1118,23 @@ Assets:
   - Handle: 15916378497832049985
     FilePath: Fonts/Goldman-Regular.ttf
     Type: Font
+  - Handle: 15974443098570070251
+    FilePath: Office/OfficeKitchen53/source/office_kitchen.hpodgraph
+    Type: PodGraph
+  - Handle: 15976263547560327118
+    FilePath: Office/OfficeShell48/source/office_shell.hpodgraph
+    Type: PodGraph
   - Handle: 16102727838158965090
     FilePath: Meshes/Default/Cylinder.hsmesh
     Type: StaticMesh
+  - Handle: 16137392064347103742
+    FilePath: Office/OfficeKitchen38/source/office_kitchen.hpodgraph
+    Type: PodGraph
   - Handle: 16187906919408669723
     FilePath: Office/OfficeKitchen2/source/office_kitchen.hpodgraph
+    Type: PodGraph
+  - Handle: 16212428109484216779
+    FilePath: Office/OfficeShell24/source/office_shell.hpodgraph
     Type: PodGraph
   - Handle: 16376618861885704347
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/left_hand_middle_1_link.STL
@@ -638,24 +1145,54 @@ Assets:
   - Handle: 16488220587148715267
     FilePath: Office/OfficeBlock11/source/office_block.hpodgraph
     Type: PodGraph
+  - Handle: 16512002660920517836
+    FilePath: Office/OfficeDesks17/source/office_desks.hpodgraph
+    Type: PodGraph
   - Handle: 16759921949755900625
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/left_hand_palm_link.STL
     Type: MeshSource
   - Handle: 16763015685236763184
     FilePath: Meshes/Default/Source/Cube.gltf
     Type: MeshSource
+  - Handle: 16823322811176011137
+    FilePath: Office/OfficeDesks20/source/office_desks.hpodgraph
+    Type: PodGraph
   - Handle: 16919079665295502351
     FilePath: Office/OfficeShell3/source/office_shell.hpodgraph
+    Type: PodGraph
+  - Handle: 16983800063984282936
+    FilePath: Office/OfficeBlock53/source/office_block.hpodgraph
     Type: PodGraph
   - Handle: 16991575206243672906
     FilePath: Materials/Default/GroundMaterial.hmaterial
     Type: Material
+  - Handle: 17018780468593945141
+    FilePath: Office/OfficeBlock45/source/office_block.hpodgraph
+    Type: PodGraph
+  - Handle: 17039769238044893507
+    FilePath: Office/OfficeBlock23/source/office_block.hpodgraph
+    Type: PodGraph
   - Handle: 17061058600486238403
     FilePath: Meshes/Default/Source/Cylinder.gltf
     Type: MeshSource
   - Handle: 17064975750886761024
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/left_hand_middle_0_link.STL
     Type: MeshSource
+  - Handle: 17131345932016289744
+    FilePath: Robots/Go2Mesh/base_0.glb
+    Type: MeshSource
+  - Handle: 17151045026546820162
+    FilePath: Robots/Go2Mesh/base_2.glb
+    Type: MeshSource
+  - Handle: 17229893572963023435
+    FilePath: Office/OfficeShell18/source/office_shell.hpodgraph
+    Type: PodGraph
+  - Handle: 17273080414616537712
+    FilePath: Robots/Go2Mesh/hip_1.glb
+    Type: MeshSource
+  - Handle: 17406367289790317398
+    FilePath: Materials/Go2Static_metal.hmaterial
+    Type: Material
   - Handle: 17418925161357523880
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/right_hip_roll_link.STL
     Type: MeshSource
@@ -677,21 +1214,36 @@ Assets:
   - Handle: 17848236281465921337
     FilePath: Materials/GroundTiles.hmaterial
     Type: Material
+  - Handle: 17937625670430513951
+    FilePath: Meshes/thigh_mirror_1.hsmesh
+    Type: StaticMesh
   - Handle: 17979459138182879441
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/left_hand_index_1_link.STL
     Type: MeshSource
   - Handle: 18008248655920704385
     FilePath: ContentVault/Robots/SO100Pod/assets/Upper_Arm.stl
     Type: MeshSource
+  - Handle: 18260935551542204956
+    FilePath: Office/OfficeShell49/source/office_shell.hpodgraph
+    Type: PodGraph
   - Handle: 18260988216786320535
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/right_hand_middle_1_link.STL
     Type: MeshSource
   - Handle: 18295030597466441007
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/left_wrist_roll_link.STL
     Type: MeshSource
+  - Handle: 18365624012150888083
+    FilePath: Office/OfficeBlock52/source/office_block.hpodgraph
+    Type: PodGraph
+  - Handle: 18389859332009448853
+    FilePath: Office/OfficeKitchen24/source/office_kitchen.hpodgraph
+    Type: PodGraph
   - Handle: 18411567397128387353
     FilePath: Robots/ClawFingerL13/source/claw_finger_l.hpodgraph
     Type: PodGraph
   - Handle: 18423146670360550847
     FilePath: Office/OfficeKitchen15/source/office_kitchen.hpodgraph
+    Type: PodGraph
+  - Handle: 18439810051016883472
+    FilePath: Office/OfficeShell23/source/office_shell.hpodgraph
     Type: PodGraph

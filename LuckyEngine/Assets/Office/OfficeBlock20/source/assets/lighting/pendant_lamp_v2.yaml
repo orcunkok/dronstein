@@ -1,0 +1,115 @@
+# Sprint 171 W95 / Section 4.5c. Pendant lamp — ceiling cap + cord cylinder
+# + dome shade (LoftBetweenProfiles inverted: wide top → narrow bottom)
+# + emissive bulb. Closes Section 4.5 (dining set).
+parameters:
+  cap_radius:    { kind: Float, default: 0.04 }
+  cap_height:    { kind: Float, default: 0.025 }
+  cord_radius:   { kind: Float, default: 0.005 }
+  cord_length:   { kind: Float, default: 0.50 }
+  shade_r_top:   { kind: Float, default: 0.06 }
+  shade_r_bot:   { kind: Float, default: 0.20 }
+  shade_height:  { kind: Float, default: 0.22 }
+  bulb_radius:   { kind: Float, default: 0.025 }
+
+  metal:    { kind: Material, expr: "0.45, 0.45, 0.50, 1.0, 1.0, 0.30" }
+  shade:    { kind: Material, expr: "0.92, 0.88, 0.78, 1.0, 0.0, 0.55" }
+  bulb:     { kind: Material, expr: "1.00, 0.95, 0.80, 1.0, 0.0, 0.30" }
+
+  ceiling_y:      { kind: Float, default: 2.40 }
+  cap_y:          { kind: Float, expr: "ceiling_y - cap_height / 2" }
+  cord_y:         { kind: Float, expr: "ceiling_y - cap_height - cord_length / 2" }
+  shade_top_y:    { kind: Float, expr: "ceiling_y - cap_height - cord_length" }
+  shade_bot_y:    { kind: Float, expr: "shade_top_y - shade_height" }
+  bulb_y:         { kind: Float, expr: "shade_top_y - shade_height + 0.05" }
+
+  cap_pos:   { kind: Float3, expr: "0, cap_y, 0" }
+  cord_pos:  { kind: Float3, expr: "0, cord_y, 0" }
+  bulb_pos:  { kind: Float3, expr: "0, bulb_y, 0" }
+
+nodes:
+  # Ceiling cap.
+  - id: 1
+    type: MeshCylinder
+    inputs: { Sides: { kind: Int32, value: 16 }, Radius: { param: cap_radius }, Height: { param: cap_height } }
+  - id: 2
+    type: Transform
+    inputs: { Translation: { param: cap_pos } }
+  - id: 3
+    type: SetMaterial
+    inputs: { Material: { param: metal } }
+
+  # Cord.
+  - id: 10
+    type: MeshCylinder
+    inputs: { Sides: { kind: Int32, value: 8 }, Radius: { param: cord_radius }, Height: { param: cord_length } }
+  - id: 11
+    type: Transform
+    inputs: { Translation: { param: cord_pos } }
+  - id: 12
+    type: SetMaterial
+    inputs: { Material: { param: metal } }
+
+  # Dome shade — top circle (small) + bottom circle (wide), Loft.
+  - id: 20
+    type: CurveCircle
+    inputs: { Center: { kind: Float3, value: [0, 0, 0] }, Radius: { param: shade_r_top }, Resolution: { kind: Int32, value: 24 } }
+  - id: 21
+    type: CurveCircle
+    inputs: { Center: { kind: Float3, value: [0, 0, 0] }, Radius: { param: shade_r_bot }, Resolution: { kind: Int32, value: 24 } }
+  - id: 22
+    type: LoftBetweenProfiles
+    inputs:
+      Sections:      { kind: Int32, value: 6 }
+      YBottom:       { param: shade_bot_y }
+      YTop:          { param: shade_top_y }
+      ProfileClosed: { kind: Bool, value: true }
+  - id: 23
+    type: SetMaterial
+    inputs: { Material: { param: shade } }
+
+  # Emissive bulb.
+  - id: 30
+    type: MeshIcoSphere
+    inputs: { Radius: { param: bulb_radius }, Subdivisions: { kind: Int32, value: 1 } }
+  - id: 31
+    type: Transform
+    inputs: { Translation: { param: bulb_pos } }
+  - id: 32
+    type: SetMaterial
+    inputs: { Material: { param: bulb } }
+
+  - id: 40
+    type: JoinGeometry
+  - id: 41
+    type: JoinGeometry
+  - id: 42
+    type: JoinGeometry
+
+  - id: 99
+    type: Viewer
+
+links:
+  - { from: { node: 1,  pin: Geometry }, to: { node: 2, pin: Geometry } }
+  - { from: { node: 2,  pin: Geometry }, to: { node: 3, pin: Geometry } }
+  - { from: { node: 10, pin: Geometry }, to: { node: 11, pin: Geometry } }
+  - { from: { node: 11, pin: Geometry }, to: { node: 12, pin: Geometry } }
+
+  # Loft profile B is the WIDE bottom; profile A is the narrow top.
+  # Loft interpolates linearly so we feed top first (so y=YBottom → ProfileA).
+  - { from: { node: 21, pin: Curves   }, to: { node: 22, pin: ProfileA } }
+  - { from: { node: 20, pin: Curves   }, to: { node: 22, pin: ProfileB } }
+  - { from: { node: 22, pin: Geometry }, to: { node: 23, pin: Geometry } }
+
+  - { from: { node: 30, pin: Geometry }, to: { node: 31, pin: Geometry } }
+  - { from: { node: 31, pin: Geometry }, to: { node: 32, pin: Geometry } }
+
+  - { from: { node: 3,  pin: Geometry }, to: { node: 40, pin: A } }
+  - { from: { node: 12, pin: Geometry }, to: { node: 40, pin: B } }
+  - { from: { node: 40, pin: Geometry }, to: { node: 41, pin: A } }
+  - { from: { node: 23, pin: Geometry }, to: { node: 41, pin: B } }
+  - { from: { node: 41, pin: Geometry }, to: { node: 42, pin: A } }
+  - { from: { node: 32, pin: Geometry }, to: { node: 42, pin: B } }
+  - { from: { node: 42, pin: Geometry }, to: { node: 99, pin: Geometry } }
+
+outputs:
+  Geometry: { node: 42, pin: Geometry }
