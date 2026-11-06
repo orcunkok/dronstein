@@ -89,6 +89,9 @@ MATS = {
     "tape_yellow": mat(0.85, 0.65, 0.02, 0.0, 0.6),
     "concrete_white": mat(0.85, 0.85, 0.82, 0.0, 0.9),
     "paint_white": mat(0.85, 0.85, 0.83, 0.0, 0.7),
+    "facade": mat(0.80, 0.78, 0.70, 0.0, 0.9),        # the building's cream exterior paint (lucky_office/outside)
+    "facade_line": mat(0.66, 0.64, 0.57, 0.0, 0.9),   # painted-over sash bars, groove backs: a shade darker
+    "painted_glass": mat(0.82, 0.79, 0.70, 0.0, 0.25),  # panes painted over in the building's cream, still glossy
     "timber_white": mat(0.74, 0.70, 0.66, 0.0, 0.85),
     "steel_white": mat(0.78, 0.78, 0.76, 0.2, 0.5),
     "curtain_white": mat(0.70, 0.70, 0.68, 0.0, 0.9),
@@ -471,6 +474,7 @@ def roof_ibeam(g, f, x0, x1, z0, z1, below=0.0, d=0.2, t=0.01):
 
 
 def build_shell(g):
+    build_exterior(g)
     length, width = X1 - X0, Z1 - Z0
     xm, zm = (X0 + X1) / 2, (Z0 + Z1) / 2
     # Floor slab, test mat and tape.
@@ -484,9 +488,11 @@ def build_shell(g):
     # slab.
     for x, side in ((X0 - WALL_T / 2, -1), (X1 + WALL_T / 2, 1)):
         holes = [window_rect(z0, c, r) for w, z0, c, r in end_windows() if w == side]
-        if side > 0:                               # the roll-up gate's opening in the south wall
+        if side > 0:                               # the roll-up gate's and the exit door's openings in the south wall
             holes.append((P["gate"]["z0"], P["gate"]["z1"], 0.0, P["gate"]["height"]))
-        holed_wall(g, x - WALL_T / 2, x + WALL_T / 2, Z0 - WALL_T, Z1 + WALL_T, H, holes)
+            holes.append((P["exit_door"]["z0"], P["exit_door"]["z1"], 0.0, P["exit_door"]["height"]))
+        # Open right through at the painted-glass fields too, like the real windows (user).
+        holed_wall(g, x - WALL_T / 2, x + WALL_T / 2, Z0 - WALL_T, Z1 + WALL_T, H, holes + painted_fields(side))
         steps = 12
         hs = (DROP_END - H) / steps
         for i in range(steps):
@@ -719,6 +725,15 @@ def build_shell(g):
         g.span("panel_grey", sx - 0.06, sx, 0.0, dh + 0.05, z0, z1)
     g.span("panel_grey", sx - 0.06, sx, dh, dh + 0.05, dz0 - 0.05, dz1 + 0.05)
     g.span("nickel", sx - 0.1, sx - 0.04, 1.0, 1.04, dz1 - 0.2, dz1 - 0.05)
+    # Through the wall the leaf fills its opening up to 6 cm short of the outer face, a grey frame round it outside
+    # (IMG_3114).
+    xo = X1 + WALL_T
+    g.span("panel_grey", sx, xo - 0.06, 0.0, dh, dz0, dz1)
+    # Its inner edges 3 mm inside the opening, not in the plane of the opening's sides and top (they z-fought; user).
+    for z0, z1 in ((dz0 - 0.05, dz0 + 0.003), (dz1 - 0.003, dz1 + 0.05)):
+        g.span("panel_grey", xo - 0.06, xo + 0.03, 0.0, dh + 0.05, z0, z1)
+    g.span("panel_grey", xo - 0.06, xo + 0.03, dh - 0.003, dh + 0.05, dz0 - 0.05, dz1 + 0.05)
+    g.span("nickel", xo - 0.06, xo, 1.0, 1.04, dz1 - 0.2, dz1 - 0.05)       # the same lever outside (user)
     # EXIT sign centred over the door, under the red conduit; fire extinguisher low west of the door, a red arrow sign
     # over it (IMG_3089).
     g.span("exit_green", sx - 0.08, sx, 2.3, 2.48, (dz0 + dz1) / 2 - 0.18, (dz0 + dz1) / 2 + 0.18)
@@ -803,6 +818,143 @@ def build_shell(g):
         g.span("led_white", x - 0.3, x + 0.3, 6.35, 6.42, z - 0.12, z + 0.12)
         for xe in (x - 0.27, x + 0.27):        # two grey ropes from its narrow ends (user)
             g.tube("conduit", (xe, 6.42, z), (xe, top, z), 0.004)
+
+
+def painted_fields(side):
+    """The painted-over panes under the windows of end wall `side` as (z0, z1, y0, y1): down 4 panes, stopping above
+    the gate and the exit door; columns side by side with the same depth make one field."""
+    pw, ph = P["south_wall"]["pane"]
+    gate, door = P["gate"], P["exit_door"]
+    fields = []
+    for w, z0, cols, rows in end_windows():
+        if w != side:
+            continue
+        za, zb, y0, y1 = window_rect(z0, cols, rows)
+        for c in range(cols):
+            ca, cb = za + c * pw, za + (c + 1) * pw
+            # Under the tall window over the exit door only 2; under the upper deck's windows down to the same bottom,
+            # 13 rows in all like that one (user); elsewhere 4.
+            deck = side > 0 and za >= P["mezzanine"]["z0"] - 1e-6
+            low = y0 - (2 if rows > 4 else 13 - rows if deck else 4) * ph
+            for oa, ob, top in ((gate["z0"], gate["z1"], gate["height"] + 0.5),
+                                (door["z0"] - 0.05, door["z1"] + 0.05 + pw, door["height"] + 0.35)):   # 4 x 4 (user)
+                if side > 0 and ca < ob and cb > oa:
+                    low = max(low, top)
+            n = int((y0 - low) / ph + 1e-6)
+            if n > 0:
+                if fields and abs(fields[-1][1] - ca) < 1e-6 and abs(fields[-1][2] - (y0 - n * ph)) < 1e-6:
+                    fields[-1] = (fields[-1][0], cb, *fields[-1][2:])
+                else:
+                    fields.append((ca, cb, y0 - n * ph, y0))
+    return fields
+
+
+SASH_OUT = 0.11     # the sash bars stand from 5 to 11 cm outside the end walls' inner faces (see sash())
+
+
+def build_exterior(g):
+    """The outside (lucky_office/outside IMG_3113-3115): a 2 cm cream paint skin on every outer face, open at the
+    windows, gate and exit door. Under each window the opening goes on outside as a field of painted-over panes in the
+    building's colour (a shade darker bars), recessed by the skin, down 4 panes but stopping above the gate and the
+    exit door; a cream sill under the fields, and horizontal grooves cut into the skin below them."""
+    t = 0.02
+    pw, ph = P["south_wall"]["pane"]
+    gate, door = P["gate"], P["exit_door"]
+    for side in (-1, 1):
+        xo = X0 - WALL_T if side < 0 else X1 + WALL_T          # the wall's outer face
+        xa, xb = sorted((xo, xo + side * t))
+        holes, fields = [], []
+        if side > 0:
+            holes += [(gate["z0"], gate["z1"], 0.0, gate["height"]), (door["z0"], door["z1"], 0.0, door["height"])]
+        holes += [window_rect(z0, c, r) for w, z0, c, r in end_windows() if w == side]
+        fields = painted_fields(side)
+        holes += fields
+        # Grooves: every 0.45 m from 0.45 m up, below the lowest painted field.
+        lowest = min(f[2] for f in fields)
+        grooves = [0.45 * k for k in range(1, 4) if 0.45 * k + 0.025 < lowest - 0.3] if side > 0 else []  # front only
+        za_, zb_ = Z0 - WALL_T, Z1 + WALL_T
+        holes += [(za_, zb_, y, y + 0.025) for y in grooves]
+        holed_wall(g, xa, xb, za_, zb_, H, holes, "facade")
+        cuts = sorted((h[0], h[1]) for h in holes[:2]) if side > 0 else []
+        for y in grooves:
+            z = za_
+            for a, b in cuts + [(zb_, zb_)]:
+                if a > z:
+                    g.span("facade_line", *sorted((xo, xo + side * 0.002)), y, y + 0.025, z, a)
+                z = max(z, b)
+        # The painted fields in line with the real windows, open through the wall like them: thin cream painted
+        # glass panes in the middle of the sash depth, bars over the sash's own depth (user).
+        xi = X0 if side < 0 else X1                          # the wall's inner face
+        bx = sorted((xi + side * 0.077, xi + side * 0.083))
+        # The tall window over the exit door has its own bottom two rows painted over too (IMG_3114, user).
+        for w, z0, cols, rows in end_windows():
+            if w == side and rows > 4:
+                za, zb, y0, _ = window_rect(z0, cols, rows)
+                g.span("painted_glass", *bx, y0, y0 + 2 * ph, za, zb)
+        for ca, cb, y0, y1 in fields:
+            g.span("painted_glass", *bx, y0, y1, ca, cb)
+            rb = sorted((xi + side * 0.05, xi + side * SASH_OUT))
+            for c in range(round((cb - ca) / pw) + 1):
+                z = ca + c * pw
+                g.span("facade_line", *rb, y0, y1, z - 0.0175, z + 0.0175)
+            k = 0
+            while y0 + k * ph <= y1 + 1e-6:
+                y = y0 + k * ph
+                g.span("facade_line", *rb, y - 0.0175, y + 0.0175, ca, cb)
+                k += 1
+        # Sills: one under each run of fields, standing 4 cm out of the skin.
+        runs = []
+        for f in sorted(fields):
+            if runs and abs(f[0] - runs[-1][1]) < 1e-6 and abs(f[2] - runs[-1][2]) < 1e-6:
+                runs[-1][1] = f[1]
+            else:
+                runs.append([f[0], f[1], f[2]])
+        for a, b, y in runs:
+            g.span("facade", *sorted((xo, xo + side * (t + 0.04))), y - 0.06, y, a - 0.05, b + 0.05)
+        # The openings' sides from the sash out, lined in the same cream (user): per pane column down to its own
+        # bottom (the painted field's or the glass's), steps between columns of different depth.
+        xi = X0 if side < 0 else X1
+        rx = sorted((xi + side * 0.05, xo + side * t))
+        e = 0.005
+        for w, z0, cols, rows in end_windows():
+            if w != side:
+                continue
+            za, zb, y0, y1 = window_rect(z0, cols, rows)
+            bots = []
+            for c in range(cols):
+                zm = za + (c + 0.5) * pw
+                bots.append(min([f[2] for f in fields if f[0] < zm < f[1]] + [y0]))
+            g.span("facade", *rx, y1 - e, y1, za, zb)
+            for c, b in enumerate(bots):
+                g.span("facade", *rx, b, b + e, za + c * pw, za + (c + 1) * pw)
+            g.span("facade", *rx, bots[0], y1, za, za + e)
+            g.span("facade", *rx, bots[-1], y1, zb - e, zb)
+            for c in range(1, cols):
+                lo, hi = sorted((bots[c - 1], bots[c]))
+                if hi - lo > 1e-6:
+                    zc_ = za + c * pw
+                    g.span("facade", *rx, lo, hi, *((zc_, zc_ + e) if bots[c - 1] > bots[c] else (zc_ - e, zc_)))
+            # Over the upper deck a white knee wall stands out in front of the inner face up to the glass, hiding the
+            # painted panes from the deck (IMG_3117, user).
+            if side > 0 and za >= P["mezzanine"]["z0"] - 1e-6:
+                g.span("paint_white", X1 - 0.15, X1, DECK, y0, za - 0.1, zb + 0.1)
+                # Below the deck the room under it sees plain wall: a white panel flush on the inner face.
+                low = min(bots)
+                if low < DECK - 0.3:
+                    g.span("paint_white", X1 - 0.01, X1, low, DECK - 0.3, za, zb)
+        # The end walls' gables above the eave, skinned the same.
+        steps = 12
+        hs = (DROP_END - H) / steps
+        for i in range(steps):
+            half = FLAT + (ZC - Z0 - FLAT) * (1 - i / steps) + WALL_T
+            g.span("facade", xa, xb, H + hs * i, H + hs * (i + 1) + 0.001, ZC - half, ZC + half)
+        g.span("facade", xa, xb, DROP_END, DROP_END + ROOF_T, ZC - FLAT, ZC + FLAT)
+    # The long walls' outer faces, with the same grooves.
+    for side in (-1, 1):
+        zo = Z0 - WALL_T if side < 0 else Z1 + WALL_T
+        za, zb = sorted((zo, zo + side * t))
+        x0, x1 = X0 - WALL_T - t, X1 + WALL_T + t
+        g.span("facade", x0, x1, 0.0, H + ROOF_T, za, zb)      # no grooves: those are on the front only (user)
 
 
 # ---------------------------------------------------------------- office block and mezzanine
@@ -1478,7 +1630,7 @@ BUILDS = (("office_shell", build_shell), ("office_block", build_block), ("office
 def main():
     out = Path(sys.argv[1]).resolve()
     out.mkdir(parents=True, exist_ok=False)
-    session = McpSession(ENDPOINT, timeout=300)
+    session = McpSession(ENDPOINT, timeout=300, max_response_bytes=128 * 1024 * 1024)
     catalog = assets.open_catalog(session, root=KIT_ASSETS)
     for name, build in BUILDS:
         graph = session.graph(name, directory=out)
