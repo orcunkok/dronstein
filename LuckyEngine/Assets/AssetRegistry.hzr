@@ -68,6 +68,9 @@ Assets:
   - Handle: 438932637639720788
     FilePath: Office/OfficeShell138/source/office_shell.hpodgraph
     Type: PodGraph
+  - Handle: 441374296551930969
+    FilePath: Meshes/fridge_Body.hsmesh
+    Type: StaticMesh
   - Handle: 450624845371457783
     FilePath: Office/OfficeDesks7/source/office_desks.hpodgraph
     Type: PodGraph
@@ -155,6 +158,9 @@ Assets:
   - Handle: 1111320141344543123
     FilePath: Office/OfficeBlock80/source/office_block.hpodgraph
     Type: PodGraph
+  - Handle: 1117590049923988032
+    FilePath: Meshes/fridge_RR_Door.hsmesh
+    Type: StaticMesh
   - Handle: 1144007827700320390
     FilePath: Office/OfficeBlock13/source/office_block.hpodgraph
     Type: PodGraph
@@ -167,6 +173,9 @@ Assets:
   - Handle: 1167326038045968203
     FilePath: Robots/ClawFingerR12/source/claw_finger_r.hpodgraph
     Type: PodGraph
+  - Handle: 1183215146846055620
+    FilePath: Meshes/fridge_LowerDrawer.hsmesh
+    Type: StaticMesh
   - Handle: 1188882323980360271
     FilePath: Office/OfficeShell51/source/office_shell.hpodgraph
     Type: PodGraph
@@ -316,6 +325,9 @@ Assets:
     Type: PodGraph
   - Handle: 2299960294570842191
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/left_wrist_yaw_link.STL
+    Type: MeshSource
+  - Handle: 2320172206653640705
+    FilePath: Meshes/Fridge/fridge_RR_Door.glb
     Type: MeshSource
   - Handle: 2370902844262681748
     FilePath: Office/OfficeKitchen57/source/office_kitchen.hpodgraph
@@ -1208,6 +1220,9 @@ Assets:
   - Handle: 8950939682834732387
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/right_hand_thumb_2_link.STL
     Type: MeshSource
+  - Handle: 8973414988295039588
+    FilePath: Meshes/fridge_RL_Door.hsmesh
+    Type: StaticMesh
   - Handle: 8980577928760302190
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/left_hand_index_0_link.STL
     Type: MeshSource
@@ -1328,6 +1343,9 @@ Assets:
   - Handle: 9809196436057562729
     FilePath: ContentVault/Robots/UnitreeGo2Pod/Policies/model_config.json
     Type: Motion
+  - Handle: 9865019006418347866
+    FilePath: Meshes/Fridge/fridge_Body.glb
+    Type: MeshSource
   - Handle: 9881043115656630485
     FilePath: Office/OfficeShell151/source/office_shell.hpodgraph
     Type: PodGraph
@@ -1892,6 +1910,9 @@ Assets:
   - Handle: 13664948424232451984
     FilePath: Office/OfficeDesks70/source/office_desks.hpodgraph
     Type: PodGraph
+  - Handle: 13668367888164257093
+    FilePath: Meshes/Fridge/fridge_RL_Door.glb
+    Type: MeshSource
   - Handle: 13677537573028922058
     FilePath: Office/OfficeDesks48/source/office_desks.hpodgraph
     Type: PodGraph
@@ -2066,6 +2087,9 @@ Assets:
   - Handle: 14896512403181023555
     FilePath: Office/OfficeKitchen11/source/office_kitchen.hpodgraph
     Type: PodGraph
+  - Handle: 14938794969706516071
+    FilePath: Meshes/fridge_FreezerDecorTray.hsmesh
+    Type: StaticMesh
   - Handle: 14984816822220341127
     FilePath: Office/OfficeBlock34/source/office_block.hpodgraph
     Type: PodGraph
@@ -2159,6 +2183,9 @@ Assets:
   - Handle: 15716328005864203404
     FilePath: Office/OfficeShell114/source/office_shell.hpodgraph
     Type: PodGraph
+  - Handle: 15718423096443567837
+    FilePath: Meshes/fridge_F_Door.hsmesh
+    Type: StaticMesh
   - Handle: 15725964065274453976
     FilePath: Meshes/Default/Source/Torus.gltf
     Type: MeshSource
@@ -2228,6 +2255,9 @@ Assets:
   - Handle: 16149028615666969001
     FilePath: Office/OfficeDesks160/source/office_desks.hpodgraph
     Type: PodGraph
+  - Handle: 16177123351794239440
+    FilePath: Meshes/Fridge/fridge_FreezerDecorTray.glb
+    Type: MeshSource
   - Handle: 16187906919408669723
     FilePath: Office/OfficeKitchen2/source/office_kitchen.hpodgraph
     Type: PodGraph
@@ -2372,6 +2402,9 @@ Assets:
   - Handle: 17441792105860737526
     FilePath: Office/OfficeShell159/source/office_shell.hpodgraph
     Type: PodGraph
+  - Handle: 17458971803019085572
+    FilePath: Meshes/Fridge/fridge_LowerDrawer.glb
+    Type: MeshSource
   - Handle: 17471399400445865604
     FilePath: ContentVault/Robots/UnitreeGo2Pod/assets/thigh_mirror_1.obj
     Type: MeshSource
@@ -2447,6 +2480,9 @@ Assets:
   - Handle: 18165351503871893096
     FilePath: Office/OfficeShell141/source/office_shell.hpodgraph
     Type: PodGraph
+  - Handle: 18199734290347701193
+    FilePath: Meshes/Fridge/fridge_F_Door.glb
+    Type: MeshSource
   - Handle: 18216358468127254799
     FilePath: Office/OfficeShell93/source/office_shell.hpodgraph
     Type: PodGraph

@@ -765,6 +765,57 @@ Entities:
       MaterialTable:
         0: 5906284485229172943
       Visible: true
+  - Entity: 1244323922999735712
+    Domain: Client
+    TagComponent:
+      Tag: Fridge_RR_Door
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0.306705, 1.7674, -0.428898]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    StaticMeshComponent:
+      AssetID: 1117590049923988032
+      MaterialTable:
+        0: 0
+        1: 0
+        2: 0
+        3: 0
+        4: 0
+        5: 0
+        6: 0
+        7: 0
+        8: 0
+        9: 0
+        10: 0
+        11: 0
+      Visible: true
+    MujocoMeshColliderComponent:
+      StaticMesh: 1117590049923988032
+      ConvexHullAsset: 0
+      SourceFromPodGraph: false
+      Density: 100
+      Friction: [1, 0.1, 0.01]
+      Contype: 0
+      Conaffinity: 0
+      Condim: -1
+    MujocoJointComponent:
+      Type: "\x03"
+      Position: [0, 0, 0]
+      Axis: [0, 1, -0]
+      Limited: true
+      LimitMin: 0
+      LimitMax: 2.26893
+      LimitSolref: [0.02, 1]
+      LimitSolimp: [0.9, 0.95, 0.001]
+      Stiffness: 0
+      Damping: 2
+      Armature: 0.1
+      FrictionLoss: 0
+      SpringRef: 0
+      JointId: -1
   - Entity: 1341103512812420620
     Domain: Client
     TagComponent:
@@ -1855,6 +1906,51 @@ Entities:
       MaterialTable:
         0: 14788740229170096286
       Visible: true
+  - Entity: 4085481207661060327
+    Domain: Client
+    TagComponent:
+      Tag: Fridge
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    StaticMeshComponent:
+      AssetID: 441374296551930969
+      MaterialTable:
+        0: 0
+        1: 0
+        2: 0
+        3: 0
+        4: 0
+        5: 0
+        6: 0
+        7: 0
+        8: 0
+        9: 0
+        10: 0
+        11: 0
+        12: 0
+        13: 0
+        14: 0
+        15: 0
+        16: 0
+        17: 0
+        18: 0
+        19: 0
+        20: 0
+      Visible: true
+    MujocoMeshColliderComponent:
+      StaticMesh: 441374296551930969
+      ConvexHullAsset: 0
+      SourceFromPodGraph: false
+      Density: 500
+      Friction: [1, 0.1, 0.01]
+      Contype: 1
+      Conaffinity: 1
+      Condim: -1
   - Entity: 4087376628652580726
     Domain: Client
     TagComponent:
@@ -2654,7 +2750,7 @@ Entities:
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     SkyLightComponent:
-      EnvironmentMap: 0
+      EnvironmentMap: 13889453543147436548
       Intensity: 0.5
       Lod: 0
       Rotation: 0
@@ -2827,6 +2923,53 @@ Entities:
       PodGraph: 14389522373660214116
       MaterialTable:
         0: 0
+  - Entity: 7103753859807856686
+    Domain: Client
+    TagComponent:
+      Tag: Fridge_F_Door
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    StaticMeshComponent:
+      AssetID: 15718423096443567837
+      MaterialTable:
+        0: 0
+        1: 0
+        2: 0
+        3: 0
+        4: 0
+        5: 0
+        6: 0
+        7: 0
+      Visible: true
+    MujocoMeshColliderComponent:
+      StaticMesh: 15718423096443567837
+      ConvexHullAsset: 0
+      SourceFromPodGraph: false
+      Density: 100
+      Friction: [1, 0.1, 0.01]
+      Contype: 0
+      Conaffinity: 0
+      Condim: -1
+    MujocoJointComponent:
+      Type: "\x02"
+      Position: [0, 0, 0]
+      Axis: [-1, 0, -0]
+      Limited: true
+      LimitMin: -0.35
+      LimitMax: 0
+      LimitSolref: [0.02, 1]
+      LimitSolimp: [0.9, 0.95, 0.001]
+      Stiffness: 0
+      Damping: 5
+      Armature: 0.1
+      FrictionLoss: 0
+      SpringRef: 0
+      JointId: -1
   - Entity: 7182490334214803807
     Domain: Client
     TagComponent:
@@ -3406,6 +3549,47 @@ Entities:
       MaterialTable:
         0: 12925081748185488627
       Visible: true
+  - Entity: 8965295388675213384
+    Domain: Client
+    TagComponent:
+      Tag: Fridge_LowerDrawer
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    StaticMeshComponent:
+      AssetID: 1183215146846055620
+      MaterialTable:
+        0: 0
+        1: 0
+      Visible: true
+    MujocoMeshColliderComponent:
+      StaticMesh: 1183215146846055620
+      ConvexHullAsset: 0
+      SourceFromPodGraph: false
+      Density: 100
+      Friction: [1, 0.1, 0.01]
+      Contype: 0
+      Conaffinity: 0
+      Condim: -1
+    MujocoJointComponent:
+      Type: "\x02"
+      Position: [0, 0, 0]
+      Axis: [-1, 0, -0]
+      Limited: true
+      LimitMin: -0.1
+      LimitMax: 0
+      LimitSolref: [0.02, 1]
+      LimitSolimp: [0.9, 0.95, 0.001]
+      Stiffness: 0
+      Damping: 5
+      Armature: 0.1
+      FrictionLoss: 0
+      SpringRef: 0
+      JointId: -1
   - Entity: 9007591794121721116
     Domain: Client
     TagComponent:
@@ -4920,6 +5104,68 @@ Entities:
       MaterialTable:
         0: 12925081748185488627
       Visible: true
+  - Entity: 14290568912462404559
+    Domain: Client
+    TagComponent:
+      Tag: Fridge_RL_Door
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0.306705, 1.7674, 0.428168]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    StaticMeshComponent:
+      AssetID: 8973414988295039588
+      MaterialTable:
+        0: 0
+        1: 0
+        2: 0
+        3: 0
+        4: 0
+        5: 0
+        6: 0
+        7: 0
+        8: 0
+        9: 0
+        10: 0
+        11: 0
+        12: 0
+        13: 0
+        14: 0
+        15: 0
+        16: 0
+        17: 0
+        18: 0
+        19: 0
+        20: 0
+        21: 0
+        22: 0
+      Visible: true
+    MujocoMeshColliderComponent:
+      StaticMesh: 8973414988295039588
+      ConvexHullAsset: 0
+      SourceFromPodGraph: false
+      Density: 100
+      Friction: [1, 0.1, 0.01]
+      Contype: 0
+      Conaffinity: 0
+      Condim: -1
+    MujocoJointComponent:
+      Type: "\x03"
+      Position: [0, 0, 0]
+      Axis: [0, 1, -0]
+      Limited: true
+      LimitMin: -2.26893
+      LimitMax: 0
+      LimitSolref: [0.02, 1]
+      LimitSolimp: [0.9, 0.95, 0.001]
+      Stiffness: 0
+      Damping: 2
+      Armature: 0.1
+      FrictionLoss: 0
+      SpringRef: 0
+      JointId: -1
   - Entity: 14339033916604750231
     Domain: Client
     TagComponent:
@@ -5695,6 +5941,47 @@ Entities:
       Contype: 1
       Conaffinity: 1
       Condim: -1
+  - Entity: 16858185109226542991
+    Domain: Client
+    TagComponent:
+      Tag: Fridge_FreezerTray
+    Parent: 0
+    Children:
+      []
+    TransformComponent:
+      Position: [0, 0, 0]
+      Rotation: [0, 0, 0]
+      Scale: [1, 1, 1]
+    StaticMeshComponent:
+      AssetID: 14938794969706516071
+      MaterialTable:
+        0: 0
+        1: 0
+      Visible: true
+    MujocoMeshColliderComponent:
+      StaticMesh: 14938794969706516071
+      ConvexHullAsset: 0
+      SourceFromPodGraph: false
+      Density: 100
+      Friction: [1, 0.1, 0.01]
+      Contype: 0
+      Conaffinity: 0
+      Condim: -1
+    MujocoJointComponent:
+      Type: "\x02"
+      Position: [0, 0, 0]
+      Axis: [-1, 0, -0]
+      Limited: true
+      LimitMin: -0.35
+      LimitMax: 0
+      LimitSolref: [0.02, 1]
+      LimitSolimp: [0.9, 0.95, 0.001]
+      Stiffness: 0
+      Damping: 5
+      Armature: 0.1
+      FrictionLoss: 0
+      SpringRef: 0
+      JointId: -1
   - Entity: 16879963242012129561
     Domain: Client
     TagComponent:
