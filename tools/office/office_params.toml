@@ -36,24 +36,25 @@ top = 6.6             # its top, on a black track under the white curtain I-beam
                       # end walls' big beams over the windows (user)
 
 [kitchen]
-x0 = -3.28            # north end of the run on the east wall: the left fridge 1.6 m from the east wall's column (user)
+x0 = -3.48            # north end of the run on the east wall: the left fridge 1.4 m from the east wall's column (user)
 box_gap = 0.88        # the pantry ends this far short of the restroom's north wall (user)
 
-[gate]                # main roll-up gate on the south wall, always closed
+[gate]                # main roll-up gate on the south wall, half open
 # IMG_3077 (whole south wall at one depth, 1x lens, exit door 2.13 m = 115 px): opening 6.0 x 4.5 m, med
 # The exit door and the big window are placed from the stair, the gate from the west wall; IMG_3059 gives gate ~5.6-6 m,
 # ~0.85 m wall to the exit door, ~0.8 m to the west corner, so the hall is likely ~22 m, not 23 (questions.md). Until it
 # is measured the extra width sits between the gate and the exit door.
-z0 = -15.0            # west edge, under the window units above it (user)
-z1 = -9.0             # east edge; ~1 m of plain wall to the exit door (photos show ~0.85 m)
+z0 = -15.15           # west edge, 0.85 m from the west wall (user)
+z1 = -9.4             # east edge: the gate is 5.75 m wide (user)
+open = 0.5            # the curtain is rolled up this share of the opening (user: half open)
 height = 4.2          # opening, under a 0.49 m roller hood: IMG_3089/3059, med
 hood_top = 4.685      # top of the roller hood, level with the line between the stair window's 5th and 6th pane
                       # rows from the top (user, IMG_3089)
 
 [exit_door]           # grey steel exit door on the south wall, EXIT sign above, fire panel east of it
-z0 = -8.05            # 1.15 m leaf, 2.13 m high, its west side a couple of inches past the window above it: IMG_3089, user
-z1 = -6.9             # 0.9 m west of the U stair, the fire alarm gear between with a gap to the stair: IMG_3089, user
-height = 2.13
+z0 = -8.48            # 0.92 m east of the gate (user)
+z1 = -7.38            # the leaf 1.1 m wide (user), the fire alarm gear east of it
+height = 2.15         # (user)
 
 [south_wall]
 # Steel-sash windows, north and south walls alike: 0.5 x 0.343 m panes, all tops at one height, set into the wall a
@@ -65,6 +66,8 @@ window_top = 6.4
 # wall spaces its sections with equal gaps, both ends included (user, IMG_3053/3063/3077/3088).
 # South: three 4 x 4 units over the gate, the 8 x 11 window over the exit door and stair, two 8 x 4 over the upper deck.
 south_sections = [[3, 4, 4], [1, 8, 11], [1, 8, 4], [1, 8, 4]]
+big_window_gap = 0.85     # the big window over the exit door starts this far east of the gate; the units over the
+                          # gate are centred on it (user)
 # North: three groups of three 4 x 4 units, two columns in each gap between groups; the curtain lines up with the
 # east side of the middle group's westmost unit.
 north_sections = [[3, 4, 4], [3, 4, 4], [3, 4, 4]]
@@ -90,13 +93,17 @@ mid_box = [4.0, 5.12, 5.7, 7.0, 5.4]    # lower block north of it, flush with it
 
 [mezzanine]           # upper tier with the cable railing; the deck runs on east over the box to the east wall (user)
 front_x = 9.0         # front edge, straight from the U stair to the east wall: the upper deck is 11 x 6 m (user)
-z0 = -4.0             # west end = the room's west wall, the U stair flush against it, 11 m from the east wall (user)
+z0 = -4.13            # west end = the room's west wall and the west post's west face, the U stair flush against it:
+                      # IMG_3089; the deck 11.13 m long, so the U stair's west side is 10 cm east of the middle of the
+                      # big window over the exit door (user)
 z1 = 2.2              # the box's west face line: east end of the front beam and the cable railing
 deck = 4.3            # upper deck top: the beams under it are 3.8 m high at their bottom (user)
 thickness = 0.5       # grey fascia and white beam: IMG_3069/3070, med
 beam = [0.2, 0.2]     # steel I-beam section of its posts and beams, flange x depth (8" x 8"): IMG_3091, user
-posts_z = [1.25, -3.7] # white posts at the front: the east one right in front of the big spiral's pole, the west one
-                      # 0.3 m from the room's west wall: IMG_3103/3070, user, med
+posts_z = [1.25, -4.03] # white posts at the front: the east one right in front of the big spiral's pole, the west one
+                      # at the deck's west end: IMG_3103/3070/3089, user, med
+cross_beam = 0.3      # depth of the north-south beams from each post back to the room's front wall, deeper than the
+                      # front beam: IMG_3091, user
 
 [partition]           # under the mezzanine: the front wall with French doors and transoms, continued east as the closet's south wall
 x = 12.4              # front wall under the upper deck: IMG_3070 floor line, med-low
@@ -106,7 +113,7 @@ transoms_z = [3.35, 1.93, 0.81, -0.31, -1.43]  # four along the front wall, 1.12
 transom_w = [0.98, 0.98, 0.98, 0.98, 0.98]    # outer size of the matte aluminium frame (user: a little wider)
 transom_y = [2.47, 3.08]        # IMG_3070, med
 pendants_z = [0.2, -2.8]        # white enamel barn pendants, 0.8 m in front of the wall: IMG_3070, med
-sofa_z = -2.68                  # teal sofa (1.85 x 0.8 m) against the front wall by the west post, a red tube frame
+sofa_z = -3.01                  # teal sofa (1.85 x 0.8 m) against the front wall by the west post, a red tube frame
                                 # behind it: IMG_3070/3089/3092, med
 closet_z1 = 5.0                 # small open closet between the box and the partition line, its end wall with a dark
                                 # doorway: IMG_3092 (user: a closet, no beam over it), low
@@ -135,10 +142,10 @@ turn = 3.1416         # a half turn round its north side, the top tread pointing
 width = 1.1           # per flight
 risers = 11           # per flight: IMG_3066 count, med
 platform_x = [9.0, 10.0]    # top platform at the mezzanine front, z = upper flight's: IMG_3070/3089, med-low
-upper_z = [-5.1, -4.0]     # upper flight runs south from the platform down to the landing, flush with the room's west wall
+upper_z = [-5.23, -4.13]     # upper flight runs south from the platform down to the landing, flush with the room's west wall
 landing_x = [13.8, 15.0]   # landing against the south wall, half the deck height: IMG_3070, med
-landing_z = [-6.2, -4.0]
-lower_z = [-6.2, -5.1]     # right beside the upper flight (no well), its west side under the middle of the window over
+landing_z = [-6.33, -4.13]
+lower_z = [-6.33, -5.23]     # right beside the upper flight (no well), its west side under the middle of the window over
                            # the exit door; both flights run N-S (IMG_3089, user)
 
 # ---- north-west corner (desk bay), as in the newer photos IMG_3074/3075/3077

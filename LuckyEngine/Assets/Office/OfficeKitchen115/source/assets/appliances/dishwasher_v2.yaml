@@ -1,0 +1,107 @@
+# Sprint 171 W73 / Section 4.1b of S171_INFINIGEN_100_PERCENT_PLAN.md.
+# Dishwasher v2 — body + door panel + handle + control strip + kick plate.
+parameters:
+  width:    { kind: Float, default: 0.60 }
+  height:   { kind: Float, default: 0.85 }
+  depth:    { kind: Float, default: 0.58 }
+
+  steel:    { kind: Material, expr: "0.62, 0.62, 0.66, 1.0, 0.85, 0.30" }
+  control:  { kind: Material, expr: "0.20, 0.22, 0.26, 1.0, 0.0, 0.55" }
+  brand:    { kind: Material, expr: "0.10, 0.10, 0.12, 1.0, 0.30, 0.55" }
+
+nodes:
+  - id: 1
+    type: MeshCube
+    inputs: { SizeX: { param: width }, SizeY: { param: height }, SizeZ: { param: depth } }
+  - id: 2
+    type: Transform
+    inputs: { Translation: { kind: Float3, value: [0.0, 0.425, 0.0] } }
+  - id: 3
+    type: SetMaterial
+    inputs: { Material: { param: steel } }
+
+  # Door panel (slightly recessed front)
+  - id: 10
+    type: MeshCube
+    inputs: { SizeX: { kind: Float, value: 0.575 }, SizeY: { kind: Float, value: 0.74 }, SizeZ: { kind: Float, value: 0.015 } }
+  - id: 11
+    type: Transform
+    inputs: { Translation: { kind: Float3, value: [0.0, 0.425, 0.295] } }
+
+  # Horizontal handle bar at top of door
+  - id: 20
+    type: MeshCube
+    inputs: { SizeX: { kind: Float, value: 0.40 }, SizeY: { kind: Float, value: 0.025 }, SizeZ: { kind: Float, value: 0.030 } }
+  - id: 21
+    type: Transform
+    inputs: { Translation: { kind: Float3, value: [0.0, 0.760, 0.305] } }
+
+  # Control strip on top edge
+  - id: 30
+    type: MeshCube
+    inputs: { SizeX: { kind: Float, value: 0.55 }, SizeY: { kind: Float, value: 0.05 }, SizeZ: { kind: Float, value: 0.020 } }
+  - id: 31
+    type: Transform
+    inputs: { Translation: { kind: Float3, value: [0.0, 0.825, 0.295] } }
+  - id: 32
+    type: SetMaterial
+    inputs: { Material: { param: control } }
+
+  # Brand strip
+  - id: 40
+    type: MeshCube
+    inputs: { SizeX: { kind: Float, value: 0.10 }, SizeY: { kind: Float, value: 0.020 }, SizeZ: { kind: Float, value: 0.005 } }
+  - id: 41
+    type: Transform
+    inputs: { Translation: { kind: Float3, value: [0.0, 0.150, 0.305] } }
+  - id: 42
+    type: SetMaterial
+    inputs: { Material: { param: brand } }
+
+  # Kick plate
+  - id: 50
+    type: MeshCube
+    inputs: { SizeX: { param: width }, SizeY: { kind: Float, value: 0.06 }, SizeZ: { kind: Float, value: 0.020 } }
+  - id: 51
+    type: Transform
+    inputs: { Translation: { kind: Float3, value: [0.0, 0.030, 0.270] } }
+
+  - id: 60
+    type: JoinGeometry
+  - id: 61
+    type: JoinGeometry
+  - id: 62
+    type: JoinGeometry
+  - id: 63
+    type: JoinGeometry
+  - id: 64
+    type: JoinGeometry
+
+  - id: 99
+    type: Viewer
+
+links:
+  - { from: { node: 1, pin: Geometry }, to: { node: 2, pin: Geometry } }
+  - { from: { node: 2, pin: Geometry }, to: { node: 3, pin: Geometry } }
+  - { from: { node: 10, pin: Geometry }, to: { node: 11, pin: Geometry } }
+  - { from: { node: 20, pin: Geometry }, to: { node: 21, pin: Geometry } }
+  - { from: { node: 30, pin: Geometry }, to: { node: 31, pin: Geometry } }
+  - { from: { node: 31, pin: Geometry }, to: { node: 32, pin: Geometry } }
+  - { from: { node: 40, pin: Geometry }, to: { node: 41, pin: Geometry } }
+  - { from: { node: 41, pin: Geometry }, to: { node: 42, pin: Geometry } }
+  - { from: { node: 50, pin: Geometry }, to: { node: 51, pin: Geometry } }
+
+  - { from: { node: 3,  pin: Geometry }, to: { node: 60, pin: A } }
+  - { from: { node: 11, pin: Geometry }, to: { node: 60, pin: B } }
+  - { from: { node: 60, pin: Geometry }, to: { node: 61, pin: A } }
+  - { from: { node: 21, pin: Geometry }, to: { node: 61, pin: B } }
+  - { from: { node: 61, pin: Geometry }, to: { node: 62, pin: A } }
+  - { from: { node: 32, pin: Geometry }, to: { node: 62, pin: B } }
+  - { from: { node: 62, pin: Geometry }, to: { node: 63, pin: A } }
+  - { from: { node: 42, pin: Geometry }, to: { node: 63, pin: B } }
+  - { from: { node: 63, pin: Geometry }, to: { node: 64, pin: A } }
+  - { from: { node: 51, pin: Geometry }, to: { node: 64, pin: B } }
+  - { from: { node: 64, pin: Geometry }, to: { node: 99, pin: Geometry } }
+
+outputs:
+  Geometry: { node: 64, pin: Geometry }
