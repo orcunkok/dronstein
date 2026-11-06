@@ -1,0 +1,95 @@
+# Sprint 171 W98 / Section 4.6c. Monitor — flat panel + frame + stand
+# (post + base disc). Closes Section 4.6 (office).
+parameters:
+  panel_w:    { kind: Float, default: 0.62 }
+  panel_h:    { kind: Float, default: 0.36 }
+  panel_t:    { kind: Float, default: 0.018 }
+  bezel:      { kind: Float, default: 0.012 }
+  screen_t:   { kind: Float, default: 0.001 }
+  post_h:     { kind: Float, default: 0.18 }
+  post_w:     { kind: Float, default: 0.05 }
+  post_t:     { kind: Float, default: 0.04 }
+  base_r:     { kind: Float, default: 0.12 }
+  base_h:     { kind: Float, default: 0.025 }
+
+  metal:    { kind: Material, expr: "0.10, 0.10, 0.12, 1.0, 0.5, 0.30" }
+  screen:   { kind: Material, expr: "0.05, 0.07, 0.10, 1.0, 0.0, 0.10" }
+
+  base_y:        { kind: Float, expr: "base_h / 2" }
+  post_y_centre: { kind: Float, expr: "base_h + post_h / 2" }
+  panel_y:       { kind: Float, expr: "base_h + post_h + panel_h / 2" }
+  inner_w:       { kind: Float, expr: "panel_w - 2 * bezel" }
+  inner_h:       { kind: Float, expr: "panel_h - 2 * bezel" }
+
+  base_pos:   { kind: Float3, expr: "0, base_y, 0" }
+  post_pos:   { kind: Float3, expr: "0, post_y_centre, 0" }
+  panel_pos:  { kind: Float3, expr: "0, panel_y, 0" }
+  screen_pos: { kind: Float3, expr: "0, panel_y, panel_t / 2 + screen_t" }
+
+nodes:
+  - id: 1
+    type: MeshCylinder
+    inputs: { Sides: { kind: Int32, value: 24 }, Radius: { param: base_r }, Height: { param: base_h } }
+  - id: 2
+    type: Transform
+    inputs: { Translation: { param: base_pos } }
+
+  - id: 10
+    type: MeshCube
+    inputs: { SizeX: { param: post_w }, SizeY: { param: post_h }, SizeZ: { param: post_t } }
+  - id: 11
+    type: Transform
+    inputs: { Translation: { param: post_pos } }
+
+  - id: 20
+    type: MeshCube
+    inputs: { SizeX: { param: panel_w }, SizeY: { param: panel_h }, SizeZ: { param: panel_t } }
+  - id: 21
+    type: Transform
+    inputs: { Translation: { param: panel_pos } }
+
+  - id: 30
+    type: JoinGeometry
+  - id: 31
+    type: JoinGeometry
+  - id: 32
+    type: SetMaterial
+    inputs: { Material: { param: metal } }
+
+  # Screen — slightly inset on +Z face of the panel.
+  - id: 40
+    type: MeshCube
+    inputs: { SizeX: { param: inner_w }, SizeY: { param: inner_h }, SizeZ: { param: screen_t } }
+  - id: 41
+    type: Transform
+    inputs: { Translation: { param: screen_pos } }
+  - id: 42
+    type: SetMaterial
+    inputs: { Material: { param: screen } }
+
+  - id: 50
+    type: JoinGeometry
+
+  - id: 99
+    type: Viewer
+
+links:
+  - { from: { node: 1, pin: Geometry }, to: { node: 2, pin: Geometry } }
+  - { from: { node: 10, pin: Geometry }, to: { node: 11, pin: Geometry } }
+  - { from: { node: 20, pin: Geometry }, to: { node: 21, pin: Geometry } }
+
+  - { from: { node: 2,  pin: Geometry }, to: { node: 30, pin: A } }
+  - { from: { node: 11, pin: Geometry }, to: { node: 30, pin: B } }
+  - { from: { node: 30, pin: Geometry }, to: { node: 31, pin: A } }
+  - { from: { node: 21, pin: Geometry }, to: { node: 31, pin: B } }
+  - { from: { node: 31, pin: Geometry }, to: { node: 32, pin: Geometry } }
+
+  - { from: { node: 40, pin: Geometry }, to: { node: 41, pin: Geometry } }
+  - { from: { node: 41, pin: Geometry }, to: { node: 42, pin: Geometry } }
+
+  - { from: { node: 32, pin: Geometry }, to: { node: 50, pin: A } }
+  - { from: { node: 42, pin: Geometry }, to: { node: 50, pin: B } }
+  - { from: { node: 50, pin: Geometry }, to: { node: 99, pin: Geometry } }
+
+outputs:
+  Geometry: { node: 50, pin: Geometry }

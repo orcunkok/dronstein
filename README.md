@@ -58,7 +58,7 @@ Both hold the altitude.
 
 It starts **disarmed**. Menu arms it (props idle). **RTL** climbs to 3 m, flies back over the spot where it was armed, comes down at 0.5 m/s and disarms when it lands; B or any stick or trigger takes it back. The props spin with their motors' thrust. If the ground station stops, the drone acts as if you let go of the sticks.
 
-**Calibration:** in the air, each press of keyboard Y flies it to the next blue dot of the 20 m test square ((10, 10), (10, -10), (-10, -10), (-10, 10)) at its altitude, where it holds. MODE shows **GUIDED** in yellow. B, X or any stick or trigger takes it back.
+**Calibration:** in the air, each press of keyboard Y flies it to the next blue dot of the 7.6 m test square on the grey test mat in the north-east corner ((14.3, 1.3), (14.3, -6.3), (6.7, -6.3), (6.7, 1.3), MuJoCo frame) at its altitude, where it holds. MODE shows **GUIDED** in yellow. B, X or any stick or trigger takes it back.
 
 ## On screen
 Top right: **CAMERA** (X500 V2, Follow or Gripper), and **MODE** (LOITER, ALT_HOLD, GUIDED for takeoff and calibration, or RTL; ArduPilot's names, as `src/dronstein.py` shows them; yellow while calibrating) with **Armed** (green) or **Disarmed** (red) left of it.

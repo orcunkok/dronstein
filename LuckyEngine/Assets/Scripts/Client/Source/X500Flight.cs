@@ -42,7 +42,7 @@ namespace Dronstein
 		public static bool Calibrating => s_Calib >= 0;
 		static bool s_Rtl, s_Takeoff;  // the GCS's takeoff and return home, until done or taken back
 		static int s_Calib = -1;       // the test square's corner being flown to, -1 = none
-		static readonly float[,] Waypoints = { { 10, 10 }, { 10, -10 }, { -10, -10 }, { -10, 10 } };  // (x, y), MuJoCo frame: the blue dots
+		static readonly float[,] Waypoints = { { 14.3f, 1.3f }, { 14.3f, -6.3f }, { 6.7f, -6.3f }, { 6.7f, 1.3f } };  // (x, y), MuJoCo frame: the blue dots, 0.2 m in from the corners of the test mat (north-east corner)
 
 		const float G = 9.81f, Rho = 1.225f, Deg = MathF.PI / 180f;
 		const float LandTime = 1f, LandVel = 0.2f;  // ArduPilot's land detector: still this long (s), slower than this (m/s)

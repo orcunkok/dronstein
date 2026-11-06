@@ -1,0 +1,33 @@
+# Sprint 171 W99 / Section 4.7a. Rug — flat fabric mat. V1 keeps it as a
+# thin plane (ClothDrape-driven sag is W139 quality work).
+parameters:
+  width:    { kind: Float, default: 1.80 }
+  depth:    { kind: Float, default: 1.20 }
+  thick:    { kind: Float, default: 0.012 }
+
+  fabric:   { kind: Material, expr: "0.65, 0.45, 0.30, 1.0, 0.0, 0.85" }
+
+  centre_y: { kind: Float, expr: "thick / 2" }
+  pos:      { kind: Float3, expr: "0, centre_y, 0" }
+
+nodes:
+  - id: 1
+    type: MeshCube
+    inputs: { SizeX: { param: width }, SizeY: { param: thick }, SizeZ: { param: depth } }
+  - id: 2
+    type: Transform
+    inputs: { Translation: { param: pos } }
+  - id: 3
+    type: SetMaterial
+    inputs: { Material: { param: fabric } }
+
+  - id: 99
+    type: Viewer
+
+links:
+  - { from: { node: 1, pin: Geometry }, to: { node: 2, pin: Geometry } }
+  - { from: { node: 2, pin: Geometry }, to: { node: 3, pin: Geometry } }
+  - { from: { node: 3, pin: Geometry }, to: { node: 99, pin: Geometry } }
+
+outputs:
+  Geometry: { node: 3, pin: Geometry }

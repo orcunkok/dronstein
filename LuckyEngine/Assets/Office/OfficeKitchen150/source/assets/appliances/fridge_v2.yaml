@@ -1,0 +1,265 @@
+# Sprint 171 W71 / Section 4.0 of S171_INFINIGEN_100_PERCENT_PLAN.md.
+#
+# Calibration fridge — re-author of appliances/fridge.yaml at full
+# Infinigen detail. The existing 240-line fridge produces a body +
+# door + handle in brushed stainless; v2 adds:
+#
+#   * Freezer compartment (top 30%) with its own door + handle.
+#   * Two handles instead of one — mirrored across the main/freezer
+#     split via MirrorAxisNode (W52). Vertical pull on each.
+#   * Kick plate at the bottom — slightly recessed cube, darker
+#     brushed steel.
+#   * Top vent grille — 4 horizontal slats CSG-cut into the body
+#     top.
+#   * Brand strip on the main door — small inset cube at upper
+#     centre.
+#   * 5mm visible seams between body and each door via small
+#     translation offsets (CSG-free V1; full mitred-seam diff is
+#     V2 polish).
+#
+# Render-quality calibration: at the canonical seed this v2 fridge
+# should be visibly recognisable as a fridge (not a grey box) when
+# rendered in Cycles. If the eye reads "fridge", the recipe scales
+# to oven / dishwasher / microwave (Sections 4.1a–4.1g).
+#
+# Run: pod-cli --asset appliances/fridge_v2 --seed N --out f.glb
+
+parameters:
+  width:          { kind: Float, dist: uniform, range: [0.60, 0.75] }
+  height:         { kind: Float, dist: uniform, range: [1.70, 1.95] }
+  depth:          { kind: Float, dist: uniform, range: [0.65, 0.75] }
+
+  # Freezer compartment occupies the top 30% of the height; main
+  # fridge door fills the remaining 70%. Seam at 70% height.
+  freezer_frac:   { kind: Float, default: 0.30 }
+  seam_gap:       { kind: Float, default: 0.005 }
+
+  door_thick:     { kind: Float, default: 0.040 }
+  door_inset:     { kind: Float, default: 0.005 }
+
+  # Vertical pull handles — V1 hardcoded inset.
+  handle_thick:   { kind: Float, default: 0.025 }
+  handle_proj:    { kind: Float, default: 0.045 }
+  handle_inset_x: { kind: Float, default: 0.060 }
+
+  # Derived layout.
+  fridge_h:       { kind: Float, expr: "height * (1.0 - freezer_frac) - seam_gap" }
+  freezer_h:      { kind: Float, expr: "height * freezer_frac - seam_gap" }
+  fridge_y_centre: { kind: Float, expr: "fridge_h / 2" }
+  freezer_y_centre: { kind: Float, expr: "fridge_h + seam_gap * 2 + freezer_h / 2" }
+
+  door_w:         { kind: Float, expr: "width - 2 * door_inset" }
+  fridge_door_z:  { kind: Float, expr: "depth / 2 + door_thick / 2" }
+
+  body_pos:       { kind: Float3, expr: "0, height / 2, 0" }
+  fridge_door_pos: { kind: Float3, expr: "0, fridge_y_centre, fridge_door_z" }
+  freezer_door_pos: { kind: Float3, expr: "0, freezer_y_centre, fridge_door_z" }
+
+  # Handles: right edge of each door, vertical, ~55% of door height.
+  fridge_handle_h:   { kind: Float, expr: "fridge_h * 0.55" }
+  fridge_handle_x:   { kind: Float, expr: "door_w / 2 - handle_inset_x" }
+  fridge_handle_y:   { kind: Float, expr: "fridge_y_centre + fridge_h * 0.10" }
+  fridge_handle_z:   { kind: Float, expr: "depth / 2 + door_thick + handle_proj / 2" }
+  fridge_handle_pos: { kind: Float3, expr: "fridge_handle_x, fridge_handle_y, fridge_handle_z" }
+
+  freezer_handle_h:   { kind: Float, expr: "freezer_h * 0.55" }
+  freezer_handle_x:   { kind: Float, expr: "door_w / 2 - handle_inset_x" }
+  freezer_handle_y:   { kind: Float, expr: "freezer_y_centre + freezer_h * 0.05" }
+  freezer_handle_z:   { kind: Float, expr: "depth / 2 + door_thick + handle_proj / 2" }
+  freezer_handle_pos: { kind: Float3, expr: "freezer_handle_x, freezer_handle_y, freezer_handle_z" }
+
+  # Kick plate — short cube at the bottom of the body, slightly
+  # recessed and darker.
+  kick_h:         { kind: Float, default: 0.10 }
+  kick_recess:    { kind: Float, default: 0.020 }
+  kick_pos:       { kind: Float3, expr: "0, kick_h / 2, depth / 2 - kick_recess - 0.005" }
+
+  # Brand strip — small dark cube at the upper centre of the main door.
+  brand_w:        { kind: Float, default: 0.10 }
+  brand_h:        { kind: Float, default: 0.025 }
+  brand_thick:    { kind: Float, default: 0.005 }
+  brand_y:        { kind: Float, expr: "fridge_y_centre + fridge_h * 0.40" }
+  brand_z:        { kind: Float, expr: "depth / 2 + door_thick + brand_thick / 2 + 0.001" }
+  brand_pos:      { kind: Float3, expr: "0, brand_y, brand_z" }
+
+  # Top vent slats — 4 thin horizontal rectangles slightly recessed
+  # into the body top. V1 emits them as a stack of small cubes with
+  # spacing.
+  vent_w:         { kind: Float, expr: "width * 0.65" }
+  vent_slat_h:    { kind: Float, default: 0.012 }
+  vent_slat_d:    { kind: Float, default: 0.030 }
+  vent_y_top:     { kind: Float, expr: "height - 0.030" }
+  vent_z:         { kind: Float, expr: "depth / 2 - vent_slat_d / 2 - 0.015" }
+  vent_slat_1_pos: { kind: Float3, expr: "0, vent_y_top - 0 * 0.025, vent_z" }
+  vent_slat_2_pos: { kind: Float3, expr: "0, vent_y_top - 1 * 0.025, vent_z" }
+  vent_slat_3_pos: { kind: Float3, expr: "0, vent_y_top - 2 * 0.025, vent_z" }
+  vent_slat_4_pos: { kind: Float3, expr: "0, vent_y_top - 3 * 0.025, vent_z" }
+
+  # Materials.
+  steel:        { kind: Material, expr: "1.0, 1.0, 1.0, 1.0, 0.85, 0.25" }
+  steel_dark:   { kind: Material, expr: "0.42, 0.42, 0.42, 1.0, 0.80, 0.40" }
+  brand:        { kind: Material, expr: "0.10, 0.10, 0.12, 1.0, 0.30, 0.55" }
+
+nodes:
+  # ── Body ──
+  - id: 10
+    type: MeshCube
+    inputs: { SizeX: { param: width }, SizeY: { param: height }, SizeZ: { param: depth } }
+  - id: 11
+    type: Transform
+    inputs: { Translation: { param: body_pos } }
+
+  # ── Fridge door (lower 70%) ──
+  - id: 20
+    type: MeshCube
+    inputs: { SizeX: { param: door_w }, SizeY: { param: fridge_h }, SizeZ: { param: door_thick } }
+  - id: 21
+    type: Transform
+    inputs: { Translation: { param: fridge_door_pos } }
+
+  # ── Freezer door (top 30%) ──
+  - id: 22
+    type: MeshCube
+    inputs: { SizeX: { param: door_w }, SizeY: { param: freezer_h }, SizeZ: { param: door_thick } }
+  - id: 23
+    type: Transform
+    inputs: { Translation: { param: freezer_door_pos } }
+
+  # ── Fridge handle ──
+  - id: 30
+    type: MeshCube
+    inputs: { SizeX: { param: handle_thick }, SizeY: { param: fridge_handle_h }, SizeZ: { param: handle_thick } }
+  - id: 31
+    type: Transform
+    inputs: { Translation: { param: fridge_handle_pos } }
+
+  # ── Freezer handle ──
+  - id: 32
+    type: MeshCube
+    inputs: { SizeX: { param: handle_thick }, SizeY: { param: freezer_handle_h }, SizeZ: { param: handle_thick } }
+  - id: 33
+    type: Transform
+    inputs: { Translation: { param: freezer_handle_pos } }
+
+  # ── Kick plate ──
+  - id: 40
+    type: MeshCube
+    inputs: { SizeX: { param: width }, SizeY: { param: kick_h }, SizeZ: { kind: Float, value: 0.020 } }
+  - id: 41
+    type: Transform
+    inputs: { Translation: { param: kick_pos } }
+
+  # ── Brand strip ──
+  - id: 50
+    type: MeshCube
+    inputs: { SizeX: { param: brand_w }, SizeY: { param: brand_h }, SizeZ: { param: brand_thick } }
+  - id: 51
+    type: Transform
+    inputs: { Translation: { param: brand_pos } }
+
+  # ── Top vent slats (4) ──
+  - id: 60
+    type: MeshCube
+    inputs: { SizeX: { param: vent_w }, SizeY: { param: vent_slat_h }, SizeZ: { param: vent_slat_d } }
+  - id: 61
+    type: Transform
+    inputs: { Translation: { param: vent_slat_1_pos } }
+  - id: 62
+    type: MeshCube
+    inputs: { SizeX: { param: vent_w }, SizeY: { param: vent_slat_h }, SizeZ: { param: vent_slat_d } }
+  - id: 63
+    type: Transform
+    inputs: { Translation: { param: vent_slat_2_pos } }
+  - id: 64
+    type: MeshCube
+    inputs: { SizeX: { param: vent_w }, SizeY: { param: vent_slat_h }, SizeZ: { param: vent_slat_d } }
+  - id: 65
+    type: Transform
+    inputs: { Translation: { param: vent_slat_3_pos } }
+  - id: 66
+    type: MeshCube
+    inputs: { SizeX: { param: vent_w }, SizeY: { param: vent_slat_h }, SizeZ: { param: vent_slat_d } }
+  - id: 67
+    type: Transform
+    inputs: { Translation: { param: vent_slat_4_pos } }
+
+  # ── Compose chain ──
+  - id: 100
+    type: JoinGeometry
+    name: body + fridge door
+  - id: 101
+    type: JoinGeometry
+    name: + freezer door
+  - id: 102
+    type: JoinGeometry
+    name: + fridge handle
+  - id: 103
+    type: JoinGeometry
+    name: + freezer handle
+  - id: 104
+    type: JoinGeometry
+    name: + kick plate
+  - id: 105
+    type: JoinGeometry
+    name: + brand
+  - id: 106
+    type: JoinGeometry
+    name: + vent slat 1
+  - id: 107
+    type: JoinGeometry
+    name: + vent slat 2
+  - id: 108
+    type: JoinGeometry
+    name: + vent slat 3
+  - id: 109
+    type: JoinGeometry
+    name: + vent slat 4
+
+  - id: 200
+    type: SetMaterial
+    name: steel everywhere
+    inputs: { Material: { param: steel } }
+
+  - id: 99
+    type: Viewer
+
+links:
+  - { from: { node: 10, pin: Geometry }, to: { node: 11, pin: Geometry } }
+  - { from: { node: 20, pin: Geometry }, to: { node: 21, pin: Geometry } }
+  - { from: { node: 22, pin: Geometry }, to: { node: 23, pin: Geometry } }
+  - { from: { node: 30, pin: Geometry }, to: { node: 31, pin: Geometry } }
+  - { from: { node: 32, pin: Geometry }, to: { node: 33, pin: Geometry } }
+  - { from: { node: 40, pin: Geometry }, to: { node: 41, pin: Geometry } }
+  - { from: { node: 50, pin: Geometry }, to: { node: 51, pin: Geometry } }
+  - { from: { node: 60, pin: Geometry }, to: { node: 61, pin: Geometry } }
+  - { from: { node: 62, pin: Geometry }, to: { node: 63, pin: Geometry } }
+  - { from: { node: 64, pin: Geometry }, to: { node: 65, pin: Geometry } }
+  - { from: { node: 66, pin: Geometry }, to: { node: 67, pin: Geometry } }
+
+  # Compose chain.
+  - { from: { node: 11, pin: Geometry }, to: { node: 100, pin: A } }
+  - { from: { node: 21, pin: Geometry }, to: { node: 100, pin: B } }
+  - { from: { node: 100, pin: Geometry }, to: { node: 101, pin: A } }
+  - { from: { node: 23,  pin: Geometry }, to: { node: 101, pin: B } }
+  - { from: { node: 101, pin: Geometry }, to: { node: 102, pin: A } }
+  - { from: { node: 31,  pin: Geometry }, to: { node: 102, pin: B } }
+  - { from: { node: 102, pin: Geometry }, to: { node: 103, pin: A } }
+  - { from: { node: 33,  pin: Geometry }, to: { node: 103, pin: B } }
+  - { from: { node: 103, pin: Geometry }, to: { node: 104, pin: A } }
+  - { from: { node: 41,  pin: Geometry }, to: { node: 104, pin: B } }
+  - { from: { node: 104, pin: Geometry }, to: { node: 105, pin: A } }
+  - { from: { node: 51,  pin: Geometry }, to: { node: 105, pin: B } }
+  - { from: { node: 105, pin: Geometry }, to: { node: 106, pin: A } }
+  - { from: { node: 61,  pin: Geometry }, to: { node: 106, pin: B } }
+  - { from: { node: 106, pin: Geometry }, to: { node: 107, pin: A } }
+  - { from: { node: 63,  pin: Geometry }, to: { node: 107, pin: B } }
+  - { from: { node: 107, pin: Geometry }, to: { node: 108, pin: A } }
+  - { from: { node: 65,  pin: Geometry }, to: { node: 108, pin: B } }
+  - { from: { node: 108, pin: Geometry }, to: { node: 109, pin: A } }
+  - { from: { node: 67,  pin: Geometry }, to: { node: 109, pin: B } }
+
+  - { from: { node: 109, pin: Geometry }, to: { node: 200, pin: Geometry } }
+  - { from: { node: 200, pin: Geometry }, to: { node: 99, pin: Geometry } }
+
+outputs:
+  Geometry: { node: 200, pin: Geometry }

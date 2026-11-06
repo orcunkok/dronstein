@@ -92,6 +92,7 @@ MATS = {
     "timber_white": mat(0.74, 0.70, 0.66, 0.0, 0.85),
     "steel_white": mat(0.78, 0.78, 0.76, 0.2, 0.5),
     "curtain_white": mat(0.70, 0.70, 0.68, 0.0, 0.9),
+    "curtain_denim": mat(0.34, 0.38, 0.44, 0.0, 0.9),   # the curtain's kitchen (east) side: denim-like grey (user)
     "steel_dark": mat(0.05, 0.05, 0.055, 0.6, 0.45),
     "steel_grey": mat(0.45, 0.46, 0.47, 0.8, 0.4),
     "conduit": mat(0.55, 0.56, 0.57, 0.9, 0.35),
@@ -109,6 +110,11 @@ MATS = {
     "cabinet_white": mat(0.82, 0.82, 0.80, 0.0, 0.4),
     "counter_black": mat(0.02, 0.02, 0.022, 0.0, 0.25),
     "nickel": mat(0.70, 0.70, 0.68, 1.0, 0.3),
+    "chair_metal": mat(0.45, 0.45, 0.50, 1.0, 0.30),  # the office chair kit's metal, for its added crossing leg
+    "gate_rail": mat(0.30, 0.31, 0.32, 0.6, 0.5),     # roll-up gate's guide rails: grey, darker than the door (user)
+    "gate_alu": mat(0.80, 0.81, 0.83, 0.3, 0.5),     # roll-up gate's curtain: aluminium colour, not shiny (user)
+    "alu_sink": mat(0.78, 0.79, 0.80, 1.0, 0.3),      # brushed aluminium sink basin (user)
+    "lamp_grey": mat(0.50, 0.51, 0.52, 0.85, 0.25),   # the kitchen's gooseneck lamps: slightly polished grey (user)
     "backsplash": mat(0.07, 0.07, 0.075, 0.0, 0.3),
     "red_cross": mat(0.6, 0.02, 0.02, 0.0, 0.5),
     "first_aid_cream": mat(0.78, 0.72, 0.55, 0.0, 0.6),
@@ -143,7 +149,7 @@ BLACK_STAINLESS = mat(0.06, 0.06, 0.065, 0.9, 0.35)
 RUG_CREAM = mat(0.60, 0.56, 0.48, 0.0, 0.95)
 RUG_GREY = mat(0.50, 0.49, 0.46, 0.0, 0.95)     # the diamond rug's base
 SILVER = mat(0.75, 0.75, 0.77, 0.9, 0.3)     # studio display backs
-STAINLESS = mat(0.50, 0.51, 0.53, 0.8, 0.45)   # range, dishwasher, microwave
+STAINLESS = mat(0.50, 0.51, 0.53, 0.8, 0.45)   # fridges, range, dishwasher, microwave
 
 
 class Graph:
@@ -154,6 +160,8 @@ class Graph:
         self.cube = edit.node("MeshCube", "unit cube", SizeX=1.0, SizeY=1.0, SizeZ=1.0)
         self.cyl = edit.node("MeshCylinder", "unit cylinder", Sides=16, Radius=1.0, Height=1.0,
                              CapFill=Literal("Menu", "Ngon"))
+        self.cyl_hi = edit.node("MeshCylinder", "unit cylinder smooth", Sides=64, Radius=1.0, Height=1.0,
+                                CapFill=Literal("Menu", "Ngon"))   # for big, close-up drums (the gate's roller hood)
         self.shade = edit.node("MeshCone", "lamp shade", Sides=32, BottomRadius=1.0, TopRadius=0.28, Height=1.0)
         self.groups = {}
         self.extra = []
@@ -179,6 +187,18 @@ class Graph:
     def box(self, key, size, pos, rot=IDENTITY):
         self.place(self.cube, key, size, pos, rot)
 
+    def cut_box(self, key, size, pos, tool_size, tool_pos, tool_rot):
+        """A box with a (rotated) box cut out of it, e.g. a wall with a sloped top."""
+        self.n += 1
+        a = self.e.node("Transform", f"{key} {self.n}", Geometry=self.cube.output("Geometry"),
+                        Scale=[float(v) for v in size], Translation=[float(v) for v in pos])
+        b = self.e.node("Transform", f"{key} {self.n} tool", Geometry=self.cube.output("Geometry"),
+                        Scale=[float(v) for v in tool_size], Rotation=euler_xyz(tool_rot),
+                        Translation=[float(v) for v in tool_pos])
+        cut = self.e.node("MeshBoolean", f"{key} {self.n} cut", A=a.output("Geometry"), B=b.output("Geometry"),
+                          Operation=Literal("Menu", "Difference"))
+        self.groups.setdefault(key, []).append(cut)
+
     def span(self, key, x0, x1, y0, y1, z0, z1):
         """An axis-aligned box from its extents."""
         self.box(key, (x1 - x0, y1 - y0, z1 - z0), ((x0 + x1) / 2, (y0 + y1) / 2, (z0 + z1) / 2))
@@ -189,10 +209,10 @@ class Graph:
         length = math.sqrt(sum(c * c for c in v))
         self.box(key, (w, length, d or w), [(a + b) / 2 for a, b in zip(p0, p1)], frame_y(v))
 
-    def tube(self, key, p0, p1, r):
+    def tube(self, key, p0, p1, r, smooth=False):
         v = [b - a for a, b in zip(p0, p1)]
         length = math.sqrt(sum(c * c for c in v))
-        self.place(self.cyl, key, (r, length, r), [(a + b) / 2 for a, b in zip(p0, p1)], frame_y(v))
+        self.place(self.cyl_hi if smooth else self.cyl, key, (r, length, r), [(a + b) / 2 for a, b in zip(p0, p1)], frame_y(v))
 
     def kit(self, name, pos, turn=0.0, material=None, **overrides):
         """A kit asset (origin on the floor, front +Z), turned about Y by turn and moved to pos."""
@@ -359,27 +379,27 @@ def window_rect(z0, cols, rows):
     return z0, z0 + cols * pw, top - rows * ph, top
 
 
-def holed_wall(g, x0, x1, za, zb, h, holes):
+def holed_wall(g, x0, x1, za, zb, h, holes, material="concrete_white"):
     """A wall slab x0..x1, z za..zb, 0..h with rectangular openings (z0, z1, y0, y1), built from horizontal bands."""
     ys = sorted({0.0, h, *(y for r in holes for y in r[2:])})
     for ya, yb in zip(ys, ys[1:]):
         z = za
         for z0, z1, _, _ in sorted(r for r in holes if r[2] <= ya and r[3] >= yb):
             if z0 > z:
-                g.span("concrete_white", x0, x1, ya, yb, z, z0)
+                g.span(material, x0, x1, ya, yb, z, z0)
             z = max(z, z1)
         if z < zb:
-            g.span("concrete_white", x0, x1, ya, yb, z, zb)
+            g.span(material, x0, x1, ya, yb, z, zb)
 
 
 def sash(g, xw, inward, z0, cols, rows):
     """A steel-sash window in the opening of the wall whose inner face is x = xw (inward = +1 on the north wall, -1 on
     the south wall), set a couple of inches back into the wall, its top at the common window top: clear panes of
-    P["south_wall"]["pane"], white bars between them, a heavier frame round it."""
+    P["south_wall"]["pane"], white bars between them, a heavier frame round it. No glass: the engine renders
+    opaque materials only, so a pane would close the view; the opening is left clear (user)."""
     pw, ph = P["south_wall"]["pane"]
     z0, z1, y0, y1 = window_rect(z0, cols, rows)
     a, b = sorted((xw - inward * 0.07, xw - inward * 0.09))
-    g.span("glass_sky", a, b, y0, y1, z0, z1)
     a, b = sorted((xw - inward * 0.05, xw - inward * 0.11))
     for k in range(cols + 1):
         w = 0.035 if 0 < k < cols else 0.06
@@ -602,12 +622,12 @@ def build_shell(g):
 
     # Skylights: three rows north to south, between the trusses, in a west and a middle column, none on the east side
     # over the mezzanine (user). Each fills the gap between two roof beams (the second gap from the west wall, on the
-    # slope, and the middle one, in the flat): blue glass up at the top of its opening in the deck, louvre bars just
+    # slope, and the middle one, in the flat): an open hole in the deck (no glass: the engine has no transparency, so a
+    # pane would read as an opaque blue sheet; user), louvre bars just
     # under it, a white frame flush with the ceiling round the opening. The north row's outer frame edge lines up with
     # the back of the desk row by the north wall, the south row's sits as far from the south wall (user).
     for x in sky_x:
         for z in sky_z:
-            on_roof(g, "glass_skylight", (2.4, 0.02, sky_w), x, z, below=0.03 - ROOF_T)
             for k in range(-3, 4):
                 on_roof(g, "paint_white", (0.05, 0.05, sky_w), x + k * 0.33, z, below=0.08 - ROOF_T)
             for dx in (-1.25, 1.25):
@@ -643,6 +663,8 @@ def build_shell(g):
                    Mode=Literal("Menu", "Smooth"))
     g.place(thick, "curtain_white", (1, 1, 1), ((CURTAIN_X[0] + CURTAIN_X[1]) / 2, 0.05 + ch / 2, CURTAIN_Z),
             roll(math.pi / 2))
+    g.place(thick, "curtain_denim", (1, 1, 1), ((CURTAIN_X[0] + CURTAIN_X[1]) / 2, 0.05 + ch / 2, CURTAIN_Z + 0.012),
+            roll(math.pi / 2))
     b0, b1 = curtain_beam
     for y0, y1, w in ((b0, b0 + 0.011, 0.076), (b0 + 0.011, b1 - 0.011, 0.004), (b1 - 0.011, b1, 0.076)):
         g.span("steel_white", X0, X1, y0, y1, CURTAIN_Z - w, CURTAIN_Z + w)
@@ -666,18 +688,29 @@ def build_shell(g):
     G, D, S = P["gate"], P["exit_door"], P["south_wall"]
     rz0, rz1, gh = G["z0"], G["z1"], G["height"]
     sx = X1 - 0.03
-    # Two grey guide channels stand in the opening's sides, flush with the wall's inner face; the curtain runs between
-    # them, rolled up part way (user: half open), its bottom bar over the open part.
-    gb, gw, cx = gh * G["open"], 0.12, X1 + 0.06      # curtain plane in the wall's thickness
+    # Two grey guide channels stand in the opening's sides, in front of the wall's inner face, one rail depth into the hall (user). The curtain is
+    # as thick as they are and runs in them, rolled up part way (user: half open), its bottom bar over the open part,
+    # the same black slats on both its faces (user), recessed in the opening on the outside (IMG_3113).
+    gb, gw = gh * G["open"], 0.12
+    gx = X1 - gw                                      # rails and door stand one rail depth inside the hall (user)
     for z0, z1 in ((rz0, rz0 + gw), (rz1 - gw, rz1)):
-        g.span("steel_dark", X1, X1 + gw, 0.0, gh + 0.05, z0, z1)
-    ca, cb = rz0 + gw - 0.04, rz1 - gw + 0.04         # its edges run in the channels
-    g.span("rollup_grey", cx - 0.01, cx + 0.01, gb, gh, ca, cb)
-    g.span("steel_dark", cx - 0.025, cx + 0.025, gb, gb + 0.06, ca, cb)
+        g.span("gate_rail", gx, gx + gw, 0.0, gh + 0.05, z0, z1)
+    # Behind each rail (outside it) the wall fills the opening through its thickness, so the opening's sides are flush
+    # with the rails' inner sides (user).
+    for z0, z1 in ((rz0, rz0 + gw), (rz1 - gw, rz1)):
+        g.span("concrete_white", X1, X1 + WALL_T, 0.0, gh, z0, z1)
+    ca, cb = rz0 + gw, rz1 - gw                       # exactly between the rails, no overlap (it z-fought with them)
+    g.span("gate_alu", gx, gx + gw, gb, gh, ca, cb)
+    g.span("steel_dark", gx - 0.01, gx + gw + 0.01, gb, gb + 0.06, ca, cb)
     for k in range(int((gh - gb) / 0.15)):
-        g.box("steel_dark", (0.03, 0.015, cb - ca), (cx - 0.02, gb + 0.15 + k * 0.15, (ca + cb) / 2))
+        for sx_ in (gx - 0.0075, gx + gw + 0.0075):
+            g.box("steel_dark", (0.015, 0.015, cb - ca), (sx_, gb + 0.15 + k * 0.15, (ca + cb) / 2))
     hood_r = (G["hood_top"] - gh) / 2
-    g.tube("rollup_grey", (sx - hood_r, gh + hood_r, rz0 - 0.2), (sx - hood_r, gh + hood_r, rz1 + 0.2), hood_r)
+    # Roller hood: a true (64-sided) drum against the wall's inner face, lowered 0.1 m to overlap the opening's top
+    # (user: it looked detached).
+    hx = X1 - hood_r + 0.03                           # 3 cm into the wall (user)
+    g.tube("rollup_grey", (hx, gh + hood_r - 0.1, rz0 - 0.2), (hx, gh + hood_r - 0.1, rz1 + 0.2), hood_r,
+           smooth=True)
     # Exit door: grey steel leaf in a frame, lever, EXIT sign; fire extinguisher west of it. Between the door and the
     # stair the fire alarm gear (IMG_3089): a red bell box up high, the red alarm panel, a keypad, a pull station.
     dz0, dz1, dh = D["z0"], D["z1"], D["height"]
@@ -695,7 +728,7 @@ def build_shell(g):
     # over it, a keypad and a small grey box on its door side, the red pull station under it. Two red conduits leave the
     # panel top and run west over the door; past it one rises to the roof, the other to just over the gate hood and
     # across the gate to the west wall (IMG_3089/3059).
-    pe = P["u_stair"]["lower_z"][0] - 0.12 - 0.08 - dz1     # the red panel ends 8 cm short of the U stair (user)
+    pe = P["u_stair"]["lower_z"][0] - 0.12 - 0.16 - dz1     # the red panel ends 16 cm short of the U stair (user)
     for y0, y1, a, b, key in ((1.31, 1.79, 0.35, pe, "red_cross"), (1.8, 2.06, 0.55, 0.72, "clock_face"),
                               (1.26, 1.39, 0.14, 0.33, "panel_grey"), (1.28, 1.39, 0.07, 0.13, "panel_grey"),
                               (1.15, 1.29, 0.33, 0.43, "red_cross")):
@@ -705,6 +738,9 @@ def build_shell(g):
         pts = [(1.79, zp), (yh, zp), (yh, zr), (top, zr)] + ([(top, Z0)] if top < 6 else [])
         for (ya, za), (yb, zb) in zip(pts, pts[1:]):
             g.tube("conduit_red", (sx - 0.03, ya, za), (sx - 0.03, yb, zb), 0.012)
+    # A grey junction box on the lower one over the exit door, where it turns up west of the door (IMG_3111, user).
+    jy, jz = 2.54, dz0 - 0.31
+    g.span("panel_grey", sx - 0.06, sx, jy - 0.06, jy + 0.06, jz - 0.06, jz + 0.06)
     # The first one goes on from its top west under the south wall's top beam to the next roof beam, then north under
     # that beam to between the north skylights' south edge and where the ceiling starts sloping down (user).
     zb2 = BEAMS_Z[2]
@@ -727,8 +763,8 @@ def build_shell(g):
     g.span("panel_grey", X0, X0 + 0.15, 1.1, 1.85, CURTAIN_Z + 0.4, CURTAIN_Z + 0.9)
     g.span("panel_grey", 3.9, 4.5, 1.0, 1.9, Z0, Z0 + 0.15)
     g.tube("red_cross", (X0 + 0.12, 0.9, CURTAIN_Z + 1.2), (X0 + 0.12, 1.4, CURTAIN_Z + 1.2), 0.07)
-    for x in (X1 - 0.4, X1 - 0.9):     # between the gate and the west corner
-        z = (P["gate"]["z0"] + Z0) / 2
+    for x in (X1 - 0.4, X1 - 0.9):     # in front of the gate's west guide channel, west faces flush with its west side (user)
+        z = P["gate"]["z0"] + 0.07
         g.tube("yellow_safety", (x, 0.0, z), (x, 1.1, z), 0.07)
 
     # Two unit heaters hung on rods from the north east-west truss, in the outer bays, aimed at the middle of the south
@@ -744,11 +780,12 @@ def build_shell(g):
             return (xh + u * math.cos(a) + w * math.sin(a), y, z - u * math.sin(a) + w * math.cos(a))
 
         g.box("heater_brown", (0.35, 0.9, 0.6), at(0.0, 6.05, 0.0), r)
-        g.box("alu_matte", (0.04, 1.0, 0.7), at(-0.21, 6.05, 0.0), r)
-        g.tube("alu_matte", at(-0.23, 6.05, 0.0), at(-0.33, 6.05, 0.0), 0.26)
-        g.box("alu_matte", (0.5, 0.18, 0.7), at(0.06, 5.51, 0.0), r)
+        # Back panel and exhaust hood flush with the brown box's sides (user); the hood's back with its back too.
+        g.box("alu_matte", (0.04, 0.9, 0.6), at(-0.195, 6.05, 0.0), r)
+        g.tube("alu_matte", at(-0.215, 6.05, 0.0), at(-0.315, 6.05, 0.0), 0.26)
+        g.box("alu_matte", (0.485, 0.18, 0.6), at(0.0675, 5.51, 0.0), r)
         for k in range(3):
-            g.box("steel_dark", (0.01, 0.025, 0.64), at(0.315, 5.45 + 0.055 * k, 0.0), r)
+            g.box("steel_dark", (0.01, 0.025, 0.56), at(0.315, 5.45 + 0.055 * k, 0.0), r)
         for w in (-0.22, 0.22):
             p = at(0.0, 6.5, w)
             g.tube("conduit", p, (p[0], bottom, p[2]), 0.01)
@@ -769,11 +806,12 @@ def build_shell(g):
 
 
 # ---------------------------------------------------------------- office block and mezzanine
-def deck_rail(g, p0, p1, base=BOX_DECK, height=1.0):
+def deck_rail(g, p0, p1, base=BOX_DECK, height=1.0, first=True):
     """A railing from p0 to p1 (x, z) standing on `base`: dark brown round balusters 0.1 m apart, the same as the
-    spiral stairs' (user), under a round anthracite top rail `height` up."""
+    spiral stairs' (user), under a round anthracite top rail `height` up. first=False leaves out the baluster at p0
+    (when p0 is inside a post)."""
     n = max(1, int(math.dist(p0, p1) / 0.1))
-    for i in range(n + 1):
+    for i in range(0 if first else 1, n + 1):
         x, z = p0[0] + (p1[0] - p0[0]) * i / n, p0[1] + (p1[1] - p0[1]) * i / n
         g.tube("rail_brown", (x, base, z), (x, base + height, z), 0.012)
     g.tube("anthracite", (p0[0], base + height, p0[1]), (p1[0], base + height, p1[1]), 0.025)
@@ -796,21 +834,25 @@ def cable_rail(g, p0, p1, out=(-1.0, 0.0)):
         g.tube("panel_grey", (p0[0], y, p0[1]), (p1[0], y, p1[1]), 0.006)
 
 
-def slat_rail(g, p0, p1, inward, outside=False, first=True):
+def slat_rail(g, p0, p1, inward, outside=False, first=True, ext0=0.0, ext1=0.0, ends_only=False):
     """A grey railing along the nosing or edge line p0-p1 (x, y, z): square posts no more than 1.5 m apart, flush with
     the edge on its inner side (`inward`, in x, z), or bolted outside a fascia board and reaching down its face, and
     a flat handrail lying on the posts' tops, four upright flat bars under it on the posts' inner side (IMG_3066/3069,
     user)."""
-    s, t = 0.07, 0.3 if outside else 0.0          # post size; how far the posts reach down a fascia
+    s, t = 0.11, 0.3 if outside else 0.0          # square posts as wide as the handrail (user); how far down a fascia
     off = -(0.05 + s / 2) if outside else s / 2
-    n = max(1, math.ceil(math.dist(p0, p1) / 1.5))
+    n = 1 if ends_only else max(1, math.ceil(math.dist(p0, p1) / 1.5))   # sloped flights: end posts only (user)
     for i in range(0 if first else 1, n + 1):
         x, y, z = (a + (b - a) * i / n for a, b in zip(p0, p1))
         g.box("stair_grey", (s, 1.05 + t, s), (x + inward[0] * off, y + (1.05 - t) / 2, z + inward[1] * off))
     bo = off + s / 2 + 0.0125
     a = (p0[0] + inward[0] * off, p0[1] + 1.05 + 0.0125, p0[2] + inward[1] * off)      # flat handrail on the posts
     b = (p1[0] + inward[0] * off, p1[1] + 1.05 + 0.0125, p1[2] + inward[1] * off)
-    flat_bar(g, "stair_grey", a, b, 0.09, 0.025)
+    u = [q - p_ for p_, q in zip(a, b)]                # it runs on ext0 / ext1 past the end posts (free ends only, so
+    ul = math.sqrt(sum(c * c for c in u))              # joined rails don't overrun each other), wider than them (user)
+    a = tuple(p_ - c / ul * ext0 for p_, c in zip(a, u))
+    b = tuple(q + c / ul * ext1 for q, c in zip(b, u))
+    flat_bar(g, "stair_grey", a, b, 0.11, 0.025)
     for h in (0.25, 0.45, 0.65, 0.85):
         a = (p0[0] + inward[0] * bo, p0[1] + h - 0.033, p0[2] + inward[1] * bo)
         b = (p1[0] + inward[0] * bo, p1[1] + h - 0.033, p1[2] + inward[1] * bo)
@@ -831,7 +873,7 @@ def flat_bar(g, key, p0, p1, thick, tall):
           [[side[i], up[i], u[i]] for i in range(3)])
 
 
-def spiral(g, cx, cz, r, y0, y1, treads, start, turn):
+def spiral(g, cx, cz, r, y0, y1, treads, start, turn, post_top=1.0):
     """A spiral stair round one anthracite post from y0 up to the top rails' height: per step a rectangular wood tread
     from the post out, a slim black bracket under it, two dark brown balusters near its outer corners right up into
     the handrail; the bottom tread points along yaw `start`, the top one `turn` radians further round."""
@@ -844,7 +886,7 @@ def spiral(g, cx, cz, r, y0, y1, treads, start, turn):
     def rail_y(a):
         return y0 + rise * (1 + (treads - 1) * (a - start) / turn) + 0.9
 
-    g.tube("anthracite", (cx, y0, cz), (cx, y1 + 1.0, cz), hub)      # one post, up to the top rails (user)
+    g.tube("anthracite", (cx, y0, cz), (cx, y1 + post_top, cz), hub)  # one post, up to the top rails (user)
     for i in range(treads):
         a = start + step * i
         y = y0 + rise * (i + 1)
@@ -881,32 +923,50 @@ def u_stair(g):
     # The flights and the landing sit one fascia and one post out from the top platform, so their railings line up
     # with the platform's, which stands outside its fascia (user).
     d = -(0.05 + 0.07)
-    za, zb = pa + d, pb + d
+    za, zb = pa - 0.02, pb + d      # upper flight: its west stringer's outer face flush with the platform's fascia (user)
     (xl, xe), (lz0, lz1), (zc, zd) = U["landing_x"], [v + d for v in U["landing_z"]], [v + d for v in U["lower_z"]]
     go = (xl - px1) / n
     g.span("stair_grey", px0, px1, DECK - 0.15, DECK, pa, pb)
     g.span("stair_grey", xl, xe, land - 0.2, land, lz0, lz1)
-    for k in range(1, n):
-        x0 = px1 + go * (k - 1)
-        g.span("stair_grey", x0, x0 + go, DECK - rise * k - 0.05, DECK - rise * k, za, zb)
+    gu = (xl - px1) / (n - 1)          # the upper flight's n - 1 treads fill its whole run (no gap above the landing)
+    for k in range(1, n + 1):
+        x0 = px1 + gu * (k - 1)
+        if k < n:
+            g.span("stair_grey", x0, x0 + gu, DECK - rise * k - 0.05, DECK - rise * k, za, zb)
         g.span("stair_grey", x0, x0 + 0.03, DECK - rise * k, DECK - rise * (k - 1), za, zb)
         x0, x1 = xl - go * k, xl - go * (k - 1)
         g.span("stair_grey", x0, x1, land - rise * k - 0.05, land - rise * k, zc, zd)
         g.span("stair_grey", x1 - 0.03, x1, land - rise * k, land - rise * (k - 1), zc, zd)
-        g.span("paint_white", x0, x1, 0.0, land - rise * k - 0.05, zc - 0.05, zc)
     g.span("paint_white", xl, xe, 0.0, land - 0.2, lz0 - 0.05, lz0)
     for z in (za, zb):                             # stringers: plates on edge along each flight's sides
         flat_bar(g, "stair_grey", (px1, DECK - 0.15, z), (xl, land - 0.15, z), 0.06, 0.3)
-    for z in (zc, zd):
-        flat_bar(g, "stair_grey", (xl, land - 0.15, z), (xl - go * n, -0.05, z), 0.06, 0.3)
+    xs = xl - go * (n - 1)                              # the lower flight's first post
+    for z in (zc, zd):                                  # they end at the first step's post (user)
+        ys = land - 0.15 - (land - 0.1) * (n - 1) / n
+        flat_bar(g, "stair_grey", (xl, land - 0.15, z), (xs, ys, z), 0.06, 0.3)
+    # White closure wall under the lower flight: one triangle-like panel, its top a straight slope along the stringer's
+    # lower edge, its outer face flush with the stringer's, from the landing down to the flight's first post (IMG_3111,
+    # user: no sawtooth).
+    sl = (land - 0.15 + 0.05) / (go * n)                # stringer slope
+    th = math.atan(sl)
+    yl = land - 0.15 - 0.15 / math.cos(th)              # stringer's lower edge over x = xl
+    c, s_ = math.cos(th), math.sin(th)
+    wz0, wz1 = zc - 0.03, zc + 0.05
+    g.cut_box("paint_white", (xl - xs, yl, wz1 - wz0), ((xs + xl) / 2, yl / 2, (wz0 + wz1) / 2),
+              (20.0, 4.0, 1.0), (xl - s_ * 2.0, yl + c * 2.0, (wz0 + wz1) / 2), [[c, -s_, 0.0], [s_, c, 0.0], [0.0, 0.0, 1.0]])
     for z in (zc + 0.05, za - 0.05):
         g.box("stair_grey", (0.08, land, 0.08), (xl + 0.05, land / 2, z))
-    slat_rail(g, (px1, DECK, za), (xl, land, za), (0.0, 1.0), first=False)  # the top platform's post is its first
-    slat_rail(g, (xl, land, zc), (xl - go * (n - 1), rise, zc), (0.0, 1.0))
-    slat_rail(g, (xl, land, zd), (xl - go * (n - 1), rise, zd), (0.0, -1.0))
+    # Upper flight's railing bolted outside its west stringer, in line with the platform's (the top platform's post is
+    # its first); the lower flight's run on 15 cm past their bottom posts (user).
+    slat_rail(g, (px1, DECK, pa), (xl, land, pa), (0.0, 1.0), outside=True, first=False, ends_only=True)
+    slat_rail(g, (xl, land, zc), (xs, rise, zc), (0.0, 1.0), ext1=0.15, ends_only=True)
+    slat_rail(g, (xl, land, zd), (xs, rise, zd), (0.0, -1.0), ext1=0.15, ends_only=True)
+    # One post at the middle of the upper flight, outside its stringer, from the floor up to the handrail (IMG_3111).
+    mxp, myp = (px1 + xl) / 2, (DECK + land) / 2 + 1.05
+    g.box("stair_grey", (0.11, myp, 0.11), (mxp, myp / 2, pa - 0.105))
     g.span("deck_fascia", px0, px1, DECK - 0.3, DECK, pa - 0.05, pa)      # the top platform's side, like the deck's
     slat_rail(g, (px0, DECK, pa), (px1, DECK, pa), (0.0, 1.0), outside=True)
-    slat_rail(g, (xl, land, lz0), (xe, land, lz0), (0.0, 1.0))
+    slat_rail(g, (xl, land, lz0), (xe - 0.055, land, lz0), (0.0, 1.0), ext1=0.055)   # ends flush with the wall (user)
 
 
 def sofa(g, xw, zc, width=1.85, depth=0.8):
@@ -1036,11 +1096,10 @@ def build_block(g):
     (d0, d1), (sz0, sz1), ce = Q["doors_z"], Q["side_door_z"], Q["closet_z1"]
     g.span("paint_white", px, X1, 0.0, top, mz0, mz0 + 0.12)
     g.span("paint_white", bx1, px, 0.0, top, ce, ce + 0.12)
-    for z0, z1 in ((mz0, d0), (d1, sz0), (sz1, Z1)):
-        g.span("paint_white", px, px + 0.15, 0.0, top, z0, z1)
-    for z0, z1 in ((d0, d1), (sz0, sz1)):
-        g.span("paint_white", px, px + 0.15, 2.21, top, z0, z1)
-    g.span("paint_white", px + 2.0, px + 2.1, 0.0, top, d0 - 0.5, d1 + 0.5)
+    (ty0, ty1) = Q["transom_y"]
+    transoms = [(zc - w / 2, zc + w / 2) for zc, w in zip(Q["transoms_z"], Q["transom_w"])]
+    holed_wall(g, px, px + 0.15, mz0, Z1, top, [(d0, d1, 0.0, 2.21), (sz0, sz1, 0.0, 2.21),
+                                                *((za, zb, ty0, ty1) for za, zb in transoms)], "paint_white")
     # French doors, closed: a wood frame round the opening, two wood leaves, each with a column of seven panes.
     for z0, z1 in ((d0, d0 + 0.08), (d1 - 0.08, d1)):
         g.span("wood_door", px - 0.04, px + 0.19, 0.0, 2.21, z0, z1)
@@ -1053,12 +1112,10 @@ def build_block(g):
         for i in range(7):
             y = 0.2 + i * (ph + 0.035)
             g.span("glass_dark", px + 0.045, px + 0.105, y, y + ph, pz0, pz1)
-    (ty0, ty1) = Q["transom_y"]
-    # Transoms: glass in a matte aluminium frame on all four sides (outer size from the params).
+    # Transoms: open in the wall (no glass, the engine renders opaque only; user), a matte aluminium frame on all four
+    # sides (outer size from the params).
     fw = 0.045
-    for zc, w in zip(Q["transoms_z"], Q["transom_w"]):
-        za, zb = zc - w / 2, zc + w / 2
-        g.span("glass_teal", px - 0.01, px, ty0, ty1, za, zb)
+    for za, zb in transoms:
         for y0, y1, z0, z1 in ((ty0, ty0 + fw, za, zb), (ty1 - fw, ty1, za, zb), (ty0, ty1, za, za + fw),
                                (ty0, ty1, zb - fw, zb)):
             g.span("alu_matte", px - 0.035, px, y0, y1, z0, z1)
@@ -1104,8 +1161,8 @@ def build_block(g):
 
     # Spiral stairs: floor -> lower deck just west of the box, lower deck -> upper deck where the mezzanine starts.
     spiral(g, S["x"], S["z"], S["radius"], 0.0, BOX_DECK, S["treads"], S["start"], S["turn"])
-    hand = spiral(g, T["x"], T["z"], T["radius"], BOX_DECK, DECK, T["treads"], T["start"], T["turn"])
-    g.tube("anthracite", hand, (T["x"], DECK + 1.0, T["z"]), 0.025)    # its handrail ends in the post's top (IMG_3116)
+    # Its post reaches up to the upper deck's grey top rail (DECK + 1.07, user); no bar from the handrail's end to it.
+    hand = spiral(g, T["x"], T["z"], T["radius"], BOX_DECK, DECK, T["treads"], T["start"], T["turn"], post_top=1.07)
     # The small spiral's top: a square wood walk-in platform on a dark steel frame at the upper deck's level, south of
     # its post between the top tread and the upper deck; a railing along its back by the tall box, going on from the
     # stair's handrail at its height, and one along its west side from the post, meeting the upper deck's railing
@@ -1115,7 +1172,7 @@ def build_block(g):
     for x0, x1, z0, z1 in ((tx, tx + 0.03, tz, tz + tr), (tx, mx0, tz + tr - 0.03, tz + tr)):
         g.span("steel_dark", x0, x1, DECK - 0.14, DECK - 0.045, z0, z1)
     deck_rail(g, (hand[0], hand[2]), (mx0, hand[2]), DECK, hand[1] - DECK)
-    deck_rail(g, (tx, tz), (mx0 - 0.06, tz), DECK, 1.07)
+    deck_rail(g, (tx, tz), (mx0 - 0.06, tz), DECK, 1.07, first=False)   # no baluster inside the post (user)
 
 
 # ---------------------------------------------------------------- kitchen
@@ -1127,9 +1184,9 @@ def shaker_door(g, x0, x1, y0, y1, zf):
         g.span("cabinet_white", a, b, c, d, zf - 0.03, zf - 0.02)
 
 
-def base_run(g, x0, x1, doors, zf, counter=True, drawers=False):
+def base_run(g, x0, x1, doors, zf, counter=True, drawers=False, top=0.876):
     g.span("backsplash", x0, x1, 0.0, 0.1, zf + 0.05, Z1)
-    g.span("cabinet_white", x0, x1, 0.1, 0.876, zf, Z1)
+    g.span("cabinet_white", x0, x1, 0.1, top, zf, Z1)   # top < 0.876 leaves room for a sink basin
     w = (x1 - x0) / doors
     if drawers:
         for k in range(4):
@@ -1159,7 +1216,7 @@ def upper_run(g, x0, x1, y0, y1, doors):
 
 def microwave(g, x0, x1, y0, zf, h=0.42, d=0.40):
     """An over-the-range stainless microwave over x0..x1 from y0 up, its front at zf (IMG_3105): a dark vent strip
-    across the top, the door's big dark window on the left, a curved stainless bar handle at the door's right edge,
+    across the top, the door's big dark window on the left, a straight stainless bar handle at the door's right edge,
     a dark control panel on the right."""
     xd = x0 + (x1 - x0) * 0.78                     # the door's right edge
     g.span("stainless", x0, x1, y0, y0 + h, zf, zf + d)
@@ -1167,10 +1224,9 @@ def microwave(g, x0, x1, y0, zf, h=0.42, d=0.40):
     g.span("glass_dark", x0 + 0.05, xd - 0.09, y0 + 0.06, y0 + h - 0.11, zf - 0.004, zf)
     g.span("backsplash", xd + 0.02, x1 - 0.03, y0 + 0.06, y0 + h - 0.11, zf - 0.004, zf)
     hx = xd - 0.045
-    ends = [(hx, y0 + 0.08), (hx - 0.012, y0 + h / 2 - 0.04), (hx, y0 + h - 0.13)]
-    for (xa, ya), (xb, yb) in zip(ends, ends[1:]):
-        g.tube("stainless", (xa, ya, zf - 0.04), (xb, yb, zf - 0.04), 0.011)
-    for xa, ya in (ends[0], ends[-1]):
+    ends = [(hx, y0 + 0.08), (hx, y0 + h - 0.13)]   # one straight vertical bar on two standoffs (user)
+    g.tube("stainless", (hx, ends[0][1], zf - 0.04), (hx, ends[1][1], zf - 0.04), 0.011)
+    for xa, ya in ends:
         g.tube("stainless", (xa, ya, zf - 0.04), (xa, ya, zf), 0.008)
 
 
@@ -1178,7 +1234,7 @@ def build_kitchen(g):
     x = KITCHEN_X
     zf = Z1 - 0.61                    # base cabinet fronts left of the range
     zr = Z1 - 0.70                    # right of it the cabinets, counter and pantry are 0.70 m deep (user)
-    f1, f2 = x, x + 0.88              # fridges 0.88 m wide each (user), black stainless
+    f1, f2 = x, x + 0.88              # fridges 0.88 m wide each (user), stainless like the other appliances
     c1 = x + 2 * 0.88
     rng = c1 + 0.45                   # range 0.80 m wide, the microwave over it the same (user)
     dr = rng + 0.80
@@ -1189,7 +1245,7 @@ def build_kitchen(g):
     for fx in (f1, f2):
         fc = fx + 0.454
         g.kit("appliances/fridge_v2", (fc, 0.0, Z1 - 0.45), turn=math.pi,
-              width=0.88, height=1.775, depth=0.86, steel=BLACK_STAINLESS)
+              width=0.88, height=1.775, depth=0.86, steel=STAINLESS)   # same stainless as the others (user)
         # Stainless pulls: two on the French doors, one across the freezer drawer.
         for hx in (fc - 0.06, fc + 0.06):
             g.span("nickel", hx - 0.012, hx + 0.012, 0.8, 1.55, Z1 - 0.97, Z1 - 0.93)
@@ -1211,21 +1267,46 @@ def build_kitchen(g):
     g.span("stainless", dw + 0.01, sk - 0.01, 0.1, 0.86, zr - 0.02, zr)
     g.tube("nickel", (dw + 0.08, 0.78, zr - 0.05), (sk - 0.08, 0.78, zr - 0.05), 0.01)
     g.span("counter_black", dw, sk, 0.876, 0.91, zr - 0.03, Z1)
-    base_run(g, sk, pa, 2, zr)
-    # Sink basin and faucet.
+    # Sink: a brushed aluminium undermount basin 0.6 x 0.42 x 0.2 m in a hole in the counter (user); the sink cabinet's
+    # top is lowered to make room and filled back up round the basin.
     sc = (sk + pa) / 2
-    g.span("steel_dark", sc - 0.3, sc + 0.3, 0.911, 0.913, zr + 0.06, zr + 0.46)
-    g.tube("nickel", (sc, 0.91, Z1 - 0.08), (sc, 1.25, Z1 - 0.08), 0.015)
-    g.tube("nickel", (sc, 1.25, Z1 - 0.08), (sc, 1.18, Z1 - 0.32), 0.012)
+    bx0, bx1, bz0, bz1, by = sc - 0.3, sc + 0.3, zr + 0.08, zr + 0.50, 0.70
+    base_run(g, sk, pa, 2, zr, counter=False, top=by - 0.02)
+    for a, b, c, d in ((sk, pa, zr, bz0), (sk, pa, bz1, Z1), (sk, bx0, bz0, bz1), (bx1, pa, bz0, bz1)):
+        g.span("cabinet_white", a, b, by - 0.02, 0.876, max(c, zr), d)
+        g.span("counter_black", a, b, 0.876, 0.91, zr - 0.03 if c == zr else c, d)
+    g.span("alu_sink", bx0, bx1, by - 0.01, by, bz0, bz1)                       # floor
+    for a, b, c, d in ((bx0, bx1, bz0, bz0 + 0.01), (bx0, bx1, bz1 - 0.01, bz1),
+                       (bx0, bx0 + 0.01, bz0, bz1), (bx1 - 0.01, bx1, bz0, bz1)):
+        g.span("alu_sink", a, b, by - 0.01, 0.91, c, d)                       # walls
+    for a, b, c, d in ((bx0 - 0.02, bx1 + 0.02, bz0 - 0.02, bz0), (bx0 - 0.02, bx1 + 0.02, bz1, bz1 + 0.02),
+                       (bx0 - 0.02, bx0, bz0, bz1), (bx1, bx1 + 0.02, bz0, bz1)):
+        g.span("alu_sink", a, b, 0.91, 0.913, c, d)                           # lip on the counter
+    g.tube("pc_black", (sc, by, (bz0 + bz1) / 2), (sc, by + 0.003, (bz0 + bz1) / 2), 0.04)  # drain
+    # Faucet, thicker (user): a base, the riser and the gooseneck spout reaching over the basin.
+    g.tube("nickel", (sc, 0.91, Z1 - 0.08), (sc, 0.94, Z1 - 0.08), 0.04)
+    # Inverted J (user): the riser, a half-circle arc over to the front, a short straight drop over the basin.
+    g.tube("nickel", (sc, 0.94, Z1 - 0.08), (sc, 1.20, Z1 - 0.08), 0.025)
+    R, cz = 0.11, Z1 - 0.08 - 0.11
+    arc = [(1.20 + R * math.sin(math.pi * k / 10), cz + R * math.cos(math.pi * k / 10)) for k in range(11)]
+    for (ya, za), (yb, zb) in zip(arc, arc[1:]):
+        g.tube("nickel", (sc, ya, za), (sc, yb, zb), 0.022)
+    g.tube("nickel", (sc, 1.20, cz - R), (sc, 1.13, cz - R), 0.022)
     # Backsplash, microwave over the range, upper cabinets, pantry.
     g.span("backsplash", c1, pa, 0.91, 1.42, Z1 - 0.01, Z1)
     microwave(g, rng, dr, 1.48, Z1 - 0.41)
-    # Wall clock over the cabinets (IMG_3094): black rim, white face, two hands.
-    cx = x + 3.35
-    g.tube("pc_black", (cx, 2.75, Z1), (cx, 2.75, Z1 - 0.05), 0.2)
-    g.tube("clock_face", (cx, 2.75, Z1 - 0.05), (cx, 2.75, Z1 - 0.055), 0.18)
-    g.box("pc_black", (0.012, 0.13, 0.006), (cx, 2.80, Z1 - 0.058))
-    g.box("pc_black", (0.09, 0.012, 0.006), (cx + 0.04, 2.75, Z1 - 0.058))
+    # Clock (IMG_3094): black rim, white face, two hands; it stands on top of the upper cabinets, leaning back 10
+    # degrees with its top edge against the wall (user). u is the face's up, n its outward normal.
+    cx, tilt = x + 3.35, math.radians(10)
+    u, n = (0.0, math.cos(tilt), math.sin(tilt)), (0.0, math.sin(tilt), -math.cos(tilt))
+
+    def on_face(c, a=0.0, b=0.0, d=0.0):  # c along u, a along x, d along n, from the rim's back centre
+        return (cx + a, 2.42 + 0.2 * u[1] + c * u[1] + d * n[1], Z1 - 0.2 * u[2] + c * u[2] + d * n[2] + b)
+
+    g.tube("pc_black", on_face(0.0), on_face(0.0, d=0.05), 0.2)
+    g.tube("clock_face", on_face(0.0, d=0.05), on_face(0.0, d=0.055), 0.18)
+    g.strut("pc_black", on_face(-0.015, d=0.058), on_face(0.115, d=0.058), 0.012, 0.006)
+    g.strut("pc_black", on_face(0.0, a=-0.005, d=0.058), on_face(0.0, a=0.085, d=0.058), 0.012, 0.006)
     upper_run(g, f1, c1, 1.88, 2.42, 4)
     upper_run(g, c1, rng, 1.42, 2.42, 1)
     upper_run(g, rng, dr, 1.9, 2.42, 2)
@@ -1240,12 +1321,19 @@ def build_kitchen(g):
     g.span("nickel", pm + 0.038, pm + 0.05, 0.9, 1.3, zr - 0.06, zr - 0.03)
     # Gooseneck barn lamps above the run.
     for lx in (x + 0.7, x + 3.1, x + 5.5):
-        g.tube("steel_dark", (lx, 2.95, Z1), (lx, 3.05, Z1 - 0.35), 0.012)
-        g.tube("steel_dark", (lx, 3.05, Z1 - 0.35), (lx, 2.92, Z1 - 0.5), 0.012)
-        g.tube("steel_dark", (lx, 2.84, Z1 - 0.5), (lx, 2.92, Z1 - 0.5), 0.17)
+        g.tube("lamp_grey", (lx, 2.95, Z1), (lx, 3.05, Z1 - 0.35), 0.012)
+        g.tube("lamp_grey", (lx, 3.05, Z1 - 0.35), (lx, 2.92, Z1 - 0.5), 0.012)
+        g.tube("lamp_grey", (lx, 2.84, Z1 - 0.5), (lx, 2.92, Z1 - 0.5), 0.17)
 
 
 # ---------------------------------------------------------------- desk bay
+def office_chair(g, pos, turn=0.0):
+    """The kit office chair, plus a second base bar across its own one: the kit's two mirrors leave a single straight
+    bar (both spokes on one line), so this one at right angles makes the base an X (user)."""
+    g.kit("seating/office_chair_v2", pos, turn=turn)
+    g.box("chair_metal", (0.06, 0.04, 0.6), (pos[0], 0.02, pos[2]), yaw(turn))
+
+
 def standing_desk(g, x, z, along_z=True, length=1.5, depth=0.75):
     """A white sit-stand desk, length x depth x 0.74 m, its length along z (or x)."""
     lx, lz = (depth, length) if along_z else (length, depth)
@@ -1302,7 +1390,7 @@ def build_desks(g):
     dx, dz = C["small_desk_x"], C["small_desk_z"]
     standing_desk(g, dx, dz, length=C["small_desk"][0], depth=C["small_desk"][1])
     g.kit("appliances/monitor_v2", (dx + 0.12, 0.74, dz), turn=-math.pi / 2)
-    g.kit("seating/office_chair_v2", (dx - 0.55, 0.0, dz), turn=math.pi / 2)
+    office_chair(g, (dx - 0.55, 0.0, dz), turn=math.pi / 2)
     (rx0, rx1), (rz0, rz1) = C["rug_x"], C["rug_z"]
     beni_rug(g, rx0, rx1, rz0, rz1)
     diamond_rug(g, *C["rug2_x"], *C["rug2_z"])
@@ -1340,28 +1428,32 @@ def build_desks(g):
         standing_desk(g, xd, w0 + dl / 2 + k * (dl + 0.005), length=dl, depth=dd)
     ez = w0 + 2 * (dl + 0.005) + sl / 2
     standing_desk(g, xd, ez, length=sl, depth=sd)
-    g.kit("seating/office_chair_v2", (xd + 0.7, 0.0, ez), turn=-math.pi / 2)
+    office_chair(g, (xd + 0.7, 0.0, ez), turn=-math.pi / 2)
     for z in (w0 + dl / 2 - 0.3225, w0 + dl / 2 + 0.3225):
         g.kit("appliances/monitor_v2", (xd + 0.1, 0.74, z), turn=-math.pi / 2, material=SILVER)
     g.kit("appliances/monitor_v2", (xd - 0.1, 0.74, ez), turn=math.pi / 2)
     for z in (w0 + 0.6, w0 + 2.0):                          # full-tower gaming PCs at the desks' front edge
         g.span("pc_black", xd + dd / 2 - 0.6, xd + dd / 2, 0.0, 0.6, z - 0.125, z + 0.125)
     crane(g, *C["crane"])
+    # A big carton dropped north of the crane, 0.5 m in front of the north wall's column there, a bit skewed (user).
+    col = min(north_columns(), key=lambda c: abs(c - C["crane"][1]))
+    g.box("cardboard", (0.6, 0.7, 0.8), (X0 + COLUMN_D + 0.5 + 0.33, 0.35, col + 0.06), yaw(0.21))
     g.box("alu_case", (0.8, 0.3, 0.4), (xd, 0.15, w0 - 0.22))
     g.box("pc_black", (0.5, 0.75, 0.25), (xd, 0.375, w0 - 0.565))
     # Posters flush on the north wall: the two brown ones side by side 2 m from the west wall, two more east with
     # more space between them (IMG_3096).
     for z in (Z0 + 2.3, Z0 + 2.92, w1 - 1.7, w1 - 0.6):
         g.box("poster", (0.03, 0.9, 0.6), (X0 + 0.015, 0.45, z))
-    # A long box on the east-bay floor.
-    g.box("cardboard", (1.2, 0.2, 0.32), (X0 + 4.0, 0.1, 3.0))
+    # A long box on the east-bay floor, at the hall's centre: it swapped places with the trash can, which now stands in
+    # the middle of the test mat (user).
+    g.box("cardboard", (1.2, 0.2, 0.32), (0.0, 0.1, 0.0))
     # West wall, south to north: a desk north of the gate's west end, its user facing into the hall, boxes on its gate
     # side (IMG_3059, user), the grey cases north of the pilaster with one open on the floor, more boxes (the robot
     # dogs are Unitree Go2 packs in the scene).
     # The desk group: 5.7 m north of the gate wall, 1.2 m east of the gate's west side (user).
-    gx, gz = X1 - 5.7, P["gate"]["z0"] + 1.2
+    gx, gz = X1 - 5.7, P["gate"]["z0"] + 0.2   # 1 m further west than before (user)
     standing_desk(g, gx, gz + 0.85, along_z=False, length=1.2, depth=0.55)
-    g.kit("seating/office_chair_v2", (gx, 0.0, gz + 0.24))
+    office_chair(g, (gx, 0.0, gz + 0.24))
     # Cardboard boxes on the desk's gate side, various sizes, some stacked: (x, z, size, base height, turn).
     for x, z, size, y, turn in ((1.2, 0.5, (0.5, 0.35, 0.45), 0.0, 0.1),
                                 (1.2, 0.5, (0.4, 0.3, 0.35), 0.35, -0.2),

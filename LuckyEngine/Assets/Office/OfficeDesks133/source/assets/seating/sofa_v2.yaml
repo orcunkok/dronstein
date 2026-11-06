@@ -1,0 +1,121 @@
+# Sprint 171 W88 / Section 4.4a. 3-seat sofa — base seat slab + back cushion
+# slab + 1 seat cushion authored, MirrorAxis X to tile across 3 cushions
+# (centre + 2 sides via mirror) wait — mirror gives 2; for 3-seat we use
+# 1 authored centre + 1 left + mirror X for right (3 total).
+parameters:
+  width:    { kind: Float, default: 2.10 }
+  depth:    { kind: Float, default: 0.95 }
+  seat_h:   { kind: Float, default: 0.45 }
+
+
+  base_h:        { kind: Float, default: 0.18 }
+  arm_h:         { kind: Float, default: 0.55 }
+  arm_thick:     { kind: Float, default: 0.12 }
+  back_h:        { kind: Float, default: 0.45 }
+  back_thick:    { kind: Float, default: 0.18 }
+  cushion_thick: { kind: Float, default: 0.12 }
+
+  base_y_centre: { kind: Float, expr: "base_h / 2" }
+  arm_y_centre:  { kind: Float, expr: "arm_h / 2" }
+  arm_x:         { kind: Float, expr: "(width - arm_thick) / 2" }
+  back_y_centre: { kind: Float, expr: "base_h + back_h / 2" }
+  back_z:        { kind: Float, expr: "-(depth - back_thick) / 2" }
+  cushion_y:     { kind: Float, expr: "base_h + cushion_thick / 2" }
+  cushion_w:     { kind: Float, expr: "(width - 2 * arm_thick) / 3" }
+  cushion_x:     { kind: Float, expr: "cushion_w + 0.005" }
+
+  base_pos:    { kind: Float3, expr: "0, base_y_centre, 0" }
+  arm_pos:     { kind: Float3, expr: " arm_x, arm_y_centre, 0" }
+  back_pos:    { kind: Float3, expr: "0, back_y_centre, back_z" }
+  cushion_centre_pos: { kind: Float3, expr: "0, cushion_y, 0.05" }
+  cushion_side_pos:   { kind: Float3, expr: " cushion_x, cushion_y, 0.05" }
+
+nodes:
+  # Base slab.
+  - id: 1
+    type: MeshCube
+    inputs: { SizeX: { param: width }, SizeY: { param: base_h }, SizeZ: { param: depth } }
+  - id: 2
+    type: Transform
+    inputs: { Translation: { param: base_pos } }
+
+  # Right arm + mirror X for left.
+  - id: 10
+    type: MeshCube
+    inputs: { SizeX: { param: arm_thick }, SizeY: { param: arm_h }, SizeZ: { param: depth } }
+  - id: 11
+    type: Transform
+    inputs: { Translation: { param: arm_pos } }
+  - id: 12
+    type: MirrorAxis
+    inputs: { Axis: { kind: Menu, value: X }, Pivot: { kind: Float3, value: [0.0, 0.0, 0.0] } }
+
+  # Back rest.
+  - id: 20
+    type: MeshCube
+    inputs: { SizeX: { param: width }, SizeY: { param: back_h }, SizeZ: { param: back_thick } }
+  - id: 21
+    type: Transform
+    inputs: { Translation: { param: back_pos } }
+
+  # Frame material (base + arms + back).
+  - id: 30
+    type: JoinGeometry
+  - id: 31
+    type: JoinGeometry
+  - id: 32
+    group: groups/material_walnut
+    inputs: { Geometry: { node: 31, pin: Geometry } }
+
+  # Cushion centre.
+  - id: 40
+    type: MeshCube
+    inputs: { SizeX: { param: cushion_w }, SizeY: { param: cushion_thick }, SizeZ: { kind: Float, value: 0.78 } }
+  - id: 41
+    type: Transform
+    inputs: { Translation: { param: cushion_centre_pos } }
+  # Cushion right (mirror across X for left).
+  - id: 42
+    type: MeshCube
+    inputs: { SizeX: { param: cushion_w }, SizeY: { param: cushion_thick }, SizeZ: { kind: Float, value: 0.78 } }
+  - id: 43
+    type: Transform
+    inputs: { Translation: { param: cushion_side_pos } }
+  - id: 44
+    type: MirrorAxis
+    inputs: { Axis: { kind: Menu, value: X }, Pivot: { kind: Float3, value: [0.0, 0.0, 0.0] } }
+  - id: 45
+    type: JoinGeometry
+  - id: 46
+    group: groups/material_linen
+    inputs: { Geometry: { node: 45, pin: Geometry } }
+
+  - id: 50
+    type: JoinGeometry
+
+  - id: 99
+    type: Viewer
+
+links:
+  - { from: { node: 1, pin: Geometry }, to: { node: 2, pin: Geometry } }
+  - { from: { node: 10, pin: Geometry }, to: { node: 11, pin: Geometry } }
+  - { from: { node: 11, pin: Geometry }, to: { node: 12, pin: Geometry } }
+  - { from: { node: 20, pin: Geometry }, to: { node: 21, pin: Geometry } }
+
+  - { from: { node: 2,  pin: Geometry }, to: { node: 30, pin: A } }
+  - { from: { node: 12, pin: Geometry }, to: { node: 30, pin: B } }
+  - { from: { node: 30, pin: Geometry }, to: { node: 31, pin: A } }
+  - { from: { node: 21, pin: Geometry }, to: { node: 31, pin: B } }
+
+  - { from: { node: 40, pin: Geometry }, to: { node: 41, pin: Geometry } }
+  - { from: { node: 42, pin: Geometry }, to: { node: 43, pin: Geometry } }
+  - { from: { node: 43, pin: Geometry }, to: { node: 44, pin: Geometry } }
+  - { from: { node: 41, pin: Geometry }, to: { node: 45, pin: A } }
+  - { from: { node: 44, pin: Geometry }, to: { node: 45, pin: B } }
+
+  - { from: { node: 32, pin: Geometry }, to: { node: 50, pin: A } }
+  - { from: { node: 46, pin: Geometry }, to: { node: 50, pin: B } }
+  - { from: { node: 50, pin: Geometry }, to: { node: 99, pin: Geometry } }
+
+outputs:
+  Geometry: { node: 50, pin: Geometry }
