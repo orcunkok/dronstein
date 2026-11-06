@@ -64,6 +64,7 @@ BEAMS_Z = [Z0 + BEAM[2] + BEAM[1] / 2 + k * (Z1 - Z0 - 2 * (BEAM[2] + BEAM[1] / 
 COLUMN_D = 0.25                                # the north wall's concrete columns stand this far into the hall
 # LED high-bays, four columns of three in line with the skylight rows: on the roof beam outside the west skylights, its
 # mirror on the kitchen side, and under the two thin north-south trusses (user).
+SKY_FRAME = 0.22    # the skylights' white ceiling frame width (2.2x the old 0.1; user)
 SKY_EDGE = P["desk_corner"]["row_wall_gap"] + 1.3   # skylight rows: outer frame edge in line with the desk row's back
 LIGHT_X = (X0 + SKY_EDGE, (X0 + X1) / 2, X1 - SKY_EDGE)
 LIGHT_Z = (BEAMS_Z[1], BEAMS_Z[3], BEAMS_Z[6], BEAMS_Z[-2])
@@ -93,6 +94,7 @@ MATS = {
     "facade_line": mat(0.66, 0.64, 0.57, 0.0, 0.9),   # painted-over sash bars, groove backs: a shade darker
     "painted_glass": mat(0.82, 0.79, 0.70, 0.0, 0.25),  # panes painted over in the building's cream, still glossy
     "timber_white": mat(0.74, 0.70, 0.66, 0.0, 0.85),
+    "roof_concrete": mat(0.62, 0.61, 0.58, 0.0, 0.95),   # the roof's outer top
     "steel_white": mat(0.78, 0.78, 0.76, 0.2, 0.5),
     "curtain_white": mat(0.70, 0.70, 0.68, 0.0, 0.9),
     "curtain_denim": mat(0.34, 0.38, 0.44, 0.0, 0.9),   # the curtain's kitchen (east) side: denim-like grey (user)
@@ -302,13 +304,13 @@ def on_roof(g, key, size, x, z, below=0.0, f=None):
     g.box(key, size, (x - n[0] * off, y - n[1] * off, z - n[2] * off), r)
 
 
-def roof_patch(g, f, x0, x1, z0, z1, segments=8, key="timber_white"):
+def roof_patch(g, f, x0, x1, z0, z1, segments=8, key="timber_white", thick=ROOF_T, lift=0.0):
     """One smooth piece of the roof deck on roof part f over the plan box x0..x1, z0..z1: a grid bent to the part's
     surface through its four corner heights (exact for flat, sloped and twisted parts, so neighbouring patches meet
     without seams), ROOF_T thick down to the ceiling, smooth shaded."""
     e = g.e
     hx, hz = (x1 - x0) / 2, (z1 - z0) / 2
-    y = [[part_y(f, x, z) + ROOF_T for z in (z0, z1)] for x in (x0, x1)]       # the deck's top at the corners
+    y = [[part_y(f, x, z) + ROOF_T + lift for z in (z0, z1)] for x in (x0, x1)]  # the deck's top at the corners
     a = (y[0][0] + y[0][1] + y[1][0] + y[1][1]) / 4
     b = (y[1][0] + y[1][1] - y[0][0] - y[0][1]) / (4 * hx)
     c = (y[0][1] + y[1][1] - y[0][0] - y[1][0]) / (4 * hz)
@@ -321,9 +323,9 @@ def roof_patch(g, f, x0, x1, z0, z1, segments=8, key="timber_white"):
     t = e.node("MathField", f"roof {k} z", A=pz, B=c, C=t.output("Value"), Operation=mad)
     t = e.node("MathField", f"roof {k} xz", A=pxz, B=d, C=t.output("Value"), Operation=mad)
     grid = e.node("MeshGrid", f"roof {k}", SizeX=2 * hx, SizeZ=2 * hz, SegmentsX=segments, SegmentsZ=segments)
-    lift = e.node("SetPosition", f"roof {k} lift", Geometry=grid.output("Geometry"),
+    raised = e.node("SetPosition", f"roof {k} lift", Geometry=grid.output("Geometry"),
                   Offset=e.node("CombineXYZField", f"roof {k} y", Y=t.output("Value")).output("Value"))
-    deck = e.node("Solidify", f"roof {k} deck", Geometry=lift.output("Geometry"), Thickness=ROOF_T)
+    deck = e.node("Solidify", f"roof {k} deck", Geometry=raised.output("Geometry"), Thickness=thick)
     smooth = e.node("SetShading", f"roof {k} smooth", Geometry=deck.output("Geometry"), Mode=Literal("Menu", "Smooth"))
     g.place(smooth, key, (1, 1, 1), ((x0 + x1) / 2, 0.0, (z0 + z1) / 2))
 
@@ -367,6 +369,22 @@ THIN_PANELS = 12
 _ka = round((TRUSS_X[0] - X0) / ((X1 - X0) / THIN_PANELS))
 DROP_X = (X0 + (X1 - X0) * (_ka - 1) / THIN_PANELS, X1 - (X1 - X0) * (_ka - 1) / THIN_PANELS)
 DROP_END = P["hall"]["drop_end"]
+
+
+PARAPET = 0.03      # the walls stand this far above the roof's top outside, hiding its edges (user)
+
+
+def gable_slices(xa, xb):
+    """An end wall's top above the eave, x xa..xb, as (z0, z1, top) slices 0.2 m wide following the roof, each up to
+    PARAPET over the roof's highest top across it."""
+    za, zb = Z0 - WALL_T, Z1 + WALL_T
+    n = math.ceil((zb - za) / 0.2)
+    out = []
+    for k in range(n):
+        z0, z1 = za + (zb - za) * k / n, za + (zb - za) * (k + 1) / n
+        top = max(roof_y(x, z) for x in (xa, xb) for z in (z0, z1, (z0 + z1) / 2)) + ROOF_T + PARAPET
+        out.append((z0, z1, top))
+    return out
 
 
 def end_windows():
@@ -493,14 +511,12 @@ def build_shell(g):
             holes.append((P["exit_door"]["z0"], P["exit_door"]["z1"], 0.0, P["exit_door"]["height"]))
         # Open right through at the painted-glass fields too, like the real windows (user).
         holed_wall(g, x - WALL_T / 2, x + WALL_T / 2, Z0 - WALL_T, Z1 + WALL_T, H, holes + painted_fields(side))
-        steps = 12
-        hs = (DROP_END - H) / steps
-        for i in range(steps):
-            half = FLAT + (ZC - Z0 - FLAT) * (1 - i / steps) + WALL_T
-            g.box("concrete_white", (WALL_T, hs + 0.001, 2 * half), (x, H + hs * (i + 0.5), ZC))
-        g.span("concrete_white", x - WALL_T / 2, x + WALL_T / 2, DROP_END, DROP_END + ROOF_T, ZC - FLAT, ZC + FLAT)
+        # Above the eave, up the roof in slices to just over its top (no steps showing outside; user).
+        for z0, z1, top in gable_slices(x - WALL_T / 2, x + WALL_T / 2):
+            g.span("concrete_white", x - WALL_T / 2, x + WALL_T / 2, H, top, z0, z1)
     for z in (Z0 - WALL_T / 2, Z1 + WALL_T / 2):
-        g.box("concrete_white", (length + 2 * WALL_T, H + ROOF_T, WALL_T), (xm, (H + ROOF_T) / 2, z))
+        hl = H + ROOF_T + PARAPET
+        g.box("concrete_white", (length + 2 * WALL_T, hl, WALL_T), (xm, hl / 2, z))
 
     # Roof beams' places and the skylights' (between two beams, see below), then the white timber roof deck: one slab
     # per roof part, each with an opening at every skylight; where the flat middle's ends come down below the side
@@ -509,7 +525,7 @@ def build_shell(g):
     sky_w = beams_z[1] - beams_z[0] - bf
     sky_x = LIGHT_X
     sky_z = ((beams_z[1] + beams_z[2]) / 2, (beams_z[4] + beams_z[5]) / 2)
-    o = WALL_T + 0.2
+    o = WALL_T                 # the roof ends at the walls' outer faces, behind the paint skin and parapet (user)
     zw, ze = (Z0 - o, ZC - FLAT), (ZC + FLAT, Z1 + o)
     xn_, xm_, xs_ = (X0 - o, DROP_X[0]), (DROP_X[0], DROP_X[1]), (DROP_X[1], X1 + o)
     # (part, x range, z range, twisted): the side slopes' corners near the end walls are twisted and made as smooth
@@ -519,8 +535,13 @@ def build_shell(g):
              ("east", xn_, ze, True), ("east", xm_, ze, False), ("east", xs_, ze, True),
              ("north", xn_, (ZC - FLAT, ZC + FLAT), False), ("flat", xm_, (ZC - FLAT, ZC + FLAT), False),
              ("south", xs_, (ZC - FLAT, ZC + FLAT), False)]
-    holes = [(x - 1.2, x + 1.2, z - sky_w / 2, z + sky_w / 2) for x in sky_x for z in sky_z]
+    sky_c = sky_w / 2 - SKY_FRAME    # the open half width: the frame fills from there out to the beams (user)
+    holes = [(x - 1.2, x + 1.2, z - sky_c, z + sky_c) for x in sky_x for z in sky_z]
     for f, (x0, x1), (z0, z1), twisted in parts:
+        if not twisted:            # flat boards lie square to their slope, so their top edge leans out past their
+            c = 0.08               # plan: they stop 8 cm inside the walls' outer faces, under the parapet (user)
+            x0, x1 = max(x0, X0 - o + c), min(x1, X1 + o - c)
+            z0, z1 = max(z0, Z0 - o + c), min(z1, Z1 + o - c)
         xs = sorted({x0, x1, *(min(max(h[i], x0), x1) for h in holes for i in (0, 1))})
         zs = sorted({z0, z1, *(min(max(h[i], z0), z1) for h in holes for i in (2, 3))})
         for xa, xb in zip(xs, xs[1:]):
@@ -529,12 +550,15 @@ def build_shell(g):
                     continue
                 if any(h[0] <= xa and xb <= h[1] and h[2] <= za and zb <= h[3] for h in holes):
                     continue
+                # The deck, and a 1 cm concrete layer on top of it so from outside the roof reads as concrete (user).
                 if twisted:
                     roof_patch(g, f, xa, xb, za, zb)
+                    roof_patch(g, f, xa, xb, za, zb, key="roof_concrete", thick=0.01, lift=0.01)
                 else:
                     xc, zc = (xa + xb) / 2, (za + zb) / 2
                     kx, kz = roof_frame(f, xc, zc)[2]
                     on_roof(g, "timber_white", ((xb - xa) * kx, ROOF_T, (zb - za) * kz), xc, zc, -ROOF_T, f)
+                    on_roof(g, "roof_concrete", ((xb - xa) * kx, 0.01, (zb - za) * kz), xc, zc, -ROOF_T - 0.01, f)
 
     # Roof framing (IMG_3106-3108, user): ten white steel I-beams north to south right under the roof, the size of the
     # west wall's I-beam columns: one on top of the columns, centred on them, its mirror on the east wall, eight equally
@@ -634,12 +658,23 @@ def build_shell(g):
     # the back of the desk row by the north wall, the south row's sits as far from the south wall (user).
     for x in sky_x:
         for z in sky_z:
+            # White wooden boards lining the opening through the deck, from just under the ceiling up to the roof's
+            # concrete top, the louvres resting on them (user: they hung in the air).
+            hb, bt = ROOF_T + 0.09, 0.05      # down 8 cm below the ceiling so they read as boards (user)
+            sc = sky_w / 2 - SKY_FRAME        # the open half width between the frame's beam-side bars
+            for sd in (-1, 1):                # white like the frame, no cream (user)
+                on_roof(g, "paint_white", (bt, hb, 2 * sc), x + sd * (1.2 - bt / 2), z, below=-(ROOF_T + 0.01))
+                on_roof(g, "paint_white", (2.4 - 2 * bt, hb, bt), x, z + sd * (sc - bt / 2),
+                        below=-(ROOF_T + 0.01))
             for k in range(-3, 4):
-                on_roof(g, "paint_white", (0.05, 0.05, sky_w), x + k * 0.33, z, below=0.08 - ROOF_T)
-            for dx in (-1.25, 1.25):
-                on_roof(g, "paint_white", (0.1, 0.03, sky_w + 0.2), x + dx, z, below=-0.01)
+                on_roof(g, "paint_white", (0.05, 0.05, 2 * sc - 2 * bt), x + k * 0.33, z, below=0.08 - ROOF_T)
+            fw, ft = SKY_FRAME, 0.066
+            # The frame: its long sides fill from the opening out to the beams, flush against their flanges; the
+            # short ends run beam to beam (user).
+            for dx in (-1, 1):
+                on_roof(g, "paint_white", (fw, ft, sky_w), x + dx * (1.2 + fw / 2), z, below=-0.01)
             for dz in (-1, 1):
-                on_roof(g, "paint_white", (2.6, 0.03, 0.1), x, z + dz * (sky_w / 2 + 0.05), below=-0.01)
+                on_roof(g, "paint_white", (2.4, ft, fw), x, z + dz * (sc + fw / 2), below=-0.01)
 
     # Steel-sash windows in their wall openings (end_windows): on the north wall three groups of three 4 x 4 pane units,
     # symmetric, one concrete column in each gap between groups (IMG_3053/3063, user); on the south wall three 4 x 4
@@ -826,6 +861,8 @@ def painted_fields(side):
     pw, ph = P["south_wall"]["pane"]
     gate, door = P["gate"], P["exit_door"]
     fields = []
+    if side < 0:                       # none on the north (office) wall: the user never asked for them there
+        return fields
     for w, z0, cols, rows in end_windows():
         if w != side:
             continue
@@ -870,7 +907,7 @@ def build_exterior(g):
         fields = painted_fields(side)
         holes += fields
         # Grooves: every 0.45 m from 0.45 m up, below the lowest painted field.
-        lowest = min(f[2] for f in fields)
+        lowest = min([f[2] for f in fields], default=9.0)
         grooves = [0.45 * k for k in range(1, 4) if 0.45 * k + 0.025 < lowest - 0.3] if side > 0 else []  # front only
         za_, zb_ = Z0 - WALL_T, Z1 + WALL_T
         holes += [(za_, zb_, y, y + 0.025) for y in grooves]
@@ -943,18 +980,14 @@ def build_exterior(g):
                 if low < DECK - 0.3:
                     g.span("paint_white", X1 - 0.01, X1, low, DECK - 0.3, za, zb)
         # The end walls' gables above the eave, skinned the same.
-        steps = 12
-        hs = (DROP_END - H) / steps
-        for i in range(steps):
-            half = FLAT + (ZC - Z0 - FLAT) * (1 - i / steps) + WALL_T
-            g.span("facade", xa, xb, H + hs * i, H + hs * (i + 1) + 0.001, ZC - half, ZC + half)
-        g.span("facade", xa, xb, DROP_END, DROP_END + ROOF_T, ZC - FLAT, ZC + FLAT)
+        for z0, z1, top in gable_slices(*sorted((xo - side * WALL_T, xo))):
+            g.span("facade", xa, xb, H, top, z0, z1)
     # The long walls' outer faces, with the same grooves.
     for side in (-1, 1):
         zo = Z0 - WALL_T if side < 0 else Z1 + WALL_T
         za, zb = sorted((zo, zo + side * t))
         x0, x1 = X0 - WALL_T - t, X1 + WALL_T + t
-        g.span("facade", x0, x1, 0.0, H + ROOF_T, za, zb)      # no grooves: those are on the front only (user)
+        g.span("facade", x0, x1, 0.0, H + ROOF_T + PARAPET, za, zb)   # no grooves: those are on the front only (user)
 
 
 # ---------------------------------------------------------------- office block and mezzanine
@@ -1581,8 +1614,16 @@ def build_desks(g):
     ez = w0 + 2 * (dl + 0.005) + sl / 2
     standing_desk(g, xd, ez, length=sl, depth=sd)
     office_chair(g, (xd + 0.7, 0.0, ez), turn=-math.pi / 2)
-    for z in (w0 + dl / 2 - 0.3225, w0 + dl / 2 + 0.3225):
-        g.kit("appliances/monitor_v2", (xd + 0.1, 0.74, z), turn=-math.pi / 2, material=SILVER)
+    # The two silver studio displays (screens facing the wall), toward the desk's north-west corner: the west one
+    # turned 30 degrees inward about its east edge, an inch from the east one's west edge; silver bodies, dark
+    # screens (user).
+    a, hw = math.radians(30), 0.31
+    # The pair sits at the desk's south-west corner (user): the pivot as far south as the straight one's stand
+    # allows, the turned display's west end 2 cm inside the desk's west edge.
+    px, pz = xd + dd / 2 - 0.13, w0 + 0.02 + 2 * hw * math.cos(a)
+    g.kit("appliances/monitor_v2", (px - hw * math.sin(a), 0.74, pz - hw * math.cos(a)), turn=-math.pi / 2 + a,
+          metal=SILVER)
+    g.kit("appliances/monitor_v2", (px, 0.74, pz + 0.025 + hw), turn=-math.pi / 2, metal=SILVER)
     g.kit("appliances/monitor_v2", (xd - 0.1, 0.74, ez), turn=math.pi / 2)
     for z in (w0 + 0.6, w0 + 2.0):                          # full-tower gaming PCs at the desks' front edge
         g.span("pc_black", xd + dd / 2 - 0.6, xd + dd / 2, 0.0, 0.6, z - 0.125, z + 0.125)
