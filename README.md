@@ -6,18 +6,19 @@ A Holybro X500 V2 with a 4S battery (1.36 kg) flies like a stock ArduPilot setup
 ## What's what
 - **Lucky Engine** (`LuckyEngine/`) is the simulator. It also plays the drone's flight controller (the part that
   will be ArduPilot on the real drone).
-- **The ground station** (`src/`) is Python. You fly with it, and later the autonomy goes there. It's written so the
-  same code can talk to the real drone later. See [src/README.md](src/README.md).
+- **The ground station** (`autonomy/`) is Python. You fly with it, and later the autonomy goes there. It's written so the
+  same code can talk to the real drone later. See [autonomy/README.md](autonomy/README.md).
+- **The flight physics** (`sim/`) is a headless Python simulator that PX4 SITL flies over MAVLink. See [sim/README.md](sim/README.md).
 
 ## How to run
 First time only, set up Python (needs [uv](https://docs.astral.sh/uv/)):
 ```
-uv venv src/.venv
-uv pip install --python src/.venv/bin/python -r src/requirements.txt
+uv venv autonomy/.venv
+uv pip install --python autonomy/.venv/bin/python -r autonomy/requirements.txt
 ```
 Then, in any order:
 1. Open the `LuckyEngine` project in Lucky Engine and press **Play**.
-2. Run `src/dronstein.py`.
+2. Run `autonomy/src/dronstein.py`.
 3. Fly with the Xbox controller.
 
 ## Controller
@@ -34,7 +35,7 @@ Then, in any order:
 | D-pad up / down | Zoom in / out |
 | View | Next camera: orbit the X500, follow it (behind its tail), orbit the gripper |
 
-The buttons are hard-coded: the flying ones in `src/gamepad.py` (`BIND`), the camera ones in `X500Flight.cs` (`m_Bindings`).
+The buttons are hard-coded: the flying ones in `autonomy/src/gamepad.py` (`BIND`), the camera ones in `X500Flight.cs` (`m_Bindings`).
 
 ## Keyboard
 | Key | What it does |
@@ -61,7 +62,7 @@ It starts **disarmed**. Menu arms it (props idle). **RTL** climbs to 3 m, flies 
 **Calibration:** in the air, each press of keyboard Y flies it to the next blue dot of the 7.6 m test square on the grey test mat in the north-east corner ((14.3, 1.3), (14.3, -6.3), (6.7, -6.3), (6.7, 1.3), MuJoCo frame) at its altitude, where it holds. MODE shows **GUIDED** in yellow. B, X or any stick or trigger takes it back.
 
 ## On screen
-Top right: **CAMERA** (X500 V2, Follow or Gripper), and **MODE** (LOITER, ALT_HOLD, GUIDED for takeoff and calibration, or RTL; ArduPilot's names, as `src/dronstein.py` shows them; yellow while calibrating) with **Armed** (green) or **Disarmed** (red) left of it.
+Top right: **CAMERA** (X500 V2, Follow or Gripper), and **MODE** (LOITER, ALT_HOLD, GUIDED for takeoff and calibration, or RTL; ArduPilot's names, as `autonomy/src/dronstein.py` shows them; yellow while calibrating) with **Armed** (green) or **Disarmed** (red) left of it.
 
 ## On the ground
 - Checkered ground: each tile is 1 m.
@@ -73,7 +74,7 @@ Top right: **CAMERA** (X500 V2, Follow or Gripper), and **MODE** (LOITER, ALT_HO
 Everything about it is at the top of `LuckyEngine/Assets/Scripts/Client/Source/X500Flight.cs`: the drone (thrust, motor lag, yaw, drag), the motors (`MOT_*`) and the autopilot's gains (ArduPilot's X500v2 frame file) and limits, under ArduPilot's parameter names. Change the drone's values to match logs of the real drone. `tools/x500v2/build_x500v2.py` builds its look and its physics.
 
 ## Latest changes
-- **Python ground station:** the controller is read by `src/dronstein.py`, which flies the drone in Lucky the way it will fly the real one through ArduPilot.
+- **Python ground station:** the controller is read by `autonomy/src/dronstein.py`, which flies the drone in Lucky the way it will fly the real one through ArduPilot.
 - **The claw grips:** a physical claw (fingers, servos, collisions) under the payload board, lowered so a landed X500 can close it on a tennis ball and lift it. The X500's own physics file is now turned half a turn, to match its model (payload board, GPS and claw at the tail).
 - **Y calibration is back:** in the air, keyboard Y flies the X500 around the blue test square, one corner per press (Calib n/4, yellow).
 - **X500 only:** the Skydio X2 with its SO-100 arm, its autonomous picking and the Tuning panel are gone. The controller always flies the X500; LT climbs and RT descends.

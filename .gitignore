@@ -223,3 +223,6 @@ __marimo__/
 
 # Agent worktrees
 .claude/worktrees/
+
+# sim test runs (logs, report)
+sim/tests/out/

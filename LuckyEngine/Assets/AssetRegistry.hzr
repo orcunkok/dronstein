@@ -314,9 +314,6 @@ Assets:
   - Handle: 2236600912383847348
     FilePath: Office/OfficeDesks116/source/office_desks.hpodgraph
     Type: PodGraph
-  - Handle: 2238496661985910921
-    FilePath: Scripts/Source/Generated/MainPolicyIds.cs
-    Type: ScriptFile
   - Handle: 2252427384764102234
     FilePath: Office/OfficeBlock47/source/office_block.hpodgraph
     Type: PodGraph
@@ -548,9 +545,6 @@ Assets:
   - Handle: 4042834507783911708
     FilePath: Office/OfficeDesks132/source/office_desks.hpodgraph
     Type: PodGraph
-  - Handle: 4076472124252925767
-    FilePath: Scripts/Source/Generated/WalkerCommands.cs
-    Type: ScriptFile
   - Handle: 4108360484400668011
     FilePath: Office/OfficeKitchen153/source/office_kitchen.hpodgraph
     Type: PodGraph
@@ -2447,6 +2441,9 @@ Assets:
   - Handle: 17686270584875077928
     FilePath: Office/OfficeShell109/source/office_shell.hpodgraph
     Type: PodGraph
+  - Handle: 17765575229460193163
+    FilePath: Meshes/Fridge/joints.json
+    Type: Motion
   - Handle: 17844897151796502876
     FilePath: Office/OfficeBlock144/source/office_block.hpodgraph
     Type: PodGraph

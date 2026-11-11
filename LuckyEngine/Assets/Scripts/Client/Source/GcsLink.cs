@@ -9,7 +9,7 @@ using Hazel;
 namespace Dronstein
 {
 	/// <summary>
-	/// The flight controller's end of the link to the ground station (src/link/luckyLink.py), the way ArduPilot SITL talks to
+	/// The flight controller's end of the link to the ground station (autonomy/src/link/luckyLink.py), the way ArduPilot SITL talks to
 	/// a GCS: every frame it sends its state as one JSON line to 127.0.0.1:14550, whether or not anyone listens, and takes
 	/// the GCS's sticks and commands from whatever comes back. So either side can start first, and they find each other.
 	/// GCS -> FC: {"rc": [roll, pitch, throttle, yaw], "seq": n, "cmd": "arm", "value": 1}, rc in PWM (1500 centred,

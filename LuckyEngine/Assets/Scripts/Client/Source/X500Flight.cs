@@ -5,7 +5,7 @@ using Hazel;
 namespace Dronstein
 {
 	/// <summary>
-	/// The X500's flight controller in the sim, standing in for ArduPilot. The ground station (src/dronstein.py) flies it
+	/// The X500's flight controller in the sim, standing in for ArduPilot. The ground station (autonomy/src/dronstein.py) flies it
 	/// over GcsLink, as a GCS flies ArduPilot: RC sticks (roll, pitch, throttle = climb rate, yaw) and commands
 	/// (arm, mode, takeoff, gripper). It decides what a command does, in one of these modes (ArduPilot's numbers):
 	/// - LOITER (5, default): the stick sets a speed (up to LOIT_SPEED); let go and it brakes and holds its spot.

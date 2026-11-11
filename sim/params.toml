@@ -1,0 +1,78 @@
+# Holybro X500 V2 simulator parameters, SI units. Body frame FRD, world NED; rotor order = PX4 motor order (CA_ROTOR*).
+
+[home]
+lat = 47.397742     # deg
+lon = 8.545594      # deg
+alt = 488.0         # m AMSL, ground level
+
+[sih]               # 10050_sihsim_x500 airframe; PX4 SIH quadcopter equations
+mass = 2.0          # kg
+ixx = 0.0217        # kg m^2
+iyy = 0.0217
+izz = 0.040
+l_roll = 0.177      # m
+l_pitch = 0.177
+t_max = 9.0         # N per motor at u = 1
+q_max = 0.15        # Nm per motor at u = 1
+kdv = 1.0           # N/(m/s), Fa = -kdv * v_NED
+kdw = 0.025         # Nm/(rad/s), Ma = -kdw * w
+t_tau = 0.05        # s, motor first-order lag (SIH_T_TAU default)
+
+[dsb-sim]           # our rotor model; starting values from PX4-gazebo-models x500 (+ x500_base) and PX4's 4001_gz_x500 SIM_GZ_EC_*
+mass = 2.0
+ixx = 0.02166666666666667
+iyy = 0.02166666666666667
+izz = 0.04000000000000001
+# Rotor hubs from the CoM, FRD (sdf FLU poses +-0.174, z 0.06 flipped); PX4 motor i = gz rotor_i.
+rotor_px = [0.174, -0.174, 0.174, -0.174]
+rotor_py = [0.174, -0.174, -0.174, 0.174]
+rotor_pz = [-0.06, -0.06, -0.06, -0.06]
+spin = [1.0, 1.0, -1.0, -1.0]        # +1 ccw seen from above (CA_ROTOR*_KM > 0): reaction yaw moment +kM*T (FRD)
+k_t = 8.54858e-06   # N/(rad/s)^2, motorConstant
+k_m = 0.016         # Nm/N, momentConstant
+tau_up = 0.0125     # s, timeConstantUp
+tau_down = 0.025    # s, timeConstantDown
+k_drag = 8.06428e-05  # N/(rad/s)/(m/s), rotorDragCoefficient
+k_roll = 1e-06      # Nm/(rad/s)/(m/s), rollingMomentCoefficient
+w_min = 150.0       # rad/s at u = 0 armed (SIM_GZ_EC_MIN)
+w_max = 1000.0      # rad/s at u = 1 (SIM_GZ_EC_MAX, maxRotVelocity) ...
+v_ref = 15.2        # V ... at this pack voltage; the ESC speed scales with the loaded voltage
+eta = 0.85          # motor + ESC efficiency (shaft power / electrical power)
+rho = 1.225         # kg/m^3
+cda = [0.03, 0.03, 0.08]  # m^2, body drag area per axis (quadratic drag)
+
+[battery]           # 4S 5000 mAh LiPo
+cells = 4
+capacity_ah = 5.0
+soc0 = 1.0
+r_int = 0.025       # ohm, pack + wiring
+p_avionics = 5.0    # W, FC + GPS + telemetry
+soc = [0.0, 0.05, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0]
+ocv = [3.27, 3.61, 3.69, 3.73, 3.77, 3.79, 3.82, 3.87, 3.92, 3.98, 4.06, 4.20]  # V per cell, open circuit
+
+[ground]            # four landing-gear feet on a spring-damper plane at z = 0 (home altitude)
+feet_x = [0.10, 0.10, -0.10, -0.10]
+feet_y = [0.132, -0.132, 0.132, -0.132]
+feet_z = [0.22, 0.22, 0.22, 0.22]
+k = 5000.0          # N/m per foot
+c = 100.0           # N/(m/s) per foot
+mu = 0.6
+v_slip = 0.02       # m/s, friction smoothing
+
+[sensors]           # PX4 gazebo-classic IMU defaults (ADIS16448-like)
+accel_noise = 0.004       # m/s^2/sqrt(Hz)
+accel_bias_walk = 0.006   # m/s^3/sqrt(Hz)
+gyro_noise = 0.00033937   # rad/s/sqrt(Hz)
+gyro_bias_walk = 3.8785e-05  # rad/s^2/sqrt(Hz)
+baro_noise = 0.01         # hPa (~0.08 m)
+mag_noise = 0.002         # gauss
+gps_noise_h = 0.1         # m
+gps_noise_v = 0.15        # m
+gps_noise_vel = 0.05      # m/s
+gps_eph = 0.8             # m
+gps_epv = 1.2             # m
+gps_sats = 16
+baro_hz = 50
+mag_hz = 100
+gps_hz = 10
+truth_hz = 50

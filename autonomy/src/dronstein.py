@@ -1,9 +1,9 @@
 #!/bin/sh
-"exec" "${0%/*}/.venv/bin/python" "$0" "$@"  # sh runs src/.venv's Python on this file; to Python it's only a string
+"exec" "${0%/*}/../.venv/bin/python" "$0" "$@"  # sh runs autonomy/.venv's Python on this file; to Python it's only a string
 __doc__ = """The ground station: flies the X500 with the Xbox controller through one link, to Lucky's sim (default) or to
-ArduPilot (--ardu). F (typed here, or pressed in Lucky's window) picks up a random tennis ball (autonomy.py), arming first if needed; F again
+PX4 over MAVLink (--mav). F (typed here, or pressed in Lucky's window) picks up a random tennis ball (autonomy.py), arming first if needed; F again
 gives the sticks back to the controller.
-Run: ./dronstein.py [--ardu] (it uses src/.venv)"""
+Run: ./dronstein.py [--mav [URL]] (it uses autonomy/.venv)"""
 import argparse
 import os
 import re
@@ -34,13 +34,16 @@ def key():
 
 def main():
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--ardu", action="store_true", help="talk MAVLink to ArduPilot (not implemented yet)")
+    p.add_argument("--mav", nargs="?", const="udpout:127.0.0.1:14580", metavar="URL",
+                   help="talk MAVLink to PX4 (default URL: %(const)s, SITL's API link)")
     args = p.parse_args()
-    if args.ardu:
-        from link.arduLink import ArduLink as Link
+    if args.mav:
+        from link.mavlink import MavLink
+        link = MavLink(args.mav)
     else:
-        from link.luckyLink import LuckyLink as Link
-    link, pad, state = Link(), Gamepad(), State()
+        from link.luckyLink import LuckyLink
+        link = LuckyLink()
+    pad, state = Gamepad(), State()
     auto = None  # mission's steps while F has the autonomy on, else None
     seen = 0     # Lucky's F count last time; it starts again with each Play, so only a rise is a press
     saved = termios.tcgetattr(sys.stdin)

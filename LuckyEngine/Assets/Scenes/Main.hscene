@@ -780,17 +780,6 @@ Entities:
       AssetID: 1117590049923988032
       MaterialTable:
         0: 0
-        1: 0
-        2: 0
-        3: 0
-        4: 0
-        5: 0
-        6: 0
-        7: 0
-        8: 0
-        9: 0
-        10: 0
-        11: 0
       Visible: true
     MujocoMeshColliderComponent:
       StaticMesh: 1117590049923988032
@@ -1921,26 +1910,6 @@ Entities:
       AssetID: 441374296551930969
       MaterialTable:
         0: 0
-        1: 0
-        2: 0
-        3: 0
-        4: 0
-        5: 0
-        6: 0
-        7: 0
-        8: 0
-        9: 0
-        10: 0
-        11: 0
-        12: 0
-        13: 0
-        14: 0
-        15: 0
-        16: 0
-        17: 0
-        18: 0
-        19: 0
-        20: 0
       Visible: true
     MujocoMeshColliderComponent:
       StaticMesh: 441374296551930969
@@ -2750,7 +2719,7 @@ Entities:
       Rotation: [0, 0, 0]
       Scale: [1, 1, 1]
     SkyLightComponent:
-      EnvironmentMap: 13889453543147436548
+      EnvironmentMap: 0
       Intensity: 0.5
       Lod: 0
       Rotation: 0
@@ -2938,13 +2907,6 @@ Entities:
       AssetID: 15718423096443567837
       MaterialTable:
         0: 0
-        1: 0
-        2: 0
-        3: 0
-        4: 0
-        5: 0
-        6: 0
-        7: 0
       Visible: true
     MujocoMeshColliderComponent:
       StaticMesh: 15718423096443567837
@@ -3564,7 +3526,6 @@ Entities:
       AssetID: 1183215146846055620
       MaterialTable:
         0: 0
-        1: 0
       Visible: true
     MujocoMeshColliderComponent:
       StaticMesh: 1183215146846055620
@@ -4816,6 +4777,33 @@ Entities:
       PodGraph: 2908007058136556440
       MaterialTable:
         0: 0
+        1: 0
+        2: 0
+        3: 0
+        4: 0
+        5: 0
+        6: 0
+        7: 0
+        8: 0
+        9: 0
+        10: 0
+        11: 0
+        12: 0
+        13: 0
+        14: 0
+        15: 0
+        16: 0
+        17: 0
+        18: 0
+        19: 0
+        20: 0
+        21: 0
+        22: 0
+        23: 0
+        24: 0
+        25: 0
+        26: 0
+        27: 0
   - Entity: 13450901624337926704
     Domain: Client
     TagComponent:
@@ -5119,28 +5107,6 @@ Entities:
       AssetID: 8973414988295039588
       MaterialTable:
         0: 0
-        1: 0
-        2: 0
-        3: 0
-        4: 0
-        5: 0
-        6: 0
-        7: 0
-        8: 0
-        9: 0
-        10: 0
-        11: 0
-        12: 0
-        13: 0
-        14: 0
-        15: 0
-        16: 0
-        17: 0
-        18: 0
-        19: 0
-        20: 0
-        21: 0
-        22: 0
       Visible: true
     MujocoMeshColliderComponent:
       StaticMesh: 8973414988295039588
@@ -5956,7 +5922,6 @@ Entities:
       AssetID: 14938794969706516071
       MaterialTable:
         0: 0
-        1: 0
       Visible: true
     MujocoMeshColliderComponent:
       StaticMesh: 14938794969706516071

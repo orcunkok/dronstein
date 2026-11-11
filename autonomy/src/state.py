@@ -1,5 +1,5 @@
 """The one state the ground station shares with the flight controller, in ArduPilot's terms, whichever link carries it
-(link/luckyLink.py to Lucky's sim, link/arduLink.py to ArduPilot)."""
+(link/luckyLink.py to Lucky's sim, link/mavlink.py to PX4, which maps the modes)."""
 import time
 from dataclasses import dataclass, field
 

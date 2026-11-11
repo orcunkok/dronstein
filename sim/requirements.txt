@@ -1,0 +1,5 @@
+numpy
+numba
+pymavlink
+pygeomag
+pytest
