@@ -9,8 +9,9 @@ using Hazel;
 namespace Dronstein
 {
 	/// <summary>
-	/// The view of the Holybro X500 V2: an orbit camera that follows it, the HUD at the top right (CAMERA, MODE and
-	/// Armed / Disarmed) and R, which puts everything back as when Play started (X500, tennis balls, trash can).
+	/// The view of the Holybro X500 V2: an orbit camera that follows it, the HUD (top right: CAMERA, PX4's MODE and
+	/// Armed / Disarmed; top left: the sim's link, Connected / Disconnected) and R, which puts everything back as when
+	/// Play started (X500, tennis balls, trash can).
 	/// Camera: drag with the right mouse button or move the right stick (camera_yaw / camera_pitch) to orbit; Q/E or
 	/// D-pad down/up (zoom_out / zoom_in) to zoom. C or camera_view (View) steps through the cameras: orbit the X500, follow
 	/// it (behind its tail, level), orbit the gripper (the entity tagged Claw, if there is one), and back. Each orbit keeps
@@ -29,8 +30,9 @@ namespace Dronstein
 		static readonly string[] CameraNames = { "X500 V2", "Follow", "Gripper" };  // the HUD's CAMERA, per m_View
 		// HUD layout in Application.Width/Height units (scaled to rendered pixels by PixelScale): the labels' x from the
 		// right edge, the first baseline from the top, the row height, the values' x after the labels, the text sizes.
-		const float HudRight = 242.5f, HudTop = 41f, HudRow = 36.5f, HudValueX = 96f;
+		const float HudRight = 242.5f, HudLeft = 40f, HudTop = 41f, HudRow = 36.5f, HudValueX = 96f;
 		const float HudLabelSize = 17.5f, HudValueSize = 23.3f, HudArmSize = 13.3f;
+		const float HudDotSize = 44f, HudDotGap = 20f, HudDotDy = 6f;  // the link's dot: size, the text's x after it, how far below the text's baseline it sits
 		const float HudModeLabelDx = 27.5f;  // right-aligns MODE with CAMERA (text has no alignment; widths measured on screen)
 		// Armed / Disarmed ends just left of the MODE label: text has no alignment, so each word starts its own width
 		// (measured on screen) plus a gap left of the label.
@@ -42,7 +44,7 @@ namespace Dronstein
 		X500Flight? m_Flight;  // the X500's controller reading (camera sticks); null: mouse and keys only
 		uint m_Body;
 		Entity m_Camera = null!, m_HudCameraLabel = null!, m_HudCamera = null!, m_HudModeLabel = null!, m_HudMode = null!;
-		Entity? m_HudArm, m_Claw;  // optional
+		Entity? m_HudArm, m_HudLink, m_HudLinkDot, m_Claw;  // optional
 		bool m_Missing;  // a tagged entity wasn't found: the script does nothing
 		// Orbit camera: the camera sits on a sphere around the X500 and looks at its center.
 		float m_OrbitYaw, m_OrbitPitch, m_Distance;
@@ -65,6 +67,8 @@ namespace Dronstein
 			m_HudModeLabel = Find("HudModeLabel");
 			m_HudMode = Find("HudMode");
 			m_HudArm = FindEntityByTag("HudArm");
+			m_HudLink = FindEntityByTag("HudLink");
+			m_HudLinkDot = FindEntityByTag("HudLinkDot");
 			m_Claw = FindEntityByTag("Claw");
 			if (m_Missing) return;
 			// Start from the scene camera's authored offset from the X500.
@@ -94,7 +98,7 @@ namespace Dronstein
 			bool r = Input.IsKeyDown(KeyCode.R);
 			if (r && !m_KeyR)
 			{
-				m_Mj.ResetToInitialState(false);  // false: the simulation clock restarts too (X500Flight sees it and disarms)
+				m_Mj.ResetToInitialState(false);  // false: the simulation clock restarts too
 				Log.Info("X500View: scene reset");
 			}
 			m_KeyR = r;
@@ -159,7 +163,8 @@ namespace Dronstein
 			m_Camera.Rotation = new Vector3(-m_OrbitPitch, m_OrbitYaw, 0f);  // the camera looks down its -z, so this faces the center
 		}
 
-		// Top right of the screen: CAMERA, MODE (X500Flight.ModeName) and Armed / Disarmed left of MODE.
+		// Top right of the screen: CAMERA, MODE (X500Flight.ModeName) and Armed / Disarmed left of MODE. Top left: the sim
+		// link, a dot and Connected / Disconnected.
 		// Screen-space text is placed and sized in rendered pixels from the bottom left; Application.Width/Height are
 		// smaller than that by PixelScale. Laid out again whenever the view's size changes (a resize or another monitor).
 		void UpdateHud()
@@ -174,15 +179,24 @@ namespace Dronstein
 				Place(m_HudModeLabel, x + HudModeLabelDx * s, y - HudRow * s, HudLabelSize * s);
 				Place(m_HudMode, x + HudValueX * s, y - HudRow * s, HudValueSize * s);
 				if (m_HudArm != null) m_HudArm.Scale = new Vector3(HudArmSize * s, HudArmSize * s, 1f);
+				if (m_HudLinkDot != null) Place(m_HudLinkDot, HudLeft * s, y - HudDotDy * s, HudDotSize * s);
+				if (m_HudLink != null) Place(m_HudLink, (HudLeft + HudDotGap) * s, y, HudLabelSize * s);
 			}
 			if (m_HudArm != null)
 				m_HudArm.Translation = m_HudModeLabel.Translation - new Vector3((X500Flight.Armed ? HudArmedDx : HudDisarmedDx) * m_PixelScale, 0f, 0f);
-			string shown = X500Flight.ModeName + (X500Flight.Armed ? "+" : "-");
+			string shown = X500Flight.ModeName + (X500Flight.Armed ? "+" : "-") + (X500Flight.Connected ? "+" : "-");
 			if (shown == m_HudShown) return;
 			m_HudShown = shown;
 			var mode = m_HudMode.GetComponent<TextComponent>()!;
 			mode.Text = X500Flight.ModeName;
-			mode.Color = X500Flight.Calibrating ? Yellow : m_HudModeColor;
+			mode.Color = X500Flight.Calibrating ? Yellow : X500Flight.Connected ? m_HudModeColor : Red;
+			if (m_HudLink != null)
+			{
+				var link = m_HudLink.GetComponent<TextComponent>()!;
+				link.Text = X500Flight.Connected ? "Connected" : "Disconnected";
+				link.Color = X500Flight.Connected ? Green : Red;
+			}
+			if (m_HudLinkDot != null) m_HudLinkDot.GetComponent<TextComponent>()!.Color = X500Flight.Connected ? Green : Red;
 			if (m_HudArm == null) return;
 			var arm = m_HudArm.GetComponent<TextComponent>()!;
 			arm.Text = X500Flight.Armed ? "Armed" : "Disarmed";

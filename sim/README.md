@@ -26,6 +26,20 @@ docker run --rm -d --name px4 -p 18570:18570/udp -p 14580:14580/udp px4-x500/px4
 The first start compiles the physics (a few seconds); later starts use numba's cache.
 PX4's battery stays its own (`simulator_mavlink` takes no battery message), so the sim's battery only affects the motors.
 
+## With Lucky
+
+Lucky's MuJoCo moves the drone (every contact is Lucky's); the sim computes its forces at 250 Hz with PX4. Each Lucky
+tick (50 Hz) its `X500Flight` script sends the drone's state, the sim flies that tick with PX4 (5 steps) and answers with
+the tick's average force and torque, plus PX4's armed state and mode for the HUD (read from PX4's GCS link, udp 18570).
+
+```sh
+sim/.venv/bin/python sim/src --lucky               # then press Play in Lucky (in any order)
+docker run --rm -d --name px4 -p 18570:18570/udp -p 14580:14580/udp \
+  -v $PWD/sim/tests/indoor.params:/params/extra/indoor.params:ro px4-x500/px4   # RTL under the office ceiling
+autonomy/tests/calibrate.py                        # fly the four blue dots, print how close it got
+```
+Lucky's tick is the clock, so the sim runs as fast as Lucky does (slower with a big viewport).
+
 ## Test
 
 ```sh

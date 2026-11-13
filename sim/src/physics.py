@@ -122,8 +122,9 @@ def ground(p, v, R, w, c):
 
 
 @njit(cache=True)
-def deriv(y, u, armed, dsb, sih_p, dsb_p, bat_p, gnd_p, g):
-    """dy/dt, the specific force NED (non-gravity force / mass) and the battery (V, A)."""
+def deriv(y, u, armed, ext, world, dsb, sih_p, dsb_p, bat_p, gnd_p, g):
+    """dy/dt, the specific force NED (non-gravity force / mass) and the battery (V, A). With world, ext (force NED,
+    moment FRD) is everything the world does to the drone and replaces the sim's own ground."""
     p, v, q, w, a = y[0:3], y[3:6], y[6:10], y[10:13], y[13:17]
     R = dcm(q)
     dy = np.empty(18)
@@ -143,7 +144,7 @@ def deriv(y, u, armed, dsb, sih_p, dsb_p, bat_p, gnd_p, g):
             dy[13 + i] = ((u[i] if armed else 0.0) - a[i]) / sih_p.t_tau
         dy[17] = 0.0
         mass, J = sih_p.mass, np.array([sih_p.ixx, sih_p.iyy, sih_p.izz])
-    Fg, Mg = ground(p, v, R, w, gnd_p)
+    Fg, Mg = (ext[:3], ext[3:]) if world else ground(p, v, R, w, gnd_p)
     f = (F + Fg) / mass
     dy[0:3] = v
     dy[3:6] = f
@@ -157,34 +158,44 @@ def deriv(y, u, armed, dsb, sih_p, dsb_p, bat_p, gnd_p, g):
 
 
 @njit(cache=True)
-def rk4(y, u, armed, dsb, sih_p, dsb_p, bat_p, gnd_p, g, dt, n):
+def rk4(y, u, armed, ext, world, dsb, sih_p, dsb_p, bat_p, gnd_p, g, dt, n):
     """Advance dt with n RK4 substeps (u held); the specific force and battery at the end."""
     h = dt / n
     for _ in range(n):
-        k1 = deriv(y, u, armed, dsb, sih_p, dsb_p, bat_p, gnd_p, g)[0]
-        k2 = deriv(y + 0.5 * h * k1, u, armed, dsb, sih_p, dsb_p, bat_p, gnd_p, g)[0]
-        k3 = deriv(y + 0.5 * h * k2, u, armed, dsb, sih_p, dsb_p, bat_p, gnd_p, g)[0]
-        k4 = deriv(y + h * k3, u, armed, dsb, sih_p, dsb_p, bat_p, gnd_p, g)[0]
+        k1 = deriv(y, u, armed, ext, world, dsb, sih_p, dsb_p, bat_p, gnd_p, g)[0]
+        k2 = deriv(y + 0.5 * h * k1, u, armed, ext, world, dsb, sih_p, dsb_p, bat_p, gnd_p, g)[0]
+        k3 = deriv(y + 0.5 * h * k2, u, armed, ext, world, dsb, sih_p, dsb_p, bat_p, gnd_p, g)[0]
+        k4 = deriv(y + h * k3, u, armed, ext, world, dsb, sih_p, dsb_p, bat_p, gnd_p, g)[0]
         y = y + h / 6 * (k1 + 2 * k2 + 2 * k3 + k4)
         y[6:10] /= np.sqrt(np.sum(y[6:10] ** 2))
-    _, f, volts, amps = deriv(y, u, armed, dsb, sih_p, dsb_p, bat_p, gnd_p, g)
+    _, f, volts, amps = deriv(y, u, armed, ext, world, dsb, sih_p, dsb_p, bat_p, gnd_p, g)
     return y, f, volts, amps
 
 
-def step(y, u, armed, prm, model, dt=0.004, n=4):
-    """Advance dt with n RK4 substeps (u held). Returns y, the specific force NED and the battery (V, A) at the end."""
-    y, f, volts, amps = rk4(y, np.asarray(u, float), bool(armed), *_args(prm, model), dt, n)
+def step(y, u, armed, prm, model, dt=0.004, n=4, ext=None):
+    """Advance dt with n RK4 substeps (u held). Returns y, the specific force NED and the battery (V, A) at the end.
+    ext: the world's force NED and moment FRD on the drone (Lucky); None uses the sim's own ground."""
+    y, f, volts, amps = rk4(y, np.asarray(u, float), bool(armed), *_args(prm, model, ext), dt, n)
     return y, f, (volts, amps)
 
 
-def specific_force(y, u, armed, prm, model):
+def specific_force(y, u, armed, prm, model, ext=None):
     """The specific force NED (m/s^2) the accelerometer feels in state y."""
-    return deriv(y, np.asarray(u, float), bool(armed), *_args(prm, model))[1]
+    return deriv(y, np.asarray(u, float), bool(armed), *_args(prm, model, ext))[1]
 
 
-def _args(prm, model):
-    """What the compiled code takes after (y, u, armed): the model flag and the parameters."""
-    return model == "dsb-sim", prm["sih"], prm["dsb-sim"], prm["battery"], prm["ground"], prm["g"]
+def wrench(y, prm, model):
+    """The drone's own force NED and moment FRD in state y (rotors and drag; no gravity, no world)."""
+    R = dcm(y[Q])
+    if model == "dsb-sim":
+        return rotor_wrench(y[V], y[W], R, y[A], prm["dsb-sim"])
+    return sih_wrench(y[V], y[W], R, y[A], prm["sih"])
+
+
+def _args(prm, model, ext):
+    """What the compiled code takes after (y, u, armed): the world wrench, the model flag and the parameters."""
+    return (np.zeros(6) if ext is None else np.asarray(ext, float), ext is not None, model == "dsb-sim", prm["sih"],
+            prm["dsb-sim"], prm["battery"], prm["ground"], prm["g"])
 
 
 def initial_state(prm, model):

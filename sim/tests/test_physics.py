@@ -32,12 +32,20 @@ def test_hover_sih():
     assert np.allclose(f, [0, 0, -PRM["g"]])
 
 
+def centered(prm):
+    """The airframe with its rotors centred on the CoM: equal thrusts don't pitch it (Lucky's x500v2 CoM is 1 cm aft)."""
+    g = prm["dsb-sim"]
+    pos = g.rotor_pos - [g.rotor_pos[:, 0].mean(), 0, 0]
+    return {**prm, "dsb-sim": g._replace(rotor_pos=np.ascontiguousarray(pos))}
+
+
 def test_hover_dsb():
-    omega, u = rotor_hover(PRM)
-    assert 0.55 < u < 0.75
-    y = airborne(PRM, "dsb-sim", omega)
+    prm = centered(PRM)
+    omega, u = rotor_hover(prm)
+    assert 0.45 < u < 0.75
+    y = airborne(prm, "dsb-sim", omega)
     for _ in range(500):
-        y, f, (volts, amps) = ph.step(y, np.full(4, u), True, PRM, "dsb-sim")
+        y, f, (volts, amps) = ph.step(y, np.full(4, u), True, prm, "dsb-sim")
     assert abs(y[5]) < 0.03 and np.abs(y[ph.W]).max() < 1e-9  # only the 2 s of battery drain moves it
     assert 10 < amps < 25 and 15.5 < volts < 16.8
 
@@ -80,8 +88,9 @@ def test_rotor_drag_forward_flight():
     F, M = ph.rotor_wrench(np.array([10.0, 0, 0]), np.zeros(3), np.eye(3), omega, g)
     drag = 4 * omega[0] * g.k_drag * 10
     assert abs(F[0] + drag) < 1e-9 and 2.0 < drag < 3.0 and abs(F[1]) < 1e-12  # ~2.4 N backwards at 10 m/s
-    # drag at the hubs, 6 cm above the CoM, pitches the nose up; the rolling moment is along -v (gz convention)
-    assert abs(M[1] - 0.06 * drag) < 1e-9 and abs(M[0] + 4 * omega[0] * g.k_roll * 10) < 1e-12
+    # drag at the hubs, above the CoM, pitches the nose up; the rolling moment is along -v (gz convention)
+    _, M0 = ph.rotor_wrench(np.zeros(3), np.zeros(3), np.eye(3), omega, g)  # in still air (the CoM offset pitches)
+    assert abs(M[1] - M0[1] + g.rotor_pos[0, 2] * drag) < 1e-9 and abs(M[0] + 4 * omega[0] * g.k_roll * 10) < 1e-12
     # body drag adds 1/2 rho CdA v^2
     F2, _ = ph.rotor_wrench(np.array([10.0, 0, 0]), np.zeros(3), np.eye(3), omega, PRM["dsb-sim"])
     assert abs(F2[0] - F[0] + 0.5 * 1.225 * 0.03 * 100) < 1e-9
@@ -89,7 +98,7 @@ def test_rotor_drag_forward_flight():
 
 def test_battery_sag_raises_hover_command():
     assert rotor_hover(PRM, 0.3)[1] > rotor_hover(PRM, 1.0)[1] + 0.03
-    prm = {**PRM, "battery": PRM["battery"]._replace(capacity_ah=0.05)}  # drains in ~10 s at hover
+    prm = {**centered(PRM), "battery": PRM["battery"]._replace(capacity_ah=0.05)}  # drains in ~10 s at hover
     omega, u0 = rotor_hover(prm)
     y, i_err, us, volts = airborne(prm, "dsb-sim", omega), 0.0, [], []
     for _ in range(2000):  # 8 s holding 10 m with a PI loop on climb rate

@@ -1,4 +1,4 @@
-"""Navigation: position setpoints for the FC, as ArduPilot's GUIDED mode takes them. navigate() sets the point the drone should
+"""Navigation: position setpoints for the FC (GUIDED; PX4's OFFBOARD). navigate() sets the point the drone should
 fly to (north, east, down) and its heading; the FC flies there and holds it."""
 
 def navigate(state, n, e, d, yaw):

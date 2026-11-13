@@ -1,4 +1,5 @@
-"""The link to Lucky's flight controller (GcsLink.cs), the way a GCS talks to ArduPilot SITL: listen on UDP 14550, take
+"""The link to Lucky's own flight controller (GcsLink.cs, on holybro-mvp; on px4-dsbSim-lucky PX4 flies, use --mav),
+the way a GCS talks to ArduPilot SITL: listen on UDP 14550, take
 the FC's state from whatever arrives, and send the sticks and the latest command back to the sender, as one JSON line
 each way. Either side can start first; they find each other. Lucky converts its frames on its side: this sees NED and
 ArduPilot's modes."""

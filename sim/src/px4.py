@@ -8,6 +8,7 @@ import numpy as np
 from pymavlink.dialects.v20 import common as mavlink
 
 import physics
+from lucky import Hud, anchor
 from sensors import Sensors, ned_to_lla
 
 DT = 0.004
@@ -25,7 +26,7 @@ class Link:
         self.sock.sendall(buf)
 
 
-def serve(prm, model, port, speed, log=None):
+def serve(prm, model, port, speed, log=None, lucky=None):
     """Accept PX4 connections one at a time, a fresh vehicle on the ground for each."""
     srv = socket.socket()
     srv.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
@@ -36,7 +37,7 @@ def serve(prm, model, port, speed, log=None):
         conn, addr = srv.accept()
         conn.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
         print(f"sim: PX4 connected from {addr[0]}:{addr[1]}", flush=True)
-        session = Session(conn, prm, model, speed, log)
+        session = Session(conn, prm, model, speed, log, lucky)
         try:
             session.run()
         except (ConnectionError, OSError) as e:
@@ -48,8 +49,8 @@ def serve(prm, model, port, speed, log=None):
 
 
 class Session:
-    def __init__(self, conn, prm, model, speed, log):
-        self.conn, self.prm, self.model, self.speed = conn, prm, model, speed
+    def __init__(self, conn, prm, model, speed, log, lucky):
+        self.conn, self.prm, self.model, self.speed, self.lucky = conn, prm, model, speed, lucky
         self.mav = mavlink.MAVLink(Link(conn), srcSystem=1, srcComponent=mavlink.MAV_COMP_ID_USER1)
         self.sens = Sensors(prm["sensors"], prm["home"])
         self.y = physics.initial_state(prm, model)
@@ -115,29 +116,65 @@ class Session:
         row = [t, *y[:17], *self.u, int(self.armed), v, a, y[physics.SOC]]
         self.log.write(",".join(f"{x:.6g}" for x in row) + "\n")
 
+    def tick(self, ext=None):
+        """One 4 ms lockstep step: sensors to PX4, its motor commands back, physics (ext: the world's wrench)."""
+        self.k, self.t = self.k + 1, (self.k + 1) * DT
+        self.send(self.k, round(self.t * 1e6))
+        # PX4 only answers once its controllers run; until its first controls, stream sensors without waiting.
+        self.receive(WAIT if self.controls else 0.0)
+        self.y, self.f, self.bat = physics.step(self.y, self.u, self.armed, self.prm, self.model, DT, ext=ext)
+        if self.log:
+            self.write_log(self.t)
+
+    def status(self):
+        now = time.monotonic()
+        if now - self.last[0] < 5:
+            return
+        rate = (self.t - self.last[1]) / (now - self.last[0])
+        late = (self.k - self.last[2]) - (self.controls - self.last[3])  # steps PX4's controls didn't arrive in time for
+        print(f"sim: t={self.t:7.1f} s  {rate:5.2f}x real time  alt={-self.y[2]:6.2f} m  "
+              f"u={np.round(self.u, 2).tolist()}  {'armed' if self.armed else 'disarmed'}"
+              + (f"  {self.bat[0]:.2f} V {self.bat[1]:.1f} A" if self.model == "dsb-sim" else "")
+              + (f"  late {late}" if self.controls and late > 0 else ""), flush=True)
+        self.last = (now, self.t, self.k, self.controls)
+
     def run(self):
-        k, t_us, self.t = 0, 0, 0.0
-        wall = next_wall = time.monotonic()
-        last = (wall, 0.0, 0, 0)
+        self.k, self.t = 0, 0.0
+        self.last = (time.monotonic(), 0.0, 0, 0)
+        if self.lucky:
+            return self.run_lucky()
+        next_wall = time.monotonic()
         while True:
-            k, t_us = k + 1, t_us + round(DT * 1e6)
-            self.send(k, t_us)
-            # PX4 only answers once its controllers run; until its first controls, stream sensors in real time.
-            self.receive(WAIT if self.controls else 0.0)
-            self.y, self.f, self.bat = physics.step(self.y, self.u, self.armed, self.prm, self.model, DT)
-            self.t = t_us * 1e-6
-            if self.log:
-                self.write_log(self.t)
+            self.tick()
             speed = self.speed if self.controls else 1.0
             if speed > 0:
                 next_wall = max(next_wall + DT / speed, time.monotonic() - 0.1)
                 time.sleep(max(0.0, next_wall - time.monotonic()))
-            now = time.monotonic()
-            if now - last[0] >= 5:
-                rate = (self.t - last[1]) / (now - last[0])
-                late = (k - last[2]) - (self.controls - last[3])  # steps PX4's controls didn't arrive in time for
-                print(f"sim: t={self.t:7.1f} s  {rate:5.2f}x real time  alt={-self.y[2]:6.2f} m  "
-                      f"u={np.round(self.u, 2).tolist()}  {'armed' if self.armed else 'disarmed'}"
-                      + (f"  {self.bat[0]:.2f} V {self.bat[1]:.1f} A" if self.model == "dsb-sim" else "")
-                      + (f"  late {late}" if self.controls and late > 0 else ""), flush=True)
-                last = (now, self.t, k, self.controls)
+            self.status()
+
+    def run_lucky(self):
+        """Lucky's MuJoCo moves the drone and its tick is the clock. Each tick: take Lucky's state (what the world did
+        shows as the difference to our prediction, kept as the world's wrench), fly the tick with PX4, answer with the
+        average of our own wrench for Lucky to apply."""
+        s, m = self.prm[self.model], self.prm[self.model].mass
+        J = np.array([s.ixx, s.iyy, s.izz])
+        ext = np.array([0.0, 0.0, -m * self.prm["g"], 0.0, 0.0, 0.0])  # it starts resting on Lucky's floor
+        hud, armed, mode = None, False, ""
+        while True:
+            tick = self.lucky.wait(1.0)
+            if tick is None:
+                print("sim: waiting for Lucky (X500Flight in Play)", flush=True)
+                continue
+            dt = tick[0]
+            self.y, ext = anchor(self.y, ext, *tick, m, J)
+            own = np.zeros(6)
+            n = max(1, round(dt / DT))
+            for _ in range(n):
+                own += np.concatenate(physics.wrench(self.y, self.prm, self.model)) / n
+                self.tick(ext)
+            if hud is None and self.controls and self.t > 3:  # PX4's MAVLink is up (Docker drops what comes earlier)
+                hud = Hud(self.prm["lucky"]["px4_gcs"])
+            if hud:
+                armed, mode = hud.read(self.k)
+            self.lucky.reply(own[:3], own[3:], armed, mode)
+            self.status()

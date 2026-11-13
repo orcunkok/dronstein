@@ -8,7 +8,7 @@
 - Work through the Lucky MCP (`lucky`, http://127.0.0.1:19331/mcp) from the start. Always prioritze using lucky mcp tools for edits. If no tool fits, stop and ask.
 - Always build when you're done: after any script change reaches the user's checkout (edit, copy or branch switch), exit Play and `build_script_assembly`, so Lucky never runs a stale script.
 - While you are working, Lucky is yours: stop and start Play as much as you need, don't wait for the user. Entities can only be edited in Edit mode.
-- The user's `autonomy/src/dronstein.py` may hold UDP 14550 while you test. You may kill it whenever you need the port, without asking. Same for the user's Play session in Lucky.
+- The user's sim (`sim/src`, TCP 4560, UDP 14600), PX4 container (UDP 14580/18570) or `autonomy/src/dronstein.py` may hold ports while you test. You may kill it whenever you need the port, without asking. Same for the user's Play session in Lucky.
 - The user may not be watching the CLI and may use Lucky at the same time (e.g. a Play session you didn't start, or edits in the editor). If that gets in your way, carry on and alert them in your reply to leave Lucky alone while you work.
 - Test only a fresh build: exit Play, `build_script_assembly`, then enter Play. Before trusting any result, check `APP.log` has an `X500Flight: start` line *after* the latest `Build succeeded` line; if not, the old script is still running. Building or entering Play while Play runs doesn't restart it.
 - Read only the log lines written since your run started (note `wc -l` of `APP.log` first, or check the `start` line); the log also holds older runs and is reset when Lucky restarts.

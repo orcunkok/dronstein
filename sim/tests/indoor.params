@@ -1,0 +1,4 @@
+# PX4 parameters for flying inside Lucky's office (the ceiling is ~8.8 m above the start point).
+# Mount into the px4 container: -v $PWD/sim/tests/indoor.params:/params/extra/indoor.params:ro
+RTL_RETURN_ALT 3
+RTL_DESCEND_ALT 3

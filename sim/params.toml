@@ -18,15 +18,16 @@ kdv = 1.0           # N/(m/s), Fa = -kdv * v_NED
 kdw = 0.025         # Nm/(rad/s), Ma = -kdw * w
 t_tau = 0.05        # s, motor first-order lag (SIH_T_TAU default)
 
-[dsb-sim]           # our rotor model; starting values from PX4-gazebo-models x500 (+ x500_base) and PX4's 4001_gz_x500 SIM_GZ_EC_*
-mass = 2.0
-ixx = 0.02166666666666667
-iyy = 0.02166666666666667
-izz = 0.04000000000000001
-# Rotor hubs from the CoM, FRD (sdf FLU poses +-0.174, z 0.06 flipped); PX4 motor i = gz rotor_i.
-rotor_px = [0.174, -0.174, 0.174, -0.174]
-rotor_py = [0.174, -0.174, -0.174, 0.174]
-rotor_pz = [-0.06, -0.06, -0.06, -0.06]
+[dsb-sim]           # our rotor model; rotor constants start from PX4-gazebo-models x500 and PX4's 4001_gz_x500 SIM_GZ_EC_*
+# The airframe is Lucky's x500v2 model (Assets/Robots/X500V2/x500v2.mjcf, with the claw), so dsb-sim and Lucky agree.
+mass = 1.5352       # kg
+ixx = 0.02238       # kg m^2, about the CoM, body axes
+iyy = 0.02351
+izz = 0.03099
+# Rotor hubs from the CoM, FRD, PX4 motor order (front right, back left, front left, back right).
+rotor_px = [0.1865, -0.167, 0.1865, -0.167]
+rotor_py = [0.1768, -0.1768, -0.1768, 0.1768]
+rotor_pz = [-0.065, -0.065, -0.065, -0.065]
 spin = [1.0, 1.0, -1.0, -1.0]        # +1 ccw seen from above (CA_ROTOR*_KM > 0): reaction yaw moment +kM*T (FRD)
 k_t = 8.54858e-06   # N/(rad/s)^2, motorConstant
 k_m = 0.016         # Nm/N, momentConstant
@@ -40,6 +41,11 @@ v_ref = 15.2        # V ... at this pack voltage; the ESC speed scales with the 
 eta = 0.85          # motor + ESC efficiency (shaft power / electrical power)
 rho = 1.225         # kg/m^3
 cda = [0.03, 0.03, 0.08]  # m^2, body drag area per axis (quadratic drag)
+
+[lucky]             # the link to Lucky's X500Flight script (sim/src/lucky.py)
+port = 14600
+com = [-0.0098, 0.0, 0.036]  # m, the x500v2 CoM from its body origin, FRD
+px4_gcs = "udpout:127.0.0.1:18570"  # PX4's MAVLink GCS link: armed and mode for Lucky's HUD
 
 [battery]           # 4S 5000 mAh LiPo
 cells = 4
