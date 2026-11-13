@@ -21,7 +21,7 @@ and use the URL `udpin:0.0.0.0:14540`.
 | Command | Default | What it does |
 |---|---|---|
 | `src/dronstein.py --mav [URL]` | `udpout:127.0.0.1:14580` (PX4 SITL's API link) | Fly PX4 with the Xbox controller; F in the terminal runs the autonomy |
-| `src/dronstein.py` | | Lucky's own controller instead of PX4: `holybro-mvp` branch only |
+| `src/dronstein.py` | | Lucky's own controller instead of PX4: `lucky-sim` branch only |
 | `tests/calibrate.py [URL] [ALT]` | `udpout:127.0.0.1:14580`, `2.5` m | Take off to ALT, fly to each blue dot of the calibration square, print the time and how far it settled, RTL |
 | `tests/test_mavlink.py [URL]` | `udpout:127.0.0.1:14580` | Scripted check: arm, take off, LOITER forward, ALT_HOLD, a 5 m setpoint, RTL; stops at the first step that times out |
 
@@ -44,7 +44,7 @@ The bindings are `BIND` in `src/gamepad.py`.
 ## The autonomy (F)
 F in the terminal running `dronstein.py` switches it on: it picks up a random tennis ball, flies it to the bin, lets it
 go and returns home (RTL); the status line shows AUTO. F again takes the sticks back. It needs the balls' and the bin's
-positions, which only Lucky's own link sends (`holybro-mvp`); over MAVLink it has none yet.
+positions, which only Lucky's own link sends (`lucky-sim`); over MAVLink it has none yet.
 
 ## How it talks to the drone
 The drone's own controller decides what to do (take off, return home, land): PX4, in SITL here and on the real drone.
@@ -57,7 +57,7 @@ RTL AUTO.RTL.
 |---|---|
 | `src/dronstein.py` | Starts everything: the link, the controller, the status line, F for the autonomy |
 | `src/link/mavlink.py` | MAVLink to PX4: sticks as MANUAL_CONTROL, commands, OFFBOARD setpoints; PX4's state back |
-| `src/link/luckyLink.py` | Lucky's own controller (`GcsLink.cs`, `holybro-mvp` only) |
+| `src/link/luckyLink.py` | Lucky's own controller (`GcsLink.cs`, `lucky-sim` only) |
 | `src/state.py` | Everything the ground station and the drone tell each other: sticks, commands, where it is, the balls |
 | `src/gamepad.py` | Reads the Xbox controller |
 | `src/autonomy.py` | The autonomy (F): pick up a ball, take it to the bin, come home |

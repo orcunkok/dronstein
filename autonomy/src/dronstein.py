@@ -1,7 +1,7 @@
 #!/bin/sh
 "exec" "${0%/*}/../.venv/bin/python" "$0" "$@"  # sh runs autonomy/.venv's Python on this file; to Python it's only a string
 __doc__ = """The ground station: flies the X500 with the Xbox controller through one link: PX4 over MAVLink (--mav; the one
-that flies on px4-dsbSim-lucky) or Lucky's own controller (default, holybro-mvp). F (typed here, or pressed in Lucky's window) picks up a random tennis ball (autonomy.py), arming first if needed; F again
+that flies on px4-dsbSim-lucky) or Lucky's own controller (default, lucky-sim). F (typed here, or pressed in Lucky's window) picks up a random tennis ball (autonomy.py), arming first if needed; F again
 gives the sticks back to the controller.
 Run: ./dronstein.py [--mav [URL]] (it uses autonomy/.venv)"""
 import argparse

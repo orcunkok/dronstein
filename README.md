@@ -6,7 +6,7 @@ PX4 SITL flies the drone; **dsb-sim**, our headless flight physics, computes its
 it through Lucky's world, so every contact (floor, walls, ceiling, props) is Lucky's own. The same ground-station code
 talks MAVLink to PX4 here and to the real drone later.
 
-> This is the `px4-dsbSim-lucky` branch. `holybro-mvp` is the PX4-free branch, where a controller inside Lucky flies it.
+> This is the `px4-dsbSim-lucky` branch. `lucky-sim` is the PX4-free branch, where a controller inside Lucky flies it.
 
 ## Quick run
 You need [Lucky Engine](https://luckyrobots.com), [Docker](https://www.docker.com) and
