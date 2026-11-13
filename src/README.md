@@ -1,7 +1,7 @@
 # Ground station (Python)
 
-This is what you fly the drone with. Later the autonomy goes here too. It's written for ArduPilot, so the same code can
-fly the real X500 later.
+This is what you fly the drone with. Later the autonomy goes here too. Its state and modes are in ArduPilot's terms;
+on `px4-dsbSim-lucky` the same code talks MAVLink to PX4, as it will to the real X500.
 
 ## Set up (once)
 Needs [uv](https://docs.astral.sh/uv/). From the repo root:
@@ -13,7 +13,7 @@ uv pip install --python src/.venv/bin/python -r src/requirements.txt
 ## Run
 ```
 src/dronstein.py          # fly the drone in Lucky (press Play in Lucky, before or after)
-src/dronstein.py --ardu   # fly through ArduPilot (not ready yet)
+src/dronstein.py --ardu   # an ArduPilot link (not built; the PX4 link is on px4-dsbSim-lucky)
 ```
 It shows one status line: the mode, armed or not, height and position. Ctrl+C stops it.
 Plug the Xbox controller in at any time.

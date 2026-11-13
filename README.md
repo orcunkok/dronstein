@@ -1,13 +1,10 @@
 # dronstein
 Lucky Robots: a Holybro X500 V2 drone in Lucky Engine.
 
-A Holybro X500 V2 with a 4S battery (1.36 kg) flies like a stock ArduPilot setup, in a field of tennis balls with a trash can. Its physics and autopilot gains are parameters, so they can be matched to the real drone (sim2real).
+A Holybro X500 V2 with a 4S battery (1.36 kg) flies in a field of tennis balls with a trash can. Its physics and autopilot gains are parameters, so they can be matched to the real drone (sim2real).
 
-## What's what
-- **Lucky Engine** (`LuckyEngine/`) is the simulator. It also plays the drone's flight controller (the part that
-  will be ArduPilot on the real drone).
-- **The ground station** (`src/`) is Python. You fly with it, and later the autonomy goes there. It's written so the
-  same code can talk to the real drone later. See [src/README.md](src/README.md).
+> This is the `lucky-sim` branch: PX4-free, everything runs inside Lucky with its own stand-in flight controller, for
+> quick tests, training and debugging. `px4-dsbSim-lucky` (merged into `main`) flies the drone with PX4 instead.
 
 ## How to run
 First time only, set up Python (needs [uv](https://docs.astral.sh/uv/)):
@@ -19,6 +16,12 @@ Then, in any order:
 1. Open the `LuckyEngine` project in Lucky Engine and press **Play**.
 2. Run `src/dronstein.py`.
 3. Fly with the Xbox controller.
+
+## What's what
+- **Lucky Engine** (`LuckyEngine/`) is the simulator. It also plays the drone's flight controller: a stand-in
+  autopilot with ArduPilot-style modes and gains (`X500Flight.cs`); on the real drone and on `px4-dsbSim-lucky`, PX4.
+- **The ground station** (`src/`) is Python. You fly with it, and later the autonomy goes there. See
+  [src/README.md](src/README.md).
 
 ## Controller
 | Button | What it does |
