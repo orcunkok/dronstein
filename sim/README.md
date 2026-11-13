@@ -30,6 +30,28 @@ the physics (a few seconds); later starts use numba's cache.
 | `--log FILE` | off | Write the true state every step (4 ms) to a CSV |
 | `--params FILE` | `sim/params.toml` | The parameter file |
 
+### PX4 container
+`px4-x500/px4` is built from [tiny-sitl](https://github.com/orcunkok/tiny-sitl)'s `px4` branch
+(`DOCKER_BUILDKIT=0 docker build -t px4-x500/px4 .`). Its environment variables (`-e NAME=value`):
+
+| Variable | Default | What it does |
+|---|---|---|
+| `SIM_HOST` | `host.docker.internal` | Where the sim runs (name or IP); PX4 connects to `SIM_HOST:4560+INSTANCE` |
+| `INSTANCE` | `0` | Shifts every port by `+INSTANCE` (sim TCP, GCS and API UDP) |
+| `SYSID` | `INSTANCE+1` | MAVLink system id |
+| `GCS_HOST` / `API_HOST` | unset | Make PX4 send first, to `host:14550` (QGroundControl) / `host:14540` (your software) |
+| `/params/extra/*.params` (mount) | none | Extra PX4 parameters, `NAME VALUE` per line or a QGroundControl export; `tests/indoor.params` makes RTL return at 3 m in Lucky's office |
+
+PX4 answers only the first program that talks to it: start a fresh container before connecting another one.
+
+### Ports
+| Port | Who listens | For |
+|---|---|---|
+| TCP 4560 (+N) | sim | PX4 ↔ sim (MAVLink HIL, lockstep) |
+| UDP 14600 | sim (`--lucky`) | Lucky's `X500Flight` ↔ sim |
+| UDP 14580 (+N) | PX4 | API link: `autonomy/src/dronstein.py`, the test scripts, MAVSDK |
+| UDP 18570 (+N) | PX4 | GCS link: QGroundControl; the sim reads PX4's mode here for Lucky's HUD |
+
 ## How it works
 - **Headless:** every 4 ms of sim time PX4 gets HIL_SENSOR (250 Hz IMU, 100 Hz mag, 50 Hz baro), HIL_GPS (10 Hz) and
   HIL_STATE_QUATERNION (50 Hz); the sim waits for HIL_ACTUATOR_CONTROLS and steps 4 ms (RK4, 4 substeps). The drone
