@@ -1,48 +1,74 @@
-# sim: headless X500 physics for PX4 SITL
+# sim: dsb-sim, headless X500 flight physics for PX4
 
 A Python flight-physics simulator of the Holybro X500 V2 that PX4 SITL flies in lockstep over MAVLink HIL
-(`simulator_mavlink`), with no Gazebo and no display. The math is compiled with numba: a 4 ms step takes ~30 µs.
+(`simulator_mavlink`), with no Gazebo and no display. It runs on its own (headless), or flies the drone in Lucky's
+MuJoCo world (`--lucky`). The math is compiled with numba: a 4 ms step takes ~30 µs.
 
-| Path | What it is |
+## Quick start
+From the dronstein folder:
+```sh
+uv venv sim/.venv && uv pip install --python sim/.venv/bin/python -r sim/requirements.txt   # once (Python >= 3.11)
+
+sim/.venv/bin/python sim/src                  # headless: the sim's own flat ground
+sim/.venv/bin/python sim/src --lucky          # in Lucky's world: then press Play in Lucky
+
+docker run --rm -d --name px4 -p 18570:18570/udp -p 14580:14580/udp px4-x500/px4   # PX4 (tiny-sitl, px4 branch)
+```
+Then fly it over MAVLink (`autonomy/src/dronstein.py --mav`, QGroundControl, MAVSDK, ...). The first start compiles
+the physics (a few seconds); later starts use numba's cache.
+
+## Options
+`sim/.venv/bin/python sim/src [options]`
+
+| Option | Default | What it does |
+|---|---|---|
+| `--lucky [HOST]` | off; `127.0.0.1` when given | Fly in Lucky's MuJoCo world, listening for Lucky's `X500Flight` script on `HOST:14600` (`[lucky] port`) |
+| `--model sih\|dsb-sim` | `dsb-sim` | Force model: `dsb-sim` (per-rotor model, drag, battery) or `sih` (PX4's SIH equations, for parity checks) |
+| `--speed X` | `1` | Headless only: `1` real time, `0` as fast as PX4's lockstep allows (~5x). With `--lucky`, Lucky's tick is the clock |
+| `--home LAT,LON,ALT` | `[home]` in params.toml | Start point on Earth (deg, deg, m above sea level) for GPS, baro and the magnetometer |
+| `--instance N` | `0` | Listen for PX4 on TCP `4560 + N`, for PX4 started with `INSTANCE=N` |
+| `--log FILE` | off | Write the true state every step (4 ms) to a CSV |
+| `--params FILE` | `sim/params.toml` | The parameter file |
+
+## How it works
+- **Headless:** every 4 ms of sim time PX4 gets HIL_SENSOR (250 Hz IMU, 100 Hz mag, 50 Hz baro), HIL_GPS (10 Hz) and
+  HIL_STATE_QUATERNION (50 Hz); the sim waits for HIL_ACTUATOR_CONTROLS and steps 4 ms (RK4, 4 substeps). The drone
+  stands on four landing-gear feet on a flat ground.
+- **With Lucky (`--lucky`):** Lucky's MuJoCo moves the one drone body; every contact is Lucky's. Each Lucky tick
+  (50 Hz) its `X500Flight` script sends the body's state; the sim continues from it, flies the tick with PX4 (5 × 4 ms)
+  and answers with the tick's average force and torque, which Lucky applies through the free-joint motors. What
+  Lucky's velocities show beyond that is the world's push (contacts), added as a force so PX4's IMU feels it. The
+  answer also carries PX4's armed state and mode for Lucky's HUD, read from PX4's GCS link (`[lucky] px4_gcs`).
+- PX4's battery reading is its own (`simulator_mavlink` takes no battery message); the sim's battery drives the rotors.
+
+## Parameters (`params.toml`, SI units)
+| Section | What it holds |
 |---|---|
-| `src/physics.py` | 6-DOF rigid body (NED/FRD, quaternion, RK4 at 1 kHz), four landing-gear feet on a spring-damper ground with friction, and two force models: **`sih`**, PX4's SIH quadcopter equations exactly as in `sih.cpp` (parity with the SIH image); **`dsb-sim`**, ours: a rotor model per motor after Gazebo's `MulticopterMotorModel`, starting from PX4's x500 constants (up/down time constants, kT w², kM yaw moment, rotor drag and rolling moment), PX4's 150..1000 rad/s ESC mapping scaled by battery voltage, quadratic body drag and a 4S LiPo (OCV(SoC) + internal resistance, current from rotor shaft power). |
-| `src/sensors.py` | IMU from the true specific force (noise + bias random walk), ISA baro, WMM magnetometer, GPS. |
-| `src/px4.py` | The HIL server. PX4 connects to tcp `4560 + instance`; every 4 ms of sim time it gets HIL_SENSOR (250 Hz IMU, 100 Hz mag, 50 Hz baro), HIL_GPS at 10 Hz and HIL_STATE_QUATERNION at 50 Hz, then the sim waits for HIL_ACTUATOR_CONTROLS and steps 4 ms. |
-| `src/__main__.py` | The command line. |
-| `params.toml` | Every parameter, in SI units. |
-| `tests/test_physics.py` | Physics checks (pytest). |
-| `tests/compare.py` | Flies one mission on PX4's SIH image and on PX4 + this sim (`sih` and `dsb-sim`), and writes `tests/out/compare_report.md`. |
+| `[home]` | Start point: latitude, longitude, altitude |
+| `[sih]` | PX4 SIH's quadcopter (mass, inertia, max thrust, drag), for `--model sih` |
+| `[dsb-sim]` | The airframe (mass, inertia, rotor hubs: Lucky's x500v2 model) and our rotor model (thrust and moment constants, motor time constants, rotor drag, ESC range, body drag) |
+| `[lucky]` | Lucky link: port, the x500v2's centre of mass from its body origin, PX4's GCS address for the HUD |
+| `[battery]` | 4S LiPo: cells, capacity, internal resistance, open-circuit voltage curve |
+| `[ground]` | Headless ground: landing-gear feet, stiffness, damping, friction |
+| `[sensors]` | IMU / baro / mag / GPS noise and rates |
 
-## Run
-
+## Tests
 ```sh
-uv venv sim/.venv && uv pip install --python sim/.venv/bin/python -r sim/requirements.txt  # once (Python >= 3.11)
-sim/.venv/bin/python sim/src                       # from the dronstein folder; --model sih (default dsb-sim), --speed 0, --log truth.csv
-docker run --rm -d --name px4 -p 18570:18570/udp -p 14580:14580/udp px4-x500/px4
+sim/.venv/bin/python -m pytest sim/tests                 # physics checks and the Lucky loop without Lucky (seconds)
+sim/.venv/bin/python sim/tests/compare.py [a b c]        # flight comparison, needs Docker and both PX4 images
 ```
+`compare.py` flies one mission on (a) PX4's SIH image `px4-x500/sitl`, (b) PX4 + this sim with `--model sih`, (c) PX4 +
+this sim with `dsb-sim`, and writes `sim/tests/out/compare_report.md` (default: all three). `tests/indoor.params`: PX4
+parameters for flying in Lucky's office (RTL at 3 m).
 
-`--speed 1` keeps real time, `--speed 0` runs as fast as PX4's lockstep allows (about 5x on a laptop).
-`--instance N` listens on 4560 + N, for PX4 started with `INSTANCE=N`. `--home lat,lon,alt` moves the start point.
-The first start compiles the physics (a few seconds); later starts use numba's cache.
-PX4's battery stays its own (`simulator_mavlink` takes no battery message), so the sim's battery only affects the motors.
-
-## With Lucky
-
-Lucky's MuJoCo moves the drone (every contact is Lucky's); the sim computes its forces at 250 Hz with PX4. Each Lucky
-tick (50 Hz) its `X500Flight` script sends the drone's state, the sim flies that tick with PX4 (5 steps) and answers with
-the tick's average force and torque, plus PX4's armed state and mode for the HUD (read from PX4's GCS link, udp 18570).
-
-```sh
-sim/.venv/bin/python sim/src --lucky               # then press Play in Lucky (in any order)
-docker run --rm -d --name px4 -p 18570:18570/udp -p 14580:14580/udp \
-  -v $PWD/sim/tests/indoor.params:/params/extra/indoor.params:ro px4-x500/px4   # RTL under the office ceiling
-autonomy/tests/calibrate.py                        # fly the four blue dots, print how close it got
-```
-Lucky's tick is the clock, so the sim runs as fast as Lucky does (slower with a big viewport).
-
-## Test
-
-```sh
-sim/.venv/bin/python -m pytest sim/tests          # physics checks
-sim/.venv/bin/python sim/tests/compare.py         # three-way flight comparison, needs Docker and both PX4 images
-```
+## Code
+| File | What it is |
+|---|---|
+| `src/__main__.py` | The command line |
+| `src/physics.py` | 6-DOF rigid body (NED/FRD, quaternion, RK4), the ground, and the force models: `sih` (PX4 SIH, as in `sih.cpp`) and `dsb-sim` (each rotor's thrust kT w², kM yaw moment, rotor drag and rolling moment after Gazebo's MulticopterMotorModel, PX4's 150..1000 rad/s ESC range scaled by the pack voltage, quadratic body drag, 4S battery). An optional world wrench replaces the ground (Lucky) |
+| `src/sensors.py` | IMU from the true specific force (noise + bias random walk), ISA baro, WMM magnetometer, GPS |
+| `src/px4.py` | The HIL server: PX4 connects to TCP `4560 + instance`; the headless loop and the Lucky-clocked loop |
+| `src/lucky.py` | The Lucky link: frames (MuJoCo world and FLU body ↔ NED / FRD, body origin ↔ CoM), the world wrench, PX4's mode for the HUD |
+| `tests/test_physics.py` | Hover, free fall and landing, SIH's equations, rotor drag, battery sag |
+| `tests/test_lucky.py` | The Lucky loop against a fake Lucky: resting, free-air hover, a drop onto the floor |
+| `tests/compare.py` | The three-way flight comparison |

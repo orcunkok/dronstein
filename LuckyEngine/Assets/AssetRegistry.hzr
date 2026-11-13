@@ -2030,9 +2030,6 @@ Assets:
   - Handle: 14697393763005477120
     FilePath: Office/OfficeDesks14/source/office_desks.hpodgraph
     Type: PodGraph
-  - Handle: 14747046436387185966
-    FilePath: Scripts/Client/Source/GcsLink.cs
-    Type: ScriptFile
   - Handle: 14775165077481864236
     FilePath: ContentVault/Robots/UnitreeG1ThreeFingersPod/assets/right_hand_palm_link.STL
     Type: MeshSource

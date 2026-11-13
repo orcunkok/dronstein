@@ -1,46 +1,66 @@
-# autonomy: the ground station (Python)
+# autonomy: the ground station
 
-This is what you fly the drone with. Later the autonomy goes here too. It talks MAVLink to PX4, so the same code can
-fly the real X500 later.
+What you fly the drone with, in Python. It talks MAVLink to PX4 like a ground station, so the same code flies PX4 in
+simulation now and the real X500 later. The autonomy goes here too.
 
-## Set up (once)
-Needs [uv](https://docs.astral.sh/uv/). From the repo root:
-```
-uv venv autonomy/.venv
-uv pip install --python autonomy/.venv/bin/python -r autonomy/requirements.txt
-```
+## Quick start
+From the dronstein folder, with PX4 running (see the [main README](../README.md)):
+```sh
+uv venv autonomy/.venv && uv pip install --python autonomy/.venv/bin/python -r autonomy/requirements.txt   # once
 
-## Run
+autonomy/src/dronstein.py --mav           # fly with the Xbox controller (plug it in any time)
+autonomy/tests/calibrate.py               # or: fly the four calibration dots by itself
 ```
-autonomy/src/dronstein.py --mav    # fly PX4 over MAVLink (SITL's udpout:127.0.0.1:14580; --mav URL for another)
-autonomy/src/dronstein.py          # Lucky's own controller: holybro-mvp only (on this branch PX4 flies)
-```
-With PX4 in Docker, start the container first: PX4 answers only the first sender it hears, and Docker drops what
-arrives before PX4 listens. Or let PX4 send first (start in any order): run the container with `-e API_HOST=host.docker.internal`
-and `autonomy/src/dronstein.py --mav udpin:0.0.0.0:14540`.
-
 It shows one status line: the mode, armed or not, height and position. Ctrl+C stops it.
-Plug the Xbox controller in at any time.
 
-**F** (in the terminal running `dronstein.py`) switches the autonomy on. It needs the balls' and the bin's positions,
-which only Lucky's own link sends (holybro-mvp); over MAVLink it has none yet. With them, it picks up a random tennis ball, flies it to the bin, lets it go and returns home (RTL). The status
-line shows AUTO while it runs. Press F again to take the sticks back. The autonomy ends by itself once it has landed back home, and the controller takes over again.
+**Start PX4's container first**: PX4 answers only the first program that talks to it, and Docker drops what arrives
+before PX4 listens. To start in any order, let PX4 talk first: run the container with `-e API_HOST=host.docker.internal`
+and use the URL `udpin:0.0.0.0:14540`.
 
-## What's in here
-| File (under `src/`) | What it does |
+## Commands and options
+| Command | Default | What it does |
+|---|---|---|
+| `src/dronstein.py --mav [URL]` | `udpout:127.0.0.1:14580` (PX4 SITL's API link) | Fly PX4 with the Xbox controller; F in the terminal runs the autonomy |
+| `src/dronstein.py` | | Lucky's own controller instead of PX4: `holybro-mvp` branch only |
+| `tests/calibrate.py [URL] [ALT]` | `udpout:127.0.0.1:14580`, `2.5` m | Take off to ALT, fly to each blue dot of the calibration square, print the time and how far it settled, RTL |
+| `tests/test_mavlink.py [URL]` | `udpout:127.0.0.1:14580` | Scripted check: arm, take off, LOITER forward, ALT_HOLD, a 5 m setpoint, RTL; stops at the first step that times out |
+
+URLs are [pymavlink](https://github.com/ArduPilot/pymavlink) connection strings: `udpout:HOST:PORT` (we talk first),
+`udpin:0.0.0.0:PORT` (PX4 talks first), or a serial port like `/dev/ttyAMA0` (the real drone's Pixhawk).
+
+## Controller
+| Button | What it does |
 |---|---|
-| `dronstein.py` | Starts everything. F runs the autonomy. |
-| `autonomy.py` | The autonomy (F): picks up a random tennis ball in Lucky, flies over it, lands with the claw on it and closes the claw; `to_bin` then takes off, flies over the bin (the sim sends its position), waits until it is still, opens the claw and returns home. The debug ball at the helipad (`TennisBall_01`) is not in the list. |
-| `gamepad.py` | Reads the Xbox controller. |
-| `state.py` | Everything the ground station and the drone tell each other: sticks, commands (arm, mode, takeoff, gripper), where the drone is, and the balls. |
-| `link/luckyLink.py` | Talks to Lucky's own controller (`GcsLink.cs`, holybro-mvp only). |
-| `link/mavlink.py` | Talks MAVLink to PX4 (SITL now, the real X500 later). It maps `state.py`'s ArduPilot modes to PX4's: LOITER is POSCTL, ALT_HOLD ALTCTL, GUIDED OFFBOARD, RTL AUTO.RTL. |
+| Left stick | Move forward/back and left/right |
+| RT / LT | Climb / descend |
+| LB / RB | Turn left / right |
+| Menu | Arm / disarm, on the ground only |
+| B | POSCTL / ALTCTL; from OFFBOARD or RTL, back to POSCTL |
+| X | Take off (0.5 m) on the ground; in the air, return home (RTL); again during RTL, back to POSCTL |
+| A | Gripper grab / release |
 
-Tests are under `tests/`: `tests/test_mavlink.py [URL]` flies PX4 SITL through `link/mavlink.py` (arm, take off,
-LOITER, ALT_HOLD, a GUIDED setpoint, RTL); `tests/calibrate.py [URL] [ALT]` flies PX4 to the four blue dots of the
-calibration square in Lucky and prints how close it settled.
+The bindings are `BIND` in `src/gamepad.py`.
+
+## The autonomy (F)
+F in the terminal running `dronstein.py` switches it on: it picks up a random tennis ball, flies it to the bin, lets it
+go and returns home (RTL); the status line shows AUTO. F again takes the sticks back. It needs the balls' and the bin's
+positions, which only Lucky's own link sends (`holybro-mvp`); over MAVLink it has none yet.
 
 ## How it talks to the drone
-The drone's own controller decides what to do (take off, return home, land). This program only sends the sticks and
-asks for things, like you would from a real ground station. That controller is PX4 (`--mav`), in SITL here and on the
-real drone; on holybro-mvp it is Lucky's `X500Flight` script.
+The drone's own controller decides what to do (take off, return home, land): PX4, in SITL here and on the real drone.
+This program only sends the sticks and asks for things, like you would from a real ground station. `state.py` keeps
+ArduPilot's mode numbers; `link/mavlink.py` maps them to PX4's: LOITER is POSCTL, ALT_HOLD ALTCTL, GUIDED OFFBOARD,
+RTL AUTO.RTL.
+
+## Code
+| File | What it does |
+|---|---|
+| `src/dronstein.py` | Starts everything: the link, the controller, the status line, F for the autonomy |
+| `src/link/mavlink.py` | MAVLink to PX4: sticks as MANUAL_CONTROL, commands, OFFBOARD setpoints; PX4's state back |
+| `src/link/luckyLink.py` | Lucky's own controller (`GcsLink.cs`, `holybro-mvp` only) |
+| `src/state.py` | Everything the ground station and the drone tell each other: sticks, commands, where it is, the balls |
+| `src/gamepad.py` | Reads the Xbox controller |
+| `src/autonomy.py` | The autonomy (F): pick up a ball, take it to the bin, come home |
+| `src/navigation.py` | Position setpoints for the controller |
+| `tests/calibrate.py` | The calibration flight |
+| `tests/test_mavlink.py` | The scripted MAVLink flight check |
